@@ -2,7 +2,21 @@ package com.gomu.festup.di
 
 import android.content.Context
 import androidx.room.Room
+import com.gomu.festup.LocalDatabase.DAO.CuadrillaDao
+import com.gomu.festup.LocalDatabase.DAO.CuadrillasAsistentesDao
+import com.gomu.festup.LocalDatabase.DAO.EventoDao
+import com.gomu.festup.LocalDatabase.DAO.IntegranteDao
+import com.gomu.festup.LocalDatabase.DAO.UsuarioDao
+import com.gomu.festup.LocalDatabase.DAO.UsuariosAsistentesDao
 import com.gomu.festup.LocalDatabase.Database
+import com.gomu.festup.LocalDatabase.Repositories.CuadrillaRepository
+import com.gomu.festup.LocalDatabase.Repositories.EventoRepository
+import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
+import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
+import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
+import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
+import com.gomu.festup.LocalDatabase.Repositories.UserRepository
+import com.gomu.festup.RemoteDatabase.HTTPClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,4 +33,63 @@ object AppModule {
         Room.databaseBuilder(app, Database::class.java, "festUpDatabase")
             .createFromAsset("database/festUp.db")
             .build()
+
+    /***************************  DAOs  ***************************/
+    @Singleton
+    @Provides
+    fun providesUsuarioDao(db: Database) = db.usuarioDao()
+    @Singleton
+    @Provides
+    fun providesCuadrillaDao(db: Database) = db.cuadrillaDao()
+
+    @Singleton
+    @Provides
+    fun provideEventoDao(db: Database) = db.eventoDao()
+
+    @Singleton
+    @Provides
+    fun provideIntegranteDao(db: Database) = db.integranteDao()
+
+    @Singleton
+    @Provides
+    fun provideSeguidoresDao(db: Database) = db.seguidoresDao()
+
+    @Singleton
+    @Provides
+    fun provideCuadrillasAsistentesDao(db: Database) = db.usuariosAsistentesDao()
+
+    @Singleton
+    @Provides
+    fun provideUsuariosAsistentesDao(db: Database) = db.cuadrillasAsistentesDao()
+
+    /***************************  Repositorios  ***************************/
+
+    @Singleton
+    @Provides
+    fun providesUserRepository(
+        usuarioDao: UsuarioDao, 
+        httpClient: HTTPClient, 
+        loginSettings: ILoginSettings
+    ): IUserRepository = 
+        UserRepository(usuarioDao, httpClient, loginSettings)
+
+    @Singleton
+    @Provides
+    fun provideCuadrillaRepository(
+        cuadrillaDao: CuadrillaDao, 
+        integranteDao: IntegranteDao, 
+        httpClient: HTTPClient
+    ): ICuadrillaRepository = 
+        CuadrillaRepository(cuadrillaDao, integranteDao, httpClient)
+
+    @Singleton
+    @Provides
+    fun provideEventoRepository(
+        eventoDao: EventoDao,
+        usuariosAsistentesDao: UsuariosAsistentesDao,
+        cuadrillasAsistentesDao: CuadrillasAsistentesDao,
+        httpClient: HTTPClient
+    ): IEventoRepository =
+        EventoRepository(eventoDao, usuariosAsistentesDao, cuadrillasAsistentesDao, httpClient)
+
 }

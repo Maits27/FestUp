@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.CuadrillaWithUsuarios
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,8 +25,8 @@ interface CuadrillaDao {
     fun getCuadrilla(nombre:String): Flow<Cuadrilla>
 
     @Transaction
-    @Query("SELECT * FROM Cuadrilla WHERE nombre IN (SELECT nombreCuadrilla FROM Integrante WHERE username = :usernameUsuario)")
-    suspend fun getCuadrillasDeUsuario(usernameUsuario: String): List<CuadrillaWithUsuarios>
+    @Query("SELECT * FROM Usuario WHERE username IN (SELECT username FROM Integrante WHERE nombreCuadrilla = :nombreCuadrilla)")
+    suspend fun getUsuariosDeCuadrilla(nombreCuadrilla: String): List<Usuario>
 
     @Update
     fun editarCuadrilla(cuadrilla: Cuadrilla): Int
