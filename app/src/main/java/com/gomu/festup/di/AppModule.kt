@@ -17,5 +17,6 @@ object AppModule {
     @Provides
     fun provideDatabase(@ApplicationContext app:Context) =
         Room.databaseBuilder(app, Database::class.java, "festUpDatabase")
+            .createFromAsset("database/festUp.db")
             .build()
 }
