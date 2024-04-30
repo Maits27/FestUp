@@ -119,22 +119,22 @@ fun AddCuadrilla(navController: NavController) {
 
         // Form
         OutlinedTextField(
-            value = "",
-            onValueChange = {  },
+            value = nombre,
+            onValueChange = { nombre = it },
             label = { Text("Nombre de usuario")},
             modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = { },
+            value = descripcion,
+            onValueChange = { descripcion = it },
             label = { Text("Descripcción")},
             modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
         )
 
         OutlinedTextField(
-            value = "",
-            onValueChange = {  },
+            value = localizacion,
+            onValueChange = { localizacion = it },
             label = { Text("Localización")},
             modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
         )

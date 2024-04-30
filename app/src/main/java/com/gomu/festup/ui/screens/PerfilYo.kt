@@ -1,29 +1,21 @@
 package com.gomu.festup.ui.screens
 
-import android.graphics.Bitmap
-import android.graphics.Picture
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -35,28 +27,20 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -70,45 +54,39 @@ import com.gomu.festup.ui.AppScreens
 fun PerfilYo(
     mainNavController: NavController,
     navController: NavController,
-    username: String = "",
-    accederPerfilCuadrilla: (String)-> Unit = {}
+    username: String = "Root",
+    yo: Boolean = false
 ) {
     Column (
-        modifier = Modifier
-            .fillMaxWidth(),
-//            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column (
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
             modifier = Modifier
+                .background(MaterialTheme.colorScheme.tertiary)
                 .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.tertiary)
-                .weight(1f)
-        ){
-            TopProfile(username = username, email = "user@gmail.com", edad = 18, true)
+        ) {
+            TopProfile(username = username, email = "user@gmail.com", edad = 18, yo)
         }
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.onTertiary)
-                .weight(2f)
-        ){
-            SeguidoresYSeguidos(username = username)
+        SeguidoresYSeguidos(yo)
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
             ListadoCuadrillas(
-                username = username,
                 cuadrillas = listOf(
                     Cuadrilla(nombre = "Pikito", descripcion = "The best", lugar = "Bilbao"),
                     Cuadrilla(nombre = "Wekaland", descripcion = "The best 2", lugar = "Bilbao"),
-                    Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao")
+                    Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao"),
+                    Cuadrilla(nombre = "Wekaland", descripcion = "The best 2", lugar = "Bilbao"),
+                    Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao"),
                 ),
-                true,
-                accederPerfilCuadrilla = accederPerfilCuadrilla
+                yo,
+                navController = navController
             )
+        }
+        if (yo) {
             BotonesPerfil(
                 navController= navController,
                 mainNavController = mainNavController,
@@ -117,177 +95,121 @@ fun PerfilYo(
     }
 }
 
-//@Preview
-//@Composable
-//fun PerfilPreview(){
-//    PerfilYo(
-//        username = "username",
-//        mainNavController = rememberNavController(),
-//        navController = rememberNavController(),
-//        accederPerfilCuadrilla = {})
-//}
-
-@Composable
-fun BotonesPerfil(mainNavController: NavController, navController: NavController, username: String){
-    Row (
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ){
-        IconButton(
-            modifier = Modifier.weight(1f),
-            onClick = { /*TODO*/ }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.settings),
-                contentDescription = "Settings",
-                tint = MaterialTheme.colorScheme.tertiary)
-        }
-        IconButton(
-            modifier = Modifier.weight(1f),
-            onClick = { /*TODO*/ }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.edit),
-                contentDescription = "Edit",
-                tint = MaterialTheme.colorScheme.tertiary)
-        }
-        IconButton(
-            modifier = Modifier.weight(1f),
-            onClick = {
-                navController.popBackStack()
-                mainNavController.popBackStack()
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.logout),
-                contentDescription = "Logout",
-                tint = MaterialTheme.colorScheme.tertiary)
-        }
-    }
-}
-
 
 @Composable
 fun ListadoCuadrillas(
-    username: String,
     cuadrillas: List<Cuadrilla>,
     yo: Boolean,
-    accederPerfilCuadrilla:(String) -> Unit
+    navController: NavController
 ){
-    Column (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start
+    Row (
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(16.dp)
     ){
-        Row (
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Text(
-                text = "Cuadrillas de $username:",
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.tertiary,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+        Text(
+            text = "Cuadrillas",
+            style = TextStyle(
+                color = MaterialTheme.colorScheme.tertiary,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.weight(3f)
+        )
+        if (yo){
+            Button(
+                modifier = Modifier
+                    .weight(1f)
+                    .border(
+                        1.dp,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        shape = RoundedCornerShape(6.dp)
+                    ),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent
                 ),
-                modifier = Modifier.weight(3f)
-            )
-            if (yo){
-                Button(
-                    modifier = Modifier
-                        .weight(1f)
-                        .border(
-                            1.dp,
-                            color = MaterialTheme.colorScheme.tertiary,
-                            shape = RoundedCornerShape(6.dp)
-                        ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent
-                    ),onClick = { /*TODO*/ }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.add), "",
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
-                }
+                onClick = { navController.navigate(AppScreens.AddCuadrilla.route) }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.add), "",
+                    tint = MaterialTheme.colorScheme.tertiary
+                )
             }
         }
-
     }
-    when{
-        cuadrillas.isNotEmpty() ->
-        {
-            LazyColumn(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(6.dp)
-            ) {
-                items(cuadrillas) {
-                    Card(
+    if (cuadrillas.isNotEmpty()) {
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            items(cuadrillas) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 3.dp)
+                        .clickable { navController.navigate(AppScreens.PerfilCuadrilla.route) },
+                    shape = CardDefaults.elevatedShape,
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(3.dp)
-                            .clickable { accederPerfilCuadrilla(it.nombre) },
-                        shape = CardDefaults.elevatedShape,
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                            .padding(13.dp)
                     ) {
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        Image(
+                            painter = painterResource(id = R.drawable.account),
+                            contentDescription = "",
+                            modifier = Modifier.size(50.dp)
+                        )
+                        Column(
+                            Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.account),
-                                contentDescription = "",
-                                modifier = Modifier.size(60.dp).weight(1f)
+                            Text(
+                                text = it.nombre,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleLarge
                             )
-                            Column(
-                                Modifier.padding(vertical = 10.dp).weight(4f)
+                            Text(
+                                text = it.lugar,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        if (yo) {
+                            var verificacion by rememberSaveable { mutableStateOf(false) }
+                            Button(
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Transparent
+                                ), onClick = { verificacion = true }
                             ) {
-                                Text(
-                                    text = it.nombre,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(vertical = 5.dp)
-                                )
-                                Text(
-                                    text = it.lugar,
-                                    modifier = Modifier.padding(vertical = 5.dp)
+                                Icon(
+                                    painter = painterResource(id = R.drawable.delete),
+                                    "",
+                                    tint = MaterialTheme.colorScheme.onTertiary
                                 )
                             }
-                            if (yo){
-                                var verificacion by rememberSaveable{ mutableStateOf(false) }
-                                Button(
-                                    modifier = Modifier.weight(1f),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Transparent
-                                    ),onClick = { verificacion = true }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.delete),
-                                        "",
-                                        tint = MaterialTheme.colorScheme.onTertiary
-                                    )
-                                }
-                                EstasSeguro(
-                                    show = verificacion,
-                                    mensaje = "Si eliminas esta cuadrilla tendrás que volver a solicitar entrar.",
-                                    onDismiss = {verificacion = false}) {
-                                    verificacion = false
-                                    // TODO eliminar
-                                }
+                            EstasSeguro(
+                                show = verificacion,
+                                mensaje = "Si eliminas esta cuadrilla tendrás que volver a solicitar entrar.",
+                                onDismiss = { verificacion = false }) {
+                                verificacion = false
+                                // TODO eliminar
                             }
                         }
                     }
                 }
             }
-        }else -> {
-            Text(text = "Empty")
         }
     }
-
+    else {
+        Text(text = "Empty")
+    }
 }
+
+
 @Composable
 fun EstasSeguro(show: Boolean, mensaje: String, onDismiss:()->Unit, onConfirm:() -> Unit){
     if(show){
@@ -312,16 +234,16 @@ fun EstasSeguro(show: Boolean, mensaje: String, onDismiss:()->Unit, onConfirm:()
     }
 }
 @Composable
-fun SeguidoresYSeguidos(username: String){
+fun SeguidoresYSeguidos(yo: Boolean){
     Row (
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ){
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(top = 16.dp, end = 16.dp)
         ){
             Text(text = "Seguidores")
             TextButton(
@@ -346,7 +268,7 @@ fun SeguidoresYSeguidos(username: String){
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ){
             Text(text = "Seguidos")
             TextButton(
@@ -367,6 +289,72 @@ fun SeguidoresYSeguidos(username: String){
                     )
                 )
             }
+        }
+        if(!yo){
+            Spacer(modifier = Modifier.weight(1f))
+            Column (
+                Modifier
+                    .padding(vertical = 16.dp, horizontal = 16.dp)
+                    .align(Alignment.Bottom)
+                    .background(
+                        color = MaterialTheme.colorScheme.tertiary,
+                        shape = RoundedCornerShape(10.dp)
+                    ),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                TextButton(
+                    onClick = { /*TODO*/ },
+                ) {
+                    Text(
+                        text = "Follow",
+                        style = TextStyle(
+                            color = MaterialTheme.colorScheme.onTertiary,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BotonesPerfil(mainNavController: NavController, navController: NavController, username: String){
+    Row (
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ){
+        IconButton(
+            onClick = { /*TODO*/ },
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.settings),
+                contentDescription = "Settings",
+                tint = MaterialTheme.colorScheme.tertiary)
+        }
+        IconButton(
+            onClick = { /*TODO*/ },
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.edit),
+                contentDescription = "Edit",
+                tint = MaterialTheme.colorScheme.tertiary)
+        }
+        IconButton(
+            onClick = {
+                navController.popBackStack()
+                mainNavController.popBackStack()
+            },
+            modifier = Modifier.weight(1f)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.logout),
+                contentDescription = "Logout",
+                tint = MaterialTheme.colorScheme.tertiary)
         }
     }
 }
@@ -420,60 +408,47 @@ fun TopProfile(
                 )
             }
         }
-
     }
     Text(
         text = username,
         style = TextStyle(
-            color = MaterialTheme.colorScheme.onTertiary,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
     )
-    Row (
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        Column (
-            Modifier
-                .weight(2f)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start
-        ){
+    Text(
+        text = email,
+        modifier = Modifier.padding(5.dp),
+        style = TextStyle(
+            fontSize = 15.sp
+        )
+    )
+    Text(
+        text = "$edad años",
+        modifier = Modifier.padding(5.dp),
+        style = TextStyle(
+            fontSize = 15.sp
+        )
+    )
 
-            Text(
-                text = "Email: $email",
-                modifier = Modifier.padding(5.dp),
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    fontSize = 15.sp
-                )
-            )
-            Text(
-                text = "Edad: $edad",
-                modifier = Modifier.padding(5.dp),
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    fontSize = 15.sp
-                )
-            )
-        }
-        if(!yo){
-            Column (
-                Modifier
-                    .weight(1f)
-                    .padding(vertical = 0.dp, horizontal = 16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                TextButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier.background(color = MaterialTheme.colorScheme.onTertiary, shape = RoundedCornerShape(10.dp))
-                ) {
-                    Text(text = "Follow", color = MaterialTheme.colorScheme.tertiary)
-                }
-            }
-        }
-    }
+}
 
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PerfilYoPreviewYo() {
+    PerfilYo(
+        mainNavController = rememberNavController(),
+        navController = rememberNavController(),
+        yo = true
+    )
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PerfilYoPreviewUser() {
+    PerfilYo(
+        mainNavController = rememberNavController(),
+        navController = rememberNavController(),
+        yo = false
+    )
 }

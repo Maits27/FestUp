@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.R
+import com.gomu.festup.ui.AppScreens
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -38,21 +39,6 @@ fun EventsMap(navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        FloatingActionButton(
-            onClick = { navController.popBackStack() },
-            shape = RoundedCornerShape(70),
-            modifier = Modifier
-                .padding(16.dp)
-                .size(45.dp)
-                .align(Alignment.TopEnd)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.list),
-                contentDescription = null
-            )
-        }
-
-
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
@@ -67,6 +53,20 @@ fun EventsMap(navController: NavController) {
                 state = MarkerState(position = LatLng(latitude+1.00, longitude + 1.00)),
                 title = "Location",
                 snippet = "Marker at provided address"
+            )
+        }
+
+        FloatingActionButton(
+            onClick = { navController.navigate(AppScreens.EventsList.route) },
+            shape = RoundedCornerShape(70),
+            modifier = Modifier
+                .padding(16.dp)
+                .size(45.dp)
+                .align(Alignment.TopEnd)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.list),
+                contentDescription = null
             )
         }
     }

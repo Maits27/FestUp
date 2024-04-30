@@ -2,6 +2,7 @@ package com.gomu.festup.ui.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TabRow
@@ -63,7 +65,10 @@ fun LoginPage(
         mutableStateOf(false)
     }
 
-    Column {
+    Column(
+        // TODO quitar esto para que se vea bien con el theme
+        modifier = Modifier.background(MaterialTheme.colorScheme.background)
+    ) {
         TabRow(
             selectedTabIndex = selectedTab
         ) {
@@ -72,7 +77,7 @@ fun LoginPage(
                 loginSelected = true
                 registerSelected = false
             },
-            modifier = Modifier.padding(vertical = 15.dp)
+                modifier = Modifier.padding(vertical = 15.dp)
             ) {
                 Text(text = "Iniciar sesión")
             }
@@ -147,7 +152,9 @@ fun LoginForm(
         )
         Button(
             onClick = { onLoginButtonClick() },
-            modifier = Modifier.align(Alignment.End).padding(end = 54.dp)
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(end = 54.dp)
         ) {
             Text(text = "Iniciar sesión")
         }

@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.R
+import com.gomu.festup.ui.AppScreens
 import java.util.Date
 
 @Composable
@@ -50,7 +51,7 @@ fun EventsList(navController: NavController) {
                     .fillMaxWidth()
                     .padding(8.dp)
                     .clickable {
-
+                        navController.navigate(AppScreens.Evento.route)
                     }
             ) {
                 Row (

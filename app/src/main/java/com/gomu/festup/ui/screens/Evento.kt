@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
+import com.gomu.festup.ui.AppScreens
 
 @Composable
 fun Evento(navController: NavController) {
@@ -125,7 +126,7 @@ fun Evento(navController: NavController) {
                     modifier = Modifier
                         .size(48.dp)
                         .background(
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.colorScheme.onSecondary,
                             shape = RoundedCornerShape(12.dp)
                         )
                         .padding(8.dp),
@@ -151,7 +152,7 @@ fun Evento(navController: NavController) {
                     modifier = Modifier
                         .size(48.dp)
                         .background(
-                            color = MaterialTheme.colorScheme.tertiary,
+                            color = MaterialTheme.colorScheme.onSecondary,
                             shape = RoundedCornerShape(12.dp)
                         )
                         .padding(8.dp),
@@ -174,7 +175,6 @@ fun Evento(navController: NavController) {
                 Button(onClick = { /*TODO*/ }) {
                     Text(
                         text = "Apuntarme",
-                        color = Color.White,
                         style = TextStyle(fontSize = 17.sp)
                     )
                 }
@@ -195,7 +195,10 @@ fun Evento(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
-                        .clickable {  /*TODO*/ }
+                        .clickable {
+                            // TODO mandar al viewModel
+                            navController.navigate(AppScreens.PerfilUser.route)
+                        }
                 ) {
                     Row (
                         modifier = Modifier

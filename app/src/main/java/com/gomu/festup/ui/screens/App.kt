@@ -10,10 +10,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.BottomBarMainView
 import com.gomu.festup.ui.FloatButton
@@ -64,8 +66,8 @@ fun App(
             composable(AppScreens.AddCuadrilla.route) { AddCuadrilla(navController) }
             composable(AppScreens.AddEvento.route) { AddEvento(navController) }
 
-            composable(AppScreens.PerfilYo.route) { PerfilYo(mainNavController, navController) }
-            composable(AppScreens.PerfilUser.route) { PerfilUser(navController) }
+            composable(AppScreens.PerfilYo.route) { PerfilYo(mainNavController, navController, yo = true) }
+            composable(AppScreens.PerfilUser.route) { PerfilYo(mainNavController, navController, yo = false) }
             composable(AppScreens.PerfilCuadrilla.route) { PerfilCuadrilla(navController) }
 
 //            composable(AppScreens.Ajustes.route) { Ajustes(navController) }
