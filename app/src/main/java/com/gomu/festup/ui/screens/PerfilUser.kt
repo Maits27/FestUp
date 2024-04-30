@@ -49,7 +49,8 @@ import com.gomu.festup.R
 @Composable
 fun PerfilUser(
     navController: NavController,
-    username: String = "usuarioBestea"
+    username: String = "usuarioBestea",
+//    accederPerfilCuadrilla: (String)-> Unit
 ) {
     Column (
         modifier = Modifier
@@ -84,7 +85,8 @@ fun PerfilUser(
                     Cuadrilla(nombre = "Wekaland", descripcion = "The best 2", lugar = "Bilbao"),
                     Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao")
                 ),
-                false
+                false,
+                {}
             )
 
         }
