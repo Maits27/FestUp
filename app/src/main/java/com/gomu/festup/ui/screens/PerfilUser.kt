@@ -67,7 +67,7 @@ fun PerfilUser(
                 .background(color = MaterialTheme.colorScheme.tertiary)
                 .weight(1f)
         ){
-            TopProfile(username = username, email = "user@gmail.com", edad = 18, picture = null, false)
+            TopProfile(username = username, email = "user@gmail.com", edad = 18, false)
         }
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,

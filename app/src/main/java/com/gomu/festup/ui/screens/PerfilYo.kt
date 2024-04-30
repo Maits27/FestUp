@@ -88,7 +88,7 @@ fun PerfilYo(
                 .background(color = MaterialTheme.colorScheme.tertiary)
                 .weight(1f)
         ){
-            TopProfile(username = username, email = "user@gmail.com", edad = 18, picture = null, true)
+            TopProfile(username = username, email = "user@gmail.com", edad = 18, true)
         }
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -117,15 +117,15 @@ fun PerfilYo(
     }
 }
 
-@Preview
-@Composable
-fun PerfilPreview(){
-    PerfilYo(
-        username = "username",
-        mainNavController = rememberNavController(),
-        navController = rememberNavController(),
-        accederPerfilCuadrilla = {})
-}
+//@Preview
+//@Composable
+//fun PerfilPreview(){
+//    PerfilYo(
+//        username = "username",
+//        mainNavController = rememberNavController(),
+//        navController = rememberNavController(),
+//        accederPerfilCuadrilla = {})
+//}
 
 @Composable
 fun BotonesPerfil(mainNavController: NavController, navController: NavController, username: String){
@@ -222,14 +222,14 @@ fun ListadoCuadrillas(
             LazyColumn(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(6.dp),
-                contentPadding = PaddingValues(bottom = 30.dp)
+                modifier = Modifier.padding(6.dp)
             ) {
                 items(cuadrillas) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(3.dp),
+                            .padding(3.dp)
+                            .clickable { accederPerfilCuadrilla(it.nombre) },
                         shape = CardDefaults.elevatedShape,
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
                     ) {
@@ -238,26 +238,22 @@ fun ListadoCuadrillas(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.account),
+                                contentDescription = "",
+                                modifier = Modifier.size(60.dp).weight(1f)
+                            )
                             Column(
-                                Modifier
-                                    .padding(16.dp)
-                                    .weight(3f)
+                                Modifier.padding(vertical = 10.dp).weight(4f)
                             ) {
-                                Text(text = it.nombre, fontWeight = FontWeight.Bold)
-                                Text(text = it.lugar)
-                            }
-                            Button(
-                                modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Transparent
-                                ),onClick = {
-                                    accederPerfilCuadrilla(it.nombre)
-                                }
-
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.lupa), "",
-                                    tint = MaterialTheme.colorScheme.onTertiary
+                                Text(
+                                    text = it.nombre,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(vertical = 5.dp)
+                                )
+                                Text(
+                                    text = it.lugar,
+                                    modifier = Modifier.padding(vertical = 5.dp)
                                 )
                             }
                             if (yo){
@@ -379,48 +375,52 @@ fun TopProfile(
     username: String,
     email: String,
     edad: Int,
-    picture: Bitmap?,
     yo: Boolean
 ){
+    val profilePicture = painterResource(id = R.drawable.ic_launcher_background)
     Box(contentAlignment = Alignment.BottomEnd) {
-        Box(Modifier.padding(8.dp)) {
-            if (picture == null) {
-//                LoadingImagePlaceholder(size = 80.dp)
-                Icon(
-                    painter = painterResource(id = R.drawable.account) ,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(140.dp)
-                        .clip(CircleShape),
-                )
+        Box(Modifier.padding(16.dp)) {
+            // Mientras no este la imagen mostrar una "cargando"
+            if (profilePicture == null) {
+                LoadingImagePlaceholder(size = 120.dp)
             } else {
                 Image(
-                    bitmap = picture.asImageBitmap(),
+                    //bitmap = profilePicture.asImageBitmap(),
+                    painter = profilePicture,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(80.dp)
+                        .size(120.dp)
                         .clip(CircleShape),
                 )
-
+                // Imagen redonda o cuadrada??
             }
         }
-        if(yo){
+        // Icono para editar imagen
+        if(yo) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
+                    .padding(bottom = 16.dp, end = 8.dp)
                     .clip(CircleShape)
-                    .clickable(onClick = {
-                        /*TODO*/
-                    })
+                    .clickable(onClick = { /*TODO*/ })
             ) {
+                //Añadir circle y edit
                 Icon(
-                    painter = painterResource(id = R.drawable.circle),
-                    contentDescription = null, Modifier.size(34.dp),
-                    tint = MaterialTheme.colorScheme.onTertiary)
-                Icon(Icons.Filled.Edit, contentDescription = null, Modifier.size(18.dp), tint = Color.White)
+                    painterResource(id = R.drawable.circle),
+                    contentDescription = null,
+                    Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Icon(
+                    painterResource(id = R.drawable.edit),
+                    contentDescription = null,
+                    Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.surface
+                )
             }
         }
+
     }
     Text(
         text = username,

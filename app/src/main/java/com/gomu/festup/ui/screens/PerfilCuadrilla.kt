@@ -33,6 +33,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -139,6 +140,11 @@ fun PerfilCuadrilla(
                             color = MaterialTheme.colorScheme.onTertiary,
                             shape = RoundedCornerShape(10.dp)
                         )
+                        .border(
+                            1.dp,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            shape = RoundedCornerShape(6.dp)
+                        )
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.delete),
@@ -167,11 +173,11 @@ fun PerfilCuadrilla(
     }
 }
 
-//@Preview
-//@Composable
-//fun PerfilPreview(){
-//    PerfilCuadrilla(navController = rememberNavController())
-//}
+@Preview
+@Composable
+fun PerfilPreview(){
+    PerfilCuadrilla(navController = rememberNavController())
+}
 
 @Composable
 fun TopProfileCuadrilla(
@@ -269,13 +275,16 @@ fun Unirse(show:Boolean, onConfirm: (String) -> Unit){
                 TextButton(onClick = { onConfirm(token) }) {
                     Text(text = "Unirme")
                 }
+                Button(onClick = { onConfirm(token)}) {
+                    
+                }
             },
             title = {
                 Text(text = "Unirte a la cuadrilla") },
             text = {
                 Text(text = "Introduce el token de cuadrilla " +
                         "(si no tienes uno, pide que te lo mande un miembro de esta).")
-                TextField(
+                OutlinedTextField(
                     value = token,
                     onValueChange = {token = it},
                     label = { Text("Token de la cuadrilla") },
@@ -347,7 +356,7 @@ fun ListadoUsuarios(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(3.dp),
+                                .padding(3.dp).clickable {  },
                             shape = CardDefaults.elevatedShape,
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
                         ) {
@@ -356,6 +365,11 @@ fun ListadoUsuarios(
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.account),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(60.dp).weight(1f)
+                                )
                                 Column(
                                     Modifier
                                         .padding(16.dp)
@@ -364,17 +378,7 @@ fun ListadoUsuarios(
                                     Text(text = it.username, fontWeight = FontWeight.Bold)
                                     Text(text = it.nombre)
                                 }
-                                Button(
-                                    modifier = Modifier.weight(1f),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color.Transparent
-                                    ),onClick = { /*TODO*/ }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.lupa), "",
-                                        tint = MaterialTheme.colorScheme.onTertiary
-                                    )
-                                }
+
                             }
                         }
                     }
