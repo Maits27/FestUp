@@ -71,7 +71,7 @@ fun PerfilYo(
     mainNavController: NavController,
     navController: NavController,
     username: String = "",
-    accederPerfilCuadrilla: (String)-> Unit
+    accederPerfilCuadrilla: (String)-> Unit = {}
 ) {
     Column (
         modifier = Modifier
@@ -476,32 +476,4 @@ fun TopProfile(
         }
     }
 
-}
-
-@Composable
-fun LoadingImagePlaceholder(size: Dp = 140.dp) {
-    val infiniteTransition = rememberInfiniteTransition()
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = keyframes {
-                // One iteration is 1000 milliseconds.
-                durationMillis = 1000
-                // 0.7f at the middle of an iteration.
-                0.7f at 500
-            },
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
-    )
-
-    Image(
-        modifier = Modifier
-            .size(size)
-            .clip(CircleShape)
-            .alpha(alpha),
-        painter = painterResource(id = R.drawable.account),
-        contentDescription = null,
-        contentScale = ContentScale.Crop
-    )
 }

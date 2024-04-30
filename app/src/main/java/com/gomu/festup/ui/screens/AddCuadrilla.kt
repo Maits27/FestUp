@@ -164,7 +164,7 @@ fun AddCuadrilla(navController: NavController) {
 }
 
 @Composable
-private fun LoadingImagePlaceholder(size: Dp = 100.dp) {
+fun LoadingImagePlaceholder(size: Dp = 100.dp) {
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val alpha by infiniteTransition.animateFloat(
         initialValue = 0f,
