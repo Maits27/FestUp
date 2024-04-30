@@ -2,6 +2,7 @@ package com.gomu.festup.ui.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -40,6 +41,7 @@ fun App(
                 }
             }
         },
+        floatingActionButtonPosition = FabPosition.Center,
         topBar = {
             TopBarMainView(
                 navController = navController,
@@ -61,7 +63,7 @@ fun App(
             composable(AppScreens.Feed.route) { Feed(navController) }
             composable(AppScreens.Search.route) { Search(navController, mainVM) }
             composable(AppScreens.EventsMap.route) { EventsMap(navController) }
-            composable(AppScreens.EventsList.route) { EventsList(navController) }
+            composable(AppScreens.EventsList.route) { EventsList(navController, mainVM) }
             composable(AppScreens.Evento.route) { Evento(navController, mainVM) }
 
             composable(AppScreens.AddCuadrilla.route) { AddCuadrilla(navController) }

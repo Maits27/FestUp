@@ -1,7 +1,9 @@
 package com.gomu.festup.ui
 
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,11 +30,20 @@ import com.gomu.festup.vm.MainVM
 
 @Composable
 fun FloatButton(onClick: () -> Unit){
-    FloatingActionButton(
-        onClick = { onClick() }
-    ) {
-        Icon(painterResource(id = R.drawable.add), "")
-    }
+    ExtendedFloatingActionButton(
+        onClick = { onClick() },
+        icon = {
+            Icon(
+                painterResource(id = R.drawable.add),
+                contentDescription = null
+            )
+        },
+        text = {
+            Text(
+                text = "Nuevo evento"
+            )
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,15 +110,14 @@ fun TopBarMainView(
                     IconButton(onClick = { navController.navigate(AppScreens.PerfilYo.route) }) {
                         Icon(
                             painter = painterResource(id = R.drawable.account),
-                            contentDescription = ""
+                            contentDescription = "",
+                            modifier = Modifier.size(35.dp)
                         )
                     }
                 }
             },
         )
     }
-
-
 }
 @Composable
 fun BottomBarMainView(
@@ -128,20 +138,20 @@ fun BottomBarMainView(
             NavigationBarItem(
                 selected = currentDestination.route == AppScreens.Feed.route,
                 onClick = { navController.navigate(AppScreens.Feed.route) },
-                icon = { Icon(painter = painterResource(id = R.drawable.home), contentDescription = "Home") }
+                icon = { Icon(painter = painterResource(id = R.drawable.home), contentDescription = "Home", modifier = Modifier.size(30.dp)) }
             )
 
             NavigationBarItem(
                 selected = currentDestination.route == AppScreens.Search.route,
                 onClick = { navController.navigate(AppScreens.Search.route) },
-                icon = { Icon(painter = painterResource(id = R.drawable.lupa), contentDescription = "Search") }
+                icon = { Icon(painter = painterResource(id = R.drawable.lupa), contentDescription = "Search", modifier = Modifier.size(30.dp)) }
             )
 
             NavigationBarItem(
                 selected = currentDestination.route == AppScreens.EventsMap.route ||
                            currentDestination.route == AppScreens.EventsList.route,
                 onClick = { navController.navigate(AppScreens.EventsMap.route) },
-                icon = { Icon(painter = painterResource(id = R.drawable.party), contentDescription = "Events") }
+                icon = { Icon(painter = painterResource(id = R.drawable.party), contentDescription = "Events", modifier = Modifier.size(30.dp)) }
             )
         }
     }
