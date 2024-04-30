@@ -1,6 +1,8 @@
 package com.gomu.festup.ui.screens
 
+import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -27,6 +29,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -45,18 +50,29 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
 
 
 @Composable
 fun AddCuadrilla(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(40.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+
+    val context = LocalContext.current
+
+    var nombre by remember { mutableStateOf("") }
+    var descripcion by remember { mutableStateOf("") }
+    var localizacion by remember { mutableStateOf("") }
+
+    Column (
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(40.dp)
+        //.verticalScroll(rememberScrollState())
+        ,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
     ) {
         Text(
             text = "Nueva cuadrilla",
@@ -66,7 +82,6 @@ fun AddCuadrilla(navController: NavController) {
                 .padding(bottom = 10.dp)
                 .fillMaxWidth()
         )
-
 
 
         val profilePicture = painterResource(id = R.drawable.ic_launcher_background)
@@ -112,7 +127,7 @@ fun AddCuadrilla(navController: NavController) {
 
         OutlinedTextField(
             value = "",
-            onValueChange = { it},
+            onValueChange = { },
             label = { Text("Descripcción")},
             modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
         )
@@ -126,7 +141,18 @@ fun AddCuadrilla(navController: NavController) {
 
         // Create button
         Button(
-            onClick = { Log.d("Crearr","cuadrilla")},
+            onClick = {
+                if (nombre.isEmpty()) {
+                    Toast.makeText(context, "Inserta un nombre", Toast.LENGTH_SHORT).show()
+                } else if (descripcion.isEmpty()) {
+                    Toast.makeText(context, "Inserta una descripción", Toast.LENGTH_SHORT).show()
+                } else if (localizacion.isEmpty()) {
+                    Toast.makeText(context, "Inserta una localización", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Crear cuadrilla
+                    Log.d("Crear", "cuadrilla")
+                }
+            },
             modifier = Modifier
                 .padding(vertical = 16.dp)
                 .align(Alignment.End),
@@ -166,5 +192,7 @@ private fun LoadingImagePlaceholder(size: Dp = 100.dp) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewNewTeamScreen() {
-    AddCuadrilla(rememberNavController())
+    FestUpTheme {
+        AddCuadrilla(rememberNavController())
+    }
 }

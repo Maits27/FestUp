@@ -6,13 +6,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -54,9 +59,18 @@ fun Feed(
     }
 
     // Tab seleccionado al principio
-    var selectedTabIndex by remember { mutableStateOf(1) }
+    var selectedTabIndex by remember { mutableStateOf(0) }
 
-    Column {
+    Column (
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            //.verticalScroll(rememberScrollState())
+                ,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    )
+    {
         TabRow(
             selectedTabIndex
 
@@ -109,11 +123,11 @@ fun EventosList(eventos: List<Evento>, onItemClick: (Evento) -> Unit) {
 fun EventoItem(evento: Evento, onItemClick: () -> Unit) {
     Card(
         onClick = onItemClick,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(15.dp)
         ) {
             Column(
                 modifier = Modifier.weight(1f)

@@ -2,8 +2,10 @@ package com.gomu.festup.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -48,8 +50,8 @@ fun Search(
         Elemento("@maitaneurruela", "Maitane Urruela"),
     )
     val cuadrilla = listOf(
-        Elemento("Pikito", "2"),
-        Elemento("Pikito2", "5"),
+        Elemento("Pikito", "Bilbao"),
+        Elemento("Pikito2", "Getxo"),
     )
     val eventos = listOf(
         Elemento("Fiestas de Algorta", "25 de Abril"),
@@ -84,7 +86,15 @@ fun Search(
         )
     }
 
-    Column {
+    Column (
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+        //.verticalScroll(rememberScrollState())
+        ,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
 
 
         // Tabs
@@ -162,11 +172,11 @@ fun ElementoList(eventos: List<Elemento>, onItemClick: (Elemento) -> Unit) {
 fun EventoItem(elemento: Elemento, onItemClick: () -> Unit) {
     Card(
         onClick = onItemClick,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(8.dp)
     ){
     Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(15.dp)
         ) {
             Column(
                 modifier = Modifier.weight(1f)
