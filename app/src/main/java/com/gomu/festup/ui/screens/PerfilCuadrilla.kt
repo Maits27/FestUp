@@ -173,11 +173,11 @@ fun PerfilCuadrilla(
     }
 }
 
-@Preview
-@Composable
-fun PerfilPreview(){
-    PerfilCuadrilla(navController = rememberNavController())
-}
+//@Preview
+//@Composable
+//fun PerfilPreview(){
+//    PerfilCuadrilla(navController = rememberNavController())
+//}
 
 @Composable
 fun TopProfileCuadrilla(
