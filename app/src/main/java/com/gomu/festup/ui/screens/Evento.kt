@@ -40,9 +40,14 @@ import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.vm.MainVM
 
 @Composable
-fun Evento(navController: NavController) {
+fun Evento(
+    navController: NavController,
+    mainVM: MainVM
+) {
+    val evento= mainVM.eventoMostrar.value!!
     val newUser = Usuario(username = "@UnaiLopezNovoa", email = "ulopeznovoa@ehu.eus", nombre = "Unai", password = "123")
     val newUser2 = Usuario(username = "@AdrianNunezMarcos", email = "anunez@ehus.eus", nombre = "Adrian", password = "123")
     val users = arrayOf(newUser, newUser2)
@@ -77,7 +82,7 @@ fun Evento(navController: NavController) {
                     modifier = Modifier.padding(8.dp)
                 )
                 Text(
-                    text = "22/01/2021",
+                    text = evento.fecha.toString(),
                     style = TextStyle(fontSize = 16.sp),
                     modifier = Modifier.padding(8.dp)
                 )
@@ -94,14 +99,14 @@ fun Evento(navController: NavController) {
                     modifier = Modifier.padding(8.dp)
                 )
                 Text(
-                    text = "Bilbao",
+                    text = evento.localizacion,
                     style = TextStyle(fontSize = 16.sp),
                     modifier = Modifier.padding(8.dp)
                 )
             }
         }
         Text(
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum tempor rhoncus risus, nec porta orci pellentesque eu. Maecenas bibendum a diam ultrices ullamcorper.",
+            text = evento.descripcion,
             style = TextStyle(fontSize = 16.sp),
             modifier = Modifier.padding(8.dp)
         )
@@ -159,7 +164,7 @@ fun Evento(navController: NavController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "1",
+                        text = evento.numeroAsistentes.toString(),
                         color = Color.White,
                         style = TextStyle(fontSize = 24.sp)
                     )
@@ -233,8 +238,3 @@ fun Evento(navController: NavController) {
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun EventoPreview() {
-    Evento(navController = rememberNavController())
-}

@@ -44,14 +44,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.FestUpTheme
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.vm.MainVM
 import java.text.SimpleDateFormat
 import java.util.Date
 
 @Composable
 fun LoginPage(
-    mainNavController: NavController
+    mainNavController: NavController,
+    mainVM: MainVM
 ) {
     var selectedTab by remember {
         mutableIntStateOf(0)
@@ -91,14 +94,15 @@ fun LoginPage(
                 Text(text = "Registrarse")
             }
         }
-        if (selectedTab == 0) LoginForm(mainNavController)
-        else RegistroForm()
+        if (selectedTab == 0) LoginForm(mainNavController, mainVM)
+        else RegistroForm(mainNavController, mainVM)
     }
 }
 
 @Composable
 fun LoginForm(
-    mainNavController: NavController
+    mainNavController: NavController,
+    mainVM: MainVM
 ) {
     var username by remember {
         mutableStateOf("")
@@ -114,7 +118,8 @@ fun LoginForm(
         if (username == "") Toast.makeText(context, "Introduce un nombre de usuario", Toast.LENGTH_SHORT).show()
         else if (password == "") Toast.makeText(context, "Introduce una contrseña", Toast.LENGTH_SHORT).show()
         else {
-            // TODO mandar al viewModel
+            // TODO COGER LOS DATOS DE LA DB
+            mainVM.usuarioMostrar.value= Usuario("nagoregomez","12345","nagore@gmail.com","Nagore Gomez")
             mainNavController.navigate(AppScreens.App.route)
         }
     }
@@ -164,7 +169,10 @@ fun LoginForm(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistroForm() {
+fun RegistroForm(
+    mainNavController: NavController,
+    mainVM: MainVM
+) {
 
     val context = LocalContext.current
 
@@ -206,7 +214,9 @@ fun RegistroForm() {
         else if (confirmPassword == "") Toast.makeText(context, "Introduce una constraseña de confirmación", Toast.LENGTH_SHORT).show()
         else if (password != confirmPassword) Toast.makeText(context, "Ambas constraseñas deben conindicir", Toast.LENGTH_SHORT).show()
         else {
-            // TODO mandarlos al viewModel
+            // TODO COGER LOS DATOS DE LA DB
+            mainVM.usuarioMostrar.value= Usuario("nagoregomez","12345","nagore@gmail.com","Nagore Gomez")
+            mainNavController.navigate(AppScreens.App.route)
         }
     }
 
@@ -301,6 +311,7 @@ fun RegistroForm() {
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun LoginPagePreivew() {
@@ -324,3 +335,5 @@ fun RegisterFormPreview() {
         RegistroForm()
     }
 }
+
+ */

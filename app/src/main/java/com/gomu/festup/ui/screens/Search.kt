@@ -34,57 +34,61 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.FestUpTheme
+import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
+import com.gomu.festup.LocalDatabase.Entities.Evento
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
-
+import com.gomu.festup.vm.MainVM
+import java.util.Date
 
 
 @Composable
 fun Search(
-    navController: NavController
+    navController: NavController,
+    mainVM: MainVM
 ) {
     var searchText by remember { mutableStateOf("") }
 
+
     val personas = listOf(
-        Elemento("@nagoregomez", "Nagore Gomez"),
-        Elemento("@maitaneurruela", "Maitane Urruela"),
+        Usuario("@nagoregomez", "12345","nagore@gamil.com","Nagore Gomez"),
+        Usuario("@maitane", "12345","nagore@gamil.com","Maitane Gomez"),
     )
     val cuadrilla = listOf(
-        Elemento("Pikito", "Bilbao"),
-        Elemento("Pikito2", "Getxo"),
+        Cuadrilla("Pikito",12345,"Hola", "Bilbao"),
+        Cuadrilla("Pikito2",12345,"Hola", "Gexto"),
     )
     val eventos = listOf(
-        Elemento("Fiestas de Algorta", "25 de Abril"),
-        Elemento("Fiestas de Getxo", "30 de Abril"),
+        Evento("11","Fiestas de Algorta", Date(1000), 2, "Hola","Algorta, Bizkaia, ESpaña") ,
+        Evento("11","Fiestas de Getxo", Date(2000), 2, "Hola","Algorta, Bizkaia, ESpaña"),
     )
-
-    val onItemClick: (Elemento) -> Unit = { elemento ->
-        Log.d("Clickado", elemento.titulo)
-    }
 
     // Tab seleccionado al principio
     var selectedTabIndex by remember { mutableStateOf(0) }
 
     val filteredPersonas = personas.filter {
-        it.titulo.contains(searchText, ignoreCase = true) || it.subtitulo.contains(
+        it.username.contains(searchText, ignoreCase = true) || it.nombre.contains(
             searchText,
             ignoreCase = true
         )
     }
 
-    val filteredCuadrilla = cuadrilla.filter {
-        it.titulo.contains(searchText, ignoreCase = true) || it.subtitulo.contains(
+    val filteredCuadrillas = cuadrilla.filter {
+        it.nombre.contains(searchText, ignoreCase = true) || it.lugar.contains(
             searchText,
             ignoreCase = true
         )
     }
 
+    // TODO fecha rara
     val filteredEventos = eventos.filter {
-        it.titulo.contains(searchText, ignoreCase = true) || it.subtitulo.contains(
+        it.nombre.contains(searchText, ignoreCase = true) || it.fecha.toString().contains(
             searchText,
             ignoreCase = true
         )
     }
+
 
     Column (
         Modifier
@@ -145,33 +149,55 @@ fun Search(
 
         when (selectedTabIndex) {
             0 -> {
-                ElementoList(filteredPersonas, onItemClick)
+                ElementoList(filteredPersonas, navController, mainVM)
             }
             1 -> {
-                ElementoList(filteredCuadrilla, onItemClick)
+                ElementoList(filteredCuadrillas, navController, mainVM)
             }
             2 -> {
-                ElementoList(filteredEventos, onItemClick)
+                ElementoList(filteredEventos, navController, mainVM)
             }
         }
     }
 }
 
 
+
 @Composable
-fun ElementoList(eventos: List<Elemento>, onItemClick: (Elemento) -> Unit) {
+fun <T> ElementoList(
+    elementos: List<T>,
+    navController: NavController,
+    mainVM: MainVM
+) {
     LazyColumn {
-        items(eventos) { elemento ->
-            EventoItem(elemento = elemento, onItemClick = { onItemClick(elemento) })
+        items(elementos) { elemento ->
+            ElementoItem(elemento = elemento, navController, mainVM)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventoItem(elemento: Elemento, onItemClick: () -> Unit) {
+fun <T> ElementoItem(
+    elemento: T,
+    navController: NavController,
+    mainVM: MainVM
+) {
     Card(
-        onClick = onItemClick,
+        onClick =  {
+            if (elemento is Usuario){
+                mainVM.usuarioMostrar.value=elemento
+                navController.navigate(AppScreens.PerfilUser.route)
+            }
+            else if (elemento is Cuadrilla){
+                mainVM.cuadrillaMostrar.value=elemento
+                navController.navigate(AppScreens.PerfilCuadrilla.route)
+            }
+            else if(elemento is Evento){
+                mainVM.eventoMostrar.value=elemento
+                navController.navigate(AppScreens.Evento.route)
+            }
+        },
         modifier = Modifier.padding(8.dp)
     ){
     Row(
@@ -187,23 +213,24 @@ fun EventoItem(elemento: Elemento, onItemClick: () -> Unit) {
             Column(
                 modifier = Modifier.weight(1f).padding(start = 10.dp)
             ) {
-                Text(text = elemento.titulo, style = MaterialTheme.typography.titleLarge)
-                Text(text = elemento.subtitulo, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                if (elemento is Usuario){
+                    Text(text = elemento.username, style = MaterialTheme.typography.titleLarge)
+                    Text(text = elemento.nombre, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                }
+                else if (elemento is Cuadrilla){
+                    Text(text = elemento.nombre, style = MaterialTheme.typography.titleLarge)
+                    Text(text = elemento.lugar, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                }
+                else if(elemento is Evento){
+                    Text(text = elemento.nombre, style = MaterialTheme.typography.titleLarge)
+                    Text(text = elemento.fecha.toString(), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                }
+
+
             }
 
         }
     }
 }
 
-data class Elemento(val titulo: String, val subtitulo: String)
 
-
-@Preview(showBackground = true)
-@Composable
-fun SearchScreen() {
-    FestUpTheme {
-        Search(navController = rememberNavController())
-    }
-
-
-}

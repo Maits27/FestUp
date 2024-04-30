@@ -112,8 +112,8 @@ fun AddCuadrilla(navController: NavController) {
                     .clickable(onClick = { /*TODO */})
             ) {
                 //Añadir circle y edit
-                Icon(painterResource(id = R.drawable.ic_launcher_background), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
-                Icon(painterResource(id = R.drawable.ic_launcher_background), contentDescription = null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.surface)
+                Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
+                Icon(painterResource(id = R.drawable.edit), contentDescription = null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.surface)
             }
         }
 

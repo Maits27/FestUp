@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -30,10 +31,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -61,209 +64,164 @@ import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
-
+import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.vm.MainVM
+import androidx.compose.material3.FabPosition
 
 @Composable
 fun PerfilCuadrilla(
     navController: NavController,
-    nombre: String="Pikito"
+    mainVM: MainVM
 ) {
-    var formo_parte by rememberSaveable {mutableStateOf(true)}
-    Column (
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.onTertiary),
-//            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.tertiary)
-                .weight(2f)
-        ){
-            TopProfileCuadrilla(
-                nombre = nombre,
-                lugar = "Bilbao",
-                integrantes = 4,
-                picture = null,
-                formo_parte)
-        }
-        Column (
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
-        ){
-            Text(
-                text = "Descripción de cuadrilla:",
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.tertiary,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(bottom = 6.dp)
-            )
-            Text(
-                text = "Suuuuuuuuuupeerrrrr descripción",
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.tertiary,
-                    fontSize = 15.sp
-                )
-            )
-        }
-        Divider(color = MaterialTheme.colorScheme.tertiary, modifier = Modifier.width(200.dp))
-        ListadoUsuarios(
-            modifier = Modifier.weight(3f),
-            nombre = nombre,
-            usuarios = listOf(
-                Usuario(username = "AingeruBeOr", nombre = "Aingeru", email = "1405bellido", password = "1"),
-                Usuario(username = "Sergiom8", nombre = "Sergio", email = "sergiom8", password = "1"),
-                Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1"),
-            ),
-            formo_parte
-        )
-        if (formo_parte){
-            var verificacion by rememberSaveable{ mutableStateOf(false) }
-            Row (
-                modifier = Modifier.weight(1f),
-            ){
+    val cuadrilla= mainVM.cuadrillaMostrar.value!!
+    var pertenezco by rememberSaveable {mutableStateOf(true)}
 
-                TextButton(
-                    onClick = { verificacion = true },
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.onTertiary,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .border(
-                            1.dp,
-                            color = MaterialTheme.colorScheme.tertiary,
-                            shape = RoundedCornerShape(6.dp)
-                        )
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.delete),
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
-                    Text(
-                        text = "Eliminar $nombre",
-                        style = TextStyle(
-                            color = MaterialTheme.colorScheme.tertiary,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
-                EstasSeguro(
-                    show = verificacion,
-                    mensaje = "Si confirmas se eliminará la cuadrilla para todos los usuarios.",
-                    onDismiss = { verificacion = false }) {
-                    verificacion = false
-                    // TODO eliminar
-                }
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            EliminarCuadrilla(nombre = cuadrilla.nombre)
+        },
+        floatingActionButtonPosition = FabPosition.Center
+    ) { padding ->
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            ){
+                TopProfileCuadrilla(
+                    cuadrilla = cuadrilla,
+                    picture = null,
+                    pertenezco = pertenezco)
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                ListadoUsuarios(
+                    usuarios = listOf(
+                        Usuario(username = "AingeruBeOr", nombre = "Aingeru", email = "1405bellido", password = "1"),
+                        Usuario(username = "Sergiom8", nombre = "Sergio", email = "sergiom8", password = "1"),
+                        Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1"),
+                        Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1"),
+                        Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1"),
+                        Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1")
+                    ),
+                    pertenezco,
+                    mainVM,
+                    navController
+                )
             }
 
         }
-
     }
 }
+@Composable
+fun EliminarCuadrilla(nombre: String) {
+    var verificacion by rememberSaveable{ mutableStateOf(false) }
+    ExtendedFloatingActionButton(
+        onClick = {verificacion=true},
+        icon = {
+            Icon(
+                painterResource(id = R.drawable.delete),
+                contentDescription = null
+            )
+        },
+        text = {
+            Text(
+                text = "Eliminar $nombre"
+            )
+        }
+    )
+    EstasSeguro(
+        show = verificacion,
+        mensaje = "Si confirmas se eliminará la cuadrilla para todos los usuarios.",
+        onDismiss = { verificacion = false }) {
+        verificacion = false
+        // TODO eliminar
+    }
 
-//@Preview
-//@Composable
-//fun PerfilPreview(){
-//    PerfilCuadrilla(navController = rememberNavController())
-//}
+}
 
 @Composable
 fun TopProfileCuadrilla(
-    nombre: String,
-    lugar: String,
-    integrantes: Int,
+    cuadrilla: Cuadrilla,
     picture: Bitmap?,
     pertenezco: Boolean
 ){
 
-    if (picture == null) {
-        Icon(
-            painter = painterResource(id = R.drawable.account),
-            contentDescription = "",
-            modifier = Modifier
-                .size(100.dp)
-        )
-    } else {
-        Image(
-            bitmap = picture.asImageBitmap(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape),
-        )
+    val profilePicture = painterResource(id = R.drawable.ic_launcher_background)
+    Box(contentAlignment = Alignment.BottomEnd) {
+        Box(Modifier.padding(16.dp)) {
+            // Mientras no este la imagen mostrar una "cargando"
+            if (profilePicture == null) {
+                LoadingImagePlaceholder(size = 120.dp)
+            } else {
+                Image(
+                    //bitmap = profilePicture.asImageBitmap(),
+                    painter = profilePicture,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape),
+                )
+                // Imagen redonda o cuadrada??
+            }
+        }
+        // Icono para editar imagen
+        if(pertenezco) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .padding(bottom = 16.dp, end = 8.dp)
+                    .clip(CircleShape)
+                    .clickable(onClick = { /*TODO*/ })
+            ) {
+                //Añadir circle y edit
+                Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
+                Icon(painterResource(id = R.drawable.edit), contentDescription = null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.surface)
+            }
+        }
     }
-
     Text(
-        text = nombre,
+        text = cuadrilla.nombre,
         style = TextStyle(
-            color = MaterialTheme.colorScheme.onTertiary,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
     )
-    Row (
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        Column (
-            Modifier
-                .weight(2f)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start
-        ){
+    Text(
+        text = cuadrilla.lugar,
+        modifier = Modifier.padding(5.dp),
+        style = TextStyle(
+            fontSize = 15.sp
+        )
+    )
+    // TODO
+    Text(
+        text = "18",
+        modifier = Modifier.padding(5.dp),
+        style = TextStyle(
+            fontSize = 15.sp
+        )
+    )
 
-            Text(
-                text = "Lugar: $lugar",
-                modifier = Modifier.padding(5.dp),
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    fontSize = 15.sp
-                )
-            )
-            Text(
-                text = "Integrantes: $integrantes",
-                modifier = Modifier.padding(5.dp),
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    fontSize = 15.sp
-                )
-            )
-        }
-        if(!pertenezco){
-            var show by rememberSaveable { mutableStateOf(false) }
-            Column (
-                Modifier
-                    .weight(1f)
-                    .padding(vertical = 0.dp, horizontal = 16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                TextButton(
-                    onClick = { show = true },
-                    modifier = Modifier.background(color = MaterialTheme.colorScheme.onTertiary, shape = RoundedCornerShape(10.dp))
-                ) {
-                    Text(text = "Unirme", color = MaterialTheme.colorScheme.tertiary)
-                }
-            }
-            Unirse(show){
-                //TODO unirse
-            }
-        }
-    }
+    Text(
+        text = cuadrilla.descripcion,
+        style = TextStyle(
+            fontSize = 15.sp
+        )
+    )
+
 }
+
+
 
 @Composable
 fun Unirse(show:Boolean, onConfirm: (String) -> Unit){
@@ -297,97 +255,89 @@ fun Unirse(show:Boolean, onConfirm: (String) -> Unit){
 }
 @Composable
 fun ListadoUsuarios(
-    modifier: Modifier = Modifier,
-    nombre: String,
     usuarios: List<Usuario>,
-    pertenezco: Boolean
+    pertenezco: Boolean,
+    mainVM: MainVM,
+    navController: NavController
 ){
-    Column (
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.Start
+    Row (
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(16.dp)
     ){
-        Row (
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 16.dp)
-        ){
-            Text(
-                text = "Integrantes de $nombre:",
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.tertiary,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.weight(3f)
-            )
-            if (pertenezco){
-                Button(
+        Text(
+            text = "Integrantes:",
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.weight(3f)
+        )
+        if (pertenezco){
+            Button(
+                modifier = Modifier
+                    .weight(1f),
+                onClick = { /*TODO boton enviar token*/ }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.send), "",
+                )
+            }
+        }
+    }
+
+    if (usuarios.isNotEmpty()){
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top,
+            contentPadding = PaddingValues(bottom=80.dp),
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxSize()
+        ) {
+            items(usuarios) {
+                Card(
                     modifier = Modifier
-                        .weight(1f)
-                        .border(
-                            1.dp,
-                            color = MaterialTheme.colorScheme.tertiary,
-                            shape = RoundedCornerShape(6.dp)
-                        ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent
-                    ),onClick = { /*TODO*/ }
+                        .fillMaxWidth()
+                        .padding(vertical = 3.dp)
+                        .clickable {
+                            mainVM.usuarioMostrar.value = it
+                            navController.navigate(AppScreens.PerfilUser.route)
+                        },
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.send), "",
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(13.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.account),
+                            contentDescription = "",
+                            modifier = Modifier.size(50.dp)
+                        )
+                        Column(
+                            Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
+                        ) {
+                            Text(
+                                text = it.username,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Text(
+                                text = it.nombre,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+
+                    }
                 }
             }
         }
-        when{
-            usuarios.isNotEmpty() ->
-            {
-                LazyColumn(
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
-                    modifier = Modifier.padding(6.dp),
-                    contentPadding = PaddingValues(bottom = 30.dp)
-                ) {
-                    items(usuarios) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(3.dp).clickable {  },
-                            shape = CardDefaults.elevatedShape,
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
-                        ) {
-                            Row(
-                                Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.account),
-                                    contentDescription = "",
-                                    modifier = Modifier.size(60.dp).weight(1f)
-                                )
-                                Column(
-                                    Modifier
-                                        .padding(16.dp)
-                                        .weight(3f)
-                                ) {
-                                    Text(text = it.username, fontWeight = FontWeight.Bold)
-                                    Text(text = it.nombre)
-                                }
-
-                            }
-                        }
-                    }
-                }
-            }else -> {
-            Text(text = "Empty")
-        }
     }
-
+    else{
+        Text(text = "Empty")
     }
-
 }

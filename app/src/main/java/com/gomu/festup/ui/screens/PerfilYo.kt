@@ -48,15 +48,17 @@ import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.vm.MainVM
 
 
 @Composable
 fun PerfilYo(
     mainNavController: NavController,
     navController: NavController,
-    username: String = "Root",
-    yo: Boolean = false
+    yo: Boolean = false,
+    mainVM: MainVM
 ) {
+    val usuario= mainVM.usuarioMostrar.value!!
     Column (
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -65,10 +67,11 @@ fun PerfilYo(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.tertiary)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxWidth()
         ) {
-            TopProfile(username = username, email = "user@gmail.com", edad = 18, yo)
+            // TODO CAMBIAR EDAD
+            TopProfile(username = usuario.username, email = usuario.email, edad = 18, yo)
         }
         SeguidoresYSeguidos(yo)
         Column(
@@ -83,14 +86,15 @@ fun PerfilYo(
                     Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao"),
                 ),
                 yo,
-                navController = navController
+                navController = navController,
+                mainVM = mainVM
             )
         }
         if (yo) {
             BotonesPerfil(
                 navController= navController,
                 mainNavController = mainNavController,
-                username = username)
+                username = usuario.nombre)
         }
     }
 }
@@ -100,7 +104,8 @@ fun PerfilYo(
 fun ListadoCuadrillas(
     cuadrillas: List<Cuadrilla>,
     yo: Boolean,
-    navController: NavController
+    navController: NavController,
+    mainVM: MainVM
 ){
     Row (
         horizontalArrangement = Arrangement.Center,
@@ -110,7 +115,6 @@ fun ListadoCuadrillas(
         Text(
             text = "Cuadrillas",
             style = TextStyle(
-                color = MaterialTheme.colorScheme.tertiary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             ),
@@ -119,20 +123,11 @@ fun ListadoCuadrillas(
         if (yo){
             Button(
                 modifier = Modifier
-                    .weight(1f)
-                    .border(
-                        1.dp,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        shape = RoundedCornerShape(6.dp)
-                    ),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
-                ),
+                    .weight(1f),
                 onClick = { navController.navigate(AppScreens.AddCuadrilla.route) }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.add), "",
-                    tint = MaterialTheme.colorScheme.tertiary
                 )
             }
         }
@@ -148,9 +143,10 @@ fun ListadoCuadrillas(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 3.dp)
-                        .clickable { navController.navigate(AppScreens.PerfilCuadrilla.route) },
-                    shape = CardDefaults.elevatedShape,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                        .clickable {
+                            mainVM.cuadrillaMostrar.value=it
+                            navController.navigate(AppScreens.PerfilCuadrilla.route)
+                        }
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -181,14 +177,11 @@ fun ListadoCuadrillas(
                         if (yo) {
                             var verificacion by rememberSaveable { mutableStateOf(false) }
                             Button(
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Transparent
-                                ), onClick = { verificacion = true }
+                                 onClick = { verificacion = true }
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.delete),
                                     "",
-                                    tint = MaterialTheme.colorScheme.onTertiary
                                 )
                             }
                             EstasSeguro(
@@ -251,14 +244,13 @@ fun SeguidoresYSeguidos(yo: Boolean){
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.tertiary,
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(10.dp)
                     )
             ) {
                 Text(
                     text = "16",
                     style = TextStyle(
-                        color = MaterialTheme.colorScheme.onTertiary,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -276,14 +268,13 @@ fun SeguidoresYSeguidos(yo: Boolean){
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.tertiary,
+                        color = MaterialTheme.colorScheme.primaryContainer,
                         shape = RoundedCornerShape(10.dp)
                     )
             ) {
                 Text(
                     text = "20",
                     style = TextStyle(
-                        color = MaterialTheme.colorScheme.onTertiary,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -293,23 +284,23 @@ fun SeguidoresYSeguidos(yo: Boolean){
         if(!yo){
             Spacer(modifier = Modifier.weight(1f))
             Column (
-                Modifier
-                    .padding(vertical = 16.dp, horizontal = 16.dp)
-                    .align(Alignment.Bottom)
-                    .background(
-                        color = MaterialTheme.colorScheme.tertiary,
-                        shape = RoundedCornerShape(10.dp)
-                    ),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                    .align(Alignment.Bottom)
             ){
                 TextButton(
                     onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            shape = RoundedCornerShape(10.dp)
+                        )
                 ) {
                     Text(
                         text = "Follow",
                         style = TextStyle(
-                            color = MaterialTheme.colorScheme.onTertiary,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -332,8 +323,7 @@ fun BotonesPerfil(mainNavController: NavController, navController: NavController
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.settings),
-                contentDescription = "Settings",
-                tint = MaterialTheme.colorScheme.tertiary)
+                contentDescription = "Settings")
         }
         IconButton(
             onClick = { /*TODO*/ },
@@ -341,8 +331,7 @@ fun BotonesPerfil(mainNavController: NavController, navController: NavController
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.edit),
-                contentDescription = "Edit",
-                tint = MaterialTheme.colorScheme.tertiary)
+                contentDescription = "Edit")
         }
         IconButton(
             onClick = {
@@ -353,8 +342,7 @@ fun BotonesPerfil(mainNavController: NavController, navController: NavController
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.logout),
-                contentDescription = "Logout",
-                tint = MaterialTheme.colorScheme.tertiary)
+                contentDescription = "Logout")
         }
     }
 }
@@ -433,22 +421,3 @@ fun TopProfile(
 
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PerfilYoPreviewYo() {
-    PerfilYo(
-        mainNavController = rememberNavController(),
-        navController = rememberNavController(),
-        yo = true
-    )
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PerfilYoPreviewUser() {
-    PerfilYo(
-        mainNavController = rememberNavController(),
-        navController = rememberNavController(),
-        yo = false
-    )
-}

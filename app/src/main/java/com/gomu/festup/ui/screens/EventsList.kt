@@ -78,7 +78,7 @@ fun EventsList(navController: NavController) {
                             style = MaterialTheme.typography.bodySmall,
                         )
                         Text(
-                            text = "Ubicación}: ${evento.localizacion}",
+                            text = "Ubicación: ${evento.localizacion}",
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
