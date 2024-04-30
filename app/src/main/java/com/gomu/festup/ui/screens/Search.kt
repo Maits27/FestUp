@@ -179,7 +179,7 @@ fun EventoItem(elemento: Elemento, onItemClick: () -> Unit) {
             modifier = Modifier.padding(15.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
+                painter = painterResource(id = R.drawable.circle),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight,
                 modifier = Modifier.size(50.dp)
