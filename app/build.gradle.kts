@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -21,6 +23,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        val key_store_file = project.rootProject.file("local.properties")
+        var properties = Properties()
+        properties.load(key_store_file.inputStream())
+
+        val MAPS_API_KEY = properties.getProperty("MAPS_API_KEY") ?: ""
+        manifestPlaceholders["MAPS_API_KEY"] = MAPS_API_KEY
     }
 
     buildTypes {
@@ -80,6 +88,11 @@ dependencies {
     // When using Kotlin.
     kapt("androidx.hilt:hilt-compiler:1.2.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    // Google Maps
+    implementation("com.google.maps.android:maps-compose:2.11.4")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 
     // Default
     implementation(libs.androidx.core.ktx)
