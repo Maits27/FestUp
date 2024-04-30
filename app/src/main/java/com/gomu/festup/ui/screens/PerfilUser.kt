@@ -91,8 +91,8 @@ fun PerfilUser(
     }
 }
 
-//@Preview
-//@Composable
-//fun PerfilPreview(){
-//    PerfilUser(navController = rememberNavController())
-//}
+@Preview
+@Composable
+fun PerfilPreview(){
+    PerfilUser(navController = rememberNavController())
+}

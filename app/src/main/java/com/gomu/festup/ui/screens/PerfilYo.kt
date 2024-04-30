@@ -63,13 +63,15 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
+import com.gomu.festup.ui.AppScreens
 
 
 @Composable
 fun PerfilYo(
     mainNavController: NavController,
     navController: NavController,
-    username: String = ""
+    username: String = "",
+    accederPerfilCuadrilla: (String)-> Unit
 ) {
     Column (
         modifier = Modifier
@@ -104,7 +106,8 @@ fun PerfilYo(
                     Cuadrilla(nombre = "Wekaland", descripcion = "The best 2", lugar = "Bilbao"),
                     Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao")
                 ),
-                true
+                true,
+                accederPerfilCuadrilla = accederPerfilCuadrilla
             )
             BotonesPerfil(
                 navController= navController,
@@ -161,8 +164,15 @@ fun BotonesPerfil(mainNavController: NavController, navController: NavController
         }
     }
 }
+
+
 @Composable
-fun ListadoCuadrillas(username: String, cuadrillas: List<Cuadrilla>, yo: Boolean){
+fun ListadoCuadrillas(
+    username: String,
+    cuadrillas: List<Cuadrilla>,
+    yo: Boolean,
+    accederPerfilCuadrilla:(String) -> Unit
+){
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -239,7 +249,10 @@ fun ListadoCuadrillas(username: String, cuadrillas: List<Cuadrilla>, yo: Boolean
                                 modifier = Modifier.weight(1f),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.Transparent
-                                ),onClick = { /*TODO*/ }
+                                ),onClick = {
+                                    accederPerfilCuadrilla(it.nombre)
+                                }
+
                             ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.lupa), "",
@@ -371,7 +384,14 @@ fun TopProfile(
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(8.dp)) {
             if (picture == null) {
-                LoadingImagePlaceholder(size = 80.dp)
+//                LoadingImagePlaceholder(size = 80.dp)
+                Icon(
+                    painter = painterResource(id = R.drawable.account) ,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(140.dp)
+                        .clip(CircleShape),
+                )
             } else {
                 Image(
                     bitmap = picture.asImageBitmap(),
@@ -381,6 +401,7 @@ fun TopProfile(
                         .size(80.dp)
                         .clip(CircleShape),
                 )
+
             }
         }
         if(yo){
