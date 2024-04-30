@@ -117,14 +117,15 @@ fun PerfilYo(
     }
 }
 
-//@Preview
-//@Composable
-//fun PerfilPreview(){
-//    PerfilYo(
-//        username = "username",
-//        mainNavController = rememberNavController(),
-//        navController = rememberNavController())
-//}
+@Preview
+@Composable
+fun PerfilPreview(){
+    PerfilYo(
+        username = "username",
+        mainNavController = rememberNavController(),
+        navController = rememberNavController(),
+        accederPerfilCuadrilla = {})
+}
 
 @Composable
 fun BotonesPerfil(mainNavController: NavController, navController: NavController, username: String){
