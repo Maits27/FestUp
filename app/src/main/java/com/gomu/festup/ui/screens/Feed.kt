@@ -129,19 +129,20 @@ fun EventoItem(evento: Evento, onItemClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(15.dp)
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = null,
+                contentScale = ContentScale.FillHeight,
+                modifier = Modifier.size(50.dp)
+            )
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).padding(start = 10.dp)
             ) {
                 Text(text = evento.titulo, style = MaterialTheme.typography.titleLarge)
                 Text(text = evento.fecha, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                 Text(text = evento.ubicacion, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = null,
-                contentScale = ContentScale.FillHeight,
-                modifier = Modifier.size(80.dp)
-            )
+
         }
     }
 }
