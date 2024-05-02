@@ -1,23 +1,33 @@
 package com.gomu.festup.ui.screens
 
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -36,6 +46,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
@@ -218,7 +231,7 @@ fun RegistroForm(
     }
 
     var birthDate by remember {
-        mutableStateOf("(haga click para introducir)")
+        mutableStateOf("Fecha de nacimiento")
     }
 
     var password by remember {
@@ -263,6 +276,16 @@ fun RegistroForm(
         }
     }
 
+    var imageUri by remember {
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/no-user.png"))
+    }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        imageUri = uri
+    }
+
     val modifierForInputs = Modifier.padding(vertical = 10.dp)
 
     Column (
@@ -271,14 +294,56 @@ fun RegistroForm(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 56.dp)
+            .verticalScroll(rememberScrollState())
     ) {
-
+        // Profile image
+        Box(contentAlignment = Alignment.BottomEnd) {
+            Box(Modifier.padding(16.dp)) {
+                AsyncImage(
+                    model = imageUri,
+                    contentDescription = "User image",
+                    placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                )
+            }
+            // Icono para editar imagen
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .padding(bottom = 16.dp, end = 8.dp)
+                    .clip(CircleShape)
+                    .clickable(onClick = {
+                        singlePhotoPickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    })
+            ) {
+                //Añadir circle y edit
+                Icon(
+                    painterResource(id = R.drawable.circle),
+                    contentDescription = null,
+                    Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Icon(
+                    painterResource(id = R.drawable.edit),
+                    contentDescription = null,
+                    Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.surface
+                )
+            }
+        }
+        // Campo para añadir nombre de usuario
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
             label = { Text(text = "Nombre de usuario") },
             modifier = modifierForInputs
         )
+        // Campo para añadir email
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -286,29 +351,31 @@ fun RegistroForm(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = modifierForInputs
         )
+        // Campo para añadir nombre
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
             label = { Text(text = "Nombre") },
             modifier = modifierForInputs
         )
+        // Añadir fecha de nacimiento
         Column (
             modifier = modifierForInputs
                 .clickable {
                     showDatePicker = true
                 }
                 .fillMaxWidth()
-                .padding(start = 14.dp)
+                .border(2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
         ) {
             Text(
-                text = "Fecha de nacimiento:",
-                fontSize = 17.sp
-            )
-            Text(
                 text = birthDate,
-                fontSize = 17.sp,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
             )
         }
+        // Campo para añadir contraseña
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -317,6 +384,7 @@ fun RegistroForm(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = modifierForInputs
         )
+        // Campo para repetir contraseña
         OutlinedTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },

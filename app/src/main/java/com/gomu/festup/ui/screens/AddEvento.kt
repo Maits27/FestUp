@@ -31,6 +31,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
@@ -83,7 +84,7 @@ fun AddEvento(navController: NavController) {
     }
 
     var fecha by remember {
-        mutableStateOf("(introducir fecha)")
+        mutableStateOf("Fecha")
     }
 
     val datePickerState = rememberDatePickerState()
@@ -103,7 +104,7 @@ fun AddEvento(navController: NavController) {
             "Introduce un nombre para el evento",
             Toast.LENGTH_SHORT
         ).show()
-        else if (fecha == "(introducir fecha)") Toast.makeText(
+        else if (fecha == "Fecha") Toast.makeText(
             context,
             "Introduce una fecha para el evento",
             Toast.LENGTH_SHORT
@@ -146,7 +147,13 @@ fun AddEvento(navController: NavController) {
             .padding(horizontal = 30.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Box {
+        Box (
+            modifier = Modifier.clickable {
+                singlePhotoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            }
+        ) {
             if (imageUri != null) {
                 AsyncImage(
                     model = imageUri,
@@ -154,11 +161,6 @@ fun AddEvento(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .size(150.dp)
-                        .clickable {
-                            singlePhotoPickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        }
                 )
             }
             else {
@@ -168,20 +170,17 @@ fun AddEvento(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .size(150.dp)
-                        .clickable {
-                            singlePhotoPickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        }
                 )
             }
             Icon(
                 imageVector = Icons.Rounded.Edit,
+                tint = MaterialTheme.colorScheme.surface,
                 contentDescription = "Edit",
                 modifier = Modifier
-                    .background(Color.White)
-                    .align(Alignment.BottomEnd)
                     .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+                    .align(Alignment.BottomEnd)
+                    .size(25.dp)
             )
         }
         Row(
@@ -194,16 +193,24 @@ fun AddEvento(navController: NavController) {
                 label = { Text(text = "Nombre") },
                 modifier = Modifier.weight(1f)
             )
-            Text(
-                text = fecha,
-                textAlign = TextAlign.Center,
-                fontSize = 17.sp,
+            Box (
                 modifier = Modifier
+                    .fillMaxWidth()
                     .weight(1f)
+                    .padding(start = 15.dp)
+                    .border(2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
                     .clickable {
                         showDatePicker = true
                     }
-            )
+            ) {
+                Text(
+                    text = fecha,
+                    textAlign = TextAlign.Center,
+                    fontSize = 17.sp,
+                    modifier = Modifier
+                        .padding(top = 10.dp, bottom = 17.dp)
+                )
+            }
         }
         OutlinedTextField(
             value = description,
