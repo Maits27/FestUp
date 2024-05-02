@@ -21,14 +21,6 @@ data class Usuario(
     val profileImagePath: String
 )
 
-@Serializable
-data class AuthUser(
-    val username: String,
-    val password: String,
-    val email: String,
-    val nombre: String
-)
-
 @Entity
 data class Cuadrilla(
     @PrimaryKey val nombre: String,

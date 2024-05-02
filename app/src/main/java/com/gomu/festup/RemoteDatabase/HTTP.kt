@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.room.PrimaryKey
-import com.gomu.festup.LocalDatabase.Entities.AuthUser
 import com.gomu.festup.utils.randomNum
 import io.ktor.client.*
 import io.ktor.client.call.body
@@ -40,6 +39,14 @@ data class TokenInfo(
     @SerialName("expires_in") val expiresIn: Int,
     @SerialName("refresh_token") val refreshToken: String,
     @SerialName("token_type") val tokenType: String,
+)
+
+@Serializable
+data class AuthUser(
+    val username: String,
+    val password: String,
+    val email: String,
+    val nombre: String
 )
 
 @Serializable
@@ -79,7 +86,7 @@ data class RemoteSeguidor(
 data class RemoteEvento(
     val id: String,
     val nombre: String,
-     val fecha: String,
+    val fecha: String,
     val numeroAsistentes: Int,
     val descripcion: String,
     val localizacion: String
