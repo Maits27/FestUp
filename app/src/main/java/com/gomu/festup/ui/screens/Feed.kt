@@ -1,46 +1,28 @@
 package com.gomu.festup.ui.screens
 
-import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import com.example.compose.FestUpTheme
-import com.gomu.festup.R
+import com.gomu.festup.LocalDatabase.Entities.Evento
+import com.gomu.festup.ui.components.EventoCard
 import com.gomu.festup.vm.MainVM
+import java.util.Date
 
 
 @Composable
@@ -50,17 +32,46 @@ fun Feed(
     ) {
 
     val eventos = listOf(
-        Evento("Fiestas de Algorta", "25 de Abril", "Algorta, Bizkaia, España"),
-        Evento("Fiestas de Getxo", "30 de Abril", "Algorta, Bizkaia, España"),
+        Evento(
+            id = "adbhay4",
+            nombre = "Fiestas de Algorta",
+            fecha = Date(),
+            numeroAsistentes =  4,
+            descripcion = "Las mejores fiestas de Bilbao",
+            localizacion = "Algorta, Bizkaia, España",
+            eventoImagePath = ""
+        ),
+        Evento(
+            id = "asdfjio4",
+            nombre = "Fiestas de Getxo",
+            fecha = Date(),
+            numeroAsistentes =  4,
+            descripcion = "Las mejores fiestas de Bilbao",
+            localizacion = "Algorta, Bizkaia, España",
+            eventoImagePath = ""
+        ),
     )
 
     val seguidos = listOf(
-        Evento("Fiestas de Barakaldo", "28 de Abril", "Algorta, Bizkaia, España"),
-        Evento("Fiestas de Bilbao", "3 de Mayo", "Algorta, Bizkaia, España"),
+        Evento(
+            id = "123423",
+            nombre = "Fiestas de Barakaldo",
+            fecha = Date(),
+            numeroAsistentes =  4,
+            descripcion = "Las mejores fiestas de Bilbao",
+            localizacion = "Algorta, Bizkaia, España",
+            eventoImagePath = ""
+        ),
+        Evento(
+            id = "12234234",
+            nombre = "Fiestas de Bilbao",
+            fecha = Date(),
+            numeroAsistentes = 4,
+            descripcion = "3 de Mayo",
+            localizacion = "Algorta, Bizkaia, España",
+            eventoImagePath = ""
+        ),
     )
-    val onItemClick: (Evento) -> Unit = { evento ->
-        Log.d("Clickado", evento.titulo)
-    }
 
     // Tab seleccionado al principio
     var selectedTabIndex by remember { mutableStateOf(0) }
@@ -103,10 +114,10 @@ fun Feed(
 
         when (selectedTabIndex) {
             0 -> {
-                EventosList(eventos, onItemClick)
+                EventosList(eventos, mainVM, navController)
             }
             1 -> {
-                EventosList(seguidos, onItemClick)
+                EventosList(seguidos, mainVM, navController)
             }
         }
     }
@@ -114,44 +125,11 @@ fun Feed(
 }
 
 @Composable
-fun EventosList(eventos: List<Evento>, onItemClick: (Evento) -> Unit) {
+fun EventosList(eventos: List<Evento>, mainVM: MainVM, navController: NavController) {
     LazyColumn {
         items(eventos) { evento ->
-            EventoItem(evento = evento, onItemClick = { onItemClick(evento) })
+            EventoCard(evento = evento, mainVM, navController)
         }
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EventoItem(evento: Evento, onItemClick: () -> Unit) {
-    Card(
-        onClick = onItemClick,
-        modifier = Modifier.padding(8.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(15.dp)
-        ) {
-            AsyncImage(
-                model = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png",
-                contentDescription = "cuadrillaImage",
-                contentScale = ContentScale.FillHeight,
-                modifier = Modifier.size(50.dp)
-            )
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 10.dp)
-            ) {
-                Text(text = evento.titulo, style = MaterialTheme.typography.titleLarge)
-                Text(text = evento.fecha, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                Text(text = evento.ubicacion, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-            }
-
-        }
-    }
-}
-
-data class Evento(val titulo: String, val fecha: String, val ubicacion: String)
 

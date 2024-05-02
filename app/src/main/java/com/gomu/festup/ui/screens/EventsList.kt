@@ -39,6 +39,7 @@ import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.EventoCard
 import com.gomu.festup.vm.MainVM
 import java.util.Date
 
@@ -78,54 +79,8 @@ fun EventsList(navController: NavController, mainVM: MainVM) {
             contentPadding = PaddingValues(bottom = 70.dp),
         ) {
             items(events) { evento ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .clickable {
-                            mainVM.eventoMostrar.value = evento
-                            navController.navigate(AppScreens.Evento.route)
-                        }
-                ) {
-                    Row (
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ){
-                        Column(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .weight(1f),
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(
-                                text = evento.nombre,
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                            )
-                            Text(
-                                text = "Fecha: ${evento.fecha} ",
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                            Text(
-                                text = "Ubicación: ${evento.localizacion}",
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                        }
-                        AsyncImage(
-                            // TODO será: evento.eventoImagePath
-                            model = "http://34.16.74.167/eventoImages/no-image.png",
-                            contentDescription = "Event image",
-                            modifier = Modifier
-                                .size(55.dp)
-                        )
-                    }
-                }
+                EventoCard(evento = evento, mainVM = mainVM, navController = navController)
             }
         }
     }
-
 }
