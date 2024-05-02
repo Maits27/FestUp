@@ -26,8 +26,7 @@ data class Cuadrilla(
     @PrimaryKey val nombre: String,
     val descripcion: String,
     val lugar: String,
-    val profileImagePath: String,
-    val accessToken: Int = randomNum()
+    val profileImagePath: String
 )
 
 @Entity

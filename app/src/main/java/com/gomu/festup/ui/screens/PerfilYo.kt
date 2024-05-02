@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -58,17 +59,11 @@ fun PerfilYo(
     yo: Boolean = false,
     mainVM: MainVM
 ) {
-    val usuario = mainVM.usuarioMostrar.value!!
-    var cuadrillas = mainVM.getCuadrillasUsuario()
-    if (cuadrillas.isEmpty()){ // TODO quitar
-        cuadrillas=listOf(
-            Cuadrilla(nombre = "Pikito", descripcion = "The best", lugar = "Bilbao", "", 0),
-            Cuadrilla(nombre = "Wekaland", descripcion = "The best 2", lugar = "Bilbao", "", 0),
-            Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao", "", 0),
-            Cuadrilla(nombre = "Wekaland", descripcion = "The best 2", lugar = "Bilbao", "", 0),
-            Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao", "", 0),
-        )
-    }
+    var usuario = mainVM.currentUser.value!!
+    if (!yo) usuario = mainVM.usuarioMostrar.value!!
+
+    val cuadrillas = mainVM.getCuadrillasUsuario(usuario).collectAsState(initial = emptyList())
+
     Column (
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -88,7 +83,7 @@ fun PerfilYo(
             modifier = Modifier.weight(1f)
         ) {
             ListadoCuadrillas(
-                cuadrillas = cuadrillas,
+                cuadrillas = cuadrillas.value,
                 yo,
                 navController = navController,
                 mainVM = mainVM
@@ -148,7 +143,7 @@ fun ListadoCuadrillas(
                         .fillMaxWidth()
                         .padding(vertical = 3.dp)
                         .clickable {
-                            mainVM.cuadrillaMostrar.value=it
+                            mainVM.cuadrillaMostrar.value = it
                             navController.navigate(AppScreens.PerfilCuadrilla.route)
                         }
                 ) {
@@ -233,7 +228,9 @@ fun EstasSeguro(show: Boolean, mensaje: String, onDismiss:()->Unit, onConfirm:()
 @Composable
 fun SeguidoresYSeguidos(yo: Boolean){
     Row (
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ){
@@ -290,7 +287,8 @@ fun SeguidoresYSeguidos(yo: Boolean){
             Column (
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom,
-                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                modifier = Modifier
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                     .align(Alignment.Bottom)
             ){
                 TextButton(

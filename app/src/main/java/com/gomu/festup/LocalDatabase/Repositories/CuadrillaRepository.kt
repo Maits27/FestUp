@@ -1,6 +1,7 @@
 package com.gomu.festup.LocalDatabase.Repositories
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.gomu.festup.LocalDatabase.DAO.CuadrillaDao
 import com.gomu.festup.LocalDatabase.DAO.IntegranteDao
 import com.gomu.festup.LocalDatabase.DAO.UsuarioDao
@@ -33,6 +34,7 @@ class CuadrillaRepository @Inject constructor(
              integranteDao.insertIntegrante(Integrante(username, cuadrilla.nombre))
              return true
          }catch (e:Exception){
+             Log.d("EXCEPCION", e.toString())
              return false
          }
     }

@@ -35,7 +35,7 @@ interface UsuarioDao {
 
     @Transaction
     @Query("SELECT * FROM Cuadrilla WHERE nombre IN (SELECT nombreCuadrilla FROM Integrante WHERE username = :username)")
-    suspend fun getCuadrillasUsuario(username: String): List<Cuadrilla>
+    fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>>
 
     @Transaction
     @Query("SELECT * FROM Usuario WHERE username=:username")

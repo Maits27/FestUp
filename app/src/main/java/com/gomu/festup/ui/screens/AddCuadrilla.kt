@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,12 +43,15 @@ import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
 import com.gomu.festup.vm.MainVM
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     var nombre by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
@@ -145,12 +149,14 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                     Toast.makeText(context, "Inserta una localización", Toast.LENGTH_SHORT).show()
                 } else {
                     // Crear cuadrilla
-                    mainVM.crearCuadrilla(Cuadrilla(
-                        nombre = nombre,
-                        lugar = localizacion,
-                        descripcion = descripcion,
-                        profileImagePath = "" // TODO
-                    ))
+                    coroutineScope.launch(Dispatchers.IO) {
+                        mainVM.crearCuadrilla(Cuadrilla(
+                            nombre = nombre,
+                            lugar = localizacion,
+                            descripcion = descripcion,
+                            profileImagePath = "" // TODO
+                        ))
+                    }
                     Log.d("Crear", "cuadrilla")
                 }
             },

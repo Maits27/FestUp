@@ -2,9 +2,9 @@ package com.gomu.festup.LocalDatabase.Repositories
 
 import android.graphics.Bitmap
 import com.gomu.festup.LocalDatabase.DAO.UsuarioDao
-import com.gomu.festup.LocalDatabase.Entities.AuthUser
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Usuario
+import com.gomu.festup.RemoteDatabase.AuthUser
 import com.gomu.festup.RemoteDatabase.HTTPClient
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -19,7 +19,7 @@ interface IUserRepository: ILoginSettings {
     suspend fun editarUsuario(user: Usuario): Int
     suspend fun getAQuienSigue(username: String): List<Usuario>
     suspend fun getSeguidores(username: String): List<Usuario>
-    suspend fun getCuadrillasUsuario(username: String): List<Cuadrilla>
+    fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>>
     suspend fun getUserProfile(username: String): Bitmap
     suspend fun setUserProfile(username: String, image: Bitmap): Bitmap
 }
@@ -60,7 +60,7 @@ class UserRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCuadrillasUsuario(username: String): List<Cuadrilla> {
+    override fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>> {
         // TODO PRIMERO RECOGER DEL REMOTO Y LUEGO PONERLOS AQUI
         return usuarioDao.getCuadrillasUsuario(username)
     }
