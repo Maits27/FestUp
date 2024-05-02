@@ -79,7 +79,7 @@ data class RemoteSeguidor(
 data class RemoteEvento(
     val id: String,
     val nombre: String,
-    // val fecha: Date,                TODO PONER FECHA BIEN
+     val fecha: String,
     val numeroAsistentes: Int,
     val descripcion: String,
     val localizacion: String
