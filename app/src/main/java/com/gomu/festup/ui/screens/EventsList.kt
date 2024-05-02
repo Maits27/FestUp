@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -26,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
@@ -112,9 +115,10 @@ fun EventsList(navController: NavController, mainVM: MainVM) {
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         }
-                        Image(
-                            painter = painterResource(R.drawable.party),
-                            contentDescription = null,
+                        AsyncImage(
+                            // TODO será: evento.eventoImagePath
+                            model = "http://34.16.74.167/eventoImages/no-image.png",
+                            contentDescription = "Event image",
                             modifier = Modifier
                                 .size(55.dp)
                         )

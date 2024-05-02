@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.compose.FestUpTheme
 import com.gomu.festup.R
 import com.gomu.festup.vm.MainVM
@@ -132,9 +133,9 @@ fun EventoItem(evento: Evento, onItemClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(15.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = null,
+            AsyncImage(
+                model = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png",
+                contentDescription = "cuadrillaImage",
                 contentScale = ContentScale.FillHeight,
                 modifier = Modifier.size(50.dp)
             )

@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permiso de Internet. Es un permiso básico y no hace falta solicitarlo -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- android:usesCleartextTraffic="true" to Allow HTTP not only HTTPS -->
+
     <application
         android:name=".FestUpApp"
         android:allowBackup="true"
@@ -12,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FestUp"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <meta-data

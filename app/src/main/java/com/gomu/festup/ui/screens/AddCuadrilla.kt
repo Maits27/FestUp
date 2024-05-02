@@ -1,8 +1,12 @@
 package com.gomu.festup.ui.screens
 
 import android.content.res.Configuration
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -39,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
@@ -56,6 +61,16 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
     var nombre by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     var localizacion by remember { mutableStateOf("") }
+
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        imageUri = uri
+    }
 
     Column (
         Modifier
@@ -77,23 +92,29 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         )
 
 
-        val profilePicture = painterResource(id = R.drawable.ic_launcher_background)
         Box(contentAlignment = Alignment.BottomEnd) {
             Box(Modifier.padding(16.dp)) {
                 // Mientras no este la imagen mostrar una "cargando"
-                if (profilePicture == null) {
-                    LoadingImagePlaceholder(size = 120.dp)
-                } else {
-                    Image(
-                        //bitmap = profilePicture.asImageBitmap(),
-                        painter = profilePicture,
+                //LoadingImagePlaceholder(size = 120.dp)
+                if (imageUri == null) {
+                    AsyncImage(
+                        model = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png",
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(120.dp)
                             .clip(CircleShape),
                     )
-                    // Imagen redonda o cuadrada??
+                }
+                else {
+                    AsyncImage(
+                        model = imageUri,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape),
+                    )
                 }
             }
             // Icono para editar imagen
@@ -102,9 +123,13 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                 modifier = Modifier
                     .padding(bottom = 16.dp, end = 8.dp)
                     .clip(CircleShape)
-                    .clickable(onClick = { /*TODO */ })
+                    .clickable(onClick = {
+                        singlePhotoPickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    })
             ) {
-                //Añadir circle y edit
+                // Añadir circle y edit
                 Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
                 Icon(painterResource(id = R.drawable.edit), contentDescription = null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.surface)
             }

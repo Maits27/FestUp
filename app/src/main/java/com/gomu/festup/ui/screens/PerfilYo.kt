@@ -1,6 +1,9 @@
 package com.gomu.festup.ui.screens
 
-import androidx.compose.foundation.Image
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,6 +39,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -48,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
@@ -156,9 +161,10 @@ fun ListadoCuadrillas(
                             .fillMaxWidth()
                             .padding(13.dp)
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.account),
-                            contentDescription = "",
+                        AsyncImage(
+                            // TODO esto debería ser it.profileImagePath
+                            model = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png",
+                            contentDescription = "Cuadrilla profile image",
                             modifier = Modifier.size(50.dp)
                         )
                         Column(
@@ -370,26 +376,33 @@ fun TopProfile(
     username: String,
     email: String,
     edad: Int,
-    yo: Boolean
+    yo: Boolean,
+    imageUri: String = "http://34.16.74.167/userProfileImages/no-user.png"
 ){
-    val profilePicture = painterResource(id = R.drawable.ic_launcher_background)
+    var imageUri by remember {
+        mutableStateOf<Uri?>(Uri.parse(imageUri))
+    }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        imageUri = uri
+    }
+
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(16.dp)) {
+            // TODO igual ponerlo de otra manera
             // Mientras no este la imagen mostrar una "cargando"
-            if (profilePicture == null) {
-                LoadingImagePlaceholder(size = 120.dp)
-            } else {
-                Image(
-                    //bitmap = profilePicture.asImageBitmap(),
-                    painter = profilePicture,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape),
-                )
-                // Imagen redonda o cuadrada??
-            }
+            // LoadingImagePlaceholder(size = 120.dp)
+            AsyncImage(
+                model = imageUri,
+                contentDescription = "User image",
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+            )
         }
         // Icono para editar imagen
         if(yo) {
@@ -398,7 +411,11 @@ fun TopProfile(
                 modifier = Modifier
                     .padding(bottom = 16.dp, end = 8.dp)
                     .clip(CircleShape)
-                    .clickable(onClick = { /*TODO*/ })
+                    .clickable(onClick = {
+                        singlePhotoPickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    })
             ) {
                 //Añadir circle y edit
                 Icon(
