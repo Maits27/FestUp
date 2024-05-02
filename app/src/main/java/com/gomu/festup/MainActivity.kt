@@ -1,10 +1,15 @@
 package com.gomu.festup
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,11 +27,40 @@ class MainActivity : ComponentActivity() {
     private val mainVM by viewModels<MainVM>()
     private val identVM by viewModels<IdentVM>()
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        askLocationPermission()
+
         super.onCreate(savedInstanceState)
         setContent {
             FestUpTheme {
                 // A surface container using the 'background' color from the theme
                 Principal(mainVM, identVM)
+            }
+        }
+    }
+
+    val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+            } else {
+            }
+        }
+
+    fun askLocationPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                // You can use the API that requires the permission.
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                this, Manifest.permission.ACCESS_FINE_LOCATION) -> {
+            }
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
     }
