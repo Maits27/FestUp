@@ -1,7 +1,11 @@
 package com.gomu.festup.ui.screens
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -69,6 +73,8 @@ import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.vm.MainVM
 import androidx.compose.material3.FabPosition
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import coil.compose.AsyncImage
 import java.util.Date
 
 @Composable
@@ -109,8 +115,8 @@ fun PerfilCuadrilla(
             ){
                 TopProfileCuadrilla(
                     cuadrilla = cuadrilla,
-                    picture = null,
-                    pertenezco = pertenezco)
+                    pertenezco = pertenezco
+                )
             }
             Column(
                 modifier = Modifier.weight(1f)
@@ -156,28 +162,32 @@ fun EliminarCuadrilla(nombre: String) {
 @Composable
 fun TopProfileCuadrilla(
     cuadrilla: Cuadrilla,
-    picture: Bitmap?,
     pertenezco: Boolean
 ){
 
-    val profilePicture = painterResource(id = R.drawable.ic_launcher_background)
+
+    var imageUri by remember {
+        // TODO esto tendrá que ser cuadrilla.profileImagePath
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png"))
+    }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        imageUri = uri
+    }
+
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(16.dp)) {
-            // Mientras no este la imagen mostrar una "cargando"
-            if (profilePicture == null) {
-                LoadingImagePlaceholder(size = 120.dp)
-            } else {
-                Image(
-                    //bitmap = profilePicture.asImageBitmap(),
-                    painter = profilePicture,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape),
-                )
-                // Imagen redonda o cuadrada??
-            }
+            AsyncImage(
+                model = imageUri,
+                contentDescription = null,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape),
+            )
         }
         // Icono para editar imagen
         if(pertenezco) {
@@ -186,7 +196,11 @@ fun TopProfileCuadrilla(
                 modifier = Modifier
                     .padding(bottom = 16.dp, end = 8.dp)
                     .clip(CircleShape)
-                    .clickable(onClick = { /*TODO*/ })
+                    .clickable(onClick = {
+                        singlePhotoPickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    })
             ) {
                 //Añadir circle y edit
                 Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
