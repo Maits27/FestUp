@@ -21,6 +21,8 @@ class MainVM @Inject constructor(
     private val eventoRepository: IEventoRepository
 ): ViewModel() {
 
+    var currentUser: MutableState<Usuario?> = mutableStateOf(null)
+
     var usuarioMostrar: MutableState<Usuario?> = mutableStateOf(null)
 
     var cuadrillaMostrar: MutableState<Cuadrilla?> = mutableStateOf(null)
@@ -33,17 +35,23 @@ class MainVM @Inject constructor(
      *****************************************************/
 
     fun calcularEdad(usuario: Usuario): Int{
-        val diff = Date().time - (usuarioMostrar.value?.fechaNacimiento?.time?: Date().time)
+        val diff = Date().time - (usuario.fechaNacimiento.time)
         val edad = diff / (1000L * 60 * 60 * 24 * 365)
         return edad.toInt()
     }
-    fun getCuadrillasUsuario(): List<Cuadrilla> = runBlocking {
-        usuarioMostrar.value?.let { userRepository.getCuadrillasUsuario(it.username) }?: emptyList()
+    fun getCuadrillasUsuario(usuario: Usuario): List<Cuadrilla> = runBlocking {
+        usuario.let { userRepository.getCuadrillasUsuario(it.username) }
     }
 
     /*****************************************************
      ****************** METODOS CUADRILLA ******************
      *****************************************************/
+    fun crearCuadrilla(cuadrilla: Cuadrilla) = runBlocking {
+        val creada = currentUser.value?.let { cuadrillaRepository.insertCuadrilla(it.username, cuadrilla) }
+        if (creada?:false){
+            cuadrillaMostrar.value = cuadrilla
+        }
+    }
     fun usuariosCuadrilla(): List<Usuario> = runBlocking {
         cuadrillaMostrar.value?.let { cuadrillaRepository.usuariosCuadrilla(it.nombre) }?: emptyList()
     }

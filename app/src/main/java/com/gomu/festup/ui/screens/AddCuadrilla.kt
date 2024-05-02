@@ -15,19 +15,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,27 +28,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
+import com.gomu.festup.vm.MainVM
 
 
 @Composable
-fun AddCuadrilla(navController: NavController) {
+fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 
     val context = LocalContext.current
 
@@ -109,7 +98,7 @@ fun AddCuadrilla(navController: NavController) {
                 modifier = Modifier
                     .padding(bottom = 16.dp, end = 8.dp)
                     .clip(CircleShape)
-                    .clickable(onClick = { /*TODO */})
+                    .clickable(onClick = { /*TODO */ })
             ) {
                 //Añadir circle y edit
                 Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
@@ -122,21 +111,27 @@ fun AddCuadrilla(navController: NavController) {
             value = nombre,
             onValueChange = { nombre = it },
             label = { Text("Nombre de usuario")},
-            modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp)
         )
 
         OutlinedTextField(
             value = descripcion,
             onValueChange = { descripcion = it },
             label = { Text("Descripcción")},
-            modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp)
         )
 
         OutlinedTextField(
             value = localizacion,
             onValueChange = { localizacion = it },
             label = { Text("Localización")},
-            modifier = Modifier.fillMaxWidth().padding(bottom = 15.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp)
         )
 
         // Create button
@@ -150,6 +145,12 @@ fun AddCuadrilla(navController: NavController) {
                     Toast.makeText(context, "Inserta una localización", Toast.LENGTH_SHORT).show()
                 } else {
                     // Crear cuadrilla
+                    mainVM.crearCuadrilla(Cuadrilla(
+                        nombre = nombre,
+                        lugar = localizacion,
+                        descripcion = descripcion,
+                        profileImagePath = "" // TODO
+                    ))
                     Log.d("Crear", "cuadrilla")
                 }
             },
@@ -182,7 +183,8 @@ fun LoadingImagePlaceholder(size: Dp = 100.dp) {
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .alpha(alpha).padding(16.dp),
+            .alpha(alpha)
+            .padding(16.dp),
         painter = painterResource(id = R.drawable.ic_launcher_background),
         contentDescription = null,
         contentScale = ContentScale.Crop
@@ -193,6 +195,6 @@ fun LoadingImagePlaceholder(size: Dp = 100.dp) {
 @Composable
 fun PreviewNewTeamScreen() {
     FestUpTheme {
-        AddCuadrilla(rememberNavController())
+        AddCuadrilla(rememberNavController(), hiltViewModel())
     }
 }
