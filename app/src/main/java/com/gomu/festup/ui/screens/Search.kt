@@ -20,6 +20,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,30 +52,22 @@ fun Search(
     var searchText by remember { mutableStateOf("") }
 
 
-    val personas = listOf(
-        Usuario("@nagoregomez", "12345","nagore@gamil.com","Nagore Gomez", Date(), ""),
-        Usuario("@maitane", "12345","nagore@gamil.com","Maitane Gomez", Date(), ""),
-    )
-    val cuadrilla = listOf(
-        Cuadrilla("Pikito","Hola","Bilbao", ""),
-        Cuadrilla("Pikito2","Hola","Getxo", ""),
-    )
-    val eventos = listOf(
-        Evento("11","Fiestas de Algorta", Date(1000), 2, "Hola","Algorta, Bizkaia, ESpaña", "") ,
-        Evento("11","Fiestas de Getxo", Date(2000), 2, "Hola","Algorta, Bizkaia, ESpaña", ""),
-    )
+    var usuario = mainVM.currentUser.value!!
+    val usuarios = mainVM.getUsuariosMenosCurrent(usuario).collectAsState(initial = emptyList())
+    val cuadrillas = mainVM.getCuadrillas().collectAsState(initial = emptyList())
+    val eventos = mainVM.getEventos().collectAsState(initial = emptyList())
 
     // Tab seleccionado al principio
     var selectedTabIndex by remember { mutableStateOf(0) }
 
-    val filteredPersonas = personas.filter {
+    val filteredPersonas = usuarios.value.filter {
         it.username.contains(searchText, ignoreCase = true) || it.nombre.contains(
             searchText,
             ignoreCase = true
         )
     }
 
-    val filteredCuadrillas = cuadrilla.filter {
+    val filteredCuadrillas = cuadrillas.value.filter {
         it.nombre.contains(searchText, ignoreCase = true) || it.lugar.contains(
             searchText,
             ignoreCase = true
@@ -82,7 +75,7 @@ fun Search(
     }
 
     // TODO fecha rara
-    val filteredEventos = eventos.filter {
+    val filteredEventos = eventos.value.filter {
         it.nombre.contains(searchText, ignoreCase = true) || it.fecha.toString().contains(
             searchText,
             ignoreCase = true

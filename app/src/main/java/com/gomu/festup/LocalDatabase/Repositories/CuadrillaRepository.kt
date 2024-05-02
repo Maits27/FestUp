@@ -1,7 +1,9 @@
 package com.gomu.festup.LocalDatabase.Repositories
 
+import android.database.sqlite.SQLiteConstraintException
 import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.runtime.collectAsState
 import com.gomu.festup.LocalDatabase.DAO.CuadrillaDao
 import com.gomu.festup.LocalDatabase.DAO.IntegranteDao
 import com.gomu.festup.LocalDatabase.DAO.UsuarioDao
@@ -18,9 +20,17 @@ import javax.inject.Singleton
 interface ICuadrillaRepository {
     suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla): Boolean
     fun cuadrillaUsuario(username: String): List<Cuadrilla>
-    suspend fun usuariosCuadrilla(nombre: String): List<Usuario>
+    fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>>
     fun eventosCuadrilla(nombreCuadrilla: String): List<Evento>
     suspend fun insertUser(usuario: Usuario): Boolean
+
+    suspend fun eliminarCuadrilla(cuadrilla: Cuadrilla): Boolean
+
+    fun getCuadrillas(): Flow<List<Cuadrilla>>
+
+    fun pertenezcoCuadrilla(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>>
+
+    fun getIntegrantes(): Flow<List<Integrante>>
 }
 @Singleton
 class CuadrillaRepository @Inject constructor(
@@ -29,21 +39,21 @@ class CuadrillaRepository @Inject constructor(
     private val httpClient: HTTPClient
 ) : ICuadrillaRepository{
     override suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla): Boolean {
-         try {
-             cuadrillaDao.insertCuadrilla(cuadrilla)
-             integranteDao.insertIntegrante(Integrante(username, cuadrilla.nombre))
-             return true
-         }catch (e:Exception){
-             Log.d("EXCEPCION", e.toString())
-             return false
-         }
+        return try {
+            cuadrillaDao.insertCuadrilla(cuadrilla)
+            integranteDao.insertIntegrante(Integrante(username, cuadrilla.nombre))
+            true
+        }catch (e:Exception){
+            Log.d("Exception crear cuadrilla", e.toString())
+            false
+        }
     }
 
     override fun cuadrillaUsuario(username: String): List<Cuadrilla> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun usuariosCuadrilla(nombre: String): List<Usuario> {
+    override fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>> {
         // TODO primero remoto
         return cuadrillaDao.getUsuariosDeCuadrilla(nombre)
     }
@@ -55,4 +65,32 @@ class CuadrillaRepository @Inject constructor(
     override suspend fun insertUser(usuario: Usuario): Boolean {
         TODO("Not yet implemented")
     }
+
+    override suspend fun eliminarCuadrilla(cuadrilla: Cuadrilla): Boolean {
+        return try {
+            cuadrillaDao.eliminarCuadrilla(cuadrilla)
+            true
+        } catch (e:Exception){
+            Log.d("Exception crear cuadrilla", e.toString())
+            return false
+        }
+    }
+
+    override fun getCuadrillas(): Flow<List<Cuadrilla>> {
+        // TODO primero remoto
+        return cuadrillaDao.getCuadrillas()
+    }
+
+
+    // NUEVO integranteRepository? TODO
+    override fun pertenezcoCuadrilla(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>> {
+        return cuadrillaDao.pertenezcoCuadrilla(cuadrilla.nombre,usuario.username)
+    }
+
+    override fun getIntegrantes(): Flow<List<Integrante>>{
+        return cuadrillaDao.getIntegrantes()
+    }
+
+
+
 }

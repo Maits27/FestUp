@@ -26,6 +26,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,11 +39,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.compose.FestUpTheme
 import com.gomu.festup.R
+import com.gomu.festup.vm.MainVM
 
 
 @Composable
 fun Feed(
-    navController: NavController
+    navController: NavController,
+    mainVM: MainVM
     ) {
 
     val eventos = listOf(
@@ -136,7 +139,9 @@ fun EventoItem(evento: Evento, onItemClick: () -> Unit) {
                 modifier = Modifier.size(50.dp)
             )
             Column(
-                modifier = Modifier.weight(1f).padding(start = 10.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 10.dp)
             ) {
                 Text(text = evento.titulo, style = MaterialTheme.typography.titleLarge)
                 Text(text = evento.fecha, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
@@ -149,12 +154,3 @@ fun EventoItem(evento: Evento, onItemClick: () -> Unit) {
 
 data class Evento(val titulo: String, val fecha: String, val ubicacion: String)
 
-@Preview(showBackground = true)
-@Composable
-fun FeedScreen() {
-    FestUpTheme {
-        Feed(navController = rememberNavController())
-    }
-
-
-}

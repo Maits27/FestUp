@@ -12,6 +12,7 @@ import com.example.compose.FestUpTheme
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.screens.App
 import com.gomu.festup.ui.screens.LoginPage
+import com.gomu.festup.vm.IdentVM
 import com.gomu.festup.vm.MainVM
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,19 +20,20 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val mainVM by viewModels<MainVM>()
+    private val identVM by viewModels<IdentVM>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             FestUpTheme {
                 // A surface container using the 'background' color from the theme
-                Principal(mainVM)
+                Principal(mainVM, identVM)
             }
         }
     }
 }
 
 @Composable
-fun Principal(mainVM: MainVM) {
+fun Principal(mainVM: MainVM, identVM: IdentVM) {
     val mainNavController = rememberNavController()
 
     NavHost(
@@ -39,7 +41,7 @@ fun Principal(mainVM: MainVM) {
         startDestination = AppScreens.LoginPage.route
     ) {
         composable(AppScreens.LoginPage.route) {
-            LoginPage(mainNavController, mainVM)
+            LoginPage(mainNavController, mainVM, identVM)
         }
         composable(AppScreens.App.route) {
             App(mainNavController, mainVM)

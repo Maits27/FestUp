@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -39,6 +40,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -186,10 +188,9 @@ fun ListadoCuadrillas(
                             EstasSeguro(
                                 show = verificacion,
                                 mensaje = "Si eliminas esta cuadrilla tendrás que volver a solicitar entrar.",
-                                onDismiss = { verificacion = false }) {
-                                verificacion = false
-                                // TODO eliminar
-                            }
+                                onDismiss = { verificacion = false },
+                                onConfirm = { mainVM.eliminarCuadrilla(it); verificacion = false }
+                            )
                         }
                     }
                 }
@@ -197,7 +198,23 @@ fun ListadoCuadrillas(
         }
     }
     else {
-        Text(text = "Empty")
+        Column (
+            Modifier
+                .padding(horizontal = 40.dp, vertical = 80.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Text(
+                text = "No hay cuadrillas",
+                modifier = Modifier.padding(top = 10.dp),
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            )
+        }
+
     }
 }
 

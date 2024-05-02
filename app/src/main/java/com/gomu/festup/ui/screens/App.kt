@@ -60,7 +60,7 @@ fun App(
             navController = navController,
             startDestination = AppScreens.Feed.route
         ) {
-            composable(AppScreens.Feed.route) { Feed(navController) }
+            composable(AppScreens.Feed.route) { Feed(navController, mainVM) }
             composable(AppScreens.Search.route) { Search(navController, mainVM) }
             composable(AppScreens.EventsMap.route) { EventsMap(navController) }
             composable(AppScreens.EventsList.route) { EventsList(navController, mainVM) }

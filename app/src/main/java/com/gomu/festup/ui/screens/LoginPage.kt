@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,14 +49,20 @@ import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.vm.IdentVM
 import com.gomu.festup.vm.MainVM
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 
 @Composable
 fun LoginPage(
     mainNavController: NavController,
-    mainVM: MainVM
+    mainVM: MainVM,
+    identVM: IdentVM
 ) {
     var selectedTab by remember {
         mutableIntStateOf(0)
@@ -94,15 +102,16 @@ fun LoginPage(
                 Text(text = "Registrarse")
             }
         }
-        if (selectedTab == 0) LoginForm(mainNavController, mainVM)
-        else RegistroForm(mainNavController, mainVM)
+        if (selectedTab == 0) LoginForm(mainNavController, mainVM, identVM)
+        else RegistroForm(mainNavController, mainVM, identVM)
     }
 }
 
 @Composable
 fun LoginForm(
     mainNavController: NavController,
-    mainVM: MainVM
+    mainVM: MainVM,
+    identVM: IdentVM
 ) {
     var username by remember {
         mutableStateOf("")
@@ -118,6 +127,23 @@ fun LoginForm(
         if (username == "") Toast.makeText(context, "Introduce un nombre de usuario", Toast.LENGTH_SHORT).show()
         else if (password == "") Toast.makeText(context, "Introduce una contrseña", Toast.LENGTH_SHORT).show()
         else {
+
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val usuario = withContext(Dispatchers.IO) {
+                        identVM.inicarSesion(username, password)
+                    }
+                    if (usuario != null) {
+                        mainVM.currentUser.value= usuario
+                        mainNavController.navigate(AppScreens.App.route)
+                    } else {
+                        Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Log.e("Excepcion al crear usuario", e.toString())
+                }
+            }
+
             // TODO COGER LOS DATOS DE LA DB
             mainVM.usuarioMostrar.value= Usuario("nagoregomez","12345","nagore@gmail.com","Nagore Gomez", Date(), "")
             mainVM.currentUser.value= Usuario("maitane","12345","maitane@gmail.com","Nagore Gomez", Date(), "")
@@ -172,8 +198,10 @@ fun LoginForm(
 @Composable
 fun RegistroForm(
     mainNavController: NavController,
-    mainVM: MainVM
+    mainVM: MainVM,
+    identVM: IdentVM
 ) {
+    val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
 
@@ -215,9 +243,23 @@ fun RegistroForm(
         else if (confirmPassword == "") Toast.makeText(context, "Introduce una constraseña de confirmación", Toast.LENGTH_SHORT).show()
         else if (password != confirmPassword) Toast.makeText(context, "Ambas constraseñas deben conindicir", Toast.LENGTH_SHORT).show()
         else {
-            // TODO COGER LOS DATOS DE LA DB
-            mainVM.usuarioMostrar.value= Usuario("nagoregomez","12345","nagore@gmail.com","Nagore Gomez", Date(), "")
-            mainNavController.navigate(AppScreens.App.route)
+
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val usuario = withContext(Dispatchers.IO) {
+                        identVM.registrarUsuario(username, password, email, nombre, birthDate, "")
+                    }
+                    if (usuario != null) {
+                        mainVM.currentUser.value= usuario
+                        mainNavController.navigate(AppScreens.App.route)
+                    } else {
+                        Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Log.e("Excepcion al crear usuario", e.toString())
+                }
+            }
+
         }
     }
 

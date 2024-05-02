@@ -1,12 +1,15 @@
 package com.gomu.festup.LocalDatabase.Repositories
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.gomu.festup.LocalDatabase.DAO.UsuarioDao
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
+import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.RemoteDatabase.AuthUser
 import com.gomu.festup.RemoteDatabase.HTTPClient
 import kotlinx.coroutines.flow.Flow
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,13 +18,15 @@ interface IUserRepository: ILoginSettings {
     suspend fun exists(username: String):Boolean
     suspend fun insertUsuario(user: Usuario): Boolean
     fun todosLosUsuarios(): Flow<List<Usuario>>
-    suspend fun verifyUser(username: String, passwd:String): Boolean
+    suspend fun verifyUser(username: String, passwd:String): Usuario
     suspend fun editarUsuario(user: Usuario): Int
     suspend fun getAQuienSigue(username: String): List<Usuario>
     suspend fun getSeguidores(username: String): List<Usuario>
     fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>>
     suspend fun getUserProfile(username: String): Bitmap
     suspend fun setUserProfile(username: String, image: Bitmap): Bitmap
+
+    fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>
 }
 @Singleton
 class UserRepository @Inject constructor(
@@ -37,15 +42,21 @@ class UserRepository @Inject constructor(
     }
 
     override suspend fun insertUsuario(user: Usuario): Boolean {
-        TODO("Not yet implemented")
+        return try {
+            usuarioDao.insertUsuario(user)
+            true
+        }catch (e:Exception){
+            Log.d("Exception crear usuario", e.toString())
+            false
+        }
     }
 
     override fun todosLosUsuarios(): Flow<List<Usuario>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun verifyUser(username: String, passwd: String): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun verifyUser(username: String, passwd: String): Usuario {
+        return usuarioDao.verifyUser(username,passwd)
     }
 
     override suspend fun editarUsuario(user: Usuario): Int {
@@ -79,6 +90,11 @@ class UserRepository @Inject constructor(
 
     override suspend fun setLastLoggedUser(user: String) {
         TODO("Not yet implemented")
+    }
+
+    override fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>> {
+        // TODO PRIMERO RECOGER DEL REMOTO Y LUEGO PONERLOS AQUI
+        return usuarioDao.getUsuariosMenosCurrent(usuario.username)
     }
 
 }

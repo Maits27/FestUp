@@ -32,7 +32,8 @@ class EventoRepository @Inject constructor(
     }
 
     override fun todosLosEventos(): Flow<List<Evento>> {
-        TODO("Not yet implemented")
+        // TODO("Not yet implemented")
+        return eventoDao.todosLosEventos()
     }
 
     override fun cuadrillasEvento(id: String): List<Cuadrilla> {

@@ -41,7 +41,15 @@ interface UsuarioDao {
     @Query("SELECT * FROM Usuario WHERE username=:username")
     fun getUsuario(username: String): Usuario
 
-
     @Update
     fun editarUsuario(usuario: Usuario): Int
+
+    @Transaction
+    @Query("SELECT * FROM Usuario WHERE username != :username")
+    fun getUsuariosMenosCurrent(username: String): Flow<List<Usuario>>
+
+
+    @Transaction
+    @Query("SELECT * FROM Usuario WHERE username=:username and password=:password")
+    fun verifyUser(username: String, password: String): Usuario
 }

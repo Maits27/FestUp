@@ -7,14 +7,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Evento
+import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
 import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
 
@@ -47,6 +51,12 @@ class MainVM @Inject constructor(
         return userRepository.getCuadrillasUsuario(usuario.username)
     }
 
+    fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>{
+        return userRepository.getUsuariosMenosCurrent(usuario)
+    }
+
+
+
     /*****************************************************
      ****************** METODOS CUADRILLA ******************
      *****************************************************/
@@ -55,10 +65,44 @@ class MainVM @Inject constructor(
         if (creada?:false){
             cuadrillaMostrar.value = cuadrilla
         }
-        Log.d("Creada", cuadrillaMostrar.value?.nombre?:"")
+        Log.d("Cuadrilla creada", cuadrillaMostrar.value?.nombre?:"")
     }
-    fun usuariosCuadrilla(): List<Usuario> = runBlocking {
-        cuadrillaMostrar.value?.let { cuadrillaRepository.usuariosCuadrilla(it.nombre) }?: emptyList()
+    fun usuariosCuadrilla(): Flow<List<Usuario>> {
+        return cuadrillaRepository.usuariosCuadrilla(cuadrillaMostrar.value!!.nombre)
+    }
+
+    fun eliminarCuadrilla(cuadrilla: Cuadrilla)  {
+        viewModelScope.launch(Dispatchers.IO) {
+            cuadrillaRepository.eliminarCuadrilla(cuadrilla)
+        }
+    }
+
+    fun getCuadrillas(): Flow<List<Cuadrilla>> {
+        return cuadrillaRepository.getCuadrillas()
+    }
+
+
+    /*****************************************************
+     ****************** METODOS EVENTO ******************
+     *****************************************************/
+
+    fun getEventos(): Flow<List<Evento>> {
+        return eventoRepository.todosLosEventos()
+    }
+
+
+
+    /*****************************************************
+     ****************** METODOS INTEGRANTE ******************
+     *****************************************************/
+
+    fun getIntegrante(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>> {
+        val integrante =cuadrillaRepository.pertenezcoCuadrilla(cuadrilla,usuario)
+        return integrante
+    }
+
+    fun getIntegrantes(): Flow<List<Integrante>> {
+        return cuadrillaRepository.getIntegrantes()
     }
 
 }

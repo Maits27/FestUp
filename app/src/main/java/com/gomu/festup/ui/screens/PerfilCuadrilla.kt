@@ -1,6 +1,7 @@
 package com.gomu.festup.ui.screens
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -67,6 +68,7 @@ import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.vm.MainVM
 import androidx.compose.material3.FabPosition
+import androidx.compose.runtime.collectAsState
 import java.util.Date
 
 @Composable
@@ -75,23 +77,21 @@ fun PerfilCuadrilla(
     mainVM: MainVM
 ) {
     val cuadrilla= mainVM.cuadrillaMostrar.value!!
-    var usuariosCuadrilla = mainVM.usuariosCuadrilla()
-    if (usuariosCuadrilla.isEmpty()){
-        usuariosCuadrilla = listOf(
-            Usuario(username = "AingeruBeOr", nombre = "Aingeru", email = "1405bellido", password = "1", fechaNacimiento = Date(), profileImagePath = ""),
-            Usuario(username = "Sergiom8", nombre = "Sergio", email = "sergiom8", password = "1", fechaNacimiento = Date(), profileImagePath = ""),
-            Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1", fechaNacimiento = Date(), profileImagePath = ""),
-            Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1", fechaNacimiento = Date(), profileImagePath = ""),
-            Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1", fechaNacimiento = Date(), profileImagePath = ""),
-            Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1", fechaNacimiento = Date(), profileImagePath = "")
-        )
+    val usuariosCuadrilla = mainVM.usuariosCuadrilla().collectAsState(initial = emptyList())
+
+
+    var integrante = mainVM.getIntegrante(cuadrilla, mainVM.currentUser.value!!).collectAsState(initial = emptyList())
+    Log.d("AAAAAA", integrante.value.isEmpty().toString())
+    var pertenezco = false
+    if (integrante.value.isNotEmpty()){
+        pertenezco=true
     }
-    var pertenezco by rememberSaveable {mutableStateOf(true)}
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            EliminarCuadrilla(nombre = cuadrilla.nombre)
+            if (pertenezco){ EliminarCuadrilla(nombre = cuadrilla.nombre) }
         },
         floatingActionButtonPosition = FabPosition.Center
     ) { padding ->
@@ -116,7 +116,7 @@ fun PerfilCuadrilla(
                 modifier = Modifier.weight(1f)
             ) {
                 ListadoUsuarios(
-                    usuarios = usuariosCuadrilla,
+                    usuarios = usuariosCuadrilla.value,
                     pertenezco,
                     mainVM,
                     navController
@@ -343,6 +343,21 @@ fun ListadoUsuarios(
         }
     }
     else{
-        Text(text = "Empty")
+        Column (
+            Modifier
+                .padding(horizontal = 40.dp, vertical = 80.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Text(
+                text = "No hay usuarios",
+                modifier = Modifier.padding(top = 10.dp),
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            )
+        }
     }
 }

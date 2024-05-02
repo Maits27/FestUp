@@ -114,7 +114,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
-            label = { Text("Nombre de usuario")},
+            label = { Text("Nombre de cuadrilla")},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 15.dp)
@@ -123,7 +123,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         OutlinedTextField(
             value = descripcion,
             onValueChange = { descripcion = it },
-            label = { Text("Descripcción")},
+            label = { Text("Descripción")},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 15.dp)
@@ -157,7 +157,8 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                             profileImagePath = "" // TODO
                         ))
                     }
-                    Log.d("Crear", "cuadrilla")
+                    // Volver al perfil
+                    navController.popBackStack()
                 }
             },
             modifier = Modifier
