@@ -42,8 +42,8 @@ import java.util.Date
 @Composable
 fun EventsList(navController: NavController, mainVM: MainVM) {
 
-    val eventoNuevo = Evento(nombre = "Fiestas de Basauri", descripcion = " ", fecha = Date(123), localizacion = "Basauri", numeroAsistentes = 100)
-    val eventoNuevo2 = Evento(nombre = "Fiestas de Basauri", descripcion = " ", fecha = Date(123), localizacion = "Basauri", numeroAsistentes = 100)
+    val eventoNuevo = Evento(nombre = "Fiestas de Basauri", descripcion = " ", fecha = Date(123), localizacion = "Basauri", numeroAsistentes = 100, eventoImagePath = "")
+    val eventoNuevo2 = Evento(nombre = "Fiestas de Basauri", descripcion = " ", fecha = Date(123), localizacion = "Basauri", numeroAsistentes = 100, eventoImagePath = "")
     val events = arrayOf(eventoNuevo, eventoNuevo2)
     Column (
         verticalArrangement = Arrangement.Top,

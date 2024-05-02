@@ -26,8 +26,7 @@ interface IUserRepository: ILoginSettings {
 @Singleton
 class UserRepository @Inject constructor(
     private val usuarioDao: UsuarioDao,
-    private val httpClient: HTTPClient,
-    private val loginSettings: ILoginSettings
+    private val httpClient: HTTPClient
 ) : IUserRepository {
     override fun logIn(email: String, login: Boolean): AuthUser? {
         TODO("Not yet implemented")
@@ -62,7 +61,8 @@ class UserRepository @Inject constructor(
     }
 
     override suspend fun getCuadrillasUsuario(username: String): List<Cuadrilla> {
-        TODO("Not yet implemented")
+        // TODO PRIMERO RECOGER DEL REMOTO Y LUEGO PONERLOS AQUI
+        return usuarioDao.getCuadrillasUsuario(username)
     }
 
     override suspend fun getUserProfile(username: String): Bitmap {

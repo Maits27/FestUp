@@ -31,7 +31,7 @@ object AppModule {
     @Provides
     fun provideDatabase(@ApplicationContext app:Context) =
         Room.databaseBuilder(app, Database::class.java, "festUpDatabase")
-            .createFromAsset("database/festUp.db")
+//            .createFromAsset("database/festUp.db")
             .build()
 
     /***************************  DAOs  ***************************/
@@ -68,10 +68,9 @@ object AppModule {
     @Provides
     fun providesUserRepository(
         usuarioDao: UsuarioDao, 
-        httpClient: HTTPClient, 
-        loginSettings: ILoginSettings
+        httpClient: HTTPClient
     ): IUserRepository = 
-        UserRepository(usuarioDao, httpClient, loginSettings)
+        UserRepository(usuarioDao, httpClient)
 
     @Singleton
     @Provides

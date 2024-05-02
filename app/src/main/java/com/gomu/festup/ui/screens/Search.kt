@@ -52,16 +52,16 @@ fun Search(
 
 
     val personas = listOf(
-        Usuario("@nagoregomez", "12345","nagore@gamil.com","Nagore Gomez"),
-        Usuario("@maitane", "12345","nagore@gamil.com","Maitane Gomez"),
+        Usuario("@nagoregomez", "12345","nagore@gamil.com","Nagore Gomez", Date(), ""),
+        Usuario("@maitane", "12345","nagore@gamil.com","Maitane Gomez", Date(), ""),
     )
     val cuadrilla = listOf(
-        Cuadrilla("Pikito",12345,"Hola", "Bilbao"),
-        Cuadrilla("Pikito2",12345,"Hola", "Gexto"),
+        Cuadrilla("Pikito","Hola","Bilbao", ""),
+        Cuadrilla("Pikito2","Hola","Getxo", ""),
     )
     val eventos = listOf(
-        Evento("11","Fiestas de Algorta", Date(1000), 2, "Hola","Algorta, Bizkaia, ESpaña") ,
-        Evento("11","Fiestas de Getxo", Date(2000), 2, "Hola","Algorta, Bizkaia, ESpaña"),
+        Evento("11","Fiestas de Algorta", Date(1000), 2, "Hola","Algorta, Bizkaia, ESpaña", "") ,
+        Evento("11","Fiestas de Getxo", Date(2000), 2, "Hola","Algorta, Bizkaia, ESpaña", ""),
     )
 
     // Tab seleccionado al principio

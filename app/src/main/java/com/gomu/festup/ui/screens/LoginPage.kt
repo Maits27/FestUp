@@ -119,7 +119,7 @@ fun LoginForm(
         else if (password == "") Toast.makeText(context, "Introduce una contrseña", Toast.LENGTH_SHORT).show()
         else {
             // TODO COGER LOS DATOS DE LA DB
-            mainVM.usuarioMostrar.value= Usuario("nagoregomez","12345","nagore@gmail.com","Nagore Gomez")
+            mainVM.usuarioMostrar.value= Usuario("nagoregomez","12345","nagore@gmail.com","Nagore Gomez", Date(), "")
             mainNavController.navigate(AppScreens.App.route)
         }
     }
@@ -215,7 +215,7 @@ fun RegistroForm(
         else if (password != confirmPassword) Toast.makeText(context, "Ambas constraseñas deben conindicir", Toast.LENGTH_SHORT).show()
         else {
             // TODO COGER LOS DATOS DE LA DB
-            mainVM.usuarioMostrar.value= Usuario("nagoregomez","12345","nagore@gmail.com","Nagore Gomez")
+            mainVM.usuarioMostrar.value= Usuario("nagoregomez","12345","nagore@gmail.com","Nagore Gomez", Date(), "")
             mainNavController.navigate(AppScreens.App.route)
         }
     }

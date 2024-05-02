@@ -58,7 +58,17 @@ fun PerfilYo(
     yo: Boolean = false,
     mainVM: MainVM
 ) {
-    val usuario= mainVM.usuarioMostrar.value!!
+    val usuario = mainVM.usuarioMostrar.value!!
+    var cuadrillas = mainVM.getCuadrillasUsuario()
+    if (cuadrillas.isEmpty()){ // TODO quitar
+        cuadrillas=listOf(
+            Cuadrilla(nombre = "Pikito", descripcion = "The best", lugar = "Bilbao", "", 0),
+            Cuadrilla(nombre = "Wekaland", descripcion = "The best 2", lugar = "Bilbao", "", 0),
+            Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao", "", 0),
+            Cuadrilla(nombre = "Wekaland", descripcion = "The best 2", lugar = "Bilbao", "", 0),
+            Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao", "", 0),
+        )
+    }
     Column (
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -71,20 +81,14 @@ fun PerfilYo(
                 .fillMaxWidth()
         ) {
             // TODO CAMBIAR EDAD
-            TopProfile(username = usuario.username, email = usuario.email, edad = 18, yo)
+            TopProfile(username = usuario.username, email = usuario.email, edad = mainVM.calcularEdad(usuario), yo)
         }
         SeguidoresYSeguidos(yo)
         Column(
             modifier = Modifier.weight(1f)
         ) {
             ListadoCuadrillas(
-                cuadrillas = listOf(
-                    Cuadrilla(nombre = "Pikito", descripcion = "The best", lugar = "Bilbao"),
-                    Cuadrilla(nombre = "Wekaland", descripcion = "The best 2", lugar = "Bilbao"),
-                    Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao"),
-                    Cuadrilla(nombre = "Wekaland", descripcion = "The best 2", lugar = "Bilbao"),
-                    Cuadrilla(nombre = "BANBU", descripcion = "The best 4", lugar = "Bilbao"),
-                ),
+                cuadrillas = cuadrillas,
                 yo,
                 navController = navController,
                 mainVM = mainVM

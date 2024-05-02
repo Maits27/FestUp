@@ -67,6 +67,7 @@ import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.vm.MainVM
 import androidx.compose.material3.FabPosition
+import java.util.Date
 
 @Composable
 fun PerfilCuadrilla(
@@ -74,6 +75,17 @@ fun PerfilCuadrilla(
     mainVM: MainVM
 ) {
     val cuadrilla= mainVM.cuadrillaMostrar.value!!
+    var usuariosCuadrilla = mainVM.usuariosCuadrilla()
+    if (usuariosCuadrilla.isEmpty()){
+        usuariosCuadrilla = listOf(
+            Usuario(username = "AingeruBeOr", nombre = "Aingeru", email = "1405bellido", password = "1", fechaNacimiento = Date(), profileImagePath = ""),
+            Usuario(username = "Sergiom8", nombre = "Sergio", email = "sergiom8", password = "1", fechaNacimiento = Date(), profileImagePath = ""),
+            Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1", fechaNacimiento = Date(), profileImagePath = ""),
+            Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1", fechaNacimiento = Date(), profileImagePath = ""),
+            Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1", fechaNacimiento = Date(), profileImagePath = ""),
+            Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1", fechaNacimiento = Date(), profileImagePath = "")
+        )
+    }
     var pertenezco by rememberSaveable {mutableStateOf(true)}
 
     Scaffold(
@@ -104,14 +116,7 @@ fun PerfilCuadrilla(
                 modifier = Modifier.weight(1f)
             ) {
                 ListadoUsuarios(
-                    usuarios = listOf(
-                        Usuario(username = "AingeruBeOr", nombre = "Aingeru", email = "1405bellido", password = "1"),
-                        Usuario(username = "Sergiom8", nombre = "Sergio", email = "sergiom8", password = "1"),
-                        Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1"),
-                        Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1"),
-                        Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1"),
-                        Usuario(username = "NagoreGomez", nombre = "Nagore", email = "nagoregomez4", password = "1")
-                    ),
+                    usuarios = usuariosCuadrilla,
                     pertenezco,
                     mainVM,
                     navController

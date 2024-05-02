@@ -16,7 +16,9 @@ data class Usuario(
     @PrimaryKey val username: String,
     val password: String,
     val email: String,
-    val nombre: String
+    val nombre: String,
+    val fechaNacimiento: Date,
+    val profileImagePath: String
 )
 
 @Serializable
@@ -30,9 +32,10 @@ data class AuthUser(
 @Entity
 data class Cuadrilla(
     @PrimaryKey val nombre: String,
-    val token: Int = randomNum(),
     val descripcion: String,
-    val lugar: String
+    val lugar: String,
+    val profileImagePath: String,
+    val accessToken: Int = randomNum()
 )
 
 @Entity
@@ -42,7 +45,8 @@ data class Evento(
     val fecha: Date,
     val numeroAsistentes: Int,
     val descripcion: String,
-    val localizacion: String
+    val localizacion: String,
+    val eventoImagePath: String
 )
 
 

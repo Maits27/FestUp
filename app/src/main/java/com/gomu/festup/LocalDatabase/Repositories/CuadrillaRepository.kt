@@ -17,7 +17,7 @@ import javax.inject.Singleton
 interface ICuadrillaRepository {
     suspend fun insertCuadrilla(user: Usuario): Boolean
     fun cuadrillaUsuario(username: String): List<Cuadrilla>
-    fun usuariosCuadrilla(nombre: String): List<Usuario>
+    suspend fun usuariosCuadrilla(nombre: String): List<Usuario>
     fun eventosCuadrilla(nombreCuadrilla: String): List<Evento>
     suspend fun insertUser(usuario: Usuario): Boolean
 }
@@ -35,8 +35,9 @@ class CuadrillaRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun usuariosCuadrilla(nombre: String): List<Usuario> {
-        TODO("Not yet implemented")
+    override suspend fun usuariosCuadrilla(nombre: String): List<Usuario> {
+        // TODO primero remoto
+        return cuadrillaDao.getUsuariosDeCuadrilla(nombre)
     }
 
     override fun eventosCuadrilla(nombreCuadrilla: String): List<Evento> {

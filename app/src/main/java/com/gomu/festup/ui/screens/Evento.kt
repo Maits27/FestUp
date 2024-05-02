@@ -37,6 +37,7 @@ import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.vm.MainVM
+import java.util.Date
 
 @Composable
 fun Evento(
@@ -44,8 +45,8 @@ fun Evento(
     mainVM: MainVM
 ) {
     val evento= mainVM.eventoMostrar.value!!
-    val newUser = Usuario(username = "@UnaiLopezNovoa", email = "ulopeznovoa@ehu.eus", nombre = "Unai", password = "123")
-    val newUser2 = Usuario(username = "@AdrianNunezMarcos", email = "anunez@ehus.eus", nombre = "Adrian", password = "123")
+    val newUser = Usuario(username = "@UnaiLopezNovoa", email = "ulopeznovoa@ehu.eus", nombre = "Unai", password = "123", fechaNacimiento = Date(), profileImagePath = "")
+    val newUser2 = Usuario(username = "@AdrianNunezMarcos", email = "anunez@ehus.eus", nombre = "Adrian", password = "123", fechaNacimiento = Date(), profileImagePath = "")
     val users = arrayOf(newUser, newUser2)
 
     Column(
