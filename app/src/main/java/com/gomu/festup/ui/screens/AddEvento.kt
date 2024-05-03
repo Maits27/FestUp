@@ -1,6 +1,7 @@
 package com.gomu.festup.ui.screens
 
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -49,14 +50,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.gomu.festup.R
+import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.vm.MainVM
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -123,7 +127,7 @@ fun AddEvento(
             val fechaEvento: Date = dateFormat.parse(fecha)
 
             coroutineScope.launch(Dispatchers.IO) {
-                mainVM.insertarEvento(Evento(
+                val insertCorrecto= mainVM.insertarEvento(Evento(
                     nombre = eventName,
                     fecha = fechaEvento,
                     descripcion = description,
@@ -131,8 +135,32 @@ fun AddEvento(
                     eventoImagePath = "",
                     numeroAsistentes = 1
                 ))
+                if (insertCorrecto){
+
+                }
             }
-            navController.popBackStack()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val insertCorrecto = withContext(Dispatchers.IO) {
+                    mainVM.insertarEvento(Evento(
+                        nombre = eventName,
+                        fecha = fechaEvento,
+                        descripcion = description,
+                        localizacion = location,
+                        eventoImagePath = "",
+                        numeroAsistentes = 1
+                    ))
+                }
+                if (insertCorrecto) {
+                    withContext(Dispatchers.Main) {
+                        navController.popBackStack()
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 

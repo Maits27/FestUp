@@ -28,4 +28,12 @@ interface IntegranteDao{
 
     @Update
     fun editarIntegrante(integrante: Integrante): Int
+
+    @Transaction
+    @Query("SELECT * FROM Integrante WHERE username=:username and nombreCuadrilla=:nombreCuadrilla")
+    fun pertenezcoCuadrilla(nombreCuadrilla:String, username:String): Flow<List<Integrante>>
+
+    @Transaction
+    @Query("SELECT * FROM Integrante ")
+    fun getIntegrantes(): Flow<List<Integrante>>
 }

@@ -26,11 +26,7 @@ class IdentVM @Inject constructor(
         }
     }
 
-    suspend fun inicarSesion(username: String, password:String): Usuario? {
-        try {
-            return userRepository.verifyUser(username, password)
-        } catch (e: Exception) {
-            throw Exception("Excepcion al iniciar usuario", e)
-        }
+    suspend fun inicarSesion(username: String, password:String): Boolean {
+        return userRepository.verifyUser(username, password)
     }
 }

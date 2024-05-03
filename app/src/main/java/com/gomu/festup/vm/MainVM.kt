@@ -1,11 +1,9 @@
 package com.gomu.festup.vm
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.util.Log
 import android.widget.ImageView
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -23,13 +21,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
 
@@ -77,17 +71,18 @@ class MainVM @Inject constructor(
         }
     }
 
+    fun actualizarCurrentUser(username: String): Usuario {
+        return userRepository.getUsuario(username)
+    }
+
+
 
 
     /*****************************************************
      ****************** METODOS CUADRILLA ******************
      *****************************************************/
-    suspend fun crearCuadrilla(cuadrilla: Cuadrilla)  {
-        val creada = currentUser.value?.let { cuadrillaRepository.insertCuadrilla(it.username, cuadrilla) }
-        if (creada?:false){
-            cuadrillaMostrar.value = cuadrilla
-        }
-        Log.d("Cuadrilla creada", cuadrillaMostrar.value?.nombre?:"")
+    suspend fun crearCuadrilla(cuadrilla: Cuadrilla): Boolean  {
+        return cuadrillaRepository.insertCuadrilla(currentUser.value!!.nombre,cuadrilla)
     }
     fun usuariosCuadrilla(): Flow<List<Usuario>> {
         return cuadrillaRepository.usuariosCuadrilla(cuadrillaMostrar.value!!.nombre)
@@ -120,9 +115,8 @@ class MainVM @Inject constructor(
      ****************** METODOS EVENTO ******************
      *****************************************************/
 
-    suspend fun insertarEvento(evento: Evento) {
-        eventoRepository.insertEvento(evento)
-        eventoRepository.insertUsuarioAsistente(currentUser.value!!.username, evento.id)
+    suspend fun insertarEvento(evento: Evento): Boolean {
+        return eventoRepository.insertarEvento(evento,currentUser.value!!.username)
     }
 
     fun getEventos(): Flow<List<Evento>> {

@@ -12,6 +12,8 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.RemoteDatabase.HTTPClient
+import com.gomu.festup.RemoteDatabase.RemoteCuadrilla
+import com.gomu.festup.RemoteDatabase.RemoteIntegrante
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -44,6 +46,9 @@ class CuadrillaRepository @Inject constructor(
         return try {
             cuadrillaDao.insertCuadrilla(cuadrilla)
             integranteDao.insertIntegrante(Integrante(username, cuadrilla.nombre))
+
+            httpClient.insertCuadrilla(RemoteCuadrilla(cuadrilla.nombre," ",cuadrilla.descripcion,cuadrilla.lugar,cuadrilla.profileImagePath))
+            httpClient.insertIntegrante(RemoteIntegrante(username,cuadrilla.nombre))
             true
         }catch (e:Exception){
             Log.d("Exception crear cuadrilla", e.toString())
@@ -70,6 +75,7 @@ class CuadrillaRepository @Inject constructor(
 
     override suspend fun eliminarCuadrilla(cuadrilla: Cuadrilla): Boolean {
         return try {
+            httpClient.deleteCuadrilla(cuadrilla.nombre)
             cuadrillaDao.eliminarCuadrilla(cuadrilla)
             true
         } catch (e:Exception){
@@ -86,11 +92,11 @@ class CuadrillaRepository @Inject constructor(
 
     // NUEVO integranteRepository? TODO
     override fun pertenezcoCuadrilla(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>> {
-        return cuadrillaDao.pertenezcoCuadrilla(cuadrilla.nombre,usuario.username)
+        return integranteDao.pertenezcoCuadrilla(cuadrilla.nombre,usuario.username)
     }
 
     override fun getIntegrantes(): Flow<List<Integrante>>{
-        return cuadrillaDao.getIntegrantes()
+        return integranteDao.getIntegrantes()
     }
 
     override suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean {
