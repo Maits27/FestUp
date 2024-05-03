@@ -141,26 +141,28 @@ fun LoginForm(
         else if (password == "") Toast.makeText(context, "Introduce una contrseña", Toast.LENGTH_SHORT).show()
         else {
 
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val usuario = withContext(Dispatchers.IO) {
                         identVM.inicarSesion(username, password)
                     }
-                    if (usuario != null) {
-                        mainVM.currentUser.value= usuario
-                        mainNavController.navigate(AppScreens.App.route)
+                    if (usuario) {
+                        val currentUser = withContext(Dispatchers.IO) {
+                            mainVM.actualizarCurrentUser(username)
+                        }
+                        withContext(Dispatchers.Main) {
+                            mainVM.currentUser.value = currentUser
+                            mainNavController.navigate(AppScreens.App.route)
+                        }
                     } else {
-                        Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "La informacion no es correcta, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 } catch (e: Exception) {
                     Log.e("Excepcion al crear usuario", e.toString())
                 }
             }
-
-            // TODO COGER LOS DATOS DE LA DB
-            mainVM.usuarioMostrar.value=Usuario("maitane","12345","maitane@gmail.com","Mai", Date(), "")
-            mainVM.currentUser.value= Usuario("maitane","12345","maitane@gmail.com","Mai", Date(), "")
-            mainNavController.navigate(AppScreens.App.route)
         }
     }
 

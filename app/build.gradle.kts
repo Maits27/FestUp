@@ -5,7 +5,8 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    //id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -62,16 +63,32 @@ android {
 
 dependencies {
     // BBDD remotas
+    /*
     implementation("io.ktor:ktor-client-core:2.0.0")
     implementation("io.ktor:ktor-client-cio:2.0.0")
     implementation("io.ktor:ktor-client-json:2.0.0")
-    implementation("io.ktor:ktor-client-serialization:2.0.0")
+    //implementation("io.ktor:ktor-client-serialization:2.0.0")
     implementation("io.ktor:ktor-client-auth:2.0.0")
     implementation("io.ktor:ktor-client-content-negotiation:2.0.0")
 
     // Kotlin Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.2")
+
+     */
+
+    // KTOR
+    val ktor_version="2.2.2"
+    implementation ("io.ktor:ktor-client-core:$ktor_version")
+    implementation ("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("io.ktor:ktor-client-json:$ktor_version")
+    implementation ("io.ktor:ktor-client-auth:$ktor_version")
+    implementation ("io.ktor:ktor-client-content-negotiation:$ktor_version")
+
+    // Kotlin Serialization
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    implementation ("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")

@@ -16,6 +16,7 @@ import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.LocalDatabase.Repositories.UserRepository
+import com.gomu.festup.RemoteDatabase.AuthClient
 import com.gomu.festup.RemoteDatabase.HTTPClient
 import dagger.Module
 import dagger.Provides
@@ -67,10 +68,11 @@ object AppModule {
     @Singleton
     @Provides
     fun providesUserRepository(
-        usuarioDao: UsuarioDao, 
+        usuarioDao: UsuarioDao,
+        authClient: AuthClient,
         httpClient: HTTPClient
     ): IUserRepository = 
-        UserRepository(usuarioDao, httpClient)
+        UserRepository(usuarioDao,authClient, httpClient)
 
     @Singleton
     @Provides

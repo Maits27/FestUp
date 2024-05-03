@@ -51,8 +51,10 @@ import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
 import com.gomu.festup.vm.MainVM
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @Composable
@@ -177,20 +179,28 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                     Toast.makeText(context, "Inserta una localización", Toast.LENGTH_SHORT).show()
                 } else {
                     // Crear cuadrilla
-                    coroutineScope.launch(Dispatchers.IO) {
-                        mainVM.crearCuadrilla(Cuadrilla(
-                            nombre = nombre,
-                            lugar = localizacion,
-                            descripcion = descripcion,
-                            profileImagePath = "" // TODO
-                        ))
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val insertCorrecto = withContext(Dispatchers.IO) {
+                            mainVM.crearCuadrilla(Cuadrilla(
+                                nombre = nombre,
+                                lugar = localizacion,
+                                descripcion = descripcion,
+                                profileImagePath = "" // TODO
+                            ))
+                        }
+                        if (insertCorrecto) {
+                            withContext(Dispatchers.Main) {
+                                navController.popBackStack()
+                            }
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
 
-                    // Foto de perfil
-                    mainVM.setCuadrillaProfile(context, imageUri, nombre)
-
-                    // Volver al perfil
-                    navController.popBackStack()
+                    // Foto de perfil TODO
+                    //mainVM.setCuadrillaProfile(context, imageUri, nombre)
                 }
             },
             modifier = Modifier

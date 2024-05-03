@@ -33,28 +33,24 @@ import javax.inject.Singleton
 class UserExistsException : Exception()
 class AuthenticationException : Exception()
 
-@Serializable
-data class TokenInfo(
-    @SerialName("access_token") val accessToken: String,
-    @SerialName("expires_in") val expiresIn: Int,
-    @SerialName("refresh_token") val refreshToken: String,
-    @SerialName("token_type") val tokenType: String,
-)
 
 @Serializable
 data class AuthUser(
     val username: String,
     val password: String,
     val email: String,
-    val nombre: String
+    val nombre: String,
+    val fechaNacimiento: String,
+    val profileImagePath: String
 )
 
 @Serializable
 data class RemoteCuadrilla(
     val nombre: String,
-    val token: Int = randomNum(),
+    val accessToken: String,
     val descripcion: String,
-    val lugar: String
+    val lugar: String,
+    val profileImagePath: String
 )
 
 @Serializable
@@ -72,7 +68,7 @@ data class RemoteCuadrillaAsistente(
 @Serializable
 data class RemoteIntegrante(
     val username: String,
-    val nombreCuadrilla: String
+    val nombre: String
 )
 
 @Serializable
@@ -89,11 +85,20 @@ data class RemoteEvento(
     val fecha: String,
     val numeroAsistentes: Int,
     val descripcion: String,
-    val localizacion: String
+    val localizacion: String,
+    val eventoImagePath: String
 )
 
 private val bearerTokenStorage = mutableListOf<BearerTokens>()
 
+
+@Serializable
+data class TokenInfo(
+    @SerialName("token_type") val tokenType: String,
+    @SerialName("access_token") val accessToken: String,
+    @SerialName("refresh_token") val refreshToken: String,
+    @SerialName("expires_in") val expiresIn: Int,
+)
 
 
 @Singleton
@@ -109,6 +114,7 @@ class AuthClient @Inject constructor() {
                 when {
                     exception is ClientRequestException && exception.response.status == HttpStatusCode.Unauthorized -> throw AuthenticationException()
                     exception is ClientRequestException && exception.response.status == HttpStatusCode.Conflict -> throw UserExistsException()
+                    exception is ClientRequestException && exception.response.status == HttpStatusCode.NotFound -> throw UserExistsException()
                     else -> {
                         exception.printStackTrace()
                         throw exception
@@ -119,21 +125,20 @@ class AuthClient @Inject constructor() {
     }
 
     @Throws(AuthenticationException::class, Exception::class)
-    suspend fun authenticate(user: AuthUser) {
+    suspend fun authenticate(username: String, password: String) {
         val tokenInfo: TokenInfo = httpClient.submitForm(
-            url = "https://XXXX/iniciarSesion",
+            url = "http://34.16.74.167/iniciarSesion",
             formParameters = Parameters.build {
                 append("grant_type", "password")
-                append("username", user.username)
-                append("password", user.password)
+                append("username", username)
+                append("password", password)
             }).body()
-
         bearerTokenStorage.add(BearerTokens(tokenInfo.accessToken, tokenInfo.refreshToken))
     }
 
     @Throws(UserExistsException::class)
     suspend fun createUser(user: AuthUser) {
-        httpClient.post("https://XXXX/createUser") {
+        httpClient.post("http://34.16.74.167/createUser") {
             contentType(ContentType.Application.Json)
             setBody(user)
         }
@@ -161,7 +166,7 @@ class HTTPClient @Inject constructor() {
                 refreshTokens {
 
                     val refreshTokenInfo: TokenInfo = client.submitForm(
-                        url = "https://XXX/refresh",
+                        url = "https://34.16.74.167/refresh",
                         formParameters = Parameters.build {
                             append("grant_type", "refresh_token")
                             append("refresh_token", oldTokens?.refreshToken ?: "")
@@ -177,37 +182,24 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  USER ------------------------------
     suspend fun getUsuarios(): List<AuthUser> = runBlocking {
-        val response = httpClient.get("http://XXX/getUsers")
+        val response = httpClient.get("http:/34.16.74.167/getUsers")
         response.body()
     }
-
-    suspend fun getCuadrillasUsuario(username: String): List<RemoteCuadrilla> = runBlocking {
-        val response = httpClient.get("http://XXX/getCuadrillasUsuario?username=$username")
-        response.body()
-    }
-
-    suspend fun getSeguidosUsuario(username: String): List<AuthUser> = runBlocking {
-        val response = httpClient.get("http://XXX/getSeguidosUsuario?username=$username")
-        response.body()
-    }
-
-    suspend fun getSeguidoresUsuario(username: String): List<AuthUser> = runBlocking {
-        val response = httpClient.get("http://XXX/getSeguidoresUsuario?username=$username")
-        response.body()
-    }
-
 
     // ---------------------------  USUARIO ASISTENTE ------------------------------
-
+    suspend fun getUsuariosAsistentes(): List<RemoteUsuarioAsistente> = runBlocking {
+        val response = httpClient.get("http://34.16.74.167/getUsuariosAsistentes")
+        response.body()
+    }
     suspend fun insertUsuarioAsistente(usuarioAsistente: RemoteUsuarioAsistente) = runBlocking {
-        httpClient.post("http://XXX/insertUsuarioAsistente") {
+        httpClient.post("http://34.16.74.167/insertUsuarioAsistente") {
             contentType(ContentType.Application.Json)
             setBody(usuarioAsistente)
         }
     }
 
     suspend fun deleteUsuarioAsistente(usuarioAsistente: RemoteUsuarioAsistente) = runBlocking {
-        httpClient.post("http://XXX/deleteUsuarioAsistente") {
+        httpClient.post("http://34.16.74.167/deleteUsuarioAsistente") {
             contentType(ContentType.Application.Json)
             setBody(usuarioAsistente)
         }
@@ -216,31 +208,46 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  CUADRILLA ------------------------------
 
+    suspend fun getCuadrillas(): List<RemoteCuadrilla> = runBlocking {
+        val response = httpClient.get("http://34.16.74.167/getCuadrillas")
+        response.body()
+    }
+
     suspend fun insertCuadrilla(cuadrilla: RemoteCuadrilla) = runBlocking {
-        httpClient.post("http://XXX/insertCuadrilla") {
+        httpClient.post("http://34.16.74.167/insertCuadrilla") {
             contentType(ContentType.Application.Json)
             setBody(cuadrilla)
         }
     }
 
     suspend fun deleteCuadrilla(nombre: String) = runBlocking {
-        httpClient.post("http://XXX/deleteCuadrilla") {
+        httpClient.post("http://34.16.74.167/deleteCuadrilla") {
             contentType(ContentType.Application.Json)
             parameter("nombre", nombre)
         }
     }
 
+    suspend fun getCuadrillaAccessToken(nombre: String): String = runBlocking {
+        val response = httpClient.get("http://34.16.74.167/getCuadrillaAccessToken?nombre=$nombre")
+        response.body()
+    }
+
+
     // ---------------------------  CUADRILLA ASISTENTE ------------------------------
 
+    suspend fun getCuadrillasAsistentes(): List<RemoteCuadrillaAsistente> = runBlocking {
+        val response = httpClient.get("http://34.16.74.167/getCuadrillasAsistentes")
+        response.body()
+    }
     suspend fun insertCuadrillaAsistente(cuadrillaAsistente: RemoteCuadrillaAsistente) = runBlocking {
-        httpClient.post("http://XXX/insertCuadrillaAsistente") {
+        httpClient.post("http://34.16.74.167/insertCuadrillaAsistente") {
             contentType(ContentType.Application.Json)
             setBody(cuadrillaAsistente)
         }
     }
 
     suspend fun deleteCuadrillaAsistente(cuadrillaAsistente: RemoteCuadrillaAsistente) = runBlocking {
-        httpClient.post("http://XXX/deleteCuadrillaAsistente") {
+        httpClient.post("http://34.16.74.167/deleteCuadrillaAsistente") {
             contentType(ContentType.Application.Json)
             setBody(cuadrillaAsistente)
         }
@@ -248,45 +255,60 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  EVENTO ------------------------------
 
+    suspend fun getEventos(): List<RemoteEvento> = runBlocking {
+        val response = httpClient.get("http://34.16.74.167/getEventos")
+        response.body()
+    }
     suspend fun insertEvento(evento: RemoteEvento) = runBlocking {
-        httpClient.post("http://XXX/insertEvento") {
+        httpClient.post("http://34.16.74.167/insertEvento") {
             contentType(ContentType.Application.Json)
             setBody(evento)
         }
     }
-
     suspend fun deleteEvento(eventoId: Int) = runBlocking {
-        httpClient.post("http://XXX/deleteEvento") {
+        httpClient.post("http://34.16.74.167/deleteEvento") {
             contentType(ContentType.Application.Json)
             parameter("eventoId", eventoId)
         }
     }
 
     // ---------------------------  INTEGRANTE ------------------------------
+
+    suspend fun getIntegrantes(): List<RemoteIntegrante> = runBlocking {
+        val response = httpClient.get("http://34.16.74.167/getIntegrantes")
+        response.body()
+    }
+
     suspend fun insertIntegrante(integrante: RemoteIntegrante) = runBlocking {
-        httpClient.post("http://XXX/insertIntegrante") {
+        httpClient.post("http://34.16.74.167/insertIntegrante") {
             contentType(ContentType.Application.Json)
             setBody(integrante)
         }
     }
 
     suspend fun deleteIntegrante(integrante: RemoteIntegrante) = runBlocking {
-        httpClient.post("http://XXX/deleteIntegrante") {
+        httpClient.post("http://34.16.74.167/deleteIntegrante") {
             contentType(ContentType.Application.Json)
             setBody(integrante)
         }
     }
 
     // ---------------------------  SEGUIDORES ------------------------------
+
+    suspend fun getSeguidores(): List<RemoteSeguidor> = runBlocking {
+        val response = httpClient.get("http://34.16.74.167/getSeguidores")
+        response.body()
+    }
+
     suspend fun insertSeguidor(seguidor: RemoteSeguidor) = runBlocking {
-        httpClient.post("http://XXX/insertSeguidores") {
+        httpClient.post("http://34.16.74.167/insertSeguidores") {
             contentType(ContentType.Application.Json)
             setBody(seguidor)
         }
     }
 
     suspend fun deleteSeguidor(seguidor: RemoteSeguidor) = runBlocking {
-        httpClient.post("http://XXX/deleteSeguidor") {
+        httpClient.post("http://34.16.74.167/deleteSeguidor") {
             contentType(ContentType.Application.Json)
             setBody(seguidor)
         }
@@ -296,7 +318,7 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  NOTIFICACIONES ------------------------------
     suspend fun subscribeUser(FCMClientToken: String) {
-        httpClient.post("https://") {
+        httpClient.post("https://34.16.74.167") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
@@ -335,7 +357,7 @@ class HTTPClient @Inject constructor() {
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
         httpClient.submitFormWithBinaryData(
-            url = "http://34.16.74.167:8000/cuadrillaProfileImages/${nombre}",
+            url = "http://34.16.74.167/cuadrillaProfileImages/${nombre}",
             formData = formData {
                 append("file", byteArray, Headers.build {
                     append(HttpHeaders.ContentType, "image/png")
