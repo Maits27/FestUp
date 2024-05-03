@@ -44,11 +44,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.gomu.festup.R
 import com.gomu.festup.vm.MainVM
@@ -60,6 +58,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 
 
@@ -270,7 +269,35 @@ fun AddEvento(
                 }
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+                title = {
+                    Text(
+                        text = "Fecha del evento",
+                        textAlign = TextAlign.Center,
+                        fontSize = 20.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 15.dp)
+                    )
+                },
+                dateValidator = { utcTimeMillis ->
+                    val dateToCheck = Calendar.getInstance().apply { timeInMillis = utcTimeMillis }
+                    val today = Calendar.getInstance().apply { timeInMillis = System.currentTimeMillis() }
+
+                    // If is today
+                    if (dateToCheck.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+                        dateToCheck.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
+                        dateToCheck.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH)
+                        ) {
+                        return@DatePicker true
+                    }
+                    // If is past
+                    else if (dateToCheck.before(today)) return@DatePicker false
+                    // If is future
+                    else return@DatePicker true
+                }
+            )
         }
     }
 }

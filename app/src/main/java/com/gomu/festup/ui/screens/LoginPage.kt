@@ -52,6 +52,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -390,7 +391,7 @@ fun RegistroForm(
         OutlinedTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
-            label = { Text(text = "Repite la constraseña") },
+            label = { Text(text = "Repite la contraseña") },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = modifierForInputs
@@ -419,7 +420,23 @@ fun RegistroForm(
                 }
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+                title = {
+                    Text(
+                        text = "Fecha de nacimiento",
+                        textAlign = TextAlign.Center,
+                        fontSize = 20.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 15.dp)
+                    )
+                },
+                dateValidator = { utcTimeMillis ->
+                    if (utcTimeMillis > System.currentTimeMillis()) return@DatePicker false
+                    else return@DatePicker true
+                }
+            )
         }
     }
 }
