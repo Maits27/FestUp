@@ -75,6 +75,7 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import coil.compose.AsyncImage
+import com.gomu.festup.ui.components.UsuarioCard
 import java.util.Date
 
 @Composable
@@ -315,44 +316,7 @@ fun ListadoUsuarios(
                 .fillMaxSize()
         ) {
             items(usuarios) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 3.dp)
-                        .clickable {
-                            mainVM.usuarioMostrar.value = it
-                            navController.navigate(AppScreens.PerfilUser.route)
-                        },
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(13.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.account),
-                            contentDescription = "",
-                            modifier = Modifier.size(50.dp)
-                        )
-                        Column(
-                            Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
-                        ) {
-                            Text(
-                                text = it.username,
-                                fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            Text(
-                                text = it.nombre,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-
-                    }
-                }
+                UsuarioCard(usuario = it, mainVM = mainVM, navController = navController)
             }
         }
     }

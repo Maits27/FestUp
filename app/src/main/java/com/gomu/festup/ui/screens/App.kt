@@ -16,9 +16,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.ui.AppScreens
-import com.gomu.festup.ui.BottomBarMainView
-import com.gomu.festup.ui.FloatButton
-import com.gomu.festup.ui.TopBarMainView
+import com.gomu.festup.ui.components.BottomBarMainView
+import com.gomu.festup.ui.components.FloatButton
+import com.gomu.festup.ui.components.TopBarMainView
 import com.gomu.festup.vm.MainVM
 
 

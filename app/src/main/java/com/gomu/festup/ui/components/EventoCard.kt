@@ -28,7 +28,7 @@ fun EventoCard(
     navController: NavController
 ) {
 
-    val onItemClick: (Evento) -> Unit = { eventoClicked ->
+    val onCardClick: (Evento) -> Unit = { eventoClicked ->
         mainVM.eventoMostrar.value = eventoClicked
         navController.navigate(AppScreens.Evento.route)
     }
@@ -37,7 +37,7 @@ fun EventoCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { onItemClick(evento) }
+            .clickable { onCardClick(evento) }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

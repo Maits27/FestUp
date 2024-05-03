@@ -1,20 +1,14 @@
 package com.gomu.festup.ui.screens
 
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -27,21 +21,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Usuario
-import com.gomu.festup.R
-import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.CuadrillaCard
+import com.gomu.festup.ui.components.EventoCard
+import com.gomu.festup.ui.components.UsuarioCard
 import com.gomu.festup.vm.MainVM
-import java.util.Date
 
 
 @Composable
@@ -176,53 +164,18 @@ fun <T> ElementoItem(
     navController: NavController,
     mainVM: MainVM
 ) {
-    Card(
-        onClick =  {
-            if (elemento is Usuario){
-                mainVM.usuarioMostrar.value=elemento
-                navController.navigate(AppScreens.PerfilUser.route)
-            }
-            else if (elemento is Cuadrilla){
-                mainVM.cuadrillaMostrar.value=elemento
-                navController.navigate(AppScreens.PerfilCuadrilla.route)
-            }
-            else if(elemento is Evento){
-                mainVM.eventoMostrar.value=elemento
-                navController.navigate(AppScreens.Evento.route)
-            }
-        },
-        modifier = Modifier.padding(8.dp)
-    ){
-    Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(15.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
-                contentDescription = null,
-                contentScale = ContentScale.FillHeight,
-                modifier = Modifier.size(50.dp)
-            )
-            Column(
-                modifier = Modifier.weight(1f).padding(start = 10.dp)
-            ) {
-                if (elemento is Usuario){
-                    Text(text = elemento.username, style = MaterialTheme.typography.titleLarge)
-                    Text(text = elemento.nombre, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                }
-                else if (elemento is Cuadrilla){
-                    Text(text = elemento.nombre, style = MaterialTheme.typography.titleLarge)
-                    Text(text = elemento.lugar, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                }
-                else if(elemento is Evento){
-                    Text(text = elemento.nombre, style = MaterialTheme.typography.titleLarge)
-                    Text(text = elemento.fecha.toString(), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-                }
-
-
-            }
-
-        }
+    if (elemento is Usuario) {
+        UsuarioCard(usuario = elemento, mainVM = mainVM, navController = navController)
+    }
+    else if (elemento is Cuadrilla) {
+        CuadrillaCard(
+            cuadrilla = elemento,
+            mainVM = mainVM, navController = navController,
+            isRemoveAvailable = false
+        )
+    }
+    else if (elemento is Evento) {
+        EventoCard(evento = elemento, mainVM = mainVM, navController = navController)
     }
 }
 

@@ -56,6 +56,7 @@ import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.CuadrillaCard
 import com.gomu.festup.vm.MainVM
 
 
@@ -145,61 +146,12 @@ fun ListadoCuadrillas(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             items(cuadrillas) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 3.dp)
-                        .clickable {
-                            mainVM.cuadrillaMostrar.value = it
-                            navController.navigate(AppScreens.PerfilCuadrilla.route)
-                        }
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(13.dp)
-                    ) {
-                        AsyncImage(
-                            // TODO esto debería ser it.profileImagePath
-                            model = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png",
-                            contentDescription = "Cuadrilla profile image",
-                            modifier = Modifier.size(50.dp)
-                        )
-                        Column(
-                            Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
-                        ) {
-                            Text(
-                                text = it.nombre,
-                                fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            Text(
-                                text = it.lugar,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        if (yo) {
-                            var verificacion by rememberSaveable { mutableStateOf(false) }
-                            Button(
-                                 onClick = { verificacion = true }
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.delete),
-                                    "",
-                                )
-                            }
-                            EstasSeguro(
-                                show = verificacion,
-                                mensaje = "Si eliminas esta cuadrilla tendrás que volver a solicitar entrar.",
-                                onDismiss = { verificacion = false },
-                                onConfirm = { mainVM.eliminarCuadrilla(it); verificacion = false }
-                            )
-                        }
-                    }
-                }
+                CuadrillaCard(
+                    cuadrilla = it,
+                    mainVM = mainVM,
+                    navController = navController,
+                    isRemoveAvailable = yo
+                )
             }
         }
     }

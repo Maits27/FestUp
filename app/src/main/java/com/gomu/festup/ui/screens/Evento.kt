@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,6 +38,7 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.UsuarioCard
 import com.gomu.festup.vm.MainVM
 import java.util.Date
 
@@ -81,46 +81,7 @@ fun Evento(
             contentPadding = PaddingValues(bottom = 70.dp)
         ) {
             items(users) { usuario ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .clickable {
-                            // TODO mandar al viewModel
-                            navController.navigate(AppScreens.PerfilUser.route)
-                        }
-                ) {
-                    Row (
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
-                    ){
-                        AsyncImage(
-                            // TODO esto será usuario.profileImagePath
-                            model = "http://34.16.74.167/userProfileImages/no-user.png",
-                            contentDescription = "User image",
-                            placeholder = painterResource(id = R.drawable.party),
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(CircleShape)
-                        )
-                        Spacer(modifier = Modifier.size(15.dp))
-                        Column {
-                            Text(
-                                text = usuario.username,
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                                text = usuario.nombre,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.Gray
-                            )
-                        }
-                    }
-                }
+                UsuarioCard(usuario = usuario, mainVM = mainVM, navController = navController)
             }
         }
     }
