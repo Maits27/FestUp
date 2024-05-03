@@ -12,6 +12,7 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.RemoteDatabase.HTTPClient
+import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -31,6 +32,7 @@ interface ICuadrillaRepository {
     fun pertenezcoCuadrilla(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>>
 
     fun getIntegrantes(): Flow<List<Integrante>>
+    suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean
 }
 @Singleton
 class CuadrillaRepository @Inject constructor(
@@ -91,6 +93,16 @@ class CuadrillaRepository @Inject constructor(
         return cuadrillaDao.getIntegrantes()
     }
 
+    override suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean {
+        return try {
+            httpClient.setCuadrillaProfile(nombre, image)
+            true
+        } catch (e: ResponseException) {
+            Log.e("HTTP", "Couldn't upload profile image.")
+            e.printStackTrace()
+            false
+        }
+    }
 
 
 }

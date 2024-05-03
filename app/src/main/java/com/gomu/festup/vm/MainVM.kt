@@ -1,6 +1,12 @@
 package com.gomu.festup.vm
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.util.Log
+import android.widget.ImageView
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -60,6 +66,17 @@ class MainVM @Inject constructor(
         return userRepository.getUsuariosMenosCurrent(usuario)
     }
 
+    fun setUserProfile(context: Context, uri: Uri?, username: String): Boolean = runBlocking {
+        var ivImage = ImageView(context)
+        ivImage.setImageURI(uri)
+        val drawable: Drawable = ivImage.drawable
+        if (drawable is BitmapDrawable) {
+            userRepository.setUserProfile(username, drawable.bitmap)
+        }else{
+            false
+        }
+    }
+
 
 
     /*****************************************************
@@ -87,6 +104,16 @@ class MainVM @Inject constructor(
     }
 
 
+    fun setCuadrillaProfile(context: Context, uri: Uri?, nombre: String): Boolean = runBlocking {
+        var ivImage = ImageView(context)
+        ivImage.setImageURI(uri)
+        val drawable: Drawable = ivImage.drawable
+        if (drawable is BitmapDrawable) {
+            cuadrillaRepository.setCuadrillaProfile(nombre, drawable.bitmap)
+        }else{
+            false
+        }
+    }
 
 
     /*****************************************************
@@ -123,6 +150,17 @@ class MainVM @Inject constructor(
     }
     fun eventosCuadrilla(cuadrilla: Cuadrilla): Flow<List<Cuadrilla>> {
         return eventoRepository.cuadrillasEvento(cuadrilla.nombre)
+    }
+
+    fun setEventoProfile(context: Context, uri: Uri?, id: String): Boolean = runBlocking {
+        var ivImage = ImageView(context)
+        ivImage.setImageURI(uri)
+        val drawable: Drawable = ivImage.drawable
+        if (drawable is BitmapDrawable) {
+            eventoRepository.setEventoProfile(id, drawable.bitmap)
+        }else{
+            false
+        }
     }
 
 

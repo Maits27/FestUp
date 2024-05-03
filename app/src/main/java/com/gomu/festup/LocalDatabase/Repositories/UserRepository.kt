@@ -9,6 +9,7 @@ import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.RemoteDatabase.AuthUser
 import com.gomu.festup.RemoteDatabase.HTTPClient
+import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
 import javax.inject.Inject
@@ -25,7 +26,7 @@ interface IUserRepository: ILoginSettings {
     fun getSeguidores(username: String): Flow<List<Usuario>>
     fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>>
     suspend fun getUserProfile(username: String): Bitmap
-    suspend fun setUserProfile(username: String, image: Bitmap): Bitmap
+    suspend fun setUserProfile(username: String, image: Bitmap):Boolean
 
     fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>
 }
@@ -81,8 +82,15 @@ class UserRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun setUserProfile(username: String, image: Bitmap): Bitmap {
-        TODO("Not yet implemented")
+    override suspend fun setUserProfile(username: String, image: Bitmap): Boolean {
+        return try {
+            httpClient.setUserProfile(username, image)
+            true
+        } catch (e: ResponseException) {
+            Log.e("HTTP", "Couldn't upload profile image.")
+            e.printStackTrace()
+            false
+        }
     }
 
     override suspend fun getLastLoggedUser(): String? {

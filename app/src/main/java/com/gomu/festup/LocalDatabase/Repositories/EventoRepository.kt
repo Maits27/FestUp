@@ -1,5 +1,6 @@
 package com.gomu.festup.LocalDatabase.Repositories
 
+import android.graphics.Bitmap
 import android.util.Log
 import com.gomu.festup.LocalDatabase.DAO.CuadrillaDao
 import com.gomu.festup.LocalDatabase.DAO.CuadrillasAsistentesDao
@@ -11,6 +12,7 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Entities.UsuariosAsistentes
 import com.gomu.festup.RemoteDatabase.HTTPClient
+import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,6 +26,7 @@ interface IEventoRepository {
     fun cuadrillasEvento(id: String): Flow<List<Cuadrilla>>
     fun usuariosEvento(id: String): List<Usuario>
     suspend fun updateEvento(evento: Evento): Boolean
+    suspend fun setEventoProfile(id: String, image: Bitmap): Boolean
 }
 @Singleton
 class EventoRepository @Inject constructor(
@@ -62,6 +65,16 @@ class EventoRepository @Inject constructor(
 
     override suspend fun updateEvento(evento: Evento): Boolean {
         TODO("Not yet implemented")
+    }
+    override suspend fun setEventoProfile(id: String, image: Bitmap): Boolean {
+        return try {
+            httpClient.setEventoProfile(id, image)
+            true
+        } catch (e: ResponseException) {
+            Log.e("HTTP", "Couldn't upload profile image.")
+            e.printStackTrace()
+            false
+        }
     }
 
 }

@@ -1,8 +1,11 @@
 package com.gomu.festup.ui.screens
 
 import android.content.res.Configuration
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -182,6 +185,10 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                             profileImagePath = "" // TODO
                         ))
                     }
+
+                    // Foto de perfil
+                    mainVM.setCuadrillaProfile(context, imageUri, nombre)
+
                     // Volver al perfil
                     navController.popBackStack()
                 }
