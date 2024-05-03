@@ -172,7 +172,7 @@ fun LoginForm(
         modifier = Modifier.fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.whatsapp_image_2024_04_29_at_17_09_44),
+            painter = painterResource(id = R.drawable.festuplogo),
             alignment = Alignment.Center,
             contentDescription = "Logo-FestUp",
             modifier = Modifier
