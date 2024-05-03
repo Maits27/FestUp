@@ -96,23 +96,25 @@ fun LoginPage(
         TabRow(
             selectedTabIndex = selectedTab
         ) {
-            Tab(selected = loginSelected, onClick = {
-                selectedTab = 0
-                loginSelected = true
-                registerSelected = false
-            },
-                modifier = Modifier.padding(vertical = 15.dp)
+            Tab(
+                selected = loginSelected,
+                onClick = {
+                    selectedTab = 0
+                    loginSelected = true
+                    registerSelected = false
+                },
             ) {
-                Text(text = "Iniciar sesión")
+                Text(text = "Iniciar sesión", modifier = Modifier.padding(vertical = 15.dp))
             }
-            Tab(selected = registerSelected, onClick = {
-                selectedTab = 1
-                loginSelected = false
-                registerSelected = true
-            },
-                modifier = Modifier.padding(vertical = 15.dp)
+            Tab(
+                selected = registerSelected,
+                onClick = {
+                    selectedTab = 1
+                    loginSelected = false
+                    registerSelected = true
+                },
             ) {
-                Text(text = "Registrarse")
+                Text(text = "Registrarse", modifier = Modifier.padding(vertical = 15.dp))
             }
         }
         if (selectedTab == 0) LoginForm(mainNavController, mainVM, identVM)
