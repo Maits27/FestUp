@@ -16,7 +16,9 @@ import javax.inject.Singleton
 interface IEventoRepository {
     suspend fun insertEvento(evento: Evento): Boolean
     fun todosLosEventos(): Flow<List<Evento>>
-    fun cuadrillasEvento(id: String): List<Cuadrilla>
+
+    fun eventosUsuario(username: String): Flow<List<Evento>>
+    fun cuadrillasEvento(id: String): Flow<List<Cuadrilla>>
     fun usuariosEvento(id: String): List<Usuario>
     suspend fun updateEvento(evento: Evento): Boolean
 }
@@ -36,8 +38,12 @@ class EventoRepository @Inject constructor(
         return eventoDao.todosLosEventos()
     }
 
-    override fun cuadrillasEvento(id: String): List<Cuadrilla> {
-        TODO("Not yet implemented")
+    override fun eventosUsuario(username: String): Flow<List<Evento>> {
+        return eventoDao.eventosUsuario(username)
+    }
+
+    override fun cuadrillasEvento(id: String): Flow<List<Cuadrilla>> {
+        return eventoDao.getCuadrillasDeEvento(id)
     }
 
     override fun usuariosEvento(id: String): List<Usuario> {

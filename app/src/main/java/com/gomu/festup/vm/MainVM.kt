@@ -15,6 +15,10 @@ import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
@@ -82,6 +86,8 @@ class MainVM @Inject constructor(
     }
 
 
+
+
     /*****************************************************
      ****************** METODOS EVENTO ******************
      *****************************************************/
@@ -90,6 +96,41 @@ class MainVM @Inject constructor(
         return eventoRepository.todosLosEventos()
     }
 
+    fun eventosUsuario(usuario: Usuario): Flow<List<Evento>> {
+        //Mis eventos como individuo
+        var eventos = eventoRepository.eventosUsuario(usuario.nombre)
+
+        // Mis eventos en las diferentes cuadrillas
+        val cuadrillas = this.getCuadrillasUsuario(usuario)
+        cuadrillas.map { cuadrillas ->
+            cuadrillas.map { cuadrilla ->
+                val eventosCuadrilla = this.eventosCuadrilla(cuadrilla)
+                eventos.combine(eventosCuadrilla){f1, f2 ->
+                    Pair(f1, f2)
+                }
+            }
+        }
+        return eventos
+    }
+
+    fun eventosSeguidos(usuario: Usuario): Flow<List<Evento>> {
+        // Personas a las que sigues
+        val seguidos = userRepository.getAQuienSigue(usuario.username)
+        // Sus eventos
+        var eventos = MutableStateFlow<List<Evento>>(emptyList())
+        seguidos.map { usuarios ->
+            usuarios.map {usuario ->
+                val eventos2 = eventosUsuario(usuario)
+                eventos.combine(eventos2){f1, f2 ->
+                    Pair(f1, f2)
+                }
+            }
+        }
+        return eventos
+    }
+    fun eventosCuadrilla(cuadrilla: Cuadrilla): Flow<List<Cuadrilla>> {
+        return eventoRepository.cuadrillasEvento(cuadrilla.nombre)
+    }
 
 
     /*****************************************************

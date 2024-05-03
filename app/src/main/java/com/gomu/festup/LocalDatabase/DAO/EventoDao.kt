@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.CuadrillaWithEventos
 import com.gomu.festup.LocalDatabase.Entities.CuadrillaWithUsuarios
 import com.gomu.festup.LocalDatabase.Entities.Evento
@@ -19,13 +20,17 @@ interface EventoDao {
     @Transaction
     @Query("SELECT * FROM Evento")
     fun todosLosEventos(): Flow<List<Evento>>
+
+    @Transaction
+    @Query("SELECT * FROM Evento WHERE id IN (SELECT id FROM UsuariosAsistentes WHERE username = :username)")
+    fun eventosUsuario(username: String): Flow<List<Evento>>
     @Transaction
     @Query("SELECT * FROM Usuario WHERE username IN (SELECT username FROM UsuariosAsistentes WHERE idEvento = :id)")
-    suspend fun getUsuariosDeEvento(id: String): List<UsuarioWithEventos>
+    fun getUsuariosDeEvento(id: String): List<UsuarioWithEventos>
 
     @Transaction
     @Query("SELECT * FROM Cuadrilla WHERE nombre IN (SELECT nombreCuadrilla FROM CuadrillasAsistentes WHERE idEvento = :id)")
-    suspend fun getCuadrillasDeEvento(id: String): List<CuadrillaWithEventos>
+    fun getCuadrillasDeEvento(id: String): Flow<List<Cuadrilla>>
 
     @Transaction
     @Query("SELECT * FROM Evento WHERE id=:id")

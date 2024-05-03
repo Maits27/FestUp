@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,47 +32,49 @@ fun Feed(
     mainVM: MainVM
     ) {
 
-    val eventos = listOf(
-        Evento(
-            id = "adbhay4",
-            nombre = "Fiestas de Algorta",
-            fecha = Date(),
-            numeroAsistentes =  4,
-            descripcion = "Las mejores fiestas de Bilbao",
-            localizacion = "Algorta, Bizkaia, España",
-            eventoImagePath = ""
-        ),
-        Evento(
-            id = "asdfjio4",
-            nombre = "Fiestas de Getxo",
-            fecha = Date(),
-            numeroAsistentes =  4,
-            descripcion = "Las mejores fiestas de Bilbao",
-            localizacion = "Algorta, Bizkaia, España",
-            eventoImagePath = ""
-        ),
-    )
+    val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
+    val seguidos = mainVM.eventosSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
+//    val eventos = listOf(
+//        Evento(
+//            id = "adbhay4",
+//            nombre = "Fiestas de Algorta",
+//            fecha = Date(),
+//            numeroAsistentes =  4,
+//            descripcion = "Las mejores fiestas de Bilbao",
+//            localizacion = "Algorta, Bizkaia, España",
+//            eventoImagePath = ""
+//        ),
+//        Evento(
+//            id = "asdfjio4",
+//            nombre = "Fiestas de Getxo",
+//            fecha = Date(),
+//            numeroAsistentes =  4,
+//            descripcion = "Las mejores fiestas de Bilbao",
+//            localizacion = "Algorta, Bizkaia, España",
+//            eventoImagePath = ""
+//        ),
+//    )
 
-    val seguidos = listOf(
-        Evento(
-            id = "123423",
-            nombre = "Fiestas de Barakaldo",
-            fecha = Date(),
-            numeroAsistentes =  4,
-            descripcion = "Las mejores fiestas de Bilbao",
-            localizacion = "Algorta, Bizkaia, España",
-            eventoImagePath = ""
-        ),
-        Evento(
-            id = "12234234",
-            nombre = "Fiestas de Bilbao",
-            fecha = Date(),
-            numeroAsistentes = 4,
-            descripcion = "3 de Mayo",
-            localizacion = "Algorta, Bizkaia, España",
-            eventoImagePath = ""
-        ),
-    )
+//    val seguidos = listOf(
+//        Evento(
+//            id = "123423",
+//            nombre = "Fiestas de Barakaldo",
+//            fecha = Date(),
+//            numeroAsistentes =  4,
+//            descripcion = "Las mejores fiestas de Bilbao",
+//            localizacion = "Algorta, Bizkaia, España",
+//            eventoImagePath = ""
+//        ),
+//        Evento(
+//            id = "12234234",
+//            nombre = "Fiestas de Bilbao",
+//            fecha = Date(),
+//            numeroAsistentes = 4,
+//            descripcion = "3 de Mayo",
+//            localizacion = "Algorta, Bizkaia, España",
+//            eventoImagePath = ""
+//        ),
+//    )
 
     // Tab seleccionado al principio
     var selectedTabIndex by remember { mutableStateOf(0) }
@@ -79,9 +82,7 @@ fun Feed(
     Column (
         Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
-            //.verticalScroll(rememberScrollState())
-                ,
+            .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     )
@@ -114,10 +115,10 @@ fun Feed(
 
         when (selectedTabIndex) {
             0 -> {
-                EventosList(eventos, mainVM, navController)
+                EventosList(eventos.value, mainVM, navController)
             }
             1 -> {
-                EventosList(seguidos, mainVM, navController)
+                EventosList(seguidos.value, mainVM, navController)
             }
         }
     }

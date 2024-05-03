@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import com.gomu.festup.LocalDatabase.DAO.UsuarioDao
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
+import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.RemoteDatabase.AuthUser
@@ -20,8 +21,8 @@ interface IUserRepository: ILoginSettings {
     fun todosLosUsuarios(): Flow<List<Usuario>>
     suspend fun verifyUser(username: String, passwd:String): Usuario
     suspend fun editarUsuario(user: Usuario): Int
-    suspend fun getAQuienSigue(username: String): List<Usuario>
-    suspend fun getSeguidores(username: String): List<Usuario>
+    fun getAQuienSigue(username: String): Flow<List<Usuario>>
+    fun getSeguidores(username: String): Flow<List<Usuario>>
     fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>>
     suspend fun getUserProfile(username: String): Bitmap
     suspend fun setUserProfile(username: String, image: Bitmap): Bitmap
@@ -63,11 +64,11 @@ class UserRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAQuienSigue(username: String): List<Usuario> {
-        TODO("Not yet implemented")
+    override fun getAQuienSigue(username: String): Flow<List<Usuario>> {
+        return usuarioDao.getAQuienSigue(username)
     }
 
-    override suspend fun getSeguidores(username: String): List<Usuario> {
+    override fun getSeguidores(username: String): Flow<List<Usuario>> {
         TODO("Not yet implemented")
     }
 

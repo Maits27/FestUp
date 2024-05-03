@@ -22,16 +22,12 @@ interface UsuarioDao {
     fun todosLosUsuarios(): Flow<List<Usuario>>
 
     @Transaction
-    @Query("SELECT * FROM Cuadrilla WHERE nombre IN (SELECT nombreCuadrilla FROM Integrante WHERE username = :usernameUsuario)")
-    suspend fun getCuadrillasDeUsuario(usernameUsuario: String): List<CuadrillaWithUsuarios>
-
-    @Transaction
     @Query("SELECT * FROM Usuario WHERE username IN (SELECT seguido FROM Seguidores WHERE seguidor = :username)")
-    suspend fun getAQuienSigue(username: String): List<Usuario>
+    fun getAQuienSigue(username: String): Flow<List<Usuario>>
 
     @Transaction
     @Query("SELECT * FROM Usuario WHERE username IN (SELECT seguidor FROM Seguidores WHERE seguido = :username)")
-    suspend fun getSeguidores(username: String): List<Usuario>
+    fun getSeguidores(username: String): Flow<List<Usuario>>
 
     @Transaction
     @Query("SELECT * FROM Cuadrilla WHERE nombre IN (SELECT nombreCuadrilla FROM Integrante WHERE username = :username)")
