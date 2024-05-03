@@ -34,47 +34,6 @@ fun Feed(
 
     val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
     val seguidos = mainVM.eventosSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
-//    val eventos = listOf(
-//        Evento(
-//            id = "adbhay4",
-//            nombre = "Fiestas de Algorta",
-//            fecha = Date(),
-//            numeroAsistentes =  4,
-//            descripcion = "Las mejores fiestas de Bilbao",
-//            localizacion = "Algorta, Bizkaia, España",
-//            eventoImagePath = ""
-//        ),
-//        Evento(
-//            id = "asdfjio4",
-//            nombre = "Fiestas de Getxo",
-//            fecha = Date(),
-//            numeroAsistentes =  4,
-//            descripcion = "Las mejores fiestas de Bilbao",
-//            localizacion = "Algorta, Bizkaia, España",
-//            eventoImagePath = ""
-//        ),
-//    )
-
-//    val seguidos = listOf(
-//        Evento(
-//            id = "123423",
-//            nombre = "Fiestas de Barakaldo",
-//            fecha = Date(),
-//            numeroAsistentes =  4,
-//            descripcion = "Las mejores fiestas de Bilbao",
-//            localizacion = "Algorta, Bizkaia, España",
-//            eventoImagePath = ""
-//        ),
-//        Evento(
-//            id = "12234234",
-//            nombre = "Fiestas de Bilbao",
-//            fecha = Date(),
-//            numeroAsistentes = 4,
-//            descripcion = "3 de Mayo",
-//            localizacion = "Algorta, Bizkaia, España",
-//            eventoImagePath = ""
-//        ),
-//    )
 
     // Tab seleccionado al principio
     var selectedTabIndex by remember { mutableStateOf(0) }

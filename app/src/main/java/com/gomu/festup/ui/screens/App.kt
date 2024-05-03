@@ -67,7 +67,7 @@ fun App(
             composable(AppScreens.Evento.route) { Evento(navController, mainVM) }
 
             composable(AppScreens.AddCuadrilla.route) { AddCuadrilla(navController, mainVM) }
-            composable(AppScreens.AddEvento.route) { AddEvento(navController) }
+            composable(AppScreens.AddEvento.route) { AddEvento(navController, mainVM) }
 
             composable(AppScreens.PerfilYo.route) { PerfilYo(mainNavController, navController, yo = true, mainVM = mainVM) }
             composable(AppScreens.PerfilUser.route) { PerfilYo(mainNavController, navController, yo = false,mainVM = mainVM) }

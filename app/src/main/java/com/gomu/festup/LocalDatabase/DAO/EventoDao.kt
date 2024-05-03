@@ -22,7 +22,8 @@ interface EventoDao {
     fun todosLosEventos(): Flow<List<Evento>>
 
     @Transaction
-    @Query("SELECT * FROM Evento WHERE id IN (SELECT id FROM UsuariosAsistentes WHERE username = :username)")
+    @Query("SELECT * FROM Evento WHERE id IN ((SELECT idEvento FROM UsuariosAsistentes WHERE username = :username) OR " +
+            "(SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla IN (SELECT nombreCuadrilla FROM Integrante WHERE username = :username)))")
     fun eventosUsuario(username: String): Flow<List<Evento>>
     @Transaction
     @Query("SELECT * FROM Usuario WHERE username IN (SELECT username FROM UsuariosAsistentes WHERE idEvento = :id)")

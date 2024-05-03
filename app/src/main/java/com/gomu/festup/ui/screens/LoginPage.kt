@@ -158,8 +158,8 @@ fun LoginForm(
             }
 
             // TODO COGER LOS DATOS DE LA DB
-            mainVM.usuarioMostrar.value= Usuario("nagoregomez","12345","nagore@gmail.com","Nagore Gomez", Date(), "")
-            mainVM.currentUser.value= Usuario("maitane","12345","maitane@gmail.com","Nagore Gomez", Date(), "")
+            mainVM.usuarioMostrar.value=Usuario("maitane","12345","maitane@gmail.com","Mai", Date(), "")
+            mainVM.currentUser.value= Usuario("maitane","12345","maitane@gmail.com","Mai", Date(), "")
             mainNavController.navigate(AppScreens.App.route)
         }
     }

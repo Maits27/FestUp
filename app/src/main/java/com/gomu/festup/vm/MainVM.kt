@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -92,25 +93,17 @@ class MainVM @Inject constructor(
      ****************** METODOS EVENTO ******************
      *****************************************************/
 
+    suspend fun insertarEvento(evento: Evento) {
+        eventoRepository.insertEvento(evento)
+        eventoRepository.insertUsuarioAsistente(currentUser.value!!.username, evento.id)
+    }
+
     fun getEventos(): Flow<List<Evento>> {
         return eventoRepository.todosLosEventos()
     }
 
     fun eventosUsuario(usuario: Usuario): Flow<List<Evento>> {
-        //Mis eventos como individuo
-        var eventos = eventoRepository.eventosUsuario(usuario.nombre)
-
-        // Mis eventos en las diferentes cuadrillas
-        val cuadrillas = this.getCuadrillasUsuario(usuario)
-        cuadrillas.map { cuadrillas ->
-            cuadrillas.map { cuadrilla ->
-                val eventosCuadrilla = this.eventosCuadrilla(cuadrilla)
-                eventos.combine(eventosCuadrilla){f1, f2 ->
-                    Pair(f1, f2)
-                }
-            }
-        }
-        return eventos
+        return  eventoRepository.eventosUsuario(usuario.username)
     }
 
     fun eventosSeguidos(usuario: Usuario): Flow<List<Evento>> {
