@@ -102,6 +102,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun setUserProfile(username: String, image: Bitmap): Boolean {
         return try {
+            Log.d("IMAGEN", "6")
             httpClient.setUserProfile(username, image)
             true
         } catch (e: ResponseException) {

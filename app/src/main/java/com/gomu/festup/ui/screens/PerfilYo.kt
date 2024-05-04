@@ -1,6 +1,9 @@
 package com.gomu.festup.ui.screens
 
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -43,6 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -85,7 +89,7 @@ fun PerfilYo(
                 .fillMaxWidth()
         ) {
             // TODO CAMBIAR EDAD
-            TopProfile(username = usuario.username, email = usuario.email, edad = mainVM.calcularEdad(usuario), yo)
+            TopProfile(mainVM = mainVM, username = usuario.username, email = usuario.email, edad = mainVM.calcularEdad(usuario), yo)
         }
         SeguidoresYSeguidos(yo, usuario, mainVM)
         Column(
@@ -328,12 +332,14 @@ fun BotonesPerfil(mainNavController: NavController, navController: NavController
 }
 @Composable
 fun TopProfile(
+    mainVM: MainVM,
     username: String,
     email: String,
     edad: Int,
     yo: Boolean,
     imageUri: String = "http://34.16.74.167/userProfileImages/no-user.png"
 ){
+    val context = LocalContext.current
     var imageUri by remember {
         mutableStateOf<Uri?>(Uri.parse(imageUri))
     }
@@ -342,6 +348,8 @@ fun TopProfile(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         imageUri = uri
+        Log.d("IMAGEN", "0")
+        mainVM.setUserProfile(context, uri, username)
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {

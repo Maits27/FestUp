@@ -318,7 +318,7 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  NOTIFICACIONES ------------------------------
     suspend fun subscribeUser(FCMClientToken: String) {
-        httpClient.post("https://34.16.74.167") {
+        httpClient.post("http://34.16.74.167") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
@@ -335,6 +335,7 @@ class HTTPClient @Inject constructor() {
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
+        Log.d("IMAGEN", "7")
         httpClient.submitFormWithBinaryData(
             url = "http://34.16.74.167:8000/userProfileImages/${username}",
             formData = formData {

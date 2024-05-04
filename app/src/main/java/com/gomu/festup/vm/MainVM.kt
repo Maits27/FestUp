@@ -66,7 +66,7 @@ class MainVM @Inject constructor(
     fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>{
         return userRepository.getUsuariosMenosCurrent(usuario)
     }
-    fun estaApuntado(usuario: Usuario, id: String): Boolean = runBlocking{
+    fun estaApuntado(usuario: Usuario, id: String): Boolean = runBlocking {
         eventoRepository.estaApuntado(usuario.username, id)
     }
 
@@ -79,13 +79,19 @@ class MainVM @Inject constructor(
 
     fun setUserProfile(context: Context, uri: Uri?, username: String): Boolean = runBlocking {
         var ivImage = ImageView(context)
+        Log.d("IMAGEN", "1")
         ivImage.setImageURI(uri)
+        Log.d("IMAGEN", "2")
         val drawable: Drawable = ivImage.drawable
+        Log.d("IMAGEN", "3")
         if (drawable is BitmapDrawable) {
+            Log.d("IMAGEN", "4")
             userRepository.setUserProfile(username, drawable.bitmap)
         }else{
+            Log.d("IMAGEN", "5")
             false
         }
+        false
     }
 
     fun actualizarCurrentUser(username: String): Usuario {
