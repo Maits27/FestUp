@@ -269,7 +269,7 @@ fun RegistroForm(
             CoroutineScope(Dispatchers.Main).launch {
                 try {
                     val usuario = withContext(Dispatchers.IO) {
-                        identVM.registrarUsuario(username, password, email, nombre, birthDate, "")
+                        identVM.registrarUsuario(username, password, email, nombre, birthDate)
                     }
                     if (usuario != null) {
                         mainVM.currentUser.value= usuario
@@ -388,7 +388,7 @@ fun RegistroForm(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text(text = "Constraseña") },
+            label = { Text(text = "Contraseña") },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = modifierForInputs

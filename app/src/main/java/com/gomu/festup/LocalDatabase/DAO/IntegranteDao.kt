@@ -1,11 +1,13 @@
 package com.gomu.festup.LocalDatabase.DAO
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Integrante
 import kotlinx.coroutines.flow.Flow
 
@@ -36,4 +38,8 @@ interface IntegranteDao{
     @Transaction
     @Query("SELECT * FROM Integrante ")
     fun getIntegrantes(): Flow<List<Integrante>>
+
+
+    @Delete(entity = Integrante::class)
+    fun eliminarIntegrante(integrante: Integrante)
 }

@@ -184,8 +184,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                             mainVM.crearCuadrilla(Cuadrilla(
                                 nombre = nombre,
                                 lugar = localizacion,
-                                descripcion = descripcion,
-                                profileImagePath = "" // TODO
+                                descripcion = descripcion
                             ))
                         }
                         if (insertCorrecto) {

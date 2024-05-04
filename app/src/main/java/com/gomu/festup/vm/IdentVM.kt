@@ -15,10 +15,10 @@ class IdentVM @Inject constructor(
 ): ViewModel() {
 
 
-    suspend fun registrarUsuario(username: String, password:String, email: String, nombre: String, fechaNacimiento: String, profileImagePath: String): Usuario? {
+    suspend fun registrarUsuario(username: String, password:String, email: String, nombre: String, fechaNacimiento: String): Usuario? {
         try{
             val fechaNacimientoDate = fechaNacimiento.formatearFecha()
-            val newUser = Usuario(username,password,email,nombre,fechaNacimientoDate,profileImagePath)
+            val newUser = Usuario(username,password,email,nombre,fechaNacimientoDate)
             val signInCorrect = userRepository.insertUsuario(newUser)
             return if (signInCorrect) newUser else null
         }catch (e:Exception){

@@ -55,7 +55,7 @@ class EventoRepository @Inject constructor(
 
             // TODO ARREGLAR, ID Y DATE FORMATO
             val fechaString: String = evento.fecha.toStringNuestro()
-            httpClient.insertEvento(RemoteEvento(evento.id,evento.nombre,fechaString,evento.numeroAsistentes,evento.descripcion,evento.localizacion, ""))
+            httpClient.insertEvento(RemoteEvento(evento.id,evento.nombre,fechaString,evento.numeroAsistentes,evento.descripcion,evento.localizacion))
             httpClient.insertUsuarioAsistente(RemoteUsuarioAsistente(username,evento.id))
             true
         }catch (e:Exception){

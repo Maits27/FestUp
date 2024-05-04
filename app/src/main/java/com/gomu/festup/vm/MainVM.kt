@@ -111,9 +111,9 @@ class MainVM @Inject constructor(
         return cuadrillaRepository.usuariosCuadrilla(cuadrillaMostrar.value!!.nombre)
     }
 
-    fun eliminarCuadrilla(cuadrilla: Cuadrilla)  {
+    fun eliminarIntegrante(cuadrilla: Cuadrilla)  {
         viewModelScope.launch(Dispatchers.IO) {
-            cuadrillaRepository.eliminarCuadrilla(cuadrilla)
+            cuadrillaRepository.eliminarIntegrante(cuadrilla,currentUser.value!!.username)
         }
     }
 

@@ -28,7 +28,7 @@ interface ICuadrillaRepository {
     fun eventosCuadrilla(nombreCuadrilla: String): List<Evento>
     suspend fun insertUser(usuario: Usuario): Boolean
 
-    suspend fun eliminarCuadrilla(cuadrilla: Cuadrilla): Boolean
+    suspend fun eliminarIntegrante(cuadrilla: Cuadrilla, username: String): Boolean
 
     fun getCuadrillas(): Flow<List<Cuadrilla>>
 
@@ -49,7 +49,7 @@ class CuadrillaRepository @Inject constructor(
             integranteDao.insertIntegrante(Integrante(username, cuadrilla.nombre))
 
 
-            httpClient.insertCuadrilla(RemoteCuadrilla(cuadrilla.nombre," ",cuadrilla.descripcion,cuadrilla.lugar,cuadrilla.profileImagePath))
+            httpClient.insertCuadrilla(RemoteCuadrilla(cuadrilla.nombre," ",cuadrilla.descripcion,cuadrilla.lugar))
             httpClient.insertIntegrante(RemoteIntegrante(username,cuadrilla.nombre))
             true
         }catch (e:Exception){
@@ -75,10 +75,16 @@ class CuadrillaRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun eliminarCuadrilla(cuadrilla: Cuadrilla): Boolean {
+    override suspend fun eliminarIntegrante(cuadrilla: Cuadrilla, username: String): Boolean {
         return try {
-            httpClient.deleteCuadrilla(cuadrilla.nombre)
-            cuadrillaDao.eliminarCuadrilla(cuadrilla)
+            httpClient.deleteIntegrante(RemoteIntegrante(username,cuadrilla.nombre))
+            integranteDao.eliminarIntegrante(Integrante(username,cuadrilla.nombre))
+            val integrantesCuadrilla = integranteDao.getIntegrantesCuadrilla(cuadrilla.nombre)
+
+            if (integrantesCuadrilla.first().isEmpty()){
+                httpClient.deleteCuadrilla(cuadrilla.nombre)
+                cuadrillaDao.eliminarCuadrilla(cuadrilla)
+            }
             true
         } catch (e:Exception){
             Log.d("Exception crear cuadrilla", e.toString())

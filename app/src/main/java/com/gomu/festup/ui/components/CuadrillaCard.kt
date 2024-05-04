@@ -91,7 +91,7 @@ fun CuadrillaCard(
                     show = verificacion,
                     mensaje = "Si eliminas esta cuadrilla tendrás que volver a solicitar entrar.",
                     onDismiss = { verificacion = false },
-                    onConfirm = { mainVM.eliminarCuadrilla(cuadrilla); verificacion = false }
+                    onConfirm = { mainVM.eliminarIntegrante(cuadrilla); verificacion = false }
                 )
             }
         }

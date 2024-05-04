@@ -139,7 +139,6 @@ fun AddEvento(
                     fecha = fechaEvento,
                     descripcion = description,
                     localizacion = location,
-                    eventoImagePath = "",
                     numeroAsistentes = 1
                 ))
                 if (insertCorrecto){
@@ -154,7 +153,6 @@ fun AddEvento(
                         fecha = fechaEvento,
                         descripcion = description,
                         localizacion = location,
-                        eventoImagePath = "",
                         numeroAsistentes = 1
                     ))
                 }

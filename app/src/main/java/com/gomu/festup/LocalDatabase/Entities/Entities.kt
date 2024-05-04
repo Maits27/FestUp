@@ -17,16 +17,14 @@ data class Usuario(
     val password: String,
     val email: String,
     val nombre: String,
-    val fechaNacimiento: Date,
-    val profileImagePath: String
+    val fechaNacimiento: Date
 )
 
 @Entity
 data class Cuadrilla(
     @PrimaryKey val nombre: String,
     val descripcion: String,
-    val lugar: String,
-    val profileImagePath: String
+    val lugar: String
 )
 
 @Entity
@@ -36,8 +34,7 @@ data class Evento(
     val fecha: Date,
     val numeroAsistentes: Int,
     val descripcion: String,
-    val localizacion: String,
-    val eventoImagePath: String
+    val localizacion: String
 )
 
 

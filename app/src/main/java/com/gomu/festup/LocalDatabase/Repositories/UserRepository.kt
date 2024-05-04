@@ -55,7 +55,7 @@ class UserRepository @Inject constructor(
         return try {
             usuarioDao.insertUsuario(usuario) // TODO QUITAR (de momento hace falta pq no hemos descargado todos los datos)
             val fechaNacimientoString = usuario.fechaNacimiento.toStringNuestro()
-            val authUser= AuthUser(usuario.username,usuario.password,usuario.email,usuario.nombre,fechaNacimientoString,usuario.profileImagePath)
+            val authUser= AuthUser(usuario.username,usuario.password,usuario.email,usuario.nombre,fechaNacimientoString)
             authClient.createUser(authUser)
             true
         }catch (e:Exception){

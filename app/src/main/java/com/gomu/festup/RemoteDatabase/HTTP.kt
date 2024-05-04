@@ -40,8 +40,7 @@ data class AuthUser(
     val password: String,
     val email: String,
     val nombre: String,
-    val fechaNacimiento: String,
-    val profileImagePath: String
+    val fechaNacimiento: String
 )
 
 @Serializable
@@ -49,8 +48,7 @@ data class RemoteCuadrilla(
     val nombre: String,
     val accessToken: String,
     val descripcion: String,
-    val lugar: String,
-    val profileImagePath: String
+    val lugar: String
 )
 
 @Serializable
@@ -85,8 +83,7 @@ data class RemoteEvento(
     val fecha: String,
     val numeroAsistentes: Int,
     val descripcion: String,
-    val localizacion: String,
-    val eventoImagePath: String
+    val localizacion: String
 )
 
 private val bearerTokenStorage = mutableListOf<BearerTokens>()
