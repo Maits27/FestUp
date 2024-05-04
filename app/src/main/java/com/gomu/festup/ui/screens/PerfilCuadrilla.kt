@@ -116,6 +116,7 @@ fun PerfilCuadrilla(
             ){
                 TopProfileCuadrilla(
                     cuadrilla = cuadrilla,
+                    numIntegrantes = usuariosCuadrilla.value.size,
                     pertenezco = pertenezco
                 )
             }
@@ -163,6 +164,7 @@ fun EliminarCuadrilla(nombre: String) {
 @Composable
 fun TopProfileCuadrilla(
     cuadrilla: Cuadrilla,
+    numIntegrantes: Int,
     pertenezco: Boolean
 ){
 
@@ -225,7 +227,7 @@ fun TopProfileCuadrilla(
     )
     // TODO
     Text(
-        text = "18",
+        text = "Integrantes: ${numIntegrantes}",
         modifier = Modifier.padding(5.dp),
         style = TextStyle(
             fontSize = 15.sp

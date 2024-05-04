@@ -87,8 +87,9 @@ class UserRepository @Inject constructor(
     }
 
     override fun getSeguidores(username: String): Flow<List<Usuario>> {
-        TODO("Not yet implemented")
+        return usuarioDao.getSeguidores(username)
     }
+
 
     override fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>> {
         // TODO PRIMERO RECOGER DEL REMOTO Y LUEGO PONERLOS AQUI

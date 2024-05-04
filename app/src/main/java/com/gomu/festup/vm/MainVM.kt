@@ -70,6 +70,13 @@ class MainVM @Inject constructor(
         eventoRepository.estaApuntado(usuario.username, id)
     }
 
+    fun listaSeguidores(usuario: Usuario): Flow<List<Usuario>>{
+        return userRepository.getSeguidores(usuario.username)
+    }
+    fun listaSeguidos(usuario: Usuario): Flow<List<Usuario>>{
+        return userRepository.getAQuienSigue(usuario.username)
+    }
+
     fun setUserProfile(context: Context, uri: Uri?, username: String): Boolean = runBlocking {
         var ivImage = ImageView(context)
         ivImage.setImageURI(uri)

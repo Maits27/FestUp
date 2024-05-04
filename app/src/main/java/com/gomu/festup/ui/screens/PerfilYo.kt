@@ -54,6 +54,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.CuadrillaCard
@@ -86,7 +87,7 @@ fun PerfilYo(
             // TODO CAMBIAR EDAD
             TopProfile(username = usuario.username, email = usuario.email, edad = mainVM.calcularEdad(usuario), yo)
         }
-        SeguidoresYSeguidos(yo)
+        SeguidoresYSeguidos(yo, usuario, mainVM)
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -201,7 +202,7 @@ fun EstasSeguro(show: Boolean, mensaje: String, onDismiss:()->Unit, onConfirm:()
     }
 }
 @Composable
-fun SeguidoresYSeguidos(yo: Boolean){
+fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM){
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -209,6 +210,8 @@ fun SeguidoresYSeguidos(yo: Boolean){
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ){
+        val seguidores = mainVM.listaSeguidores(usuario).collectAsState(initial = emptyList())
+        val seguidos = mainVM.listaSeguidos(usuario).collectAsState(initial = emptyList())
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -225,7 +228,7 @@ fun SeguidoresYSeguidos(yo: Boolean){
                     )
             ) {
                 Text(
-                    text = "16",
+                    text = seguidores.value.size.toString(),
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
@@ -249,7 +252,7 @@ fun SeguidoresYSeguidos(yo: Boolean){
                     )
             ) {
                 Text(
-                    text = "20",
+                    text = seguidos.value.size.toString(),
                     style = TextStyle(
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
