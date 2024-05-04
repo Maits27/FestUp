@@ -44,6 +44,17 @@ fun Date.toStringNuestro(): String{
     return SimpleDateFormat("dd/MM/yyyy").format(this)
 }
 
+fun String.formatearFechaRemoto(): Date {
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+    val fechaFormateada: Date = dateFormat.parse(this)
+    return fechaFormateada
+}
+
+fun Date.toStringRemoto(): String{
+    return SimpleDateFormat("yyyy-MM-dd").format(this)
+}
+
+
 fun getLatLngFromAddress(context: Context, mAddress: String): Pair<Double, Double>? {
     val coder = Geocoder(context)
     try {

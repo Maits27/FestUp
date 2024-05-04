@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,12 +17,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,8 +48,12 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.Apuntarse
 import com.gomu.festup.ui.components.CuadrillaCard
+import com.gomu.festup.ui.components.CuadrillaCardParaEventosAlert
+import com.gomu.festup.ui.components.Desapuntarse
 import com.gomu.festup.ui.components.UsuarioCard
+import com.gomu.festup.ui.components.UsuarioCardParaEventosAlert
 import com.gomu.festup.vm.MainVM
 import java.util.Date
 
@@ -65,22 +74,22 @@ fun Evento(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         AsyncImage(
             model = imageUri,
             contentDescription = "Event image",
             onError = {
-                imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-image.png"
+                imageUri = "http://34.16.74.167/eventoImages/no-image.png"
             },
             placeholder = painterResource(id = R.drawable.party),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+                .height(100.dp)
                 .padding(16.dp)
         )
         DatosEvento(evento)
-        Divider(modifier = Modifier.padding(10.dp))
         EstadisticasEvento(mainVM = mainVM, evento = evento, apuntado = apuntado)
         Divider(modifier = Modifier.padding(10.dp))
         Text(
@@ -155,87 +164,102 @@ fun DatosEvento(evento: Evento) {
 
 @Composable
 fun EstadisticasEvento(mainVM: MainVM, evento: Evento, apuntado: Boolean){
-    Row (
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically,
+    var apuntarse by remember { mutableStateOf(false) }
+    var desapuntarse by remember { mutableStateOf(false) }
+    Column (
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
     ){
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Edad media",
-                style = TextStyle(fontSize = 16.sp),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(8.dp)
-            )
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.onSecondary,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "1",
-                    color = Color.White,
-                    style = TextStyle(fontSize = 24.sp)
-                )
-            }
-        }
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Personas",
-                style = TextStyle(fontSize = 16.sp),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(8.dp)
-            )
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.onSecondary,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = evento.numeroAsistentes.toString(),
-                    color = Color.White,
-                    style = TextStyle(fontSize = 24.sp)
-                )
-            }
-        }
-        Column (
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Row (
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.Bottom)
+                .padding(12.dp)
         ){
-            if (apuntado){
-                Button(onClick = { mainVM.desapuntarse(mainVM.currentUser.value!!, evento) }) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Edad media",
+                    style = TextStyle(fontSize = 16.sp),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(8.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.onSecondary,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
-                        text = "Desapuntarse",
-                        style = TextStyle(fontSize = 17.sp)
+                        text = "1",
+                        color = Color.White,
+                        style = TextStyle(fontSize = 24.sp)
                     )
                 }
-            }else{
-                Button(onClick = { mainVM.apuntarse(mainVM.currentUser.value!!, evento) }) {
+            }
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Personas",
+                    style = TextStyle(fontSize = 16.sp),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(8.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.onSecondary,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
-                        text = "Apuntarme",
-                        style = TextStyle(fontSize = 17.sp)
+                        text = evento.numeroAsistentes.toString(),
+                        color = Color.White,
+                        style = TextStyle(fontSize = 24.sp)
                     )
                 }
             }
         }
     }
+    Row (
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+    ){
+        Button(
+            onClick = { apuntarse = true },
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = "Apuntarme",
+                style = TextStyle(fontSize = 17.sp)
+            )
+        }
+
+        Button(
+            onClick = { desapuntarse = true},
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = "Desapuntarse",
+                style = TextStyle(fontSize = 17.sp)
+            )
+        }
+    }
+    Apuntarse(show = apuntarse, apuntado = apuntado,  mainVM = mainVM) { apuntarse = false }
+    Desapuntarse(show = desapuntarse , apuntado = apuntado, mainVM = mainVM) { desapuntarse = false }
 }
+

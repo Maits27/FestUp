@@ -1,12 +1,14 @@
 package com.gomu.festup.ui.screens
 
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -65,6 +67,7 @@ import com.gomu.festup.ui.components.CuadrillaCard
 import com.gomu.festup.vm.MainVM
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun PerfilYo(
     mainNavController: NavController,
@@ -88,8 +91,12 @@ fun PerfilYo(
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxWidth()
         ) {
-            // TODO CAMBIAR EDAD
-            TopProfile(mainVM = mainVM, username = usuario.username, email = usuario.email, edad = mainVM.calcularEdad(usuario), yo)
+            TopProfile(
+                mainVM = mainVM,
+                username = usuario.username,
+                email = usuario.email,
+                edad = mainVM.calcularEdad(usuario),
+                yo)
         }
         SeguidoresYSeguidos(yo, usuario, mainVM)
         Column(
@@ -330,6 +337,7 @@ fun BotonesPerfil(mainNavController: NavController, navController: NavController
         }
     }
 }
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun TopProfile(
     mainVM: MainVM,
@@ -340,15 +348,17 @@ fun TopProfile(
 ){
     val context = LocalContext.current
     var imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/cuadrillaProfileImages/$username.png"))
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/$username.png"))
     }
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
-        imageUri = uri
         Log.d("IMAGEN", "0")
-        mainVM.setUserProfile(context, uri, username)
+        if (uri!=null) {
+            imageUri = uri
+            mainVM.updateUserImage(context, username, uri)
+        }
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {

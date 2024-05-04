@@ -29,6 +29,7 @@ interface EventoDao {
             "SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla IN ( " +
             "SELECT nombreCuadrilla FROM Integrante WHERE username = :username))")
     fun eventosUsuario(username: String): Flow<List<Evento>>
+
     @Transaction
     @Query("SELECT * FROM Usuario WHERE username IN (SELECT username FROM UsuariosAsistentes WHERE idEvento = :id)")
     fun getUsuariosDeEvento(id: String): Flow<List<Usuario>>
@@ -40,6 +41,18 @@ interface EventoDao {
     @Transaction
     @Query("SELECT * FROM Evento WHERE id=:id")
     fun getEvento(id:String): Flow<Evento>
+
+    @Transaction
+    @Query("SELECT * FROM Cuadrilla WHERE nombre IN " +
+            "(SELECT nombreCuadrilla FROM Integrante WHERE username=:username) " +
+            "AND nombre IN (SELECT nombreCuadrilla FROM CuadrillasAsistentes WHERE idEvento=:id)")
+    fun cuadrillasUsuarioApuntadas(username: String, id: String): Flow<List<Cuadrilla>>
+
+    @Transaction
+    @Query("SELECT * FROM Cuadrilla WHERE nombre NOT IN " +
+            "(SELECT nombreCuadrilla FROM CuadrillasAsistentes WHERE idEvento=:id) " +
+            "AND nombre IN (SELECT nombreCuadrilla FROM Integrante WHERE username=:username)")
+    fun cuadrillasUsuarioNoApuntadas(username: String, id: String): Flow<List<Cuadrilla>>
 
     @Update
     fun editarEvento(evento: Evento): Int

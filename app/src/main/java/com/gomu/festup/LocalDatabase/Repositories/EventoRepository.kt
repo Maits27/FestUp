@@ -19,6 +19,7 @@ import com.gomu.festup.RemoteDatabase.RemoteEvento
 import com.gomu.festup.RemoteDatabase.RemoteIntegrante
 import com.gomu.festup.RemoteDatabase.RemoteUsuarioAsistente
 import com.gomu.festup.utils.toStringNuestro
+import com.gomu.festup.utils.toStringRemoto
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
@@ -31,6 +32,8 @@ interface IEventoRepository {
     fun usuariosEventos(): Flow<List<UsuariosAsistentes>>
     fun eventosUsuario(username: String): Flow<List<Evento>>
     suspend fun estaApuntado(username: String, id: String): Boolean
+    fun cuadrillasUsuarioApuntadas(username: String, id: String): Flow<List<Cuadrilla>>
+    fun cuadrillasUsuarioNoApuntadas(username: String, id: String): Flow<List<Cuadrilla>>
     suspend fun apuntarse(usuario: Usuario, id: String)
     suspend fun desapuntarse(usuario: Usuario, id: String)
     suspend fun apuntarse(cuadrilla: Cuadrilla, id: String)
@@ -54,7 +57,7 @@ class EventoRepository @Inject constructor(
             usuariosAsistentesDao.insertUsuarioAsistente(UsuariosAsistentes(username, evento.id))
 
             // TODO ARREGLAR, ID Y DATE FORMATO
-            val fechaString: String = evento.fecha.toStringNuestro()
+            val fechaString: String = evento.fecha.toStringRemoto()
             httpClient.insertEvento(RemoteEvento(
                 id = evento.id, // TODO (evento.id) cambiar esto cuando se genere correctamente el id
                 nombre = evento.nombre,
@@ -66,7 +69,7 @@ class EventoRepository @Inject constructor(
             httpClient.insertUsuarioAsistente(RemoteUsuarioAsistente(username,evento.id))
             true
         }catch (e:Exception){
-            Log.d("Exception crear cuadrilla", e.toString())
+            Log.d("Exception crear evento", e.toString())
             false
         }
     }
@@ -86,6 +89,15 @@ class EventoRepository @Inject constructor(
         if (usuario.isEmpty()) return false
         return true
     }
+
+    override fun cuadrillasUsuarioApuntadas(username: String, id: String): Flow<List<Cuadrilla>> {
+        return eventoDao.cuadrillasUsuarioApuntadas(username, id)
+    }
+
+    override fun cuadrillasUsuarioNoApuntadas(username: String, id: String): Flow<List<Cuadrilla>> {
+        return eventoDao.cuadrillasUsuarioNoApuntadas(username, id)
+    }
+
     override suspend fun apuntarse(usuario: Usuario, id: String){
         usuariosAsistentesDao.insertUsuarioAsistente(UsuariosAsistentes(usuario.username, id))
     }

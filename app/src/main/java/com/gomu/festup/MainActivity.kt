@@ -2,11 +2,13 @@ package com.gomu.festup
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -28,6 +30,7 @@ class MainActivity : ComponentActivity() {
     private val identVM by viewModels<IdentVM>()
 
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         askLocationPermission()
@@ -68,6 +71,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun Principal(mainVM: MainVM, identVM: IdentVM) {
     val mainNavController = rememberNavController()

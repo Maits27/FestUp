@@ -12,6 +12,7 @@ import com.gomu.festup.RemoteDatabase.AuthUser
 import com.gomu.festup.RemoteDatabase.AuthenticationException
 import com.gomu.festup.RemoteDatabase.HTTPClient
 import com.gomu.festup.RemoteDatabase.UserExistsException
+import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.toStringNuestro
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
@@ -102,7 +103,6 @@ class UserRepository @Inject constructor(
 
     override suspend fun setUserProfile(username: String, image: Bitmap): Boolean {
         return try {
-            Log.d("IMAGEN", "6")
             httpClient.setUserProfile(username, image)
             true
         } catch (e: ResponseException) {
@@ -125,8 +125,25 @@ class UserRepository @Inject constructor(
         return usuarioDao.getUsuariosMenosCurrent(usuario.username)
     }
 
+    //TODO CONSULTA DE GET USUARIO (Falta el token?)
     override fun getUsuario(username: String): Usuario{
-        return usuarioDao.getUsuario(username)
+        var usuario = usuarioDao.getUsuario(username)
+        if (usuario == null){
+            Log.d("USUARIO", "USUARIO REMOTO")
+//            val authUser = httpClient.getUsuarios().filter { it.username == username }[0]
+            val authUser = httpClient.getUsuario(username)
+            usuario = Usuario(
+                username = authUser.username,
+                password = authUser.password,
+                nombre = authUser.nombre,
+                email = authUser.email,
+                fechaNacimiento = authUser.fechaNacimiento.formatearFecha()
+            )
+            Log.d("USUARIO", usuario.toString())
+            usuarioDao.insertUsuario(usuario)
+            Log.d("USUARIO", "insertado")
+        }
+        return usuario
     }
 
 }

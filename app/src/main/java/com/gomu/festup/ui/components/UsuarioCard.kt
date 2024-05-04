@@ -50,7 +50,7 @@ fun UsuarioCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal = 8.dp, vertical = 3.dp)
             .clickable { onCardClick(usuario) }
     ) {
         Row (
@@ -74,7 +74,59 @@ fun UsuarioCard(
             Spacer(modifier = Modifier.size(15.dp))
             Column {
                 Text(
-                    text = usuario.username,
+                    text = "@${usuario.username}",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = usuario.nombre,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun UsuarioCardParaEventosAlert(
+    usuario: Usuario,
+    onClick:()-> Unit
+) {
+
+
+    var imageUri by remember {
+        mutableStateOf("http://34.16.74.167/userProfileImages/${usuario.username}.png")
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onClick() }
+    ) {
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ){
+            AsyncImage(
+                model = imageUri,
+                contentDescription = "User image",
+                onError = {
+                    imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-user.png"
+                },
+                placeholder = painterResource(id = R.drawable.party),
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(CircleShape)
+            )
+            Spacer(modifier = Modifier.size(15.dp))
+            Column {
+                Text(
+                    text = "@${usuario.username}",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                 )

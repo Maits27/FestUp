@@ -1,11 +1,13 @@
 package com.gomu.festup.ui.screens
 
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -74,6 +76,7 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun LoginPage(
     mainNavController: NavController,
@@ -145,7 +148,6 @@ fun LoginForm(
         if (username == "") Toast.makeText(context, "Introduce un nombre de usuario", Toast.LENGTH_SHORT).show()
         else if (password == "") Toast.makeText(context, "Introduce una contrseña", Toast.LENGTH_SHORT).show()
         else {
-
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val usuario = withContext(Dispatchers.IO) {
@@ -153,6 +155,7 @@ fun LoginForm(
                     }
                     if (usuario) {
                         val currentUser = withContext(Dispatchers.IO) {
+                            Log.d("CURRENTUSER", "get")
                             mainVM.actualizarCurrentUser(username)
                         }
                         withContext(Dispatchers.Main) {
@@ -216,6 +219,7 @@ fun LoginForm(
 }
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroForm(
@@ -257,6 +261,16 @@ fun RegistroForm(
         mutableStateOf(false)
     }
 
+    var imageUri by remember {
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/no-user.png"))
+    }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        imageUri = uri
+    }
+
     val emailRegex = Regex("""\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Z|a-z]{2,}\b""")
     val onRegisterButtonClick: () -> Unit = {
         if (username == "") Toast.makeText(context, "Introduce un nombre de usuario", Toast.LENGTH_SHORT).show()
@@ -271,7 +285,7 @@ fun RegistroForm(
             CoroutineScope(Dispatchers.Main).launch {
                 try {
                     val usuario = withContext(Dispatchers.IO) {
-                        identVM.registrarUsuario(username, password, email, nombre, birthDate)
+                        identVM.registrarUsuario(context, username, password, email, nombre, birthDate, imageUri)
                     }
                     if (usuario != null) {
                         mainVM.currentUser.value= usuario
@@ -287,15 +301,7 @@ fun RegistroForm(
         }
     }
 
-    var imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/no-user.png"))
-    }
 
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        imageUri = uri
-    }
 
     val modifierForInputs = Modifier.padding(vertical = 10.dp)
 

@@ -38,7 +38,7 @@ fun CuadrillaCard(
     cuadrilla: Cuadrilla,
     mainVM: MainVM,
     navController: NavController,
-    isRemoveAvailable: Boolean
+    isRemoveAvailable: Boolean,
 ) {
 
     val onCardClick: (Cuadrilla) -> Unit = {
@@ -53,7 +53,7 @@ fun CuadrillaCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 3.dp)
+            .padding(horizontal = 8.dp, vertical = 3.dp)
             .clickable { onCardClick(cuadrilla) }
     ) {
         Row(
@@ -102,6 +102,56 @@ fun CuadrillaCard(
                     onConfirm = { mainVM.eliminarIntegrante(cuadrilla); verificacion = false }
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun CuadrillaCardParaEventosAlert(
+    cuadrilla: Cuadrilla,
+    onClick: () -> Unit,
+) {
+
+    var imageUri by remember {
+        mutableStateOf("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onClick() }
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(13.dp)
+        ) {
+            AsyncImage(
+                model = imageUri,
+                contentDescription = "Cuadrilla profile image",
+                onError = {
+                    imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png"
+                },
+                modifier = Modifier.size(50.dp)
+            )
+            Column(
+                Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
+            ) {
+                Text(
+                    text = cuadrilla.nombre,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(
+                    text = cuadrilla.lugar,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+
         }
     }
 }

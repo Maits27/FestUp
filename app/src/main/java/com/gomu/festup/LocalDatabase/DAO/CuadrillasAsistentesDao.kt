@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.CuadrillasAsistentes
 import kotlinx.coroutines.flow.Flow
 
@@ -18,6 +19,8 @@ interface CuadrillasAsistentesDao {
     @Transaction
     @Query("SELECT * FROM CuadrillasAsistentes")
     fun todasLasCuadrillasAsistentes(): Flow<List<CuadrillasAsistentes>>
+
+
 
     @Transaction
     @Query("SELECT nombreCuadrilla FROM CuadrillasAsistentes WHERE idEvento=:id")

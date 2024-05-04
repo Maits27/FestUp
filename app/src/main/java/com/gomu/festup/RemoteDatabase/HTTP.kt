@@ -183,6 +183,12 @@ class HTTPClient @Inject constructor() {
         response.body()
     }
 
+    fun getUsuario(username: String): AuthUser = runBlocking {
+        Log.d("USUARIO", "get")
+        val response = httpClient.get("http:/34.16.74.167/getUser?username=$username")
+        response.body()
+    }
+
     // ---------------------------  USUARIO ASISTENTE ------------------------------
     suspend fun getUsuariosAsistentes(): List<RemoteUsuarioAsistente> = runBlocking {
         val response = httpClient.get("http://34.16.74.167/getUsuariosAsistentes")
@@ -322,33 +328,24 @@ class HTTPClient @Inject constructor() {
     }
 
     // ---------------------------  IMAGEN DE PERFIL ------------------------------
-    suspend fun getUserProfile(username: String): Bitmap {
-        val response = httpClient.get("http://34.16.74.167:8000/userProfileImages/${username}")
-        val image: ByteArray = response.body()
-        return BitmapFactory.decodeByteArray(image, 0, image.size)
-    }
+
 
     suspend fun setUserProfile(username: String, image: Bitmap) {
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
-        Log.d("IMAGEN", "7")
+        Log.d("Image", byteArray.size.toString())
         httpClient.submitFormWithBinaryData(
-            url = "http://34.16.74.167:8000/userProfileImages/${username}",
+            url = "http://34.16.74.167/userProfileImages",
             formData = formData {
-                append("file", byteArray, Headers.build {
+                append("image", byteArray, Headers.build {
                     append(HttpHeaders.ContentType, "image/png")
-                    append(HttpHeaders.ContentDisposition, "filename=profile_image.png")
+                    append(HttpHeaders.ContentDisposition, "filename=$username.png")
                 })
             }
         ) { method = HttpMethod.Put }
     }
 
-    suspend fun getCuadrillaProfile(nombre: String): Bitmap {
-        val response = httpClient.get("http://34.16.74.167:8000/cuadrillaProfileImages/${nombre}")
-        val image: ByteArray = response.body()
-        return BitmapFactory.decodeByteArray(image, 0, image.size)
-    }
 
     suspend fun setCuadrillaImage(nombre: String, image: Bitmap) {
         val stream = ByteArrayOutputStream()
@@ -364,12 +361,6 @@ class HTTPClient @Inject constructor() {
                 })
             }
         ) { method = HttpMethod.Put }
-    }
-
-    suspend fun getEventoProfile(id: String): Bitmap {
-        val response = httpClient.get("http://34.16.74.167:8000/eventoImages/${id}")
-        val image: ByteArray = response.body()
-        return BitmapFactory.decodeByteArray(image, 0, image.size)
     }
 
     suspend fun setEventoProfile(id: String, image: Bitmap) {

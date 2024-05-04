@@ -1,13 +1,17 @@
 package com.gomu.festup.vm
 
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.Location
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -70,6 +74,12 @@ class MainVM @Inject constructor(
     fun estaApuntado(usuario: Usuario, id: String): Boolean = runBlocking {
         eventoRepository.estaApuntado(usuario.username, id)
     }
+    fun cuadrillasUsuarioApuntadas(usuario: Usuario, id: String): Flow<List<Cuadrilla>>  {
+        return eventoRepository.cuadrillasUsuarioApuntadas(usuario.username, id)
+    }
+    fun cuadrillasUsuarioNoApuntadas(usuario: Usuario, id: String): Flow<List<Cuadrilla>>  {
+        return eventoRepository.cuadrillasUsuarioNoApuntadas(usuario.username, id)
+    }
 
     fun listaSeguidores(usuario: Usuario): Flow<List<Usuario>>{
         return userRepository.getSeguidores(usuario.username)
@@ -78,28 +88,24 @@ class MainVM @Inject constructor(
         return userRepository.getAQuienSigue(usuario.username)
     }
 
-    fun setUserProfile(context: Context, uri: Uri?, username: String): Boolean = runBlocking {
-        var ivImage = ImageView(context)
-        Log.d("IMAGEN", "1")
-        ivImage.setImageURI(uri)
-        Log.d("IMAGEN", "2")
-        val drawable: Drawable = ivImage.drawable
-        Log.d("IMAGEN", "3")
-        if (drawable is BitmapDrawable) {
-            Log.d("IMAGEN", "4")
-            userRepository.setUserProfile(username, drawable.bitmap)
-        }else{
-            Log.d("IMAGEN", "5")
-            false
+
+
+    fun actualizarCurrentUser(username: String): Usuario = runBlocking(Dispatchers.IO){
+        userRepository.getUsuario(username)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun updateUserImage(context: Context, username: String, uri: Uri?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            var imageBitmap: Bitmap? = null
+            if (uri != null) {
+                val contentResolver: ContentResolver = context.contentResolver
+                val source = ImageDecoder.createSource(contentResolver, uri)
+                imageBitmap = ImageDecoder.decodeBitmap(source)
+                userRepository.setUserProfile(username, imageBitmap)
+            }
         }
-        false
     }
-
-    fun actualizarCurrentUser(username: String): Usuario {
-        return userRepository.getUsuario(username)
-    }
-
-
 
 
     /*****************************************************
@@ -107,6 +113,18 @@ class MainVM @Inject constructor(
      *****************************************************/
     suspend fun crearCuadrilla(cuadrilla: Cuadrilla, image: Bitmap?): Boolean  {
         return cuadrillaRepository.insertCuadrilla(currentUser.value!!.username,cuadrilla, image)
+    }
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun updateCuadrillaImage(context: Context, nombre: String, uri: Uri?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            var imageBitmap: Bitmap? = null
+            if (uri != null) {
+                val contentResolver: ContentResolver = context.contentResolver
+                val source = ImageDecoder.createSource(contentResolver, uri)
+                imageBitmap = ImageDecoder.decodeBitmap(source)
+                cuadrillaRepository.setCuadrillaProfile(nombre, imageBitmap)
+            }
+        }
     }
     fun usuariosCuadrilla(): Flow<List<Usuario>> {
         return cuadrillaRepository.usuariosCuadrilla(cuadrillaMostrar.value!!.nombre)
@@ -154,6 +172,16 @@ class MainVM @Inject constructor(
     fun desapuntarse(usuario: Usuario, evento: Evento){
         viewModelScope.launch(Dispatchers.IO) {
             eventoRepository.desapuntarse(usuario, evento.id)
+        }
+    }
+    fun apuntarse(cuadrilla: Cuadrilla, evento: Evento){
+        viewModelScope.launch(Dispatchers.IO) {
+            eventoRepository.apuntarse(cuadrilla, evento.id)
+        }
+    }
+    fun desapuntarse(cuadrilla: Cuadrilla, evento: Evento){
+        viewModelScope.launch(Dispatchers.IO) {
+            eventoRepository.desapuntarse(cuadrilla, evento.id)
         }
     }
 
