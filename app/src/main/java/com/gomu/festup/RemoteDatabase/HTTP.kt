@@ -161,12 +161,12 @@ class HTTPClient @Inject constructor() {
 
                 loadTokens { bearerTokenStorage.last() }
 
-                sendWithoutRequest { request -> request.url.host == "XXX" }
+                sendWithoutRequest { request -> request.url.host == "34.16.74.167" }
 
                 refreshTokens {
 
                     val refreshTokenInfo: TokenInfo = client.submitForm(
-                        url = "https://34.16.74.167/refresh",
+                        url = "http://34.16.74.167/refresh",
                         formParameters = Parameters.build {
                             append("grant_type", "refresh_token")
                             append("refresh_token", oldTokens?.refreshToken ?: "")
