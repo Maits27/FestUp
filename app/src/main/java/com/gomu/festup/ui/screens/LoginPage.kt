@@ -180,7 +180,7 @@ fun LoginForm(
 
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxSize()
     ) {
         Image(
@@ -189,10 +189,11 @@ fun LoginForm(
             contentDescription = "Logo-FestUp",
             modifier = Modifier
                 .fillMaxWidth()
-                .size(150.dp)
+                .size(250.dp)
                 .clip(RoundedCornerShape(16.dp))
         )
-        Text(text = "¡Bienvenid@!", fontSize = 25.sp)
+        // TODO quitar esto para que se vea bien con el theme
+        Text(text = "¡Bienvenid@!", fontSize = 25.sp, color = MaterialTheme.colorScheme.onBackground)
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
