@@ -5,6 +5,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.Location
 import android.net.Uri
+import android.util.Log
 import android.widget.ImageView
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -90,7 +92,7 @@ class MainVM @Inject constructor(
      ****************** METODOS CUADRILLA ******************
      *****************************************************/
     suspend fun crearCuadrilla(cuadrilla: Cuadrilla): Boolean  {
-        return cuadrillaRepository.insertCuadrilla(currentUser.value!!.nombre,cuadrilla)
+        return cuadrillaRepository.insertCuadrilla(currentUser.value!!.username,cuadrilla)
     }
     fun usuariosCuadrilla(): Flow<List<Usuario>> {
         return cuadrillaRepository.usuariosCuadrilla(cuadrillaMostrar.value!!.nombre)

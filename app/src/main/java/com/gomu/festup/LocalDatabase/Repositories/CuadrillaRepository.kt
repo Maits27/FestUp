@@ -16,6 +16,7 @@ import com.gomu.festup.RemoteDatabase.RemoteCuadrilla
 import com.gomu.festup.RemoteDatabase.RemoteIntegrante
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -46,6 +47,7 @@ class CuadrillaRepository @Inject constructor(
         return try {
             cuadrillaDao.insertCuadrilla(cuadrilla)
             integranteDao.insertIntegrante(Integrante(username, cuadrilla.nombre))
+
 
             httpClient.insertCuadrilla(RemoteCuadrilla(cuadrilla.nombre," ",cuadrilla.descripcion,cuadrilla.lugar,cuadrilla.profileImagePath))
             httpClient.insertIntegrante(RemoteIntegrante(username,cuadrilla.nombre))
