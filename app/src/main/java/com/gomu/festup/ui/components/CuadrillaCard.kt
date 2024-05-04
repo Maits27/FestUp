@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
@@ -44,6 +46,10 @@ fun CuadrillaCard(
         navController.navigate(AppScreens.PerfilCuadrilla.route)
     }
 
+    var imageUri by remember {
+        mutableStateOf("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -58,9 +64,11 @@ fun CuadrillaCard(
                 .padding(13.dp)
         ) {
             AsyncImage(
-                // TODO esto debería ser it.profileImagePath
-                model = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png",
+                model = imageUri,
                 contentDescription = "Cuadrilla profile image",
+                onError = {
+                    imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png"
+                },
                 modifier = Modifier.size(50.dp)
             )
             Column(

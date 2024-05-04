@@ -24,6 +24,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,15 +57,22 @@ fun Evento(
     val users = mainVM.getUsuariosEvento(evento).collectAsState(initial = emptyList()).value
     val cuadrillas = mainVM.getCuadrillasEvento(evento).collectAsState(initial = emptyList()).value
     val apuntado = mainVM.estaApuntado(mainVM.currentUser.value!!, evento.id)
+
+    var imageUri by remember {
+        mutableStateOf("http://34.16.74.167/cuadrillaProfileImages/${evento.id}.png")
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxSize()
     ) {
         AsyncImage(
-            // TODO esto será evento.eventoImagePath
-            model = "http://34.16.74.167/eventoImages/no-image.png",
+            model = imageUri,
             contentDescription = "Event image",
+            onError = {
+                imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-image.png"
+            },
             placeholder = painterResource(id = R.drawable.party),
             modifier = Modifier
                 .fillMaxWidth()

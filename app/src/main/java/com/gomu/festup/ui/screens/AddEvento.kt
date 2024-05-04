@@ -133,7 +133,7 @@ fun AddEvento(
         ).show()
         else {
             val fechaEvento = fecha.formatearFecha()
-            coroutineScope.launch(Dispatchers.IO) {
+            /*coroutineScope.launch(Dispatchers.IO) {
                 val insertCorrecto= mainVM.insertarEvento(Evento(
                     nombre = eventName,
                     fecha = fechaEvento,
@@ -144,7 +144,7 @@ fun AddEvento(
                 if (insertCorrecto){
 
                 }
-            }
+            }*/
 
             CoroutineScope(Dispatchers.IO).launch {
                 val insertCorrecto = withContext(Dispatchers.IO) {

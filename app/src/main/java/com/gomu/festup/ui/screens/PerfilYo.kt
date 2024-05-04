@@ -336,12 +336,11 @@ fun TopProfile(
     username: String,
     email: String,
     edad: Int,
-    yo: Boolean,
-    imageUri: String = "http://34.16.74.167/userProfileImages/no-user.png"
+    yo: Boolean
 ){
     val context = LocalContext.current
     var imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse(imageUri))
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/cuadrillaProfileImages/$username.png"))
     }
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
@@ -354,12 +353,12 @@ fun TopProfile(
 
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(16.dp)) {
-            // TODO igual ponerlo de otra manera
-            // Mientras no este la imagen mostrar una "cargando"
-            // LoadingImagePlaceholder(size = 120.dp)
             AsyncImage(
                 model = imageUri,
                 contentDescription = "User image",
+                onError = {
+                    imageUri = Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")
+                },
                 placeholder = painterResource(id = R.drawable.ic_launcher_background),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

@@ -13,6 +13,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +43,10 @@ fun UsuarioCard(
         navController.navigate(AppScreens.PerfilUser.route)
     }
 
+    var imageUri by remember {
+        mutableStateOf("http://34.16.74.167/userProfileImages/${usuario.username}.png")
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -53,9 +61,11 @@ fun UsuarioCard(
             horizontalArrangement = Arrangement.Start
         ){
             AsyncImage(
-                // TODO esto será usuario.profileImagePath
-                model = "http://34.16.74.167/userProfileImages/no-user.png",
+                model = imageUri,
                 contentDescription = "User image",
+                onError = {
+                    imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-user.png"
+                },
                 placeholder = painterResource(id = R.drawable.party),
                 modifier = Modifier
                     .size(50.dp)

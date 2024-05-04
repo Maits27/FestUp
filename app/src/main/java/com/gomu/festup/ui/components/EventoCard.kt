@@ -10,6 +10,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +38,10 @@ fun EventoCard(
         navController.navigate(AppScreens.Evento.route)
     }
 
+    var imageUri by remember {
+        mutableStateOf("http://34.16.74.167/cuadrillaProfileImages/${evento.id}.png")
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,9 +53,11 @@ fun EventoCard(
             modifier = Modifier.padding(15.dp)
         ) {
             AsyncImage(
-                // TODO aquí irá evento.image
-                model = "http://34.16.74.167/eventoImages/no-image.png",
+                model = imageUri,
                 contentDescription = "cuadrillaImage",
+                onError = {
+                    imageUri = "http://34.16.74.167/eventoImages/no-image.png"
+                },
                 contentScale = ContentScale.FillHeight,
                 modifier = Modifier.size(50.dp)
             )

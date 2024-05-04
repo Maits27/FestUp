@@ -1,15 +1,21 @@
 package com.gomu.festup.ui.screens
 
+import android.content.ContentResolver
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -57,6 +63,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 
@@ -180,12 +187,26 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                 } else {
                     // Crear cuadrilla
                     CoroutineScope(Dispatchers.IO).launch {
+                        var imageBitmap: Bitmap? = null
+                        if (imageUri != null) {
+                            val contentResolver: ContentResolver = context.contentResolver
+                            val source = ImageDecoder.createSource(contentResolver, imageUri!!)
+                            imageBitmap = ImageDecoder.decodeBitmap(source)
+                        }
+                        /*
+                        * For older versions:
+                        * val bitmap = context.contentResolver.openInputStream(uri)?.use { stream ->
+                            Bitmap.createBitmap(BitmapFactory.decodeStream(stream))
+                        * }
+                        }*/
                         val insertCorrecto = withContext(Dispatchers.IO) {
-                            mainVM.crearCuadrilla(Cuadrilla(
-                                nombre = nombre,
-                                lugar = localizacion,
-                                descripcion = descripcion
-                            ))
+                            mainVM.crearCuadrilla(
+                                cuadrilla = Cuadrilla(
+                                    nombre = nombre,
+                                    lugar = localizacion,
+                                    descripcion = descripcion
+                                ),
+                                image = imageBitmap)
                         }
                         if (insertCorrecto) {
                             withContext(Dispatchers.Main) {
@@ -239,6 +260,7 @@ fun LoadingImagePlaceholder(size: Dp = 100.dp) {
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Preview(showBackground = true)
 @Composable
 fun PreviewNewTeamScreen() {

@@ -1,6 +1,7 @@
 package com.gomu.festup.vm
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.Location
@@ -104,8 +105,8 @@ class MainVM @Inject constructor(
     /*****************************************************
      ****************** METODOS CUADRILLA ******************
      *****************************************************/
-    suspend fun crearCuadrilla(cuadrilla: Cuadrilla): Boolean  {
-        return cuadrillaRepository.insertCuadrilla(currentUser.value!!.username,cuadrilla)
+    suspend fun crearCuadrilla(cuadrilla: Cuadrilla, image: Bitmap?): Boolean  {
+        return cuadrillaRepository.insertCuadrilla(currentUser.value!!.username,cuadrilla, image)
     }
     fun usuariosCuadrilla(): Flow<List<Usuario>> {
         return cuadrillaRepository.usuariosCuadrilla(cuadrillaMostrar.value!!.nombre)

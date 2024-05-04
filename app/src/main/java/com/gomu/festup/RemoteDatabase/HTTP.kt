@@ -350,16 +350,17 @@ class HTTPClient @Inject constructor() {
         return BitmapFactory.decodeByteArray(image, 0, image.size)
     }
 
-    suspend fun setCuadrillaProfile(nombre: String, image: Bitmap) {
+    suspend fun setCuadrillaImage(nombre: String, image: Bitmap) {
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
+        Log.d("Image", byteArray.size.toString())
         httpClient.submitFormWithBinaryData(
-            url = "http://34.16.74.167/cuadrillaProfileImages/${nombre}",
+            url = "http://34.16.74.167/insertCuadrillaImage",
             formData = formData {
-                append("file", byteArray, Headers.build {
+                append("image", byteArray, Headers.build {
                     append(HttpHeaders.ContentType, "image/png")
-                    append(HttpHeaders.ContentDisposition, "filename=profile_image.png")
+                    append(HttpHeaders.ContentDisposition, "filename=$nombre.png")
                 })
             }
         ) { method = HttpMethod.Put }

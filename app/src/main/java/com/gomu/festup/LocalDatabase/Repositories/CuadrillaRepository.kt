@@ -2,6 +2,7 @@ package com.gomu.festup.LocalDatabase.Repositories
 
 import android.database.sqlite.SQLiteConstraintException
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.collectAsState
 import com.gomu.festup.LocalDatabase.DAO.CuadrillaDao
@@ -17,12 +18,15 @@ import com.gomu.festup.RemoteDatabase.RemoteIntegrante
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
 
 interface ICuadrillaRepository {
-    suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla): Boolean
+    suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla, image: Bitmap?): Boolean
     fun cuadrillaUsuario(username: String): List<Cuadrilla>
     fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>>
     fun eventosCuadrilla(nombreCuadrilla: String): List<Evento>
@@ -43,16 +47,25 @@ class CuadrillaRepository @Inject constructor(
     private val integranteDao: IntegranteDao,
     private val httpClient: HTTPClient
 ) : ICuadrillaRepository{
-    override suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla): Boolean {
+    override suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla, image: Bitmap?): Boolean {
         return try {
+            // Local
             cuadrillaDao.insertCuadrilla(cuadrilla)
             integranteDao.insertIntegrante(Integrante(username, cuadrilla.nombre))
 
-
-            httpClient.insertCuadrilla(RemoteCuadrilla(cuadrilla.nombre," ",cuadrilla.descripcion,cuadrilla.lugar))
+            // Remote
+            httpClient.insertCuadrilla(RemoteCuadrilla(
+                cuadrilla.nombre,
+                " ",
+                cuadrilla.descripcion,
+                cuadrilla.lugar)
+            )
             httpClient.insertIntegrante(RemoteIntegrante(username,cuadrilla.nombre))
+
+            if (image != null) httpClient.setCuadrillaImage(cuadrilla.nombre, image)
             true
-        }catch (e:Exception){
+        }
+        catch (e:Exception){
             Log.d("Exception crear cuadrilla", e.toString())
             false
         }
@@ -109,7 +122,7 @@ class CuadrillaRepository @Inject constructor(
 
     override suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean {
         return try {
-            httpClient.setCuadrillaProfile(nombre, image)
+            httpClient.setCuadrillaImage(nombre, image)
             true
         } catch (e: ResponseException) {
             Log.e("HTTP", "Couldn't upload profile image.")
@@ -117,6 +130,4 @@ class CuadrillaRepository @Inject constructor(
             false
         }
     }
-
-
 }
