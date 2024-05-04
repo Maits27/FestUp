@@ -17,6 +17,7 @@ import com.gomu.festup.RemoteDatabase.RemoteCuadrilla
 import com.gomu.festup.RemoteDatabase.RemoteEvento
 import com.gomu.festup.RemoteDatabase.RemoteIntegrante
 import com.gomu.festup.RemoteDatabase.RemoteUsuarioAsistente
+import com.gomu.festup.utils.toStringNuestro
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
@@ -47,7 +48,7 @@ class EventoRepository @Inject constructor(
             usuariosAsistentesDao.insertUsuarioAsistente(UsuariosAsistentes(username, evento.id))
 
             // TODO ARREGLAR, ID Y DATE FORMATO
-            val fechaString: String = SimpleDateFormat("dd/MM/yyyy").format(evento.fecha)
+            val fechaString: String = evento.fecha.toStringNuestro()
             httpClient.insertEvento(RemoteEvento(evento.id,evento.nombre,fechaString,evento.numeroAsistentes,evento.descripcion,evento.localizacion, ""))
             httpClient.insertUsuarioAsistente(RemoteUsuarioAsistente(username,evento.id))
             true

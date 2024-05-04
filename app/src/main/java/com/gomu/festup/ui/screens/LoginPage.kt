@@ -63,6 +63,7 @@ import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.IdentVM
 import com.gomu.festup.vm.MainVM
 import kotlinx.coroutines.CoroutineScope
@@ -413,8 +414,7 @@ fun RegistroForm(
                 Button(onClick = {
                     val millis = datePickerState.selectedDateMillis
                     millis?.let {
-                        val formatter = SimpleDateFormat("dd/MM/yyyy")
-                        birthDate = formatter.format(Date(millis))
+                        birthDate = Date(millis).toStringNuestro()
                     }
                     showDatePicker = false
                 }) {

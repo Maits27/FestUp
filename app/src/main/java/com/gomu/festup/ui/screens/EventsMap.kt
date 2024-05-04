@@ -1,7 +1,11 @@
 package com.gomu.festup.ui.screens
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.location.Location
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,11 +21,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gomu.festup.MainActivity
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.utils.getLatLngFromAddress
 import com.gomu.festup.vm.MainVM
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -31,21 +39,6 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 
-// Function to get latitude and longitude coordinates from a given address (String)
-fun getLatLngFromAddress(context: Context, mAddress: String): Pair<Double, Double>? {
-    val coder = Geocoder(context)
-    try {
-        val addressList = coder.getFromLocationName(mAddress, 1)
-        if (addressList.isNullOrEmpty()) {
-            return null
-        }
-        val location = addressList[0]
-        return Pair(location.latitude, location.longitude)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        return null
-    }
-}
 @Composable
 fun EventsMap(
     navController: NavController,
@@ -53,21 +46,24 @@ fun EventsMap(
 ) {
     val context = LocalContext.current
     val eventos = mainVM.getEventos().collectAsState(initial = emptyList())
-//
-//    val latitude = 0.00
-//    val longitude = 0.00
+    var miLocalizacion = mainVM.localizacion.value
 
-//    val cameraPositionState = rememberCameraPositionState {
-//        position =
-//            CameraPosition.fromLatLngZoom(LatLng(latitude, longitude), 10f)
-//    }
+    // TODO: Si se usa elvis no funciona bien
+    val cameraPositionState = rememberCameraPositionState {
+        if (miLocalizacion != null) {
+            position =
+                CameraPosition.fromLatLngZoom(LatLng(miLocalizacion.latitude, miLocalizacion.longitude), 10f)
+        }else{
+            position = CameraPosition.fromLatLngZoom(LatLng(1.0, 1.0), 10f)
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
-//            cameraPositionState = cameraPositionState,
+            cameraPositionState = cameraPositionState,
             properties = MapProperties(isMyLocationEnabled = true)
         ) {
             eventos.value.map {

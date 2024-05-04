@@ -1,5 +1,7 @@
 package com.gomu.festup.ui.screens
 
+import android.annotation.SuppressLint
+import android.location.Location
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -34,6 +36,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -51,11 +54,16 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.utils.formatearFecha
+import com.gomu.festup.utils.getLatLngFromAddress
+import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,6 +74,7 @@ import java.util.Calendar
 import java.util.Date
 
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEvento(
@@ -123,9 +132,7 @@ fun AddEvento(
             Toast.LENGTH_SHORT
         ).show()
         else {
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-            val fechaEvento: Date = dateFormat.parse(fecha)
-
+            val fechaEvento = fecha.formatearFecha()
             coroutineScope.launch(Dispatchers.IO) {
                 val insertCorrecto= mainVM.insertarEvento(Evento(
                     nombre = eventName,
@@ -173,10 +180,14 @@ fun AddEvento(
     ) { uri ->
         imageUri = uri
     }
-
-    var cameraPosition = LatLng(43.26331851716892, -2.9504032685158053)
+    var miLocalizacion = mainVM.localizacion.value
     var cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(cameraPosition, 8f)
+        if (miLocalizacion != null) {
+            position =
+                CameraPosition.fromLatLngZoom(LatLng(miLocalizacion.latitude, miLocalizacion.longitude), 10f)
+        }else{
+            position = CameraPosition.fromLatLngZoom(LatLng(1.0, 1.0), 10f)
+        }
     }
 
     Column(
@@ -236,8 +247,8 @@ fun AddEvento(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .padding(start = 15.dp)
-                    .border(2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
+                    .padding(top = 8.dp, start = 15.dp)
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
                     .clickable {
                         showDatePicker = true
                     }
@@ -247,7 +258,7 @@ fun AddEvento(
                     textAlign = TextAlign.Center,
                     fontSize = 17.sp,
                     modifier = Modifier
-                        .padding(top = 10.dp, bottom = 17.dp)
+                        .padding(18.dp)
                 )
             }
         }
@@ -261,18 +272,32 @@ fun AddEvento(
         )
         OutlinedTextField(
             value = location,
-            onValueChange = { location = it },
+            onValueChange = {
+                location = it
+                var currentLoc = getLatLngFromAddress(context, it)
+                if(currentLoc != null && currentLoc != mainVM.localizacionAMostrar.value){
+                    mainVM.localizacionAMostrar.value = currentLoc
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(LatLng(mainVM.localizacionAMostrar.value!!.first, mainVM.localizacionAMostrar.value!!.second), 10f)
+                }
+            },
             label = { Text(text = "Ubicación") },
             modifier = modifierForInputs
         )
         GoogleMap(
             properties = MapProperties(isMyLocationEnabled = true),
-            // TODO estbalecer la cámara a la posición actual
             cameraPositionState = cameraPositionState,
             modifier = modifierForInputs
                 .size(400.dp)
                 .clip(RoundedCornerShape(15.dp))
-        )
+        ){
+            if (mainVM.localizacionAMostrar.value!=null){
+                Marker(
+                    state = MarkerState(position = LatLng(mainVM.localizacionAMostrar.value?.first?:0.0, mainVM.localizacionAMostrar.value?.second?:0.0)),
+                    title = eventName,
+                    snippet = fecha
+                )
+            }
+        }
         Button(
             onClick = { onAddButtonClick() },
             modifier = modifierForInputs.padding(bottom = 15.dp)
@@ -288,8 +313,7 @@ fun AddEvento(
                 Button(onClick = {
                     val millis = datePickerState.selectedDateMillis
                     millis?.let {
-                        val formatter = SimpleDateFormat("dd/MM/yyyy")
-                        fecha = formatter.format(Date(millis))
+                        fecha = Date(millis).toStringNuestro()
                     }
                     showDatePicker = false
                 }) {

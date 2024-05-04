@@ -12,6 +12,7 @@ import com.gomu.festup.RemoteDatabase.AuthUser
 import com.gomu.festup.RemoteDatabase.AuthenticationException
 import com.gomu.festup.RemoteDatabase.HTTPClient
 import com.gomu.festup.RemoteDatabase.UserExistsException
+import com.gomu.festup.utils.toStringNuestro
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import java.io.IOException
@@ -53,7 +54,7 @@ class UserRepository @Inject constructor(
     override suspend fun insertUsuario(usuario: Usuario): Boolean {
         return try {
             usuarioDao.insertUsuario(usuario) // TODO QUITAR (de momento hace falta pq no hemos descargado todos los datos)
-            val fechaNacimientoString: String = SimpleDateFormat("dd/MM/yyyy").format(usuario.fechaNacimiento)
+            val fechaNacimientoString = usuario.fechaNacimiento.toStringNuestro()
             val authUser= AuthUser(usuario.username,usuario.password,usuario.email,usuario.nombre,fechaNacimientoString,usuario.profileImagePath)
             authClient.createUser(authUser)
             true

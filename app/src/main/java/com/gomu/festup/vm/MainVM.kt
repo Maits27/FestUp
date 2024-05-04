@@ -3,6 +3,7 @@ package com.gomu.festup.vm
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.location.Location
 import android.net.Uri
 import android.widget.ImageView
 import androidx.compose.runtime.MutableState
@@ -41,6 +42,9 @@ class MainVM @Inject constructor(
     var cuadrillaMostrar: MutableState<Cuadrilla?> = mutableStateOf(null)
 
     var eventoMostrar: MutableState<Evento?> = mutableStateOf(null)
+
+    var localizacion: MutableState<Location?> = mutableStateOf(null)
+    var localizacionAMostrar: MutableState<Pair<Double, Double>?> = mutableStateOf(null)
 
 
     /*****************************************************

@@ -26,6 +26,8 @@ class MainActivity : ComponentActivity() {
 
     private val mainVM by viewModels<MainVM>()
     private val identVM by viewModels<IdentVM>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         askLocationPermission()

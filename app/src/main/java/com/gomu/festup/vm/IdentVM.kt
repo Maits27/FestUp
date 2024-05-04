@@ -3,6 +3,7 @@ package com.gomu.festup.vm
 import androidx.lifecycle.ViewModel
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
+import com.gomu.festup.utils.formatearFecha
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -16,8 +17,7 @@ class IdentVM @Inject constructor(
 
     suspend fun registrarUsuario(username: String, password:String, email: String, nombre: String, fechaNacimiento: String, profileImagePath: String): Usuario? {
         try{
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-            val fechaNacimientoDate: Date = dateFormat.parse(fechaNacimiento)
+            val fechaNacimientoDate = fechaNacimiento.formatearFecha()
             val newUser = Usuario(username,password,email,nombre,fechaNacimientoDate,profileImagePath)
             val signInCorrect = userRepository.insertUsuario(newUser)
             return if (signInCorrect) newUser else null
