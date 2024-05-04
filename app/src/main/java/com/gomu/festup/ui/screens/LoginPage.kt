@@ -257,9 +257,11 @@ fun RegistroForm(
         mutableStateOf(false)
     }
 
+    val emailRegex = Regex("""\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Z|a-z]{2,}\b""")
     val onRegisterButtonClick: () -> Unit = {
         if (username == "") Toast.makeText(context, "Introduce un nombre de usuario", Toast.LENGTH_SHORT).show()
         else if (email == "") Toast.makeText(context, "Introduce un email", Toast.LENGTH_SHORT).show()
+        else if (!email.matches(emailRegex)) Toast.makeText(context, "El formato del email no es correcto", Toast.LENGTH_SHORT).show()
         else if (nombre == "") Toast.makeText(context, "Introduce un nombre", Toast.LENGTH_SHORT).show()
         else if (password == "") Toast.makeText(context, "Introduce una contraseña", Toast.LENGTH_SHORT).show()
         else if (confirmPassword == "") Toast.makeText(context, "Introduce una constraseña de confirmación", Toast.LENGTH_SHORT).show()
