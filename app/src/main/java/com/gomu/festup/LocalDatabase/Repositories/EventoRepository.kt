@@ -8,6 +8,7 @@ import com.gomu.festup.LocalDatabase.DAO.EventoDao
 import com.gomu.festup.LocalDatabase.DAO.IntegranteDao
 import com.gomu.festup.LocalDatabase.DAO.UsuariosAsistentesDao
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
+import com.gomu.festup.LocalDatabase.Entities.CuadrillasAsistentes
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Usuario
@@ -29,8 +30,13 @@ interface IEventoRepository {
     fun todosLosEventos(): Flow<List<Evento>>
     fun usuariosEventos(): Flow<List<UsuariosAsistentes>>
     fun eventosUsuario(username: String): Flow<List<Evento>>
+    suspend fun estaApuntado(username: String, id: String): Boolean
+    suspend fun apuntarse(usuario: Usuario, id: String)
+    suspend fun desapuntarse(usuario: Usuario, id: String)
+    suspend fun apuntarse(cuadrilla: Cuadrilla, id: String)
+    suspend fun desapuntarse(cuadrilla: Cuadrilla, id: String)
     fun cuadrillasEvento(id: String): Flow<List<Cuadrilla>>
-    fun usuariosEvento(id: String): List<Usuario>
+    fun usuariosEvento(id: String): Flow<List<Usuario>>
     suspend fun updateEvento(evento: Evento): Boolean
     suspend fun setEventoProfile(id: String, image: Bitmap): Boolean
 }
@@ -68,6 +74,24 @@ class EventoRepository @Inject constructor(
         return eventoDao.eventosUsuario(username)
     }
 
+    override suspend fun estaApuntado(username: String, id: String): Boolean{
+        val usuario = usuariosAsistentesDao.estaApuntado(username, id)
+        if (usuario.isEmpty()) return false
+        return true
+    }
+    override suspend fun apuntarse(usuario: Usuario, id: String){
+        usuariosAsistentesDao.insertUsuarioAsistente(UsuariosAsistentes(usuario.username, id))
+    }
+    override suspend fun desapuntarse(usuario: Usuario, id: String){
+        usuariosAsistentesDao.deleteAsistente(UsuariosAsistentes(usuario.username, id))
+    }
+    override suspend fun apuntarse(cuadrilla: Cuadrilla, id: String){
+        cuadrillasAsistentesDao.insertAsistente(CuadrillasAsistentes(cuadrilla.nombre, id))
+    }
+    override suspend fun desapuntarse(cuadrilla: Cuadrilla, id: String){
+        cuadrillasAsistentesDao.deleteAsistente(CuadrillasAsistentes(cuadrilla.nombre, id))
+    }
+
     override fun usuariosEventos(): Flow<List<UsuariosAsistentes>> {
         return usuariosAsistentesDao.todosLosUsuariosAsistentes()
     }
@@ -76,8 +100,8 @@ class EventoRepository @Inject constructor(
         return eventoDao.getCuadrillasDeEvento(id)
     }
 
-    override fun usuariosEvento(id: String): List<Usuario> {
-        TODO("Not yet implemented")
+    override fun usuariosEvento(id: String): Flow<List<Usuario>>{
+        return eventoDao.getUsuariosDeEvento(id)
     }
 
     override suspend fun updateEvento(evento: Evento): Boolean {

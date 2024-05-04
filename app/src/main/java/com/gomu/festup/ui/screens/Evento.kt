@@ -23,6 +23,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +39,7 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.CuadrillaCard
 import com.gomu.festup.ui.components.UsuarioCard
 import com.gomu.festup.vm.MainVM
 import java.util.Date
@@ -47,11 +49,10 @@ fun Evento(
     navController: NavController,
     mainVM: MainVM
 ) {
-    val evento= mainVM.eventoMostrar.value!!
-    val newUser = Usuario(username = "@UnaiLopezNovoa", email = "ulopeznovoa@ehu.eus", nombre = "Unai", password = "123", fechaNacimiento = Date(), profileImagePath = "")
-    val newUser2 = Usuario(username = "@AdrianNunezMarcos", email = "anunez@ehus.eus", nombre = "Adrian", password = "123", fechaNacimiento = Date(), profileImagePath = "")
-    val users = arrayOf(newUser, newUser2)
-
+    val evento = mainVM.eventoMostrar.value!!
+    val users = mainVM.getUsuariosEvento(evento).collectAsState(initial = emptyList()).value
+    val cuadrillas = mainVM.getCuadrillasEvento(evento).collectAsState(initial = emptyList()).value
+    val apuntado = mainVM.estaApuntado(mainVM.currentUser.value!!, evento.id)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -69,7 +70,7 @@ fun Evento(
         )
         DatosEvento(evento)
         Divider(modifier = Modifier.padding(10.dp))
-        EstadisticasEvento(evento = evento)
+        EstadisticasEvento(mainVM = mainVM, evento = evento, apuntado = apuntado)
         Divider(modifier = Modifier.padding(10.dp))
         Text(
             text = "Asistentes:",
@@ -80,8 +81,11 @@ fun Evento(
             verticalArrangement = Arrangement.Center,
             contentPadding = PaddingValues(bottom = 70.dp)
         ) {
-            items(users) { usuario ->
+            items(users){ usuario ->
                 UsuarioCard(usuario = usuario, mainVM = mainVM, navController = navController)
+            }
+            items(cuadrillas){cuadrilla ->
+                CuadrillaCard(cuadrilla = cuadrilla, mainVM = mainVM, navController = navController, isRemoveAvailable = false)
             }
         }
     }
@@ -139,7 +143,7 @@ fun DatosEvento(evento: Evento) {
 }
 
 @Composable
-fun EstadisticasEvento(evento: Evento){
+fun EstadisticasEvento(mainVM: MainVM, evento: Evento, apuntado: Boolean){
     Row (
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
@@ -206,11 +210,20 @@ fun EstadisticasEvento(evento: Evento){
                 .fillMaxWidth()
                 .align(Alignment.Bottom)
         ){
-            Button(onClick = { /*TODO*/ }) {
-                Text(
-                    text = "Apuntarme",
-                    style = TextStyle(fontSize = 17.sp)
-                )
+            if (apuntado){
+                Button(onClick = { mainVM.desapuntarse(mainVM.currentUser.value!!, evento) }) {
+                    Text(
+                        text = "Desapuntarse",
+                        style = TextStyle(fontSize = 17.sp)
+                    )
+                }
+            }else{
+                Button(onClick = { mainVM.apuntarse(mainVM.currentUser.value!!, evento) }) {
+                    Text(
+                        text = "Apuntarme",
+                        style = TextStyle(fontSize = 17.sp)
+                    )
+                }
             }
         }
     }

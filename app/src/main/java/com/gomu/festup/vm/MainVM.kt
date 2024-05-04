@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -62,6 +63,9 @@ class MainVM @Inject constructor(
 
     fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>{
         return userRepository.getUsuariosMenosCurrent(usuario)
+    }
+    fun estaApuntado(usuario: Usuario, id: String): Boolean = runBlocking{
+        eventoRepository.estaApuntado(usuario.username, id)
     }
 
     fun setUserProfile(context: Context, uri: Uri?, username: String): Boolean = runBlocking {
@@ -126,9 +130,26 @@ class MainVM @Inject constructor(
     fun getEventos(): Flow<List<Evento>> {
         return eventoRepository.todosLosEventos()
     }
+    fun apuntarse(usuario: Usuario, evento: Evento){
+        viewModelScope.launch(Dispatchers.IO) {
+            eventoRepository.apuntarse(usuario, evento.id)
+        }
+    }
+    fun desapuntarse(usuario: Usuario, evento: Evento){
+        viewModelScope.launch(Dispatchers.IO) {
+            eventoRepository.desapuntarse(usuario, evento.id)
+        }
+    }
 
     fun eventosUsuario(usuario: Usuario): Flow<List<Evento>> {
         return  eventoRepository.eventosUsuario(usuario.username)
+    }
+
+    fun getUsuariosEvento(evento: Evento): Flow<List<Usuario>>{
+        return eventoRepository.usuariosEvento(evento.id)
+    }
+    fun getCuadrillasEvento(evento: Evento): Flow<List<Cuadrilla>>{
+        return eventoRepository.cuadrillasEvento(evento.id)
     }
 
     fun eventosSeguidos(usuario: Usuario): Flow<List<Evento>> {

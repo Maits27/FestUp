@@ -28,6 +28,7 @@ import com.gomu.festup.MainActivity
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.utils.getLatLngFromAddress
+import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
@@ -71,7 +72,7 @@ fun EventsMap(
                     Marker(
                         state = MarkerState(position = LatLng(latitude, longitude)),
                         title = it.nombre,
-                        snippet = it.fecha.toString()
+                        snippet = it.fecha.toStringNuestro()
                     )
                 }
             }

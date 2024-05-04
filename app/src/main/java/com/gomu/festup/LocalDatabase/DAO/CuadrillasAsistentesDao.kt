@@ -1,6 +1,7 @@
 package com.gomu.festup.LocalDatabase.DAO
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CuadrillasAsistentesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertIntegrante(asistente: CuadrillasAsistentes)
+    suspend fun insertAsistente(asistente: CuadrillasAsistentes)
 
     @Transaction
     @Query("SELECT * FROM CuadrillasAsistentes")
@@ -25,7 +26,9 @@ interface CuadrillasAsistentesDao {
     @Query("SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla=:name")
     fun getEventosCuadrilla(name: String): Flow<List<String>>
 
-
     @Update
     fun editarCuadrillasAsistentes(asistente: CuadrillasAsistentes): Int
+
+    @Delete
+    suspend fun deleteAsistente(asistente: CuadrillasAsistentes)
 }

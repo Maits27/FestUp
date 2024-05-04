@@ -19,6 +19,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.LocalDatabase.Entities.Evento
+import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 
 @Composable
@@ -56,7 +57,7 @@ fun EventoCard(
                     .padding(start = 10.dp)
             ) {
                 Text(text = evento.nombre, style = MaterialTheme.typography.titleLarge)
-                Text(text = evento.fecha.toString(), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                Text(text = evento.fecha.toStringNuestro(), style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                 Text(text = evento.localizacion, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
         }
