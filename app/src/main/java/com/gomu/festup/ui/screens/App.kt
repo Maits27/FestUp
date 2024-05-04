@@ -64,12 +64,12 @@ fun App(
             )
         }
     ){ innerPadding ->
-        nuestroLocationProvider(context, mainVM)
         NavHost(
             modifier = Modifier.padding(innerPadding),
             navController = navController,
             startDestination = AppScreens.Feed.route
         ) {
+
             composable(AppScreens.Feed.route) { Feed(navController, mainVM) }
             composable(AppScreens.Search.route) { Search(navController, mainVM) }
             composable(AppScreens.EventsMap.route) { EventsMap(navController, mainVM) }

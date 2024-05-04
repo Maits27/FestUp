@@ -63,6 +63,7 @@ import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.IdentVM
 import com.gomu.festup.vm.MainVM
@@ -155,6 +156,8 @@ fun LoginForm(
                             mainVM.actualizarCurrentUser(username)
                         }
                         withContext(Dispatchers.Main) {
+                            Log.d("CURRENTUSER", currentUser.toString())
+                            nuestroLocationProvider(context, mainVM)
                             mainVM.currentUser.value = currentUser
                             mainNavController.navigate(AppScreens.App.route)
                         }

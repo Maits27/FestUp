@@ -54,7 +54,7 @@ fun EventsMap(
             position =
                 CameraPosition.fromLatLngZoom(LatLng(miLocalizacion.latitude, miLocalizacion.longitude), 10f)
         }else{
-            position = CameraPosition.fromLatLngZoom(LatLng(1.0, 1.0), 10f)
+            position = CameraPosition.fromLatLngZoom(LatLng(1.0, 1.0), 2f)
         }
     }
 
