@@ -170,7 +170,7 @@ fun LoginForm(
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("Excepcion al crear usuario", e.toString())
+                    Log.e("Excepcion al iniciar sesion", e.toString())
                 }
             }
         }
