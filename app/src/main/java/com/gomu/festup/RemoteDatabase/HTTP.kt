@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.room.PrimaryKey
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.utils.randomNum
 import io.ktor.client.*
 import io.ktor.client.call.body
@@ -262,11 +263,12 @@ class HTTPClient @Inject constructor() {
         val response = httpClient.get("http://34.16.74.167/getEventos")
         response.body()
     }
-    suspend fun insertEvento(evento: RemoteEvento) = runBlocking {
-        httpClient.post("http://34.16.74.167/insertEvento") {
+    suspend fun insertEvento(evento: RemoteEvento) : RemoteEvento = runBlocking {
+        val response = httpClient.post("http://34.16.74.167/insertEvento") {
             contentType(ContentType.Application.Json)
             setBody(evento)
         }
+        response.body()
     }
     suspend fun deleteEvento(eventoId: Int) = runBlocking {
         httpClient.post("http://34.16.74.167/deleteEvento") {
