@@ -1,5 +1,8 @@
 package com.gomu.festup.ui.screens
 
+import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -189,7 +192,7 @@ fun LoginForm(
             contentDescription = "Logo-FestUp",
             modifier = Modifier
                 .fillMaxWidth()
-                .size(250.dp)
+                .size(150.dp)
                 .clip(RoundedCornerShape(16.dp))
         )
         // TODO quitar esto para que se vea bien con el theme
@@ -287,9 +290,10 @@ fun RegistroForm(
                 Log.d("IMAGE", "Image uri: ${imageUri.toString()}")
                 try {
                     val usuario = withContext(Dispatchers.IO) {
-                        identVM.registrarUsuario(context, username, password, email, nombre, birthDate, imageUri)
+                        identVM.registrarUsuario(username, password, email, nombre, birthDate)
                     }
                     if (usuario != null) {
+                        identVM.registrarFoto(context, imageUri, username)
                         mainVM.currentUser.value= usuario
                         mainNavController.navigate(AppScreens.App.route)
                     } else {
