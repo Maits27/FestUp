@@ -94,6 +94,7 @@ class CuadrillaRepository @Inject constructor(
             integranteDao.eliminarIntegrante(Integrante(username,cuadrilla.nombre))
             val integrantesCuadrilla = integranteDao.getIntegrantesCuadrilla(cuadrilla.nombre)
 
+            // Si la cuadrilla se queda vacía, se borra
             if (integrantesCuadrilla.first().isEmpty()){
                 httpClient.deleteCuadrilla(cuadrilla.nombre)
                 cuadrillaDao.eliminarCuadrilla(cuadrilla)

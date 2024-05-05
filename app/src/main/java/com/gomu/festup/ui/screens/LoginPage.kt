@@ -284,6 +284,7 @@ fun RegistroForm(
         else {
 
             CoroutineScope(Dispatchers.Main).launch {
+                Log.d("IMAGE", "Image uri: ${imageUri.toString()}")
                 try {
                     val usuario = withContext(Dispatchers.IO) {
                         identVM.registrarUsuario(context, username, password, email, nombre, birthDate, imageUri)
@@ -322,6 +323,9 @@ fun RegistroForm(
                     contentDescription = "User image",
                     placeholder = painterResource(id = R.drawable.ic_launcher_background),
                     contentScale = ContentScale.Crop,
+                    onError = {
+                        imageUri = Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")
+                    },
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape)

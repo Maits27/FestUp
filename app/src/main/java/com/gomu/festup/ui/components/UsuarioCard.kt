@@ -64,7 +64,7 @@ fun UsuarioCard(
                 model = imageUri,
                 contentDescription = "User image",
                 onError = {
-                    imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-user.png"
+                    imageUri = "http://34.16.74.167/userProfileImages/no-user.png"
                 },
                 placeholder = painterResource(id = R.drawable.party),
                 modifier = Modifier

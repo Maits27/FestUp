@@ -23,6 +23,7 @@ import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
 import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
+import com.gomu.festup.utils.localUriToBitmap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -97,11 +98,8 @@ class MainVM @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.P)
     fun updateUserImage(context: Context, username: String, uri: Uri?) {
         viewModelScope.launch(Dispatchers.IO) {
-            var imageBitmap: Bitmap? = null
             if (uri != null) {
-                val contentResolver: ContentResolver = context.contentResolver
-                val source = ImageDecoder.createSource(contentResolver, uri)
-                imageBitmap = ImageDecoder.decodeBitmap(source)
+                val imageBitmap = context.localUriToBitmap(uri)
                 userRepository.setUserProfile(username, imageBitmap)
             }
         }
@@ -117,11 +115,8 @@ class MainVM @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.P)
     fun updateCuadrillaImage(context: Context, nombre: String, uri: Uri?) {
         viewModelScope.launch(Dispatchers.IO) {
-            var imageBitmap: Bitmap? = null
             if (uri != null) {
-                val contentResolver: ContentResolver = context.contentResolver
-                val source = ImageDecoder.createSource(contentResolver, uri)
-                imageBitmap = ImageDecoder.decodeBitmap(source)
+                val imageBitmap = context.localUriToBitmap(uri)
                 cuadrillaRepository.setCuadrillaProfile(nombre, imageBitmap)
             }
         }

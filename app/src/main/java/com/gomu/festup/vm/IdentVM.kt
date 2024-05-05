@@ -23,14 +23,22 @@ class IdentVM @Inject constructor(
 
 
     @RequiresApi(Build.VERSION_CODES.P)
-    suspend fun registrarUsuario(context: Context, username: String, password:String, email: String, nombre: String, fechaNacimiento: String, uri: Uri?): Usuario? {
+    suspend fun registrarUsuario(
+        context: Context,
+        username: String,
+        password:String,
+        email: String,
+        nombre: String,
+        fechaNacimiento: String,
+        uri: Uri?
+    ): Usuario? {
         try{
             val fechaNacimientoDate = fechaNacimiento.formatearFecha()
             val newUser = Usuario(username,password,email,nombre,fechaNacimientoDate)
             val signInCorrect = userRepository.insertUsuario(newUser)
             if (signInCorrect){
                 var imageBitmap: Bitmap? = null
-                if (uri != null) {
+                if (uri != null && uri != Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")) {
                     val contentResolver: ContentResolver = context.contentResolver
                     val source = ImageDecoder.createSource(contentResolver, uri)
                     imageBitmap = ImageDecoder.decodeBitmap(source)

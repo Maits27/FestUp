@@ -172,6 +172,9 @@ fun TopProfileCuadrilla(
                 model = imageUri,
                 contentDescription = null,
                 placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                onError = {
+                    imageUri = Uri.parse("http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png")
+                },
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
