@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.gomu.festup.LocalDatabase.Entities.Usuario
@@ -48,6 +49,7 @@ class IdentVM @Inject constructor(
 
             return if (signInCorrect) newUser else null
         }catch (e:Exception){
+            Log.d("Excepcion al registrar usuario", e.toString())
             throw Exception("Excepcion al registrar usuario", e)
         }
     }
