@@ -334,9 +334,9 @@ class HTTPClient @Inject constructor() {
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
-        Log.d("Image", byteArray.size.toString())
+        Log.d("Image", "size: " + byteArray.size.toString())
         httpClient.submitFormWithBinaryData(
-            url = "http://34.16.74.167/userProfileImages",
+            url = "http://34.16.74.167/setUserProfileImage",
             formData = formData {
                 append("image", byteArray, Headers.build {
                     append(HttpHeaders.ContentType, "image/png")

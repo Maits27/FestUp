@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.utils.formatearFecha
+import com.gomu.festup.utils.localUriToBitmap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -38,15 +39,14 @@ class IdentVM @Inject constructor(
             val newUser = Usuario(username,password,email,nombre,fechaNacimientoDate)
             val signInCorrect = userRepository.insertUsuario(newUser)
             if (signInCorrect){
-                var imageBitmap: Bitmap? = null
                 if (uri != null && uri != Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")) {
-                    val contentResolver: ContentResolver = context.contentResolver
-                    val source = ImageDecoder.createSource(contentResolver, uri)
-                    imageBitmap = ImageDecoder.decodeBitmap(source)
+                    val imageBitmap = context.localUriToBitmap(uri)
+                    Log.d("Sign up", "Setting user image")
                     userRepository.setUserProfile(username, imageBitmap)
+                    Log.d("Sign up", "User image sended to server")
                 }
             }
-
+            Log.d("Sign up", "Sign up correct $signInCorrect")
             return if (signInCorrect) newUser else null
         }catch (e:Exception){
             Log.d("Excepcion al registrar usuario", e.toString())
