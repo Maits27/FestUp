@@ -22,8 +22,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -54,13 +52,11 @@ import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.vm.MainVM
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import com.gomu.festup.ui.components.UsuarioCard
-import com.gomu.festup.utils.openShare
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -144,6 +140,7 @@ fun EliminarCuadrilla(nombre: String) {
         verificacion = false
         // TODO eliminar
     }
+
 }
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -229,39 +226,37 @@ fun TopProfileCuadrilla(
             fontSize = 15.sp
         )
     )
+
 }
 
 
 
 @Composable
-fun Unirse(show:Boolean, token: String, onConfirm: (String) -> Unit){
+fun Unirse(show:Boolean, onConfirm: (String) -> Unit){
     if(show){
-
-        val context = LocalContext.current
-
+        var token by rememberSaveable {mutableStateOf("")}
         AlertDialog(
             onDismissRequest = {},
-            confirmButton = { },
-            title = {
-                Text(text = "¿Estas seguro de que deseas compartir el codigo de tu cuadrilla?") },
-            text = {
-                Text(text = "Recuerda que cualquier usuario con ese codigo podra acceder a esta cuadrilla")
-                Row {
-                    IconButton(
-                        onClick = { /*TODO*/ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.message),
-                            contentDescription = null
-                        )
-                    }
-                    IconButton(
-                        onClick = { openShare(token, context) }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.whatsapp),
-                            contentDescription = null
-                        )
-                    }
+            confirmButton = {
+                TextButton(onClick = { onConfirm(token) }) {
+                    Text(text = "Unirme")
                 }
+                Button(onClick = { onConfirm(token)}) {
+                    
+                }
+            },
+            title = {
+                Text(text = "Unirte a la cuadrilla") },
+            text = {
+                Text(text = "Introduce el token de cuadrilla " +
+                        "(si no tienes uno, pide que te lo mande un miembro de esta).")
+                OutlinedTextField(
+                    value = token,
+                    onValueChange = {token = it},
+                    label = { Text("Token de la cuadrilla") },
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 16.dp),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                )
             }
         )
     }
@@ -273,10 +268,6 @@ fun ListadoUsuarios(
     mainVM: MainVM,
     navController: NavController
 ){
-    var ShowShareCode by rememberSaveable { mutableStateOf(false) }
-
-    val token =  "PRUEBA"  // TODO: AGREGAR TOKEN
-
     Row (
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -294,7 +285,7 @@ fun ListadoUsuarios(
             Button(
                 modifier = Modifier
                     .weight(1f),
-                onClick = { ShowShareCode = true }
+                onClick = { /*TODO boton enviar token*/ }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.send), "",
@@ -334,8 +325,5 @@ fun ListadoUsuarios(
                 )
             )
         }
-    }
-    Unirse(show = ShowShareCode, token) {
-
     }
 }

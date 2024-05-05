@@ -179,13 +179,13 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  USER ------------------------------
     suspend fun getUsuarios(): List<AuthUser> = runBlocking {
-        val response = httpClient.get("http://34.16.74.167/getUsers")
+        val response = httpClient.get("http:/34.16.74.167/getUsers")
         response.body()
     }
 
     fun getUsuario(username: String): AuthUser = runBlocking {
         Log.d("USUARIO", "get")
-        val response = httpClient.get("http://34.16.74.167/getUser?username=$username")
+        val response = httpClient.get("http:/34.16.74.167/getUser?username=$username")
         response.body()
     }
 
