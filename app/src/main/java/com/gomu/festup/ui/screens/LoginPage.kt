@@ -290,10 +290,9 @@ fun RegistroForm(
                 Log.d("IMAGE", "Image uri: ${imageUri.toString()}")
                 try {
                     val usuario = withContext(Dispatchers.IO) {
-                        identVM.registrarUsuario(username, password, email, nombre, birthDate)
+                        identVM.registrarUsuario(context, username, password, email, nombre, birthDate, imageUri)
                     }
                     if (usuario != null) {
-                        identVM.registrarFoto(context, imageUri, username)
                         mainVM.currentUser.value= usuario
                         mainNavController.navigate(AppScreens.App.route)
                     } else {
