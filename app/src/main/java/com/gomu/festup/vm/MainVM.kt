@@ -147,6 +147,16 @@ class MainVM @Inject constructor(
         }
     }
 
+    fun getCuadrillaAccessToken(nombre: String): String{
+        return cuadrillaRepository.getCuadrillaAccessToken(nombre)
+    }
+
+    fun agregarIntegrante(nombreUsuario: String, nombreCuadrilla: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            cuadrillaRepository.insertUser(nombreUsuario, nombreCuadrilla)
+        }
+    }
+
 
     /*****************************************************
      ****************** METODOS EVENTO ******************

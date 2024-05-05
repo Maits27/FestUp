@@ -230,7 +230,7 @@ class HTTPClient @Inject constructor() {
         }
     }
 
-    suspend fun getCuadrillaAccessToken(nombre: String): String = runBlocking {
+    fun getCuadrillaAccessToken(nombre: String): String = runBlocking {
         val response = httpClient.get("http://34.16.74.167/getCuadrillaAccessToken?nombre=$nombre")
         response.body()
     }

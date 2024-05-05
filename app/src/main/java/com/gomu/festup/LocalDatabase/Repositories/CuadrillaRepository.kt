@@ -30,7 +30,7 @@ interface ICuadrillaRepository {
     fun cuadrillaUsuario(username: String): List<Cuadrilla>
     fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>>
     fun eventosCuadrilla(nombreCuadrilla: String): List<Evento>
-    suspend fun insertUser(usuario: Usuario): Boolean
+    suspend fun insertUser(nombreUsuario: String, nombreCuadrilla: String): Boolean
 
     suspend fun eliminarIntegrante(cuadrilla: Cuadrilla, username: String): Boolean
 
@@ -40,6 +40,8 @@ interface ICuadrillaRepository {
 
     fun getIntegrantes(): Flow<List<Integrante>>
     suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean
+
+   fun getCuadrillaAccessToken(nombre: String): String
 }
 @Singleton
 class CuadrillaRepository @Inject constructor(
@@ -84,8 +86,15 @@ class CuadrillaRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertUser(usuario: Usuario): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun insertUser(nombreUsuario: String, nombreCuadrilla: String): Boolean {
+        return try {
+            httpClient.insertIntegrante(RemoteIntegrante(nombreUsuario, nombreCuadrilla))
+            integranteDao.insertIntegrante(Integrante(nombreUsuario, nombreCuadrilla))
+            true
+        }
+        catch (_:Exception){
+            false
+        }
     }
 
     override suspend fun eliminarIntegrante(cuadrilla: Cuadrilla, username: String): Boolean {
@@ -130,5 +139,9 @@ class CuadrillaRepository @Inject constructor(
             e.printStackTrace()
             false
         }
+    }
+
+    override fun getCuadrillaAccessToken(nombre: String): String {
+        return httpClient.getCuadrillaAccessToken(nombre)
     }
 }
