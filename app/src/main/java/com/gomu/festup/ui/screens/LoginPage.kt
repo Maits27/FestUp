@@ -207,15 +207,17 @@ fun LoginForm(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = modifierForInputs
         )
-        Button(
-            onClick = { onLoginButtonClick() },
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(end = 54.dp)
-        ) {
-            Text(text = "Iniciar sesión")
+        if (!showLoading) {
+            Button(
+                onClick = { onLoginButtonClick() },
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(end = 54.dp)
+            ) {
+                Text(text = "Iniciar sesión")
+            }
         }
-        if (showLoading) CircularProgressIndicator()
+        else CircularProgressIndicator(modifier = Modifier.align(Alignment.End).padding(end = 54.dp))
     }
 }
 
