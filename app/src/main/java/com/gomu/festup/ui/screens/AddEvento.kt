@@ -1,14 +1,17 @@
 package com.gomu.festup.ui.screens
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.location.Location
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -56,6 +59,7 @@ import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.getLatLngFromAddress
+import com.gomu.festup.utils.localUriToBitmap
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 import com.google.android.gms.maps.model.CameraPosition
@@ -74,6 +78,7 @@ import java.util.Calendar
 import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,6 +114,16 @@ fun AddEvento(
         .padding(top = 15.dp)
 
     val context = LocalContext.current
+
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        imageUri = uri
+    }
 
     val onAddButtonClick: () -> Unit = {
         if (eventName == "") Toast.makeText(
@@ -146,15 +161,20 @@ fun AddEvento(
                 }
             }*/
 
+
+
             CoroutineScope(Dispatchers.IO).launch {
                 val insertCorrecto = withContext(Dispatchers.IO) {
+                    var imageBitmap: Bitmap? = null
+                    if (imageUri != null) imageBitmap = context.localUriToBitmap(imageUri!!)
                     mainVM.insertarEvento(Evento(
                         nombre = eventName,
                         fecha = fechaEvento,
                         descripcion = description,
                         localizacion = location,
                         numeroAsistentes = 1
-                    ))
+                    ),
+                        image = imageBitmap)
                 }
                 if (insertCorrecto) {
                     withContext(Dispatchers.Main) {
@@ -169,15 +189,9 @@ fun AddEvento(
         }
     }
 
-    var imageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
 
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        imageUri = uri
-    }
+
+
     var miLocalizacion = mainVM.localizacion.value
     var cameraPositionState = rememberCameraPositionState {
         if (miLocalizacion != null) {

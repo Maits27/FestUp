@@ -162,8 +162,8 @@ class MainVM @Inject constructor(
      ****************** METODOS EVENTO ******************
      *****************************************************/
 
-    suspend fun insertarEvento(evento: Evento): Boolean {
-        return eventoRepository.insertarEvento(evento,currentUser.value!!.username)
+    suspend fun insertarEvento(evento: Evento, image: Bitmap?): Boolean {
+        return eventoRepository.insertarEvento(evento, currentUser.value!!.username, image)
     }
 
     fun getEventos(): Flow<List<Evento>> {
@@ -225,7 +225,7 @@ class MainVM @Inject constructor(
         ivImage.setImageURI(uri)
         val drawable: Drawable = ivImage.drawable
         if (drawable is BitmapDrawable) {
-            eventoRepository.setEventoProfile(id, drawable.bitmap)
+            eventoRepository.setEventoProfileImage(id, drawable.bitmap)
         }else{
             false
         }
