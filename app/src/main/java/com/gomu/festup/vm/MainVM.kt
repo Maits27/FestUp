@@ -23,6 +23,7 @@ import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
 import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
+import com.gomu.festup.utils.localUriToBitmap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -97,11 +98,8 @@ class MainVM @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.P)
     fun updateUserImage(context: Context, username: String, uri: Uri?) {
         viewModelScope.launch(Dispatchers.IO) {
-            var imageBitmap: Bitmap? = null
             if (uri != null) {
-                val contentResolver: ContentResolver = context.contentResolver
-                val source = ImageDecoder.createSource(contentResolver, uri)
-                imageBitmap = ImageDecoder.decodeBitmap(source)
+                val imageBitmap = context.localUriToBitmap(uri)
                 userRepository.setUserProfile(username, imageBitmap)
             }
         }
@@ -117,11 +115,8 @@ class MainVM @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.P)
     fun updateCuadrillaImage(context: Context, nombre: String, uri: Uri?) {
         viewModelScope.launch(Dispatchers.IO) {
-            var imageBitmap: Bitmap? = null
             if (uri != null) {
-                val contentResolver: ContentResolver = context.contentResolver
-                val source = ImageDecoder.createSource(contentResolver, uri)
-                imageBitmap = ImageDecoder.decodeBitmap(source)
+                val imageBitmap = context.localUriToBitmap(uri)
                 cuadrillaRepository.setCuadrillaProfile(nombre, imageBitmap)
             }
         }
@@ -152,13 +147,23 @@ class MainVM @Inject constructor(
         }
     }
 
+    fun getCuadrillaAccessToken(nombre: String): String{
+        return cuadrillaRepository.getCuadrillaAccessToken(nombre)
+    }
+
+    fun agregarIntegrante(nombreUsuario: String, nombreCuadrilla: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            cuadrillaRepository.insertUser(nombreUsuario, nombreCuadrilla)
+        }
+    }
+
 
     /*****************************************************
      ****************** METODOS EVENTO ******************
      *****************************************************/
 
-    suspend fun insertarEvento(evento: Evento): Boolean {
-        return eventoRepository.insertarEvento(evento,currentUser.value!!.username)
+    suspend fun insertarEvento(evento: Evento, image: Bitmap?): Boolean {
+        return eventoRepository.insertarEvento(evento, currentUser.value!!.username, image)
     }
 
     fun getEventos(): Flow<List<Evento>> {
@@ -220,7 +225,7 @@ class MainVM @Inject constructor(
         ivImage.setImageURI(uri)
         val drawable: Drawable = ivImage.drawable
         if (drawable is BitmapDrawable) {
-            eventoRepository.setEventoProfile(id, drawable.bitmap)
+            eventoRepository.setEventoProfileImage(id, drawable.bitmap)
         }else{
             false
         }

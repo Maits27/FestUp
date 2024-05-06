@@ -15,7 +15,11 @@ import com.gomu.festup.RemoteDatabase.UserExistsException
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.toStringNuestro
 import io.ktor.client.plugins.ResponseException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.text.SimpleDateFormat
 import javax.inject.Inject
@@ -58,6 +62,8 @@ class UserRepository @Inject constructor(
             val fechaNacimientoString = usuario.fechaNacimiento.toStringNuestro()
             val authUser= AuthUser(usuario.username,usuario.password,usuario.email,usuario.nombre,fechaNacimientoString)
             authClient.createUser(authUser)
+            // Authenticate to get the bearer token
+            authClient.authenticate(usuario.username, usuario.password)
             true
         }catch (e:Exception){
             Log.d("Exception crear usuario", e.toString())
@@ -103,11 +109,16 @@ class UserRepository @Inject constructor(
 
     override suspend fun setUserProfile(username: String, image: Bitmap): Boolean {
         return try {
-            httpClient.setUserProfile(username, image)
+            withContext(Dispatchers.IO) {
+                authClient.setUserProfile(username, image)
+            }
             true
         } catch (e: ResponseException) {
             Log.e("HTTP", "Couldn't upload profile image.")
             e.printStackTrace()
+            false
+        } catch (e: Exception) {
+            Log.e("HTTP", e.toString())
             false
         }
     }

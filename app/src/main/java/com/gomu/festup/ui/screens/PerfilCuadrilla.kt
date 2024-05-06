@@ -3,6 +3,7 @@ package com.gomu.festup.ui.screens
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -52,11 +53,16 @@ import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.vm.MainVM
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import com.gomu.festup.ui.components.UsuarioCard
+import com.gomu.festup.utils.openWhatsApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -171,7 +177,10 @@ fun TopProfileCuadrilla(
             AsyncImage(
                 model = imageUri,
                 contentDescription = null,
-                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                placeholder = painterResource(id = R.drawable.no_cuadrilla),
+                onError = {
+                    imageUri = Uri.parse("http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png")
+                },
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
@@ -232,31 +241,77 @@ fun TopProfileCuadrilla(
 
 
 @Composable
-fun Unirse(show:Boolean, onConfirm: (String) -> Unit){
+fun Compartir(show:Boolean, accessToken: String, nombreCuadrilla: String,  onConfirm: () -> Unit){
     if(show){
-        var token by rememberSaveable {mutableStateOf("")}
+        val context = LocalContext.current
+
         AlertDialog(
-            onDismissRequest = {},
-            confirmButton = {
-                TextButton(onClick = { onConfirm(token) }) {
-                    Text(text = "Unirme")
+            onDismissRequest = { onConfirm() },
+            confirmButton = {},
+            title = {
+                Text(text = "¿Estas seguro de que quieres compartir el codigo de la cuadrilla?") },
+            text = {
+                Column {
+                    Text(text = "Recuerda que cualquier persona con el codigo podra unirse")
+                    Row {
+                        IconButton(onClick = { openWhatsApp(accessToken, nombreCuadrilla, context) }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.whatsapp),
+                                contentDescription = null,
+                                modifier = Modifier.padding(5.dp)
+                            )
+                        }
+                        IconButton(onClick = { /*TODO*/ }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.message),
+                                contentDescription = null
+                            )
+                        }
+                    }
                 }
-                Button(onClick = { onConfirm(token)}) {
-                    
+            }
+        )
+    }
+}
+
+@Composable
+fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String,  onConfirm: () -> Unit){
+    if(show){
+
+        var input by rememberSaveable {mutableStateOf("")}
+        val context = LocalContext.current
+
+        AlertDialog(
+            onDismissRequest = { onConfirm() },
+            confirmButton = {
+                TextButton(onClick = {
+                    if (input == accessToken){
+                        onConfirm()
+                    }
+                    else {
+                        Toast.makeText(
+                            context,
+                            "Código incorrecto. Por favor, inténtalo de nuevo.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }) {
+                    Text(text = "Unirme")
                 }
             },
             title = {
-                Text(text = "Unirte a la cuadrilla") },
+                Text(text = "¿Quieres unirte a $nombreCuadrilla?") },
             text = {
-                Text(text = "Introduce el token de cuadrilla " +
-                        "(si no tienes uno, pide que te lo mande un miembro de esta).")
-                OutlinedTextField(
-                    value = token,
-                    onValueChange = {token = it},
-                    label = { Text("Token de la cuadrilla") },
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 16.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-                )
+                Column {
+                    Text(text = "Introduce el codigo de la cuadrilla para unirte")
+                    OutlinedTextField(
+                        value = input,
+                        onValueChange = { input = it },
+                        label = { Text("Codigo de la cuadrilla") },
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 16.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                    )
+                }
             }
         )
     }
@@ -268,6 +323,10 @@ fun ListadoUsuarios(
     mainVM: MainVM,
     navController: NavController
 ){
+    var showShare by rememberSaveable { mutableStateOf(false) }
+    var showJoin by rememberSaveable { mutableStateOf(false) }
+    val token = mainVM.getCuadrillaAccessToken(mainVM.cuadrillaMostrar.value!!.nombre)
+
     Row (
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -285,10 +344,25 @@ fun ListadoUsuarios(
             Button(
                 modifier = Modifier
                     .weight(1f),
-                onClick = { /*TODO boton enviar token*/ }
+                onClick = {
+                    showShare = true
+                }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.send), "",
+                )
+            }
+        }
+        else{
+            Button(
+                modifier = Modifier
+                    .weight(1f),
+                onClick = {
+                    showJoin = true
+                }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.join), "",
                 )
             }
         }
@@ -325,5 +399,10 @@ fun ListadoUsuarios(
                 )
             )
         }
+    }
+    Compartir(showShare, token, mainVM.cuadrillaMostrar.value!!.nombre) { showShare = false }
+    Unirse( showJoin, token, mainVM.cuadrillaMostrar.value!!.nombre) {
+        mainVM.agregarIntegrante(mainVM.currentUser.value!!.username, mainVM.cuadrillaMostrar.value!!.nombre)
+        showJoin = false
     }
 }

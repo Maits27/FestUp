@@ -132,6 +132,7 @@ fun CuadrillaCardParaEventosAlert(
             AsyncImage(
                 model = imageUri,
                 contentDescription = "Cuadrilla profile image",
+                placeholder = painterResource(id = R.drawable.no_cuadrilla),
                 onError = {
                     imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png"
                 },

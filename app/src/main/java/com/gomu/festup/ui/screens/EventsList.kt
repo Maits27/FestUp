@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,9 +47,8 @@ import java.util.Date
 @Composable
 fun EventsList(navController: NavController, mainVM: MainVM) {
 
-    val eventoNuevo = Evento(nombre = "Fiestas de Basauri", descripcion = " ", fecha = Date(123), localizacion = "Basauri", numeroAsistentes = 100, )
-    val eventoNuevo2 = Evento(nombre = "Fiestas de Basauri", descripcion = " ", fecha = Date(123), localizacion = "Basauri", numeroAsistentes = 100, )
-    val events = arrayOf(eventoNuevo, eventoNuevo2)
+    val eventos = mainVM.getEventos().collectAsState(initial = emptyList())
+
     Column (
         verticalArrangement = Arrangement.Top,
     ){
@@ -78,7 +78,7 @@ fun EventsList(navController: NavController, mainVM: MainVM) {
             verticalArrangement = Arrangement.Center,
             contentPadding = PaddingValues(bottom = 70.dp),
         ) {
-            items(events) { evento ->
+            items(eventos.value) { evento ->
                 EventoCard(evento = evento, mainVM = mainVM, navController = navController)
             }
         }
