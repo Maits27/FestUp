@@ -29,7 +29,7 @@ data class Cuadrilla(
 
 @Entity
 data class Evento(
-    @PrimaryKey val id: String = UUID.randomUUID().toString(),
+    @PrimaryKey val id: String,
     val nombre: String,
     val fecha: Date,
     val numeroAsistentes: Int,
