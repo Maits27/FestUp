@@ -1,6 +1,7 @@
 package com.gomu.festup.LocalDatabase.DAO
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -22,6 +23,12 @@ interface SeguidoresDao {
     @Query("SELECT seguido FROM Seguidores WHERE seguidor=:username")
     fun aQuienSigue(username: String): Flow<List<String>>
 
+    @Query("SELECT * FROM Seguidores WHERE seguidor=:seguidor and seguido=:seguido")
+    fun findUserSeguidor(seguidor: String, seguido: String): Seguidores
+
     @Update
     fun editarIntegrante(seguidores: Seguidores): Int
+
+    @Delete
+    fun deleteSeguidores(seguidores: Seguidores)
 }

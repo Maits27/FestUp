@@ -39,6 +39,8 @@ interface IUserRepository: ILoginSettings {
     fun getSeguidores(username: String): Flow<List<Usuario>>
     fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>>
     suspend fun newSeguidor(currentUsername: String, username: String): Unit
+    suspend fun alreadySiguiendo(currentUsername: String, username: String): Boolean
+    suspend fun deleteSeguidores(currentUsername: String, usernameToUnfollow: String)
     suspend fun getUserProfile(username: String): Bitmap
     suspend fun setUserProfile(username: String, image: Bitmap):Boolean
 
@@ -108,6 +110,21 @@ class UserRepository @Inject constructor(
 
         // Remote
         httpClient.insertSeguidor(RemoteSeguidor(seguidor = currentUsername, seguido = username))
+    }
+
+    override suspend fun alreadySiguiendo(currentUsername: String, username: String): Boolean {
+        // Local
+        val seguidores = seguidoresDao.findUserSeguidor(seguidor = currentUsername, seguido = username)
+        Log.d("Seguidores", "$seguidores")
+        return seguidores != null
+    }
+
+    override suspend fun deleteSeguidores(currentUsername: String, usernameToUnfollow: String) {
+        // Local
+        seguidoresDao.deleteSeguidores(Seguidores(seguidor = currentUsername, seguido = usernameToUnfollow))
+
+        // Remote
+        httpClient.deleteSeguidor(RemoteSeguidor(seguidor = currentUsername, seguido = usernameToUnfollow))
     }
 
     override fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>> {

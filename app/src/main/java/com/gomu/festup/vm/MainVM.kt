@@ -55,6 +55,8 @@ class MainVM @Inject constructor(
     var localizacion: MutableState<Location?> = mutableStateOf(null)
     var localizacionAMostrar: MutableState<Pair<Double, Double>?> = mutableStateOf(null)
 
+    val alreadySiguiendo: MutableState<Boolean?> = mutableStateOf(null)
+
 
     /*****************************************************
      ****************** METODOS USUARIO ******************
@@ -217,11 +219,6 @@ class MainVM @Inject constructor(
         return eventos
     }
 
-    fun newSiguiendo(followedUsername: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.newSeguidor(currentUser.value!!.username, followedUsername)
-        }
-    }
 
     fun eventosCuadrilla(cuadrilla: Cuadrilla): Flow<List<Cuadrilla>> {
         return eventoRepository.cuadrillasEvento(cuadrilla.nombre)
@@ -252,4 +249,27 @@ class MainVM @Inject constructor(
         return cuadrillaRepository.getIntegrantes()
     }
 
+    /*****************************************************
+     ****************** METODOS INTEGRANTE ******************
+     *****************************************************/
+
+    fun newSiguiendo(followedUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.newSeguidor(currentUser.value!!.username, followedUsername)
+            alreadySiguiendo.value = true
+        }
+    }
+
+    fun alreadySiguiendo(username: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            alreadySiguiendo.value = userRepository.alreadySiguiendo(currentUser.value!!.username, username)
+        }
+    }
+
+    fun unfollow(usernameToUnfollow: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.deleteSeguidores(currentUser.value!!.username, usernameToUnfollow)
+            alreadySiguiendo.value = false
+        }
+    }
 }

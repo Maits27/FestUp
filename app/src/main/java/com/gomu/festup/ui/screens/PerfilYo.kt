@@ -43,6 +43,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -79,7 +81,12 @@ fun PerfilYo(
     mainVM: MainVM
 ) {
     var usuario = mainVM.currentUser.value!!
-    if (!yo) usuario = mainVM.usuarioMostrar.value!!
+    if (!yo) {
+        usuario = mainVM.usuarioMostrar.value!!
+        mainVM.alreadySiguiendo(usuario.username)
+    }
+
+    val alreadySiguiendo = mainVM.alreadySiguiendo
 
     val cuadrillas = mainVM.getCuadrillasUsuario(usuario).collectAsState(initial = emptyList())
 
@@ -101,7 +108,7 @@ fun PerfilYo(
                 edad = mainVM.calcularEdad(usuario),
                 yo)
         }
-        SeguidoresYSeguidos(yo, usuario, mainVM, navController)
+        SeguidoresYSeguidos(yo, usuario, mainVM, navController, alreadySiguiendo)
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -216,7 +223,13 @@ fun EstasSeguro(show: Boolean, mensaje: String, onDismiss:()->Unit, onConfirm:()
     }
 }
 @Composable
-fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM, navController: NavController){
+fun SeguidoresYSeguidos(
+    yo: Boolean,
+    usuario: Usuario,
+    mainVM: MainVM,
+    navController: NavController,
+    alreadySiguiendo: MutableState<Boolean?>
+){
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -283,24 +296,45 @@ fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM, navContro
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                     .align(Alignment.Bottom)
             ){
-                TextButton(
-                    onClick = {
-                            mainVM.newSiguiendo(usuario.username)
-                    },
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                ) {
-                    Text(
-                        text = "Follow",
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
+                if (alreadySiguiendo.value != null) {
+                    if (!alreadySiguiendo.value!!) {
+                        TextButton(
+                            onClick = { mainVM.newSiguiendo(usuario.username) },
+                            modifier = Modifier
+                                .padding(vertical = 16.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                        ) {
+                            Text(
+                                text = "Follow",
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                    }
+                    else {
+                        TextButton(
+                            onClick = { mainVM.unfollow(usuario.username) },
+                            modifier = Modifier
+                                .padding(vertical = 16.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                        ) {
+                            Text(
+                                text = "Unfollow",
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }
