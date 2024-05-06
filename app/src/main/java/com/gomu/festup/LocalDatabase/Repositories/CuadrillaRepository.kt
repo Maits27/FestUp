@@ -15,6 +15,8 @@ import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.RemoteDatabase.HTTPClient
 import com.gomu.festup.RemoteDatabase.RemoteCuadrilla
 import com.gomu.festup.RemoteDatabase.RemoteIntegrante
+import com.gomu.festup.utils.remoteIntegranteToIntegrante
+import com.gomu.festup.utils.remotecuadrillaToCuadrilla
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -42,6 +44,10 @@ interface ICuadrillaRepository {
     suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean
 
    fun getCuadrillaAccessToken(nombre: String): String
+
+    suspend fun descargarCuadrillas()
+
+    suspend fun descargarIntegrantes()
 }
 @Singleton
 class CuadrillaRepository @Inject constructor(
@@ -144,4 +150,17 @@ class CuadrillaRepository @Inject constructor(
     override fun getCuadrillaAccessToken(nombre: String): String {
         return httpClient.getCuadrillaAccessToken(nombre)
     }
+
+    override suspend fun descargarCuadrillas(){
+        cuadrillaDao.eliminarCuadrillas()
+        val cuadrillaList = httpClient.getCuadrillas()
+        cuadrillaList.map { cuadrillaDao.insertCuadrilla(remotecuadrillaToCuadrilla(it)) }
+    }
+
+    override suspend fun descargarIntegrantes(){
+        integranteDao.eliminarIntegrantes()
+        val integrantesList = httpClient.getIntegrantes()
+        integrantesList.map { integranteDao.insertIntegrante(remoteIntegranteToIntegrante(it)) }
+    }
+
 }

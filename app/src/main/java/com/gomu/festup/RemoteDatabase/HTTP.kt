@@ -30,7 +30,14 @@ class AuthenticationException : Exception()
 
 
 @Serializable
-data class AuthUser(
+data class RemoteUsuario(
+    val username: String,
+    val email: String,
+    val nombre: String,
+    val fechaNacimiento: String
+)
+@Serializable
+data class RemoteAuthUsuario(
     val username: String,
     val password: String,
     val email: String,
@@ -54,8 +61,8 @@ data class RemoteUsuarioAsistente(
 
 @Serializable
 data class RemoteCuadrillaAsistente(
-    val nombreCuadrilla: String,
-    val idEvento: String
+    val nombre: String,
+    val id: String
 )
 
 @Serializable
@@ -129,7 +136,7 @@ class AuthClient @Inject constructor() {
     }
 
     @Throws(UserExistsException::class)
-    suspend fun createUser(user: AuthUser) {
+    suspend fun createUser(user: RemoteAuthUsuario) {
         httpClient.post("http://34.16.74.167/createUser") {
             contentType(ContentType.Application.Json)
             setBody(user)
@@ -189,12 +196,12 @@ class HTTPClient @Inject constructor() {
     }
 
     // ---------------------------  USER ------------------------------
-    suspend fun getUsuarios(): List<AuthUser> = runBlocking {
+    suspend fun getUsuarios(): List<RemoteUsuario> = runBlocking {
         val response = httpClient.get("http://34.16.74.167/getUsers")
         response.body()
     }
 
-    fun getUsuario(username: String): AuthUser = runBlocking {
+    fun getUsuario(username: String): RemoteUsuario = runBlocking {
         Log.d("USUARIO", "get")
         val response = httpClient.get("http://34.16.74.167/getUser?username=$username")
         response.body()
@@ -252,6 +259,7 @@ class HTTPClient @Inject constructor() {
     suspend fun getCuadrillasAsistentes(): List<RemoteCuadrillaAsistente> = runBlocking {
         val response = httpClient.get("http://34.16.74.167/getCuadrillasAsistentes")
         response.body()
+
     }
     suspend fun insertCuadrillaAsistente(cuadrillaAsistente: RemoteCuadrillaAsistente) = runBlocking {
         httpClient.post("http://34.16.74.167/insertCuadrillaAsistente") {

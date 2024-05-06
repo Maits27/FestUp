@@ -56,8 +56,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.IdentVM
@@ -148,28 +150,33 @@ fun LoginForm(
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val usuario = withContext(Dispatchers.IO) {
-                        identVM.inicarSesion(username, password)
+                        identVM.iniciarSesion(username, password)
                     }
                     if (usuario) {
+                        withContext(Dispatchers.IO) {
+                            mainVM.descargarDatos()
+                        }
                         val currentUser = withContext(Dispatchers.IO) {
-                            Log.d("CURRENTUSER", "get")
                             mainVM.actualizarCurrentUser(username)
                         }
+                        Log.d("CURRENTUSER", currentUser.toString())
+                        nuestroLocationProvider(context, mainVM)
+                        mainVM.currentUser.value = currentUser
+
                         withContext(Dispatchers.Main) {
-                            Log.d("CURRENTUSER", currentUser.toString())
-                            nuestroLocationProvider(context, mainVM)
-                            mainVM.currentUser.value = currentUser
                             mainNavController.navigate(AppScreens.App.route)
                             showLoading = false
                         }
+
                     } else {
                         withContext(Dispatchers.Main) {
                             showLoading = false
                             Toast.makeText(context, "La informacion no es correcta, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                            showLoading = false
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("Excepcion al crear usuario", e.toString())
+                    Log.e("Excepcion al iniciar sesion", e.toString())
                 }
             }
         }
@@ -289,19 +296,25 @@ fun RegistroForm(
         else if (password != confirmPassword) Toast.makeText(context, "Ambas constraseñas deben conindicir", Toast.LENGTH_SHORT).show()
         else {
             showLoading = true
-            CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 Log.d("IMAGE", "Image uri: ${imageUri.toString()}")
                 try {
                     val usuario = withContext(Dispatchers.IO) {
                         identVM.registrarUsuario(context, username, password, email, nombre, birthDate, imageUri)
                     }
                     if (usuario != null) {
+                        withContext(Dispatchers.IO) {
+                            mainVM.descargarDatos()
+                        }
                         mainVM.currentUser.value= usuario
-                        mainNavController.navigate(AppScreens.App.route)
-                        showLoading = false
+                        withContext(Dispatchers.Main) {
+                            mainNavController.navigate(AppScreens.App.route)
+                            showLoading = false
+                        }
                     } else {
                         showLoading = false
                         Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                        showLoading = false
                     }
                 } catch (e: Exception) {
                     Log.e("Excepcion al crear usuario", e.toString())

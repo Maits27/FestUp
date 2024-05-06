@@ -62,6 +62,25 @@ class MainVM @Inject constructor(
      ****************** METODOS USUARIO ******************
      *****************************************************/
 
+
+    fun descargarDatos(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try{
+                userRepository.descargarUsuarios()
+                cuadrillaRepository.descargarCuadrillas()
+                cuadrillaRepository.descargarIntegrantes()
+                eventoRepository.descargarEventos()
+                eventoRepository.descargarUsuariosAsistentes()
+                eventoRepository.descargarCuadrillasAsistentes()
+            }catch (e: Exception) {
+                Log.d("Excepccion al descargar datos",e.toString())
+            }
+        }
+
+    }
+
+
+
     fun calcularEdad(usuario: Usuario): Int{
         val diff = Date().time - (usuario.fechaNacimiento.time)
         val edad = diff / (1000L * 60 * 60 * 24 * 365)
