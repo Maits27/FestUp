@@ -71,7 +71,7 @@ fun UsuarioCard(
                 onError = {
                     imageUri = "http://34.16.74.167/userProfileImages/no-user.png"
                 },
-                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                placeholder = painterResource(id = R.drawable.no_user),
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
