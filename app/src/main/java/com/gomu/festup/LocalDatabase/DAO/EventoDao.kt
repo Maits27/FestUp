@@ -57,4 +57,9 @@ interface EventoDao {
     @Update
     fun editarEvento(evento: Evento): Int
 
+    @Transaction
+    @Query("DELETE FROM Evento ")
+    suspend fun eliminarEventos()
+
+
 }

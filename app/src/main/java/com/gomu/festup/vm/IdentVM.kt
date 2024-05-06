@@ -36,8 +36,8 @@ class IdentVM @Inject constructor(
     ): Usuario? {
         try{
             val fechaNacimientoDate = fechaNacimiento.formatearFecha()
-            val newUser = Usuario(username,password,email,nombre,fechaNacimientoDate)
-            val signInCorrect = userRepository.insertUsuario(newUser)
+            val newUser = Usuario(username,email,nombre,fechaNacimientoDate)
+            val signInCorrect = userRepository.insertUsuario(newUser,password)
             if (signInCorrect){
                 if (uri != null && uri != Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")) {
                     val imageBitmap = context.localUriToBitmap(uri)
@@ -54,7 +54,7 @@ class IdentVM @Inject constructor(
         }
     }
 
-    suspend fun inicarSesion(username: String, password:String): Boolean {
+    suspend fun iniciarSesion(username: String, password:String): Boolean {
         return userRepository.verifyUser(username, password)
     }
 }

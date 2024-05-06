@@ -24,4 +24,9 @@ interface SeguidoresDao {
 
     @Update
     fun editarIntegrante(seguidores: Seguidores): Int
+
+
+    @Transaction
+    @Query("DELETE FROM Seguidores ")
+    suspend fun eliminarSeguidores()
 }

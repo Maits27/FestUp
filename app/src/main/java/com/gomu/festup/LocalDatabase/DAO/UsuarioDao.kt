@@ -35,7 +35,7 @@ interface UsuarioDao {
 
     @Transaction
     @Query("SELECT * FROM Usuario WHERE username=:username")
-    fun getUsuario(username: String): Usuario?
+    fun getUsuario(username: String): Usuario
 
     @Update
     fun editarUsuario(usuario: Usuario): Int
@@ -46,6 +46,6 @@ interface UsuarioDao {
 
 
     @Transaction
-    @Query("SELECT * FROM Usuario WHERE username=:username and password=:password")
-    fun verifyUser(username: String, password: String): Usuario
+    @Query("DELETE FROM Usuario ")
+    suspend fun eliminarUsuarios()
 }

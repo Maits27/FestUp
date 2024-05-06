@@ -35,4 +35,8 @@ interface UsuariosAsistentesDao {
     fun editarUsuarioAsistente(asistente: UsuariosAsistentes): Int
     @Delete
     suspend fun deleteAsistente(asistente: UsuariosAsistentes)
+
+    @Transaction
+    @Query("DELETE FROM UsuariosAsistentes ")
+    suspend fun eliminarUsuariosAsistentes()
 }

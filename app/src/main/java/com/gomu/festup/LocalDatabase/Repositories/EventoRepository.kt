@@ -11,9 +11,14 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Entities.UsuariosAsistentes
 import com.gomu.festup.RemoteDatabase.HTTPClient
+import com.gomu.festup.RemoteDatabase.RemoteCuadrillaAsistente
 import com.gomu.festup.RemoteDatabase.RemoteEvento
 import com.gomu.festup.RemoteDatabase.RemoteUsuarioAsistente
 import com.gomu.festup.utils.formatearFechaRemoto
+import com.gomu.festup.utils.remoteCAsistenteToCAsistente
+import com.gomu.festup.utils.remoteEventoToEvento
+import com.gomu.festup.utils.remoteUAsistenteToUAsistente
+import com.gomu.festup.utils.remoteUsuarioToUsuario
 import com.gomu.festup.utils.toStringRemoto
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
@@ -36,6 +41,12 @@ interface IEventoRepository {
     fun usuariosEvento(id: String): Flow<List<Usuario>>
     suspend fun updateEvento(evento: Evento): Boolean
     suspend fun setEventoProfileImage(id: String, image: Bitmap): Boolean
+
+    suspend fun descargarEventos()
+
+    suspend fun descargarUsuariosAsistentes()
+
+    suspend fun descargarCuadrillasAsistentes()
 }
 @Singleton
 class EventoRepository @Inject constructor(
@@ -106,15 +117,19 @@ class EventoRepository @Inject constructor(
     }
 
     override suspend fun apuntarse(usuario: Usuario, id: String){
+        httpClient.insertUsuarioAsistente(RemoteUsuarioAsistente(usuario.username,id))
         usuariosAsistentesDao.insertUsuarioAsistente(UsuariosAsistentes(usuario.username, id))
     }
     override suspend fun desapuntarse(usuario: Usuario, id: String){
+        httpClient.deleteUsuarioAsistente(RemoteUsuarioAsistente(usuario.username,id))
         usuariosAsistentesDao.deleteAsistente(UsuariosAsistentes(usuario.username, id))
     }
     override suspend fun apuntarse(cuadrilla: Cuadrilla, id: String){
+        httpClient.insertCuadrillaAsistente(RemoteCuadrillaAsistente(cuadrilla.nombre,id))
         cuadrillasAsistentesDao.insertAsistente(CuadrillasAsistentes(cuadrilla.nombre, id))
     }
     override suspend fun desapuntarse(cuadrilla: Cuadrilla, id: String){
+        httpClient.deleteCuadrillaAsistente(RemoteCuadrillaAsistente(cuadrilla.nombre,id))
         cuadrillasAsistentesDao.deleteAsistente(CuadrillasAsistentes(cuadrilla.nombre, id))
     }
 
@@ -143,5 +158,29 @@ class EventoRepository @Inject constructor(
             false
         }
     }
+
+    override suspend fun descargarEventos(){
+        eventoDao.eliminarEventos()
+        val eventosList = httpClient.getEventos()
+        eventosList.map{eventoDao.insertEvento(remoteEventoToEvento(it))}
+    }
+
+
+    override suspend fun descargarUsuariosAsistentes(){
+        usuariosAsistentesDao.eliminarUsuariosAsistentes()
+        val usuariosAsistentesList = httpClient.getUsuariosAsistentes()
+        usuariosAsistentesList.map{usuariosAsistentesDao.insertUsuarioAsistente(
+            remoteUAsistenteToUAsistente(it)
+        )}
+    }
+
+    override suspend fun descargarCuadrillasAsistentes(){
+        cuadrillasAsistentesDao.eliminarCuadrillasAsistentes()
+        val cuadrillasAsistentesList = httpClient.getCuadrillasAsistentes()
+        cuadrillasAsistentesList.map{cuadrillasAsistentesDao.insertAsistente(
+            remoteCAsistenteToCAsistente(it)
+        )}
+    }
+
 
 }

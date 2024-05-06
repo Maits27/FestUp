@@ -42,4 +42,9 @@ interface IntegranteDao{
 
     @Delete(entity = Integrante::class)
     fun eliminarIntegrante(integrante: Integrante)
+
+
+    @Transaction
+    @Query("DELETE FROM Integrante ")
+    suspend fun eliminarIntegrantes()
 }
