@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -190,12 +191,12 @@ fun EstadisticasEvento(mainVM: MainVM, evento: Evento, apuntado: Boolean){
                 )
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
                         .background(
                             color = MaterialTheme.colorScheme.onSecondary,
                             shape = RoundedCornerShape(12.dp)
                         )
-                        .padding(8.dp),
+                        .padding(8.dp)
+                        .wrapContentSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -216,12 +217,12 @@ fun EstadisticasEvento(mainVM: MainVM, evento: Evento, apuntado: Boolean){
                 )
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
                         .background(
                             color = MaterialTheme.colorScheme.onSecondary,
                             shape = RoundedCornerShape(12.dp)
                         )
-                        .padding(8.dp),
+                        .padding(8.dp)
+                        .wrapContentSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -231,34 +232,33 @@ fun EstadisticasEvento(mainVM: MainVM, evento: Evento, apuntado: Boolean){
                     )
                 }
             }
-        }
-    }
-    Row (
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
-        Button(
-            onClick = { apuntarse = true },
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = "Apuntarme",
-                style = TextStyle(fontSize = 17.sp)
-            )
-        }
+            Column (
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ){
+                Button(
+                    onClick = { apuntarse = true },
+                ) {
+                    Text(
+                        text = "Apuntarme",
+                        style = TextStyle(fontSize = 17.sp)
+                    )
+                }
 
-        Button(
-            onClick = { desapuntarse = true},
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = "Desapuntarse",
-                style = TextStyle(fontSize = 17.sp)
-            )
+                Button(
+                    onClick = { desapuntarse = true},
+                ) {
+                    Text(
+                        text = "Desapuntarse",
+                        style = TextStyle(fontSize = 17.sp)
+                    )
+                }
+            }
         }
     }
+
     Apuntarse(show = apuntarse, apuntado = apuntado,  mainVM = mainVM) { apuntarse = false }
     Desapuntarse(show = desapuntarse , apuntado = apuntado, mainVM = mainVM) { desapuntarse = false }
 }
