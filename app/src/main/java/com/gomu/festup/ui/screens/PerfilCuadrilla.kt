@@ -246,7 +246,7 @@ fun Compartir(show:Boolean, accessToken: String, nombreCuadrilla: String,  onCon
         val context = LocalContext.current
 
         AlertDialog(
-            onDismissRequest = {},
+            onDismissRequest = { onConfirm() },
             confirmButton = {},
             title = {
                 Text(text = "¿Estas seguro de que quieres compartir el codigo de la cuadrilla?") },
@@ -282,7 +282,7 @@ fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String,  onConfir
         val context = LocalContext.current
 
         AlertDialog(
-            onDismissRequest = {},
+            onDismissRequest = { onConfirm() },
             confirmButton = {
                 TextButton(onClick = {
                     if (input == accessToken){
