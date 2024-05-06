@@ -53,12 +53,14 @@ class EventoRepository @Inject constructor(
 
     override suspend fun insertarEvento(evento: Evento, username: String): Boolean {
         return try {
+            // Local
             eventoDao.insertEvento(evento)
             usuariosAsistentesDao.insertUsuarioAsistente(UsuariosAsistentes(username, evento.id))
 
+            // Remote
             // TODO ARREGLAR, ID Y DATE FORMATO
             val fechaString: String = evento.fecha.toStringRemoto()
-            httpClient.insertEvento(RemoteEvento(
+            val insertedEvento = httpClient.insertEvento(RemoteEvento(
                 id = evento.id, // TODO (evento.id) cambiar esto cuando se genere correctamente el id
                 nombre = evento.nombre,
                 fecha = fechaString,
@@ -66,7 +68,8 @@ class EventoRepository @Inject constructor(
                 descripcion = evento.descripcion,
                 localizacion = evento.localizacion)
             )
-            httpClient.insertUsuarioAsistente(RemoteUsuarioAsistente(username,evento.id))
+            // TODO está hecho teniendo en cuenta que el ID del evento se crea en remoto
+            httpClient.insertUsuarioAsistente(RemoteUsuarioAsistente(username, insertedEvento.id))
             true
         }catch (e:Exception){
             Log.d("Exception crear evento", e.toString())
