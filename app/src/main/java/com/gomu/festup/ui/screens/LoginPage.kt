@@ -1,8 +1,5 @@
 package com.gomu.festup.ui.screens
 
-import android.content.ContentResolver
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -18,7 +15,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,17 +25,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -51,21 +46,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.example.compose.FestUpTheme
-import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.utils.nuestroLocationProvider
@@ -76,7 +66,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
 import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -147,10 +136,15 @@ fun LoginForm(
 
     val context = LocalContext.current
 
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
+
     val onLoginButtonClick: () -> Unit = {
         if (username == "") Toast.makeText(context, "Introduce un nombre de usuario", Toast.LENGTH_SHORT).show()
         else if (password == "") Toast.makeText(context, "Introduce una contrseña", Toast.LENGTH_SHORT).show()
         else {
+            showLoading = true
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val usuario = withContext(Dispatchers.IO) {
@@ -166,6 +160,7 @@ fun LoginForm(
                             nuestroLocationProvider(context, mainVM)
                             mainVM.currentUser.value = currentUser
                             mainNavController.navigate(AppScreens.App.route)
+                            showLoading = false
                         }
                     } else {
                         withContext(Dispatchers.Main) {
@@ -219,6 +214,7 @@ fun LoginForm(
         ) {
             Text(text = "Iniciar sesión")
         }
+        if (showLoading) CircularProgressIndicator()
     }
 }
 
@@ -265,6 +261,10 @@ fun RegistroForm(
         mutableStateOf(false)
     }
 
+    var showLoading by remember {
+        mutableStateOf(false)
+    }
+
     var imageUri by remember {
         mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/no-user.png"))
     }
@@ -285,7 +285,7 @@ fun RegistroForm(
         else if (confirmPassword == "") Toast.makeText(context, "Introduce una constraseña de confirmación", Toast.LENGTH_SHORT).show()
         else if (password != confirmPassword) Toast.makeText(context, "Ambas constraseñas deben conindicir", Toast.LENGTH_SHORT).show()
         else {
-
+            showLoading = true
             CoroutineScope(Dispatchers.Main).launch {
                 Log.d("IMAGE", "Image uri: ${imageUri.toString()}")
                 try {
@@ -295,7 +295,9 @@ fun RegistroForm(
                     if (usuario != null) {
                         mainVM.currentUser.value= usuario
                         mainNavController.navigate(AppScreens.App.route)
+                        showLoading = false
                     } else {
+                        showLoading = false
                         Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
@@ -306,125 +308,127 @@ fun RegistroForm(
         }
     }
 
-
-
     val modifierForInputs = Modifier.padding(vertical = 10.dp)
 
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 56.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        // Profile image
-        Box(contentAlignment = Alignment.BottomEnd) {
-            Box(Modifier.padding(16.dp)) {
-                AsyncImage(
-                    model = imageUri,
-                    contentDescription = "User image",
-                    placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                    contentScale = ContentScale.Crop,
-                    onError = {
-                        imageUri = Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")
-                    },
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape)
-                )
-            }
-            // Icono para editar imagen
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(bottom = 16.dp, end = 8.dp)
-                    .clip(CircleShape)
-                    .clickable(onClick = {
-                        singlePhotoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    })
-            ) {
-                //Añadir circle y edit
-                Icon(
-                    painterResource(id = R.drawable.circle),
-                    contentDescription = null,
-                    Modifier.size(40.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Icon(
-                    painterResource(id = R.drawable.edit),
-                    contentDescription = null,
-                    Modifier.size(18.dp),
-                    tint = MaterialTheme.colorScheme.surface
-                )
-            }
-        }
-        // Campo para añadir nombre de usuario
-        OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text(text = "Nombre de usuario") },
-            modifier = modifierForInputs
-        )
-        // Campo para añadir email
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text(text = "Email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = modifierForInputs
-        )
-        // Campo para añadir nombre
-        OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it },
-            label = { Text(text = "Nombre") },
-            modifier = modifierForInputs
-        )
-        // Añadir fecha de nacimiento
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
         Column (
-            modifier = modifierForInputs
-                .clickable {
-                    showDatePicker = true
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 56.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            // Profile image
+            Box(contentAlignment = Alignment.BottomEnd) {
+                Box(Modifier.padding(16.dp)) {
+                    AsyncImage(
+                        model = imageUri,
+                        contentDescription = "User image",
+                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                        contentScale = ContentScale.Crop,
+                        onError = {
+                            imageUri = Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")
+                        },
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape)
+                    )
                 }
-                .fillMaxWidth()
-                .border(2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
-        ) {
-            Text(
-                text = birthDate,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
+                // Icono para editar imagen
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(bottom = 16.dp, end = 8.dp)
+                        .clip(CircleShape)
+                        .clickable(onClick = {
+                            singlePhotoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        })
+                ) {
+                    //Añadir circle y edit
+                    Icon(
+                        painterResource(id = R.drawable.circle),
+                        contentDescription = null,
+                        Modifier.size(40.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Icon(
+                        painterResource(id = R.drawable.edit),
+                        contentDescription = null,
+                        Modifier.size(18.dp),
+                        tint = MaterialTheme.colorScheme.surface
+                    )
+                }
+            }
+            // Campo para añadir nombre de usuario
+            OutlinedTextField(
+                value = username,
+                onValueChange = { username = it },
+                label = { Text(text = "Nombre de usuario") },
+                modifier = modifierForInputs
             )
+            // Campo para añadir email
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text(text = "Email") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = modifierForInputs
+            )
+            // Campo para añadir nombre
+            OutlinedTextField(
+                value = nombre,
+                onValueChange = { nombre = it },
+                label = { Text(text = "Nombre") },
+                modifier = modifierForInputs
+            )
+            // Añadir fecha de nacimiento
+            Column (
+                modifier = modifierForInputs
+                    .clickable {
+                        showDatePicker = true
+                    }
+                    .fillMaxWidth()
+                    .border(2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
+            ) {
+                Text(
+                    text = birthDate,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
+                )
+            }
+            // Campo para añadir contraseña
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text(text = "Contraseña") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = modifierForInputs
+            )
+            // Campo para repetir contraseña
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text(text = "Repite la contraseña") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = modifierForInputs
+            )
+            Button(
+                onClick = { onRegisterButtonClick() },
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Text(text = "Registrarse")
+            }
         }
-        // Campo para añadir contraseña
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text(text = "Contraseña") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = modifierForInputs
-        )
-        // Campo para repetir contraseña
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text(text = "Repite la contraseña") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = modifierForInputs
-        )
-        Button(
-            onClick = { onRegisterButtonClick() },
-            modifier = Modifier.align(Alignment.End)
-        ) {
-            Text(text = "Registrarse")
-        }
+        if (showLoading) CircularProgressIndicator(modifier = Modifier.size(100.dp))
     }
+
 
     if (showDatePicker) {
         DatePickerDialog(
