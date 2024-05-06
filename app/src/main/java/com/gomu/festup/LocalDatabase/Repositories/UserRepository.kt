@@ -62,6 +62,8 @@ class UserRepository @Inject constructor(
             val fechaNacimientoString = usuario.fechaNacimiento.toStringNuestro()
             val authUser= AuthUser(usuario.username,usuario.password,usuario.email,usuario.nombre,fechaNacimientoString)
             authClient.createUser(authUser)
+            // Authenticate to get the bearer token
+            authClient.authenticate(usuario.username, usuario.password)
             true
         }catch (e:Exception){
             Log.d("Exception crear usuario", e.toString())
