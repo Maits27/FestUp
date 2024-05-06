@@ -98,7 +98,7 @@ fun PerfilYo(
                 edad = mainVM.calcularEdad(usuario),
                 yo)
         }
-        SeguidoresYSeguidos(yo, usuario, mainVM)
+        SeguidoresYSeguidos(yo, usuario, mainVM, navController)
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -213,7 +213,7 @@ fun EstasSeguro(show: Boolean, mensaje: String, onDismiss:()->Unit, onConfirm:()
     }
 }
 @Composable
-fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM){
+fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM, navController: NavController){
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -230,7 +230,7 @@ fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM){
         ){
             Text(text = "Seguidores")
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/0") },
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .background(
@@ -254,7 +254,7 @@ fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM){
         ){
             Text(text = "Seguidos")
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/1") },
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .background(

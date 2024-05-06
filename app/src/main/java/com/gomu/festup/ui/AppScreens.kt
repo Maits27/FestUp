@@ -7,6 +7,7 @@ sealed class AppScreens (val route: String) {
     object PerfilYo: AppScreens("PerfilYo")
     object PerfilUser: AppScreens("PerfilUser")
     object PerfilCuadrilla: AppScreens("PerfilCuadrilla")
+    object SeguidoresSeguidosList: AppScreens("SeguidoresSeguidosList")
 
     object Ajustes: AppScreens("Ajustes")
     object EditPerfil: AppScreens("EditPerfil")

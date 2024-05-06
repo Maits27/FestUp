@@ -164,6 +164,7 @@ fun LoginForm(
                         }
                     } else {
                         withContext(Dispatchers.Main) {
+                            showLoading = false
                             Toast.makeText(context, "La informacion no es correcta, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
                         }
                     }

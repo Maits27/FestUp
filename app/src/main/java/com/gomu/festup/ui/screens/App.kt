@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -17,10 +19,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.gomu.festup.MainActivity
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.BottomBarMainView
@@ -31,6 +35,7 @@ import com.gomu.festup.vm.MainVM
 import com.google.android.gms.location.LocationServices
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(
@@ -82,7 +87,14 @@ fun App(
             composable(AppScreens.PerfilYo.route) { PerfilYo(mainNavController, navController, yo = true, mainVM = mainVM) }
             composable(AppScreens.PerfilUser.route) { PerfilYo(mainNavController, navController, yo = false,mainVM = mainVM) }
             composable(AppScreens.PerfilCuadrilla.route) { PerfilCuadrilla(navController, mainVM = mainVM) }
-
+            composable(
+                AppScreens.SeguidoresSeguidosList.route + "/{startPage}",
+                arguments = listOf(
+                    navArgument(name = "startPage") { type = NavType.IntType }
+                )
+            ) {
+                SeguidoresSeguidosList(startPage = it.arguments?.getInt("startPage"), mainVM = mainVM, navController = navController)
+            }
 //            composable(AppScreens.Ajustes.route) { Ajustes(navController) }
 //            composable(AppScreens.EditPerfil.route) { EditPerfil(navController) }
         }
