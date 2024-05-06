@@ -31,4 +31,8 @@ interface SeguidoresDao {
 
     @Delete
     fun deleteSeguidores(seguidores: Seguidores)
+
+    @Transaction
+    @Query("DELETE FROM Seguidores ")
+    suspend fun eliminarSeguidores()
 }

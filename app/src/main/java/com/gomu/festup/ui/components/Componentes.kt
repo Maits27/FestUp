@@ -104,7 +104,7 @@ fun TopBarMainView(
             },
             actions = {
                 if (showPerfil) {
-                    IconButton(onClick = { navController.navigate(AppScreens.PerfilYo.route) }) {
+                    IconButton(onClick = { mainVM.usuarioMostrar.value=mainVM.currentUser.value;navController.navigate(AppScreens.PerfilYo.route) }) {
                         Icon(
                             painter = painterResource(id = R.drawable.account),
                             contentDescription = "",

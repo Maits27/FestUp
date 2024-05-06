@@ -31,7 +31,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.Date
@@ -72,6 +74,7 @@ class MainVM @Inject constructor(
                 eventoRepository.descargarEventos()
                 eventoRepository.descargarUsuariosAsistentes()
                 eventoRepository.descargarCuadrillasAsistentes()
+                userRepository.descargarSeguidores()
             }catch (e: Exception) {
                 Log.d("Excepccion al descargar datos",e.toString())
             }
@@ -211,10 +214,6 @@ class MainVM @Inject constructor(
         }
     }
 
-    fun eventosUsuario(usuario: Usuario): Flow<List<Evento>> {
-        return  eventoRepository.eventosUsuario(usuario.username)
-    }
-
     fun getUsuariosEvento(evento: Evento): Flow<List<Usuario>>{
         return eventoRepository.usuariosEvento(evento.id)
     }
@@ -222,20 +221,12 @@ class MainVM @Inject constructor(
         return eventoRepository.cuadrillasEvento(evento.id)
     }
 
+    fun eventosUsuario(usuario: Usuario): Flow<List<Evento>> {
+        return  eventoRepository.eventosUsuario(usuario.username)
+    }
+
     fun eventosSeguidos(usuario: Usuario): Flow<List<Evento>> {
-        // Personas a las que sigues
-        val seguidos = userRepository.getAQuienSigue(usuario.username)
-        // Sus eventos
-        var eventos = MutableStateFlow<List<Evento>>(emptyList())
-        seguidos.map { usuarios ->
-            usuarios.map {usuario ->
-                val eventos2 = eventosUsuario(usuario)
-                eventos.combine(eventos2){f1, f2 ->
-                    Pair(f1, f2)
-                }
-            }
-        }
-        return eventos
+        return eventoRepository.eventosSeguidos(usuario.username)
     }
 
 

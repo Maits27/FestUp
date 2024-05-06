@@ -161,8 +161,6 @@ fun AddEvento(
                 }
             }*/
 
-
-
             CoroutineScope(Dispatchers.IO).launch {
                 val insertCorrecto = withContext(Dispatchers.IO) {
                     var imageBitmap: Bitmap? = null

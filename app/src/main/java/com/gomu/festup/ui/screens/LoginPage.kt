@@ -24,12 +24,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TabRow
@@ -42,6 +44,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +54,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -183,7 +187,7 @@ fun LoginForm(
     }
 
     val modifierForInputs = Modifier.padding(vertical = 10.dp)
-
+    var visiblePasswordLogIn by rememberSaveable{mutableStateOf(false)}
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -210,7 +214,14 @@ fun LoginForm(
             value = password,
             onValueChange = { password = it },
             label = { Text(text = "Contraseña") },
-            visualTransformation = PasswordVisualTransformation(),
+            trailingIcon = {
+                // Icono para alternar entre contraseña visible y oculta
+                val icon = if (visiblePasswordLogIn) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
+                IconButton(onClick = { visiblePasswordLogIn = !visiblePasswordLogIn }) {
+                    Icon(icon, contentDescription = "Toggle password visibility")
+                }
+            },
+            visualTransformation = if (visiblePasswordLogIn) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = modifierForInputs
         )
@@ -224,7 +235,9 @@ fun LoginForm(
                 Text(text = "Iniciar sesión")
             }
         }
-        else CircularProgressIndicator(modifier = Modifier.align(Alignment.End).padding(end = 54.dp))
+        else CircularProgressIndicator(modifier = Modifier
+            .align(Alignment.End)
+            .padding(end = 54.dp))
     }
 }
 
@@ -325,6 +338,8 @@ fun RegistroForm(
     }
 
     val modifierForInputs = Modifier.padding(vertical = 10.dp)
+    var visiblePasswordSingIn by rememberSaveable{mutableStateOf(false)}
+    var visiblePasswordSingInR by rememberSaveable{mutableStateOf(false)}
 
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
         Column (
@@ -422,7 +437,14 @@ fun RegistroForm(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text(text = "Contraseña") },
-                visualTransformation = PasswordVisualTransformation(),
+                trailingIcon = {
+                    // Icono para alternar entre contraseña visible y oculta
+                    val icon = if (visiblePasswordSingIn) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
+                    IconButton(onClick = { visiblePasswordSingIn = !visiblePasswordSingIn }) {
+                        Icon(icon, contentDescription = "Toggle password visibility")
+                    }
+                },
+                visualTransformation = if (visiblePasswordSingIn) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = modifierForInputs
             )
@@ -431,7 +453,14 @@ fun RegistroForm(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 label = { Text(text = "Repite la contraseña") },
-                visualTransformation = PasswordVisualTransformation(),
+                trailingIcon = {
+                    // Icono para alternar entre contraseña visible y oculta
+                    val icon = if (visiblePasswordSingInR) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
+                    IconButton(onClick = { visiblePasswordSingInR = !visiblePasswordSingInR }) {
+                        Icon(icon, contentDescription = "Toggle password visibility")
+                    }
+                },
+                visualTransformation = if (visiblePasswordSingInR) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = modifierForInputs
             )

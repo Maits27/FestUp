@@ -10,12 +10,14 @@ import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Seguidores
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.RemoteDatabase.AuthClient
-import com.gomu.festup.RemoteDatabase.AuthUser
 import com.gomu.festup.RemoteDatabase.AuthenticationException
 import com.gomu.festup.RemoteDatabase.HTTPClient
+import com.gomu.festup.RemoteDatabase.RemoteAuthUsuario
 import com.gomu.festup.RemoteDatabase.RemoteSeguidor
 import com.gomu.festup.RemoteDatabase.UserExistsException
 import com.gomu.festup.utils.formatearFecha
+import com.gomu.festup.utils.remoteSeguidorToSeguidor
+import com.gomu.festup.utils.remoteUsuarioToUsuario
 import com.gomu.festup.utils.toStringNuestro
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.CoroutineScope
@@ -29,9 +31,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface IUserRepository: ILoginSettings {
-    fun logIn(email: String, login:Boolean): AuthUser?
+    fun logIn(email: String, login:Boolean): RemoteAuthUsuario?
     suspend fun exists(username: String):Boolean
-    suspend fun insertUsuario(user: Usuario): Boolean
+    suspend fun insertUsuario(user: Usuario, password: String): Boolean
     fun todosLosUsuarios(): Flow<List<Usuario>>
     suspend fun verifyUser(username: String, passwd:String): Boolean
     suspend fun editarUsuario(user: Usuario): Int
@@ -47,6 +49,10 @@ interface IUserRepository: ILoginSettings {
     fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>
 
     fun getUsuario(username: String): Usuario
+
+    suspend fun descargarUsuarios()
+
+    suspend fun descargarSeguidores()
 }
 @Singleton
 class UserRepository @Inject constructor(
@@ -55,7 +61,7 @@ class UserRepository @Inject constructor(
     private val authClient: AuthClient,
     private val httpClient: HTTPClient
 ) : IUserRepository {
-    override fun logIn(email: String, login: Boolean): AuthUser? {
+    override fun logIn(email: String, login: Boolean): RemoteAuthUsuario? {
         TODO("Not yet implemented")
     }
 
@@ -63,14 +69,14 @@ class UserRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertUsuario(usuario: Usuario): Boolean {
+    override suspend fun insertUsuario(usuario: Usuario, password: String): Boolean {
         return try {
             usuarioDao.insertUsuario(usuario) // TODO QUITAR (de momento hace falta pq no hemos descargado todos los datos)
             val fechaNacimientoString = usuario.fechaNacimiento.toStringNuestro()
-            val authUser= AuthUser(usuario.username,usuario.password,usuario.email,usuario.nombre,fechaNacimientoString)
+            val authUser= RemoteAuthUsuario(usuario.username,password,usuario.email,usuario.nombre,fechaNacimientoString)
             authClient.createUser(authUser)
             // Authenticate to get the bearer token
-            authClient.authenticate(usuario.username, usuario.password)
+            authClient.authenticate(usuario.username, password)
             true
         }catch (e:Exception){
             Log.d("Exception crear usuario", e.toString())
@@ -167,23 +173,19 @@ class UserRepository @Inject constructor(
 
     //TODO CONSULTA DE GET USUARIO (Falta el token?)
     override fun getUsuario(username: String): Usuario{
-        var usuario = usuarioDao.getUsuario(username)
-        if (usuario == null){
-            Log.d("USUARIO", "USUARIO REMOTO")
-//            val authUser = httpClient.getUsuarios().filter { it.username == username }[0]
-            val authUser = httpClient.getUsuario(username)
-            usuario = Usuario(
-                username = authUser.username,
-                password = authUser.password,
-                nombre = authUser.nombre,
-                email = authUser.email,
-                fechaNacimiento = authUser.fechaNacimiento.formatearFecha()
-            )
-            Log.d("USUARIO", usuario.toString())
-            usuarioDao.insertUsuario(usuario)
-            Log.d("USUARIO", "insertado")
-        }
-        return usuario
+        return usuarioDao.getUsuario(username)
+    }
+
+    override suspend fun descargarUsuarios(){
+        usuarioDao.eliminarUsuarios()
+        val userList = httpClient.getUsuarios()
+        userList.map{usuarioDao.insertUsuario(remoteUsuarioToUsuario(it))}
+    }
+
+    override suspend fun descargarSeguidores(){
+        seguidoresDao.eliminarSeguidores()
+        val seguidoresList = httpClient.getSeguidores()
+        seguidoresList.map{seguidoresDao.insertSeguidores(remoteSeguidorToSeguidor(it))}
     }
 
 }

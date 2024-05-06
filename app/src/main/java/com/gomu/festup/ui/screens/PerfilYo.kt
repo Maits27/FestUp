@@ -81,6 +81,7 @@ fun PerfilYo(
     mainVM: MainVM
 ) {
     var usuario = mainVM.currentUser.value!!
+
     if (!yo) {
         usuario = mainVM.usuarioMostrar.value!!
         mainVM.alreadySiguiendo(usuario.username)

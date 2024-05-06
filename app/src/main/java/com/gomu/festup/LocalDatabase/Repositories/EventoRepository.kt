@@ -30,6 +30,8 @@ interface IEventoRepository {
     fun todosLosEventos(): Flow<List<Evento>>
     fun usuariosEventos(): Flow<List<UsuariosAsistentes>>
     fun eventosUsuario(username: String): Flow<List<Evento>>
+
+    fun eventosSeguidos(username: String): Flow<List<Evento>>
     suspend fun estaApuntado(username: String, id: String): Boolean
     fun cuadrillasUsuarioApuntadas(username: String, id: String): Flow<List<Cuadrilla>>
     fun cuadrillasUsuarioNoApuntadas(username: String, id: String): Flow<List<Cuadrilla>>
@@ -101,6 +103,11 @@ class EventoRepository @Inject constructor(
     override fun eventosUsuario(username: String): Flow<List<Evento>> {
         return eventoDao.eventosUsuario(username)
     }
+
+    override fun eventosSeguidos(username: String): Flow<List<Evento>> {
+        return eventoDao.getEventosSeguidos(username)
+    }
+
 
     override suspend fun estaApuntado(username: String, id: String): Boolean{
         val usuario = usuariosAsistentesDao.estaApuntado(username, id)

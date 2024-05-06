@@ -40,7 +40,12 @@ fun UsuarioCard(
 
     val onCardClick: (Usuario) -> Unit = {
         mainVM.usuarioMostrar.value = usuario
-        navController.navigate(AppScreens.PerfilUser.route)
+        if (mainVM.currentUser.value== mainVM.usuarioMostrar.value){
+            navController.navigate(AppScreens.PerfilYo.route)
+        }
+        else{
+            navController.navigate(AppScreens.PerfilUser.route)
+        }
     }
 
     var imageUri by remember {

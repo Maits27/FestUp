@@ -61,5 +61,19 @@ interface EventoDao {
     @Query("DELETE FROM Evento ")
     suspend fun eliminarEventos()
 
+    @Transaction
+    @Query("SELECT * FROM Evento WHERE id IN ( " +
+            "SELECT idEvento FROM UsuariosAsistentes WHERE username IN ( " +
+            "SELECT seguido FROM Seguidores WHERE seguidor = :username " +
+            ") " +
+            "UNION " +
+            "SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla IN ( " +
+            "SELECT nombreCuadrilla FROM Integrante WHERE username IN ( " +
+            "SELECT seguido FROM Seguidores WHERE seguidor = :username " +
+            ")" +
+            ")" +
+            ")")
+    fun getEventosSeguidos(username: String): Flow<List<Evento>>
+
 
 }
