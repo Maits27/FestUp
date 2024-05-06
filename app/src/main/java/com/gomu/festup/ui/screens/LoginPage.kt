@@ -14,6 +14,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -36,11 +38,14 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,9 +58,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -77,6 +85,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.format.DateTimeParseException
 import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -199,12 +209,12 @@ fun LoginForm(
         modifier = Modifier.fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.festuplogo),
+            painter = painterResource(id = R.drawable.festup),
             alignment = Alignment.Center,
             contentDescription = "Logo-FestUp",
             modifier = Modifier
                 .fillMaxWidth()
-                .size(150.dp)
+                .size(250.dp)
                 .clip(RoundedCornerShape(16.dp))
         )
         // TODO quitar esto para que se vea bien con el theme
@@ -272,7 +282,7 @@ fun RegistroForm(
     }
 
     var birthDate by remember {
-        mutableStateOf("Fecha de nacimiento")
+        mutableStateOf("")
     }
 
     var password by remember {
@@ -427,21 +437,32 @@ fun RegistroForm(
                 modifier = modifierForInputs
             )
             // Añadir fecha de nacimiento
-            Box (
-                modifier = modifierForInputs.padding(top = 10.dp)
-                    .clickable {
-                        showDatePicker = true
-                    }.height(55.dp).width(300.dp)
-                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
-            ) {
-                Text(
-                    text = birthDate,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
-                )
-            }
+            OutlinedTextField(
+                value = birthDate,
+                onValueChange = {  },
+                label = { Text(text = "Fecha de nacimiento") },
+                modifier = modifierForInputs.clickable { showDatePicker = true },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    disabledTextColor = MaterialTheme.colorScheme.primary,
+                    disabledBorderColor = MaterialTheme.colorScheme.outline,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant),
+                enabled = false
+            )
+//            Box (
+//                modifier = modifierForInputs.padding(top = 10.dp)
+//                    .clickable {
+//                        showDatePicker = true
+//                    }.height(55.dp).width(300.dp)
+//                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
+//            ) {
+//                Text(
+//                    text = birthDate,
+//                    fontSize = 16.sp,
+//                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+//                    modifier = Modifier
+//                        .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
+//                )
+//            }
             // Campo para añadir contraseña
             OutlinedTextField(
                 value = password,
