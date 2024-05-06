@@ -2,6 +2,8 @@ package com.gomu.festup.ui.screens
 
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -68,6 +70,7 @@ import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.IdentVM
 import com.gomu.festup.vm.MainVM
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -326,8 +329,14 @@ fun RegistroForm(
                         }
                     } else {
                         showLoading = false
-                        Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                        Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                        }
                         showLoading = false
+                    }
+                } catch(e: HttpRequestTimeoutException){
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(context, "No se ha podido conectar con el server.", Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     Log.e("Excepcion al crear usuario", e.toString())

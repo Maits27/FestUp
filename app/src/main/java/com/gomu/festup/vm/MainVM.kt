@@ -89,6 +89,33 @@ class MainVM @Inject constructor(
         val edad = diff / (1000L * 60 * 60 * 24 * 365)
         return edad.toInt()
     }
+
+    fun calcularEdadMediaEvento(evento: Evento): Int = runBlocking {
+        var edades = mutableListOf<Int>()
+        var usuarios = getUsuariosEvento(evento).first()
+        for (usuario in usuarios){
+            val edad = calcularEdad(usuario)
+            edades.add(edad)
+        }
+
+        var cuadrillas = getCuadrillasEvento(evento).first()
+        for (cuadrilla in cuadrillas){
+            val usuarios2 = usuariosCuadrilla(cuadrilla).first()
+            for (usuario in usuarios2){
+                val edad = calcularEdad(usuario)
+                edades.add(edad)
+            }
+        }
+
+        edades.sum()/if(edades.size>0){edades.size} else {1}
+    }
+    fun numeroDeAsistentes(evento: Evento): Int = runBlocking {
+        val usuarios = getUsuariosEvento(evento).first()
+        val cuadrillas = getCuadrillasEvento(evento).first()
+        usuarios.size + cuadrillas.size
+    }
+
+
     fun getCuadrillasUsuario(usuario: Usuario): Flow<List<Cuadrilla>> {
         return userRepository.getCuadrillasUsuario(usuario.username)
     }
@@ -145,8 +172,8 @@ class MainVM @Inject constructor(
             }
         }
     }
-    fun usuariosCuadrilla(): Flow<List<Usuario>> {
-        return cuadrillaRepository.usuariosCuadrilla(cuadrillaMostrar.value!!.nombre)
+    fun usuariosCuadrilla(cuadrilla: Cuadrilla = cuadrillaMostrar.value!!): Flow<List<Usuario>> {
+        return cuadrillaRepository.usuariosCuadrilla(cuadrilla.nombre)
     }
 
     fun eliminarIntegrante(cuadrilla: Cuadrilla)  {

@@ -200,7 +200,7 @@ fun EstadisticasEvento(mainVM: MainVM, evento: Evento, apuntado: Boolean){
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "1",
+                        text = "${mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!)}", // TODO EDAD MEDIA
                         color = Color.White,
                         style = TextStyle(fontSize = 24.sp)
                     )
@@ -226,7 +226,7 @@ fun EstadisticasEvento(mainVM: MainVM, evento: Evento, apuntado: Boolean){
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = evento.numeroAsistentes.toString(),
+                        text = mainVM.numeroDeAsistentes(mainVM.eventoMostrar.value!!).toString(),
                         color = Color.White,
                         style = TextStyle(fontSize = 24.sp)
                     )
