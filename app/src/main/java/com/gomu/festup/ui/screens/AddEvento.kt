@@ -168,6 +168,7 @@ fun AddEvento(
                     var imageBitmap: Bitmap? = null
                     if (imageUri != null) imageBitmap = context.localUriToBitmap(imageUri!!)
                     mainVM.insertarEvento(Evento(
+                        id = "",
                         nombre = eventName,
                         fecha = fechaEvento,
                         descripcion = description,
