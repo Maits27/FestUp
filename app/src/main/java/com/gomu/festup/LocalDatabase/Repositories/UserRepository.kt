@@ -2,15 +2,18 @@ package com.gomu.festup.LocalDatabase.Repositories
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.gomu.festup.LocalDatabase.DAO.SeguidoresDao
 import com.gomu.festup.LocalDatabase.DAO.UsuarioDao
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Integrante
+import com.gomu.festup.LocalDatabase.Entities.Seguidores
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.RemoteDatabase.AuthClient
 import com.gomu.festup.RemoteDatabase.AuthUser
 import com.gomu.festup.RemoteDatabase.AuthenticationException
 import com.gomu.festup.RemoteDatabase.HTTPClient
+import com.gomu.festup.RemoteDatabase.RemoteSeguidor
 import com.gomu.festup.RemoteDatabase.UserExistsException
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.toStringNuestro
@@ -35,6 +38,7 @@ interface IUserRepository: ILoginSettings {
     fun getAQuienSigue(username: String): Flow<List<Usuario>>
     fun getSeguidores(username: String): Flow<List<Usuario>>
     fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>>
+    suspend fun newSeguidor(currentUsername: String, username: String): Unit
     suspend fun getUserProfile(username: String): Bitmap
     suspend fun setUserProfile(username: String, image: Bitmap):Boolean
 
@@ -45,6 +49,7 @@ interface IUserRepository: ILoginSettings {
 @Singleton
 class UserRepository @Inject constructor(
     private val usuarioDao: UsuarioDao,
+    private val seguidoresDao: SeguidoresDao,
     private val authClient: AuthClient,
     private val httpClient: HTTPClient
 ) : IUserRepository {
@@ -97,6 +102,13 @@ class UserRepository @Inject constructor(
         return usuarioDao.getSeguidores(username)
     }
 
+    override suspend fun newSeguidor(currentUsername: String, username: String) {
+        // Local
+        seguidoresDao.insertSeguidores(Seguidores(seguidor = currentUsername, seguido = username))
+
+        // Remote
+        httpClient.insertSeguidor(RemoteSeguidor(seguidor = currentUsername, seguido = username))
+    }
 
     override fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>> {
         // TODO PRIMERO RECOGER DEL REMOTO Y LUEGO PONERLOS AQUI

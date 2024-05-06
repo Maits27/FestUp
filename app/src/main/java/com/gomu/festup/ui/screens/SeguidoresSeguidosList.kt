@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -35,25 +36,26 @@ fun SeguidoresSeguidosList(
     val seguidores = mainVM.listaSeguidores(usuario).collectAsState(initial = emptyList())
     val seguidos = mainVM.listaSeguidos(usuario).collectAsState(initial = emptyList())
 
-    TabRow(
-        selectedTabIndex = selectedTab
-    ) {
-        Tab(
-            selected = selectedTab == 0,
-            onClick = { selectedTab = 0 },
+    Column {
+        TabRow(
+            selectedTabIndex = selectedTab
         ) {
-            Text(text = "Seguidores", modifier = Modifier.padding(vertical = 15.dp))
+            Tab(
+                selected = selectedTab == 0,
+                onClick = { selectedTab = 0 },
+            ) {
+                Text(text = "Seguidores", modifier = Modifier.padding(vertical = 15.dp))
+            }
+            Tab(
+                selected = selectedTab == 1,
+                onClick = { selectedTab = 1 },
+            ) {
+                Text(text = "Seguidos", modifier = Modifier.padding(vertical = 15.dp))
+            }
         }
-        Tab(
-            selected = selectedTab == 1,
-            onClick = { selectedTab = 1 },
-        ) {
-            Text(text = "Seguidos", modifier = Modifier.padding(vertical = 15.dp))
-        }
+        if (selectedTab == 0) SeguidoresOrSeguidos(usuarios = seguidores, mainVM = mainVM, navController = navController)
+        else SeguidoresOrSeguidos(usuarios = seguidos, mainVM = mainVM, navController = navController)
     }
-
-    if (selectedTab == 0) SeguidoresOrSeguidos(usuarios = seguidores, mainVM = mainVM, navController = navController)
-    else SeguidoresOrSeguidos(usuarios = seguidos, mainVM = mainVM, navController = navController)
 }
 
 @Composable

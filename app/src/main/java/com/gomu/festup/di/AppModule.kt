@@ -6,6 +6,7 @@ import com.gomu.festup.LocalDatabase.DAO.CuadrillaDao
 import com.gomu.festup.LocalDatabase.DAO.CuadrillasAsistentesDao
 import com.gomu.festup.LocalDatabase.DAO.EventoDao
 import com.gomu.festup.LocalDatabase.DAO.IntegranteDao
+import com.gomu.festup.LocalDatabase.DAO.SeguidoresDao
 import com.gomu.festup.LocalDatabase.DAO.UsuarioDao
 import com.gomu.festup.LocalDatabase.DAO.UsuariosAsistentesDao
 import com.gomu.festup.LocalDatabase.Database
@@ -69,10 +70,11 @@ object AppModule {
     @Provides
     fun providesUserRepository(
         usuarioDao: UsuarioDao,
+        seguidoresDao: SeguidoresDao,
         authClient: AuthClient,
         httpClient: HTTPClient
     ): IUserRepository = 
-        UserRepository(usuarioDao,authClient, httpClient)
+        UserRepository(usuarioDao, seguidoresDao, authClient, httpClient)
 
     @Singleton
     @Provides

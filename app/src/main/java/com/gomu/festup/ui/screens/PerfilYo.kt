@@ -65,6 +65,9 @@ import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.CuadrillaCard
 import com.gomu.festup.vm.MainVM
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -281,7 +284,9 @@ fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM, navContro
                     .align(Alignment.Bottom)
             ){
                 TextButton(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                            mainVM.newSiguiendo(usuario.username)
+                    },
                     modifier = Modifier
                         .padding(vertical = 16.dp)
                         .background(

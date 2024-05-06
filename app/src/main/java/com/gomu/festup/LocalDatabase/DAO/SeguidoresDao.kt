@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SeguidoresDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertIntegrante(seguidores: Seguidores)
+    fun insertSeguidores(seguidores: Seguidores)
 
     @Transaction
     @Query("SELECT seguidor FROM Seguidores WHERE seguido=:username")

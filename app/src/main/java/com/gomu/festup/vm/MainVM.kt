@@ -216,6 +216,13 @@ class MainVM @Inject constructor(
         }
         return eventos
     }
+
+    fun newSiguiendo(followedUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.newSeguidor(currentUser.value!!.username, followedUsername)
+        }
+    }
+
     fun eventosCuadrilla(cuadrilla: Cuadrilla): Flow<List<Cuadrilla>> {
         return eventoRepository.cuadrillasEvento(cuadrilla.nombre)
     }
