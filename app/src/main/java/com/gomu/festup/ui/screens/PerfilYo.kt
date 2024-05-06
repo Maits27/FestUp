@@ -369,7 +369,7 @@ fun TopProfile(
                 onError = {
                     imageUri = Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")
                 },
-                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                placeholder = painterResource(id = R.drawable.no_user),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)

@@ -84,7 +84,7 @@ fun Evento(
             onError = {
                 imageUri = "http://34.16.74.167/eventoImages/no-image.png"
             },
-            placeholder = painterResource(id = R.drawable.party),
+            placeholder = painterResource(id = R.drawable.no_image),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)

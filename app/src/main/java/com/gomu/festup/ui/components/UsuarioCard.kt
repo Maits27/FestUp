@@ -118,7 +118,7 @@ fun UsuarioCardParaEventosAlert(
                 onError = {
                     imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-user.png"
                 },
-                placeholder = painterResource(id = R.drawable.party),
+                placeholder = painterResource(id = R.drawable.no_image),
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)

@@ -177,7 +177,7 @@ fun TopProfileCuadrilla(
             AsyncImage(
                 model = imageUri,
                 contentDescription = null,
-                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                placeholder = painterResource(id = R.drawable.no_cuadrilla),
                 onError = {
                     imageUri = Uri.parse("http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png")
                 },
