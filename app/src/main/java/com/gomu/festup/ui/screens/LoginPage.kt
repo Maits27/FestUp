@@ -19,8 +19,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -425,20 +427,19 @@ fun RegistroForm(
                 modifier = modifierForInputs
             )
             // Añadir fecha de nacimiento
-            Column (
-                modifier = modifierForInputs
+            Box (
+                modifier = modifierForInputs.padding(top = 10.dp)
                     .clickable {
                         showDatePicker = true
-                    }
-                    .fillMaxWidth()
-                    .border(2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
+                    }.height(55.dp).width(300.dp)
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
             ) {
                 Text(
                     text = birthDate,
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
-                        .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
+                        .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
                 )
             }
             // Campo para añadir contraseña
@@ -474,8 +475,7 @@ fun RegistroForm(
                 modifier = modifierForInputs
             )
             Button(
-                onClick = { onRegisterButtonClick() },
-                modifier = Modifier.align(Alignment.End)
+                onClick = { onRegisterButtonClick() }
             ) {
                 Text(text = "Registrarse")
             }
