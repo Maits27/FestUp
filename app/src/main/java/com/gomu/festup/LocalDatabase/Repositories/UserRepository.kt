@@ -108,7 +108,7 @@ class UserRepository @Inject constructor(
     override suspend fun setUserProfile(username: String, image: Bitmap): Boolean {
         return try {
             withContext(Dispatchers.IO) {
-                httpClient.setUserProfile(username, image)
+                authClient.setUserProfile(username, image)
             }
             true
         } catch (e: ResponseException) {

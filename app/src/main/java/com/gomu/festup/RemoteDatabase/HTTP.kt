@@ -141,6 +141,22 @@ class AuthClient @Inject constructor() {
             setBody(user)
         }
     }
+
+    suspend fun setUserProfile(username: String, image: Bitmap) {
+        val stream = ByteArrayOutputStream()
+        image.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        val byteArray = stream.toByteArray()
+        Log.d("Image", "size: " + byteArray.size.toString())
+        httpClient.submitFormWithBinaryData(
+            url = "http://34.16.74.167/setUserProfileImage",
+            formData = formData {
+                append("image", byteArray, Headers.build {
+                    append(HttpHeaders.ContentType, "image/png")
+                    append(HttpHeaders.ContentDisposition, "filename=$username.png")
+                })
+            }
+        ) { method = HttpMethod.Put }
+    }
 }
 
 
@@ -332,21 +348,7 @@ class HTTPClient @Inject constructor() {
     // ---------------------------  IMAGEN DE PERFIL ------------------------------
 
 
-    suspend fun setUserProfile(username: String, image: Bitmap) {
-        val stream = ByteArrayOutputStream()
-        image.compress(Bitmap.CompressFormat.PNG, 100, stream)
-        val byteArray = stream.toByteArray()
-        Log.d("Image", "size: " + byteArray.size.toString())
-        httpClient.submitFormWithBinaryData(
-            url = "http://34.16.74.167/setUserProfileImage",
-            formData = formData {
-                append("image", byteArray, Headers.build {
-                    append(HttpHeaders.ContentType, "image/png")
-                    append(HttpHeaders.ContentDisposition, "filename=$username.png")
-                })
-            }
-        ) { method = HttpMethod.Put }
-    }
+
 
 
     suspend fun setCuadrillaImage(nombre: String, image: Bitmap) {
