@@ -73,12 +73,10 @@ class MainVM @Inject constructor(
 
         CoroutineScope(Dispatchers.IO).launch {
             try{
-                Log.d("SERVER PETICION", "antes de descargar usuarios")
                 userRepository.descargarUsuarios()
                 serverOk.value = true
-                Log.d("SERVER PETICION", serverOk.value.toString())
             }catch (e: Exception) {
-                Log.d("SERVER PETICION2", e.toString())
+                Log.d("SERVER PETICION", e.toString())
             }
         }
     }
@@ -87,7 +85,6 @@ class MainVM @Inject constructor(
     fun descargarDatos(){
         viewModelScope.launch(Dispatchers.IO) {
             try{
-//                userRepository.descargarUsuarios()
                 cuadrillaRepository.descargarCuadrillas()
                 cuadrillaRepository.descargarIntegrantes()
                 eventoRepository.descargarEventos()
