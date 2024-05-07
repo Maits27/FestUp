@@ -24,6 +24,7 @@ import com.gomu.festup.ui.screens.App
 import com.gomu.festup.ui.screens.LoginPage
 import com.gomu.festup.vm.IdentVM
 import com.gomu.festup.vm.MainVM
+import com.gomu.festup.vm.PreferencesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
 
     private val mainVM by viewModels<MainVM>()
     private val identVM by viewModels<IdentVM>()
+    private val preferencesVM by viewModels<PreferencesViewModel>()
 
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -51,7 +53,7 @@ class MainActivity : ComponentActivity() {
             FestUpTheme {
                 AskPermissions()
                 // A surface container using the 'background' color from the theme
-                Principal(mainVM, identVM)
+                Principal(mainVM, identVM, preferencesVM)
             }
         }
     }
@@ -110,7 +112,7 @@ enum class NotificationID(val id: Int) {
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun Principal(mainVM: MainVM, identVM: IdentVM) {
+fun Principal(mainVM: MainVM, identVM: IdentVM, preferencesViewModel: PreferencesViewModel) {
     val mainNavController = rememberNavController()
 
     NavHost(
@@ -121,7 +123,7 @@ fun Principal(mainVM: MainVM, identVM: IdentVM) {
             LoginPage(mainNavController, mainVM, identVM)
         }
         composable(AppScreens.App.route) {
-            App(mainNavController, mainVM)
+            App(mainNavController, mainVM, preferencesViewModel)
         }
     }
 }

@@ -79,6 +79,10 @@ dependencies {
 
      */
 
+    // Datastore Dependencies
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+
     // KTOR
     val ktor_version="2.2.2"
     implementation ("io.ktor:ktor-client-core:$ktor_version")

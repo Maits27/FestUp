@@ -32,6 +32,7 @@ import com.gomu.festup.ui.components.FloatButton
 import com.gomu.festup.ui.components.TopBarMainView
 import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.vm.MainVM
+import com.gomu.festup.vm.PreferencesViewModel
 import com.google.android.gms.location.LocationServices
 
 
@@ -40,7 +41,8 @@ import com.google.android.gms.location.LocationServices
 @Composable
 fun App(
     mainNavController: NavController,
-    mainVM: MainVM
+    mainVM: MainVM,
+    preferencesViewModel: PreferencesViewModel
 ) {
     val context = LocalContext.current
     val navController = rememberNavController()
