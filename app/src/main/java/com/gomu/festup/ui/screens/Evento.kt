@@ -72,7 +72,7 @@ fun Evento(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 10.dp)
+            .padding(top = 13.dp)
     ) {
         Card(
             modifier = Modifier
