@@ -17,6 +17,8 @@ import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.LocalDatabase.Repositories.UserRepository
+import com.gomu.festup.Preferences.IGeneralPreferences
+import com.gomu.festup.Preferences.PreferencesRepository
 import com.gomu.festup.RemoteDatabase.AuthClient
 import com.gomu.festup.RemoteDatabase.HTTPClient
 import dagger.Module
@@ -94,5 +96,17 @@ object AppModule {
         httpClient: HTTPClient
     ): IEventoRepository =
         EventoRepository(eventoDao, usuariosAsistentesDao, cuadrillasAsistentesDao, httpClient)
+
+    /** ////////////////////////////////////////////////////////
+    ////////////   Repositorio de Preferencias   /////////////
+    //////////////////////////////////////////////////////////
+     */
+    @Singleton
+    @Provides
+    fun provideLoginSettings(@ApplicationContext app: Context): ILoginSettings = PreferencesRepository(app)
+    @Singleton
+    @Provides
+    fun provideUserPreferences(@ApplicationContext app: Context): IGeneralPreferences = PreferencesRepository(app)
+
 
 }
