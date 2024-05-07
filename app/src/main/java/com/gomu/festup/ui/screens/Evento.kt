@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -40,6 +41,7 @@ import com.gomu.festup.ui.components.dialogs.Apuntarse
 import com.gomu.festup.ui.components.cards.CuadrillaCard
 import com.gomu.festup.ui.components.dialogs.Desapuntarse
 import com.gomu.festup.ui.components.cards.UsuarioCard
+import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 
 @Composable
@@ -62,19 +64,29 @@ fun Evento(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        AsyncImage(
-            model = imageUri,
-            contentDescription = "Event image",
-            onError = {
-                imageUri = "http://34.16.74.167/eventoImages/no-image.png"
-            },
-            placeholder = painterResource(id = R.drawable.no_image),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-                .padding(16.dp)
+        Row (
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ){
+            AsyncImage(
+                model = imageUri,
+                contentDescription = "Event image",
+                onError = {
+                    imageUri = "http://34.16.74.167/eventoImages/no-image.png"
+                },
+                placeholder = painterResource(id = R.drawable.no_image),
+                modifier = Modifier
+                    .height(150.dp)
+                    .padding(16.dp)
+            )
+            DatosEvento(evento)
+        }
+        Text(
+            text = evento.descripcion,
+            style = TextStyle(fontSize = 16.sp),
+            modifier = Modifier.padding(8.dp)
         )
-        DatosEvento(evento)
         EstadisticasEvento(mainVM = mainVM, evento = evento, apuntado = apuntado)
         Divider(modifier = Modifier.padding(10.dp))
         Text(
@@ -98,53 +110,23 @@ fun Evento(
 
 @Composable
 fun DatosEvento(evento: Evento) {
-    Row (
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 50.dp)
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier.padding(16.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = "Fecha",
-                style = TextStyle(fontSize = 16.sp),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(8.dp)
-            )
-            Text(
-                text = evento.fecha.toString(),
-                style = TextStyle(fontSize = 16.sp),
-                maxLines = 1,
-                modifier = Modifier.padding(8.dp)
-            )
-        }
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f)
-        ){
-            // Línea para la ubicación
-            Text(
-                text = "Ubicación",
-                style = TextStyle(fontSize = 16.sp),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(8.dp)
-            )
-            Text(
-                text = evento.localizacion,
-                style = TextStyle(fontSize = 16.sp),
-                modifier = Modifier.padding(8.dp)
-            )
-        }
+        Text(
+            text = evento.fecha.toStringNuestro(),
+            style = TextStyle(fontSize = 16.sp),
+            maxLines = 1,
+            modifier = Modifier.padding(8.dp)
+        )
+        Text(
+            text = evento.localizacion,
+            style = TextStyle(fontSize = 16.sp),
+            modifier = Modifier.padding(8.dp)
+        )
     }
-    Text(
-        text = evento.descripcion,
-        style = TextStyle(fontSize = 16.sp),
-        modifier = Modifier.padding(8.dp)
-    )
 }
 
 @Composable
