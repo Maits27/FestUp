@@ -17,7 +17,7 @@ fun EstasSeguroDialog(show: Boolean, mensaje: String, onDismiss:()->Unit, onConf
             },
             confirmButton = {
                 TextButton(onClick = { onConfirm() }) {
-                    Text(text = "Si")
+                    Text(text = "Sí")
                 }
             },
             title = {
