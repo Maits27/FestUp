@@ -106,8 +106,8 @@ fun PerfilYo(
         if (yo) {
             BotonesPerfil(
                 navController= navController,
-                mainNavController = mainNavController,
-                username = usuario.nombre)
+                mainNavController = mainNavController
+            )
         }
     }
 }
@@ -302,7 +302,10 @@ fun SeguidoresYSeguidos(
 }
 
 @Composable
-fun BotonesPerfil(mainNavController: NavController, navController: NavController, username: String){
+fun BotonesPerfil(
+    mainNavController: NavController,
+    navController: NavController
+){
     Row (
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center

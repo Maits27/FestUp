@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -18,12 +19,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -33,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,17 +40,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.gomu.festup.R
-import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,14 +80,6 @@ fun EditPerfil(
         mutableStateOf(currentUser.fechaNacimiento.toStringNuestro())
     }
 
-    var password by remember {
-        mutableStateOf("")
-    }
-
-    var confirmPassword by remember {
-        mutableStateOf("")
-    }
-
     // Birth date DatePikcer
     var datePickerState = rememberDatePickerState()
     var showDatePicker by remember {
@@ -104,17 +96,14 @@ fun EditPerfil(
     }
 
     val onEditButtonClick: () -> Unit = {
-        val correct = checkRegisterForm(context, username, email, nombre, password, confirmPassword)
+        val correct = checkEditPerfil(context, email, nombre)
         if (correct) {
-            Log.d("TODO OK", "EDITAR USUARIO") //TODO EDITAR USUARIO
-//            registration(imageUri, na, mainVM, identVM, context, username, password,
-//                email, nombre, birthDate)
+            mainVM.editUsuario(username, email, nombre, birthDate.formatearFecha())
+            navController.popBackStack()
         }
     }
 
     val modifierForInputs = Modifier.padding(vertical = 10.dp)
-    var visiblePasswordSingIn by rememberSaveable{ mutableStateOf(false) }
-    var visiblePasswordSingInR by rememberSaveable{ mutableStateOf(false) }
 
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
         Column (
@@ -191,43 +180,11 @@ fun EditPerfil(
                 label = { Text(text = "Fecha de nacimiento") },
                 modifier = modifierForInputs.clickable { showDatePicker = true },
                 colors = OutlinedTextFieldDefaults.colors(
-                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
                     disabledBorderColor = MaterialTheme.colorScheme.outline,
                     disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),
                 enabled = false
-            )
-            // Campo para añadir contraseña
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text(text = "Contraseña") },
-                trailingIcon = {
-                    // Icono para alternar entre contraseña visible y oculta
-                    val icon = if (visiblePasswordSingIn) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
-                    IconButton(onClick = { visiblePasswordSingIn = !visiblePasswordSingIn }) {
-                        Icon(icon, contentDescription = "Toggle password visibility")
-                    }
-                },
-                visualTransformation = if (visiblePasswordSingIn) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = modifierForInputs
-            )
-            // Campo para repetir contraseña
-            OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
-                label = { Text(text = "Repite la contraseña") },
-                trailingIcon = {
-                    // Icono para alternar entre contraseña visible y oculta
-                    val icon = if (visiblePasswordSingInR) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
-                    IconButton(onClick = { visiblePasswordSingInR = !visiblePasswordSingInR }) {
-                        Icon(icon, contentDescription = "Toggle password visibility")
-                    }
-                },
-                visualTransformation = if (visiblePasswordSingInR) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = modifierForInputs
             )
             Button(
                 onClick = { onEditButtonClick() }
@@ -272,4 +229,20 @@ fun EditPerfil(
             )
         }
     }
+}
+
+fun checkEditPerfil(
+    context: Context,
+    email: String,
+    nombre: String
+) : Boolean {
+    var correct = false
+    val emailRegex = Regex("""\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Z|a-z]{2,}\b""")
+
+    if (email == "") formValidatorError(context, "Introduce un email")
+    else if (!email.matches(emailRegex)) formValidatorError(context,  "El formato del email no es correcto")
+    else if (nombre == "") formValidatorError(context,  "Introduce un nombre")
+    else correct = true
+
+    return correct
 }

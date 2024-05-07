@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
 
@@ -82,7 +83,14 @@ class MainVM @Inject constructor(
 
     }
 
-
+    fun editUsuario(username: String, email: String, nombre: String, fecha: Date) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val usuario = withContext(Dispatchers.IO) {
+                userRepository.editUsuario(username, email, nombre, fecha)
+            }
+            currentUser.value = usuario
+        }
+    }
 
     fun calcularEdad(usuario: Usuario): Int{
         val diff = Date().time - (usuario.fechaNacimiento.time)

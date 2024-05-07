@@ -2,6 +2,8 @@ package com.gomu.festup.ui.components
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -65,35 +67,58 @@ fun TopBarMainView(
         mutableStateOf(false)
     }
 
+    var showBackArrow by remember {
+        mutableStateOf(false)
+    }
+
     when (currentDestination?.route) {
         AppScreens.AddEvento.route -> {
             showTopBar = true
             title = "Añadir evento"
             showPerfil = false
+            showBackArrow = true
         }
         AppScreens.AddCuadrilla.route -> {
             showTopBar = true
             title = "Añadir cuadrilla"
             showPerfil = false
+            showBackArrow = true
         }
         AppScreens.PerfilYo.route -> {
-            showTopBar = false
+            showTopBar = true
+            showPerfil = false
+            title = mainVM.usuarioMostrar.value!!.username
+            showBackArrow = true
         }
         AppScreens.PerfilCuadrilla.route -> {
-            showTopBar = false
+            showTopBar = true
+            showPerfil = false
+            showBackArrow = true
+            title = mainVM.cuadrillaMostrar.value!!.nombre
         }
         AppScreens.PerfilUser.route -> {
-            showTopBar = false
+            showTopBar = true
+            showPerfil = false
+            title = mainVM.usuarioMostrar.value!!.username
+            showBackArrow = true
         }
         AppScreens.Evento.route -> {
             showTopBar = true
             showPerfil = false
             title = mainVM.eventoMostrar.value!!.nombre
+            showBackArrow = true
+        }
+        AppScreens.EditPerfil.route -> {
+            showTopBar = true
+            showPerfil = false
+            title = "Editar perfil"
+            showBackArrow = true
         }
         else -> {
             title = stringResource(id = R.string.app_name)
             showPerfil = true
             showTopBar = true
+            showBackArrow = false
         }
     }
 
@@ -113,6 +138,13 @@ fun TopBarMainView(
                     }
                 }
             },
+            navigationIcon = {
+                if (showBackArrow) {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back arrow")
+                    }
+                }
+            }
         )
     }
 }
