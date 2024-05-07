@@ -67,12 +67,16 @@ fun EventsMap(
             cameraPositionState = cameraPositionState,
             properties = MapProperties(isMyLocationEnabled = true)
         ) {
-            eventos.value.map {
-                getLatLngFromAddress(context, it.localizacion)?.let { (latitude, longitude) ->
+            eventos.value.map { evento ->
+                getLatLngFromAddress(context, evento.localizacion)?.let { (latitude, longitude) ->
                     Marker(
                         state = MarkerState(position = LatLng(latitude, longitude)),
-                        title = it.nombre,
-                        snippet = it.fecha.toStringNuestro()
+                        title = evento.nombre,
+                        snippet = evento.fecha.toStringNuestro(),
+                        onInfoWindowClick = {
+                            mainVM.eventoMostrar.value = evento
+                            navController.navigate(AppScreens.Evento.route)
+                        }
                     )
                 }
             }
