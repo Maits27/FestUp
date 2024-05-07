@@ -13,6 +13,7 @@ import com.gomu.festup.RemoteDatabase.AuthClient
 import com.gomu.festup.RemoteDatabase.AuthenticationException
 import com.gomu.festup.RemoteDatabase.HTTPClient
 import com.gomu.festup.RemoteDatabase.RemoteAuthUsuario
+import com.gomu.festup.RemoteDatabase.RemoteMessage
 import com.gomu.festup.RemoteDatabase.RemoteSeguidor
 import com.gomu.festup.RemoteDatabase.UserExistsException
 import com.gomu.festup.utils.formatearFecha
@@ -55,6 +56,11 @@ interface IUserRepository: ILoginSettings {
     suspend fun descargarSeguidores()
 
     suspend fun subscribeUser(token: String)
+
+    suspend fun subscribeToUser(token: String, username: String)
+
+    suspend fun unsubscribeFromUser(token: String, username: String)
+
 }
 @Singleton
 class UserRepository @Inject constructor(
@@ -193,5 +199,15 @@ class UserRepository @Inject constructor(
     override suspend fun subscribeUser(token: String){
         httpClient.subscribeUser(token)
     }
+
+    override suspend fun subscribeToUser(token: String, username: String){
+        httpClient.subscribeToUser(token, username)
+    }
+
+    override suspend fun unsubscribeFromUser(token: String, username: String){
+        httpClient.unsubscribeFromUser(token, username)
+    }
+
+
 
 }
