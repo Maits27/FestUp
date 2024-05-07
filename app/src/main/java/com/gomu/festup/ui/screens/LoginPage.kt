@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
@@ -12,25 +13,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
@@ -38,16 +33,16 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -58,12 +53,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -72,10 +64,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
-import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.IdentVM
@@ -85,8 +75,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
-import java.time.format.DateTimeParseException
 import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -313,48 +301,13 @@ fun RegistroForm(
         imageUri = uri
     }
 
-    val emailRegex = Regex("""\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Z|a-z]{2,}\b""")
     val onRegisterButtonClick: () -> Unit = {
-        if (username == "") Toast.makeText(context, "Introduce un nombre de usuario", Toast.LENGTH_SHORT).show()
-        else if (email == "") Toast.makeText(context, "Introduce un email", Toast.LENGTH_SHORT).show()
-        else if (!email.matches(emailRegex)) Toast.makeText(context, "El formato del email no es correcto", Toast.LENGTH_SHORT).show()
-        else if (nombre == "") Toast.makeText(context, "Introduce un nombre", Toast.LENGTH_SHORT).show()
-        else if (password == "") Toast.makeText(context, "Introduce una contraseña", Toast.LENGTH_SHORT).show()
-        else if (confirmPassword == "") Toast.makeText(context, "Introduce una constraseña de confirmación", Toast.LENGTH_SHORT).show()
-        else if (password != confirmPassword) Toast.makeText(context, "Ambas constraseñas deben conindicir", Toast.LENGTH_SHORT).show()
-        else {
+        val correct = checkRegisterForm(context, username, email, nombre, password, confirmPassword)
+        if (correct) {
             showLoading = true
-            CoroutineScope(Dispatchers.IO).launch {
-                Log.d("IMAGE", "Image uri: ${imageUri.toString()}")
-                try {
-                    val usuario = withContext(Dispatchers.IO) {
-                        identVM.registrarUsuario(context, username, password, email, nombre, birthDate, imageUri)
-                    }
-                    if (usuario != null) {
-                        withContext(Dispatchers.IO) {
-                            mainVM.descargarDatos()
-                        }
-                        mainVM.currentUser.value= usuario
-                        withContext(Dispatchers.Main) {
-                            mainNavController.navigate(AppScreens.App.route)
-                            showLoading = false
-                        }
-                    } else {
-                        showLoading = false
-                        Handler(Looper.getMainLooper()).post {
-                            Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
-                        }
-                        showLoading = false
-                    }
-                } catch(e: HttpRequestTimeoutException){
-                    Handler(Looper.getMainLooper()).post {
-                        Toast.makeText(context, "No se ha podido conectar con el server.", Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: Exception) {
-                    Log.e("Excepcion al crear usuario", e.toString())
-                }
-            }
-
+            registration(imageUri, mainNavController, mainVM, identVM, context, username, password,
+                email, nombre, birthDate)
+            showLoading = false
         }
     }
 
@@ -417,7 +370,7 @@ fun RegistroForm(
             // Campo para añadir nombre de usuario
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange = { username = it.lowercase().replace(" ", "") },
                 label = { Text(text = "Nombre de usuario") },
                 modifier = modifierForInputs
             )
@@ -442,27 +395,13 @@ fun RegistroForm(
                 onValueChange = {  },
                 label = { Text(text = "Fecha de nacimiento") },
                 modifier = modifierForInputs.clickable { showDatePicker = true },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    disabledTextColor = MaterialTheme.colorScheme.primary,
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledBorderColor = MaterialTheme.colorScheme.outline,
-                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant),
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
                 enabled = false
             )
-//            Box (
-//                modifier = modifierForInputs.padding(top = 10.dp)
-//                    .clickable {
-//                        showDatePicker = true
-//                    }.height(55.dp).width(300.dp)
-//                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
-//            ) {
-//                Text(
-//                    text = birthDate,
-//                    fontSize = 16.sp,
-//                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-//                    modifier = Modifier
-//                        .padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
-//                )
-//            }
             // Campo para añadir contraseña
             OutlinedTextField(
                 value = password,
@@ -537,6 +476,93 @@ fun RegistroForm(
                     else return@DatePicker true
                 }
             )
+        }
+    }
+}
+
+fun checkRegisterForm(
+    context: Context,
+    username: String,
+    email: String,
+    nombre: String,
+    password: String,
+    confirmPassword: String
+) : Boolean {
+    var correct = false
+    val emailRegex = Regex("""\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Z|a-z]{2,}\b""")
+
+    if (username == "") formValidatorError(context, "Introduce un nombre de usuario")
+    else if (username.length > 30) formValidatorError(context, "El nombre de usuario no puede tener más de 30 caracteres")
+    else if (email == "") formValidatorError(context, "Introduce un email")
+    else if (!email.matches(emailRegex)) formValidatorError(context,  "El formato del email no es correcto")
+    else if (nombre == "") formValidatorError(context,  "Introduce un nombre")
+    else if (password == "") formValidatorError(context,  "Introduce una contraseña")
+    else if (password.length < 6) formValidatorError(context,  "La contraseña debe contener al menos 6 caracteres")
+    else if (confirmPassword == "") formValidatorError(context,  "Introduce una constraseña de confirmación")
+    else if (password != confirmPassword) formValidatorError(context,  "Ambas constraseñas deben conindicir")
+    else correct = true
+
+    return correct
+}
+
+fun formValidatorError(context: Context, textToShow: String) {
+    Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show()
+}
+
+@RequiresApi(Build.VERSION_CODES.P)
+fun registration(
+    imageUri: Uri?,
+    mainNavController: NavController,
+    mainVM: MainVM,
+    identVM: IdentVM,
+    context: Context,
+    username: String,
+    password: String,
+    email: String,
+    nombre: String,
+    birthDate: String
+) {
+    CoroutineScope(Dispatchers.IO).launch {
+        Log.d("IMAGE", "Image uri: ${imageUri.toString()}")
+        try {
+            val usuario = withContext(Dispatchers.IO) {
+                identVM.registrarUsuario(
+                    context,
+                    username,
+                    password,
+                    email,
+                    nombre,
+                    birthDate,
+                    imageUri
+                )
+            }
+            if (usuario != null) {
+                withContext(Dispatchers.IO) {
+                    mainVM.descargarDatos()
+                }
+                mainVM.currentUser.value = usuario
+                withContext(Dispatchers.Main) {
+                    mainNavController.navigate(AppScreens.App.route)
+                }
+            } else {
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(
+                        context,
+                        "Ha ocurrido un error, inténtalo de nuevo.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        } catch (e: HttpRequestTimeoutException) {
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(
+                    context,
+                    "No se ha podido conectar con el server.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } catch (e: Exception) {
+            Log.e("Excepcion al crear usuario", e.toString())
         }
     }
 }
