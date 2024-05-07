@@ -25,10 +25,9 @@ class PreferencesRepository @Inject constructor(
     private val context: Context,
 ) : IGeneralPreferences, ILoginSettings {
     val LAST_LOGGED_USER = stringPreferencesKey("last_logged_user")
-    fun PREFERENCE_LANGUAGE(email: String) = stringPreferencesKey("${email}_preference_lang")
-    fun PREFERENCE_THEME_DARK(email: String) = intPreferencesKey("${email}_preference_theme")
-    fun PREFERENCE_SAVE(email: String) = booleanPreferencesKey("${email}_preference_save")
-    fun PREFERENCE_LOCATION(email: String) = booleanPreferencesKey("${email}_preference_save")
+    fun PREFERENCE_LANGUAGE(username: String) = stringPreferencesKey("${username}_preference_lang")
+    fun PREFERENCE_THEME_DARK(username: String) = booleanPreferencesKey("${username}_preference_theme")
+    fun PREFERENCE_NOTIFICATIONS(username: String) = booleanPreferencesKey("${username}_preference_save")
 
 
     override suspend fun getLastLoggedUser(): String? = context.dataStore.data.first()[LAST_LOGGED_USER]
@@ -46,15 +45,15 @@ class PreferencesRepository @Inject constructor(
      * Recoge el primer valor del Flow del Datastore en los idiomas y lo devuelve.
      * Por defecto se escoge el idioma local del dispositivo Android.
      */
-    override fun language(email: String): Flow<String> =
+    override fun language(username: String): Flow<String> =
         context.dataStore.data.map { preferences ->
-        preferences[PREFERENCE_LANGUAGE(email)] ?: "en"
+        preferences[PREFERENCE_LANGUAGE(username)] ?: "en"
 
     }
 
-    override suspend fun setLanguage(email: String, code: String) {
+    override suspend fun setLanguage(username: String, code: String) {
         context.dataStore.edit { settings ->
-            settings[PREFERENCE_LANGUAGE(email)] = code
+            settings[PREFERENCE_LANGUAGE(username)] = code
         }
     }
 
@@ -68,14 +67,14 @@ class PreferencesRepository @Inject constructor(
      *      2 -> Morado
      */
 
-    override fun getThemePreference(email: String): Flow<Int> =
+    override fun getThemePreference(username: String): Flow<Boolean> =
         context.dataStore.data.map { preferences ->
-            preferences[PREFERENCE_THEME_DARK(email)] ?: 0
+            preferences[PREFERENCE_THEME_DARK(username)] ?: true
         }
 
-    override suspend fun saveThemePreference(email: String, theme: Int) {
+    override suspend fun saveThemePreference(username: String, dark: Boolean) {
         context.dataStore.edit { preferences ->
-            preferences[PREFERENCE_THEME_DARK(email)] = theme
+            preferences[PREFERENCE_THEME_DARK(username)] = dark
         }
     }
 
@@ -85,41 +84,17 @@ class PreferencesRepository @Inject constructor(
      * En base a si es true o false, se guardarán los eventos del usuario
      * en el calendario local del dispositivo
      */
-    override fun getSaveOnCalendar(email: String): Flow<Boolean> =
+    override fun getReceiveNotifications(username: String): Flow<Boolean> =
         context.dataStore.data.map { preferences ->
-            preferences[PREFERENCE_SAVE(email)] ?: true
+            preferences[PREFERENCE_NOTIFICATIONS(username)] ?: true
         }
 
-    override suspend fun changeSaveOnCalendar(email: String) {
+    override suspend fun changeReceiveNotifications(username: String) {
         context.dataStore.edit { preferences ->
-            preferences[PREFERENCE_SAVE(email)] = !getSaveOnCalendar(email).first()
+            preferences[PREFERENCE_NOTIFICATIONS(username)] = !getReceiveNotifications(username).first()
         }
     }
 
-    //////////////// Preferencias de Localización ////////////////
 
-    /**
-     * Independientemente de si hay permisos de ubicación, si esta
-     * opción se mantiene deshabilitada (false) no se accederá a la
-     * ubicación del usuario. En caso de que los permisos de localización
-     * estén deshabilitados, la lectura también.
-     */
-    override fun getSaveLocation(email: String): Flow<Boolean> =
-        context.dataStore.data.map { preferences ->
-            if(ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED){
-                false
-            }else{preferences[PREFERENCE_LOCATION(email)] ?: true}
-        }
 
-    override suspend fun changeSaveLocation(email: String) {
-        context.dataStore.edit { preferences ->
-            preferences[PREFERENCE_LOCATION(email)] = !getSaveLocation(email).first()
-        }
-    }
 }
