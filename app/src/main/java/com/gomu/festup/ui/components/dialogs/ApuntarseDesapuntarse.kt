@@ -1,4 +1,4 @@
-package com.gomu.festup.ui.components
+package com.gomu.festup.ui.components.dialogs
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
@@ -9,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import com.gomu.festup.ui.components.cards.CuadrillaCardParaEventosAlert
+import com.gomu.festup.ui.components.cards.UsuarioCardParaEventosAlert
 import com.gomu.festup.vm.MainVM
 
 @Composable

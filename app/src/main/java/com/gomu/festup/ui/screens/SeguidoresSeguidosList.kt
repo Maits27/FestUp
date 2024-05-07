@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gomu.festup.LocalDatabase.Entities.Usuario
-import com.gomu.festup.ui.components.UsuarioCard
+import com.gomu.festup.ui.components.cards.UsuarioCard
 import com.gomu.festup.vm.MainVM
 
 @Composable

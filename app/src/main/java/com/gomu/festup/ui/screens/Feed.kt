@@ -21,9 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gomu.festup.LocalDatabase.Entities.Evento
-import com.gomu.festup.ui.components.EventoCard
+import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.vm.MainVM
-import java.util.Date
 
 
 @Composable

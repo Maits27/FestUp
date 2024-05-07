@@ -1,4 +1,4 @@
-package com.gomu.festup.ui.components
+package com.gomu.festup.ui.components.cards
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,11 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
-import com.gomu.festup.ui.screens.EstasSeguro
+import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.vm.MainVM
 
 @Composable
@@ -95,7 +94,7 @@ fun CuadrillaCard(
                         "",
                     )
                 }
-                EstasSeguro(
+                EstasSeguroDialog(
                     show = verificacion,
                     mensaje = "Si eliminas esta cuadrilla tendrás que volver a solicitar entrar.",
                     onDismiss = { verificacion = false },

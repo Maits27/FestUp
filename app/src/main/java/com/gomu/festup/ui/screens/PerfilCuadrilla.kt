@@ -57,12 +57,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
-import com.gomu.festup.ui.components.UsuarioCard
+import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
+import com.gomu.festup.ui.components.cards.UsuarioCard
 import com.gomu.festup.utils.openWhatsApp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -139,14 +138,14 @@ fun EliminarCuadrilla(nombre: String) {
             )
         }
     )
-    EstasSeguro(
+    EstasSeguroDialog(
         show = verificacion,
         mensaje = "Si confirmas se eliminará la cuadrilla para todos los usuarios.",
-        onDismiss = { verificacion = false }) {
-        verificacion = false
-        // TODO eliminar
+        onDismiss = { verificacion = false }
+    ) {
+            verificacion = false
+            // TODO eliminar
     }
-
 }
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -220,7 +219,6 @@ fun TopProfileCuadrilla(
             fontSize = 15.sp
         )
     )
-    // TODO
     Text(
         text = "Integrantes: ${numIntegrantes}",
         modifier = Modifier.padding(5.dp),
@@ -228,12 +226,13 @@ fun TopProfileCuadrilla(
             fontSize = 15.sp
         )
     )
-
     Text(
         text = cuadrilla.descripcion,
         style = TextStyle(
             fontSize = 15.sp
-        )
+        ),
+        textAlign = TextAlign.Justify,
+        modifier = Modifier.padding(horizontal = 15.dp)
     )
 
 }
