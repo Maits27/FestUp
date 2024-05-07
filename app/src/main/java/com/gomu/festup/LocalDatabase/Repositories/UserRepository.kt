@@ -53,6 +53,8 @@ interface IUserRepository: ILoginSettings {
     suspend fun descargarUsuarios()
 
     suspend fun descargarSeguidores()
+
+    suspend fun subscribeUser(token: String)
 }
 @Singleton
 class UserRepository @Inject constructor(
@@ -186,6 +188,10 @@ class UserRepository @Inject constructor(
         seguidoresDao.eliminarSeguidores()
         val seguidoresList = httpClient.getSeguidores()
         seguidoresList.map{seguidoresDao.insertSeguidores(remoteSeguidorToSeguidor(it))}
+    }
+
+    override suspend fun subscribeUser(token: String){
+        httpClient.subscribeUser(token)
     }
 
 }

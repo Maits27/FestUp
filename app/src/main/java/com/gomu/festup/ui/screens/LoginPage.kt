@@ -168,6 +168,7 @@ fun LoginForm(
                         withContext(Dispatchers.IO) {
                             mainVM.descargarDatos()
                         }
+                        mainVM.subscribeUser()
                         val currentUser = withContext(Dispatchers.IO) {
                             mainVM.actualizarCurrentUser(username)
                         }
@@ -573,30 +574,3 @@ fun registration(
         }
     }
 }
-
-/*
-@Preview(showBackground = true)
-@Composable
-fun LoginPagePreivew() {
-    Surface (
-        modifier = Modifier.fillMaxSize()
-    ) {
-        LoginPage(mainNavController = rememberNavController())
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginFormPreview() {
-    LoginForm(rememberNavController())
-}
-
-@Preview(showBackground = true)
-@Composable
-fun RegisterFormPreview() {
-    FestUpTheme {
-        RegistroForm()
-    }
-}
-
- */
