@@ -2,6 +2,7 @@ package com.gomu.festup.RemoteDatabase
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
@@ -214,6 +215,13 @@ class HTTPClient @Inject constructor() {
         Log.d("USUARIO", "get")
         val response = httpClient.get("http://34.16.74.167/getUser?username=$username")
         response.body()
+    }
+
+    fun editUser(usuario: RemoteUsuario) = runBlocking {
+        httpClient.post("http://34.16.74.167/editUser") {
+            contentType(ContentType.Application.Json)
+            setBody(usuario)
+        }
     }
 
     // ---------------------------  USUARIO ASISTENTE ------------------------------

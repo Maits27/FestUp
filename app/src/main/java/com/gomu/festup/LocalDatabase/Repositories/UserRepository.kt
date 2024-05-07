@@ -14,11 +14,13 @@ import com.gomu.festup.RemoteDatabase.AuthenticationException
 import com.gomu.festup.RemoteDatabase.HTTPClient
 import com.gomu.festup.RemoteDatabase.RemoteAuthUsuario
 import com.gomu.festup.RemoteDatabase.RemoteSeguidor
+import com.gomu.festup.RemoteDatabase.RemoteUsuario
 import com.gomu.festup.RemoteDatabase.UserExistsException
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.remoteSeguidorToSeguidor
 import com.gomu.festup.utils.remoteUsuarioToUsuario
 import com.gomu.festup.utils.toStringNuestro
+import com.gomu.festup.utils.toStringRemoto
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -55,6 +58,7 @@ interface IUserRepository: ILoginSettings {
     suspend fun descargarSeguidores()
 
     suspend fun subscribeUser(token: String)
+    suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date) : Usuario
 }
 @Singleton
 class UserRepository @Inject constructor(
@@ -194,4 +198,9 @@ class UserRepository @Inject constructor(
         httpClient.subscribeUser(token)
     }
 
+    override suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date) : Usuario {
+        usuarioDao.editarUsuario(username, email, nombre, fecha)
+        httpClient.editUser(RemoteUsuario(username = username, email = email, nombre = nombre, fechaNacimiento = fecha.toStringRemoto()))
+        return usuarioDao.getUsuario(username)
+    }
 }

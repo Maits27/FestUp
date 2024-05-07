@@ -215,7 +215,7 @@ fun LoginForm(
         Text(text = "¡Bienvenid@!", fontSize = 25.sp, color = MaterialTheme.colorScheme.onBackground)
         OutlinedTextField(
             value = username,
-            onValueChange = { username = it },
+            onValueChange = { username = it.lowercase().replace(" ", "") },
             label = { Text(text = "Nombre de usuario") },
             modifier = modifierForInputs
         )
@@ -403,7 +403,7 @@ fun RegistroForm(
                 label = { Text(text = "Fecha de nacimiento") },
                 modifier = modifierForInputs.clickable { showDatePicker = true },
                 colors = OutlinedTextFieldDefaults.colors(
-                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
                     disabledBorderColor = MaterialTheme.colorScheme.outline,
                     disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),
