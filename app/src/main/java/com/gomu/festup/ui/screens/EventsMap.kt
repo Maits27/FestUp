@@ -15,6 +15,9 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.MainActivity
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
@@ -38,6 +42,9 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import java.util.Date
 
 
 @Composable
@@ -59,6 +66,17 @@ fun EventsMap(
         }
     }
 
+    val locations by remember {
+        derivedStateOf {
+            eventos.value.map { evento ->
+                val location = getLatLngFromAddress(context, evento.localizacion)
+
+                if (location != null) EventOnMap(evento, location)
+                else null
+            }
+        }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -67,14 +85,14 @@ fun EventsMap(
             cameraPositionState = cameraPositionState,
             properties = MapProperties(isMyLocationEnabled = true)
         ) {
-            eventos.value.map { evento ->
-                getLatLngFromAddress(context, evento.localizacion)?.let { (latitude, longitude) ->
+            locations.forEach { location ->
+                if (location != null) {
                     Marker(
-                        state = MarkerState(position = LatLng(latitude, longitude)),
-                        title = evento.nombre,
-                        snippet = evento.fecha.toStringNuestro(),
+                        state = MarkerState(position = location.location),
+                        title = location.evento.nombre,
+                        snippet = location.evento.fecha.toStringNuestro(),
                         onInfoWindowClick = {
-                            mainVM.eventoMostrar.value = evento
+                            mainVM.eventoMostrar.value = location.evento
                             navController.navigate(AppScreens.Evento.route)
                         }
                     )
@@ -97,3 +115,8 @@ fun EventsMap(
         }
     }
 }
+
+data class EventOnMap(
+    val evento: Evento,
+    val location: LatLng
+)

@@ -16,6 +16,7 @@ import com.gomu.festup.RemoteDatabase.RemoteIntegrante
 import com.gomu.festup.RemoteDatabase.RemoteSeguidor
 import com.gomu.festup.RemoteDatabase.RemoteUsuario
 import com.gomu.festup.RemoteDatabase.RemoteUsuarioAsistente
+import com.google.android.gms.maps.model.LatLng
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
@@ -69,7 +70,7 @@ fun Date.toStringRemoto(): String{
 }
 
 
-fun getLatLngFromAddress(context: Context, mAddress: String): Pair<Double, Double>? {
+fun getLatLngFromAddress(context: Context, mAddress: String): LatLng? {
     val coder = Geocoder(context)
     try {
         val addressList = coder.getFromLocationName(mAddress, 1)
@@ -77,7 +78,7 @@ fun getLatLngFromAddress(context: Context, mAddress: String): Pair<Double, Doubl
             return null
         }
         val location = addressList[0]
-        return Pair(location.latitude, location.longitude)
+        return LatLng(location.latitude, location.longitude)
     } catch (e: Exception) {
         e.printStackTrace()
         return null

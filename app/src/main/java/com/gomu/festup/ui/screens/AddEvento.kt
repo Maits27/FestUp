@@ -288,7 +288,7 @@ fun AddEvento(
                 var currentLoc = getLatLngFromAddress(context, it)
                 if(currentLoc != null && currentLoc != mainVM.localizacionAMostrar.value){
                     mainVM.localizacionAMostrar.value = currentLoc
-                    cameraPositionState.position = CameraPosition.fromLatLngZoom(LatLng(mainVM.localizacionAMostrar.value!!.first, mainVM.localizacionAMostrar.value!!.second), 10f)
+                    cameraPositionState.position = CameraPosition.fromLatLngZoom(mainVM.localizacionAMostrar.value!!, 10f)
                 }
             },
             label = { Text(text = "Ubicación") },
@@ -303,7 +303,7 @@ fun AddEvento(
         ){
             if (mainVM.localizacionAMostrar.value!=null){
                 Marker(
-                    state = MarkerState(position = LatLng(mainVM.localizacionAMostrar.value?.first?:0.0, mainVM.localizacionAMostrar.value?.second?:0.0)),
+                    state = MarkerState(position = mainVM.localizacionAMostrar.value!!),
                     title = eventName,
                     snippet = fecha
                 )

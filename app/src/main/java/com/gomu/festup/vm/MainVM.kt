@@ -26,6 +26,7 @@ import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
 import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.utils.localUriToBitmap
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -62,7 +63,8 @@ class MainVM @Inject constructor(
     var eventoMostrar: MutableState<Evento?> = mutableStateOf(null)
 
     var localizacion: MutableState<Location?> = mutableStateOf(null)
-    var localizacionAMostrar: MutableState<Pair<Double, Double>?> = mutableStateOf(null)
+
+    var localizacionAMostrar: MutableState<LatLng?> = mutableStateOf(null)
 
     val alreadySiguiendo: MutableState<Boolean?> = mutableStateOf(null)
 
