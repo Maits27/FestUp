@@ -53,7 +53,7 @@ fun Evento(
     val apuntado = mainVM.estaApuntado(mainVM.currentUser.value!!, evento.id)
 
     var imageUri by remember {
-        mutableStateOf("http://34.16.74.167/cuadrillaProfileImages/${evento.id}.png")
+        mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
     }
 
     Column(

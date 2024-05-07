@@ -316,7 +316,7 @@ fun BotonesPerfil(mainNavController: NavController, navController: NavController
                 contentDescription = "Settings")
         }
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(AppScreens.EditPerfil.route) },
             modifier = Modifier.weight(1f)
         ) {
             Icon(

@@ -95,7 +95,7 @@ fun App(
                 SeguidoresSeguidosList(startPage = it.arguments?.getInt("startPage"), mainVM = mainVM, navController = navController)
             }
 //            composable(AppScreens.Ajustes.route) { Ajustes(navController) }
-//            composable(AppScreens.EditPerfil.route) { EditPerfil(navController) }
+            composable(AppScreens.EditPerfil.route) { EditPerfil(navController, mainVM) }
         }
     }
 }
