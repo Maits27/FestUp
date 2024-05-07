@@ -178,7 +178,6 @@ fun ListadoCuadrillas(
                 )
             )
         }
-
     }
 }
 
