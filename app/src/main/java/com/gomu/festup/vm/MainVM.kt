@@ -24,8 +24,11 @@ import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
 import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.utils.localUriToBitmap
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -307,6 +310,30 @@ class MainVM @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             userRepository.deleteSeguidores(currentUser.value!!.username, usernameToUnfollow)
             alreadySiguiendo.value = false
+        }
+    }
+
+
+    fun subscribeUser() {
+        val fcm = FirebaseMessaging.getInstance()
+        // Eliminar el token FCM actual
+        fcm.deleteToken().addOnSuccessListener {
+            // Obtener el nuevo token
+            fcm.token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    return@OnCompleteListener
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    try{
+                        userRepository.subscribeUser(task.result)
+                        Log.d("FCM", "Usuario suscrito")
+                    }
+                    catch (e:Exception){
+                        Log.d("Exception", e.printStackTrace().toString())
+                    }
+
+                }
+            })
         }
     }
 }

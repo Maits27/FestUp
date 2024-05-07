@@ -163,6 +163,7 @@ fun LoginForm(
                         withContext(Dispatchers.IO) {
                             mainVM.descargarDatos()
                         }
+                        mainVM.subscribeUser()
                         val currentUser = withContext(Dispatchers.IO) {
                             mainVM.actualizarCurrentUser(username)
                         }

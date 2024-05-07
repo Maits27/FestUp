@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "203411056524",
+    "project_id": "das2024-418411",
+    "storage_bucket": "das2024-418411.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203411056524:android:3046904a05d8ff2c1498a9",
+        "android_client_info": {
+          "package_name": "com.example.menditrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDx_lsm1uQZ7GpowUnnF1gbYRoviRbPOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203411056524:android:01f802e71f23e9661498a9",
+        "android_client_info": {
+          "package_name": "com.gomu.festup"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDx_lsm1uQZ7GpowUnnF1gbYRoviRbPOU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
