@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -64,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.utils.nuestroLocationProvider
@@ -77,6 +79,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
+@SuppressLint("UnrememberedMutableState")
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun LoginPage(
@@ -84,6 +87,8 @@ fun LoginPage(
     mainVM: MainVM,
     identVM: IdentVM
 ) {
+    Log.d("SERVER PETICION", "main")
+    mainVM.descargarUsuarios()
     var selectedTab by remember {
         mutableIntStateOf(0)
     }
@@ -231,6 +236,7 @@ fun LoginForm(
         if (!showLoading) {
             Button(
                 onClick = { onLoginButtonClick() },
+                enabled = mainVM.serverOk.value,
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(end = 54.dp)
@@ -435,7 +441,8 @@ fun RegistroForm(
                 modifier = modifierForInputs
             )
             Button(
-                onClick = { onRegisterButtonClick() }
+                onClick = { onRegisterButtonClick() },
+                enabled = mainVM.serverOk.value
             ) {
                 Text(text = "Registrarse")
             }

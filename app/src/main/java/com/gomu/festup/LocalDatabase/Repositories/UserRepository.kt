@@ -177,8 +177,9 @@ class UserRepository @Inject constructor(
     }
 
     override suspend fun descargarUsuarios(){
+        Log.d("SERVER", "entrada a descargar usuarios")
         usuarioDao.eliminarUsuarios()
-        val userList = httpClient.getUsuarios()
+        val userList = authClient.getUsuarios()
         userList.map{usuarioDao.insertUsuario(remoteUsuarioToUsuario(it))}
     }
 

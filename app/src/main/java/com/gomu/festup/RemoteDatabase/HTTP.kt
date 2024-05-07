@@ -16,10 +16,13 @@ import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 
 import javax.inject.Inject
@@ -158,6 +161,11 @@ class AuthClient @Inject constructor() {
             }
         ) { method = HttpMethod.Put }
     }
+    @Throws(IOException::class)
+    suspend fun getUsuarios(): List<RemoteUsuario> = runBlocking {
+        val response = httpClient.get("http://34.16.74.167/getUsers")
+        response.body()
+    }
 }
 
 
@@ -196,6 +204,7 @@ class HTTPClient @Inject constructor() {
     }
 
     // ---------------------------  USER ------------------------------
+    @Throws(IOException::class)
     suspend fun getUsuarios(): List<RemoteUsuario> = runBlocking {
         val response = httpClient.get("http://34.16.74.167/getUsers")
         response.body()

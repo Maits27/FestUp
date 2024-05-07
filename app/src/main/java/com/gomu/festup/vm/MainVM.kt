@@ -13,7 +13,9 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
@@ -25,6 +27,7 @@ import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.utils.localUriToBitmap
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,6 +48,7 @@ class MainVM @Inject constructor(
     private val cuadrillaRepository: ICuadrillaRepository,
     private val eventoRepository: IEventoRepository
 ): ViewModel() {
+    var serverOk: MutableState<Boolean> = mutableStateOf(false)
 
     var currentUser: MutableState<Usuario?> = mutableStateOf(null)
 
@@ -64,11 +68,26 @@ class MainVM @Inject constructor(
      ****************** METODOS USUARIO ******************
      *****************************************************/
 
+    fun descargarUsuarios(){
+        Log.d("SERVER PETICION", "main dentro")
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try{
+                Log.d("SERVER PETICION", "antes de descargar usuarios")
+                userRepository.descargarUsuarios()
+                serverOk.value = true
+                Log.d("SERVER PETICION", serverOk.value.toString())
+            }catch (e: Exception) {
+                Log.d("SERVER PETICION2", e.toString())
+            }
+        }
+    }
+
 
     fun descargarDatos(){
         viewModelScope.launch(Dispatchers.IO) {
             try{
-                userRepository.descargarUsuarios()
+//                userRepository.descargarUsuarios()
                 cuadrillaRepository.descargarCuadrillas()
                 cuadrillaRepository.descargarIntegrantes()
                 eventoRepository.descargarEventos()

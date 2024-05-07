@@ -27,7 +27,9 @@ interface EventoDao {
             "SELECT idEvento FROM UsuariosAsistentes WHERE username = :username " +
             "UNION " +
             "SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla IN ( " +
-            "SELECT nombreCuadrilla FROM Integrante WHERE username = :username))")
+            "SELECT nombreCuadrilla FROM Integrante WHERE username = :username))" +
+            "AND fecha >= DATE('now')" +
+            "ORDER BY fecha")
     fun eventosUsuario(username: String): Flow<List<Evento>>
 
     @Transaction
@@ -69,10 +71,10 @@ interface EventoDao {
             "UNION " +
             "SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla IN ( " +
             "SELECT nombreCuadrilla FROM Integrante WHERE username IN ( " +
-            "SELECT seguido FROM Seguidores WHERE seguidor = :username " +
-            ")" +
-            ")" +
-            ")")
+            "SELECT seguido FROM Seguidores WHERE seguidor = :username))) "+
+            "AND fecha >= DATE('now')" +
+            "ORDER BY fecha")
+
     fun getEventosSeguidos(username: String): Flow<List<Evento>>
 
 

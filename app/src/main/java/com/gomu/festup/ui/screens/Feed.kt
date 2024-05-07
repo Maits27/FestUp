@@ -58,7 +58,7 @@ fun Feed(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Eventos",
+                    text = "Mis eventos",
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
@@ -68,7 +68,7 @@ fun Feed(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Seguidos",
+                    text = "Podría interesarte",
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
