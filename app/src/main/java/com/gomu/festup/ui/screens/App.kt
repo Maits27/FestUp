@@ -42,11 +42,11 @@ import com.google.android.gms.location.LocationServices
 fun App(
     mainNavController: NavController,
     mainVM: MainVM,
-    preferencesViewModel: PreferencesViewModel
+    preferencesVM: PreferencesViewModel
 ) {
-    val context = LocalContext.current
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {
@@ -96,7 +96,7 @@ fun App(
             ) {
                 SeguidoresSeguidosList(startPage = it.arguments?.getInt("startPage"), mainVM = mainVM, navController = navController)
             }
-//            composable(AppScreens.Ajustes.route) { Ajustes(navController) }
+            composable(AppScreens.Ajustes.route) { Ajustes(navController, preferencesVM, mainVM) }
             composable(AppScreens.EditPerfil.route) { EditPerfil(navController, mainVM) }
         }
     }

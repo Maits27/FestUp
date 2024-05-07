@@ -312,7 +312,7 @@ fun BotonesPerfil(
         horizontalArrangement = Arrangement.Center
     ){
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(AppScreens.Ajustes.route) },
             modifier = Modifier.weight(1f)
         ) {
             Icon(

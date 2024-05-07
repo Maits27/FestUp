@@ -34,6 +34,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.R
 import com.gomu.festup.data.AppLanguage
+import com.gomu.festup.ui.components.SwitchDarkMode
+import com.gomu.festup.ui.components.SwitchTik
+import com.gomu.festup.ui.components.dialogs.LanguageSelection
 import com.gomu.festup.vm.MainVM
 import com.gomu.festup.vm.PreferencesViewModel
 
@@ -57,15 +60,16 @@ fun Ajustes(
         horizontalAlignment = Alignment.Start
     ){
         Text(
-            "Visualización",
+            "Visualización:",
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(vertical = 16.dp)
         )
         //---------------- Idioma ----------------//
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp)
+                .padding(16.dp)
                 .clickable { showIdiomas = true },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
@@ -73,14 +77,14 @@ fun Ajustes(
             Icon(
                 painter = painterResource(id = R.drawable.language),
                 contentDescription = null,
-                modifier = Modifier.weight(1f))
+                modifier = Modifier.padding(10.dp))
             Column(
                 horizontalAlignment = Alignment.Start,
-                modifier = Modifier.weight(3f)
+                modifier = Modifier.padding(10.dp)
             ) {
                 Text("Idioma")
                 Text(
-                    text = "Castellano",
+                    text = if (idioma.code == "es") "Castellano" else "Euskera",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -91,7 +95,7 @@ fun Ajustes(
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ){
@@ -113,14 +117,15 @@ fun Ajustes(
         }
         Divider(Modifier.padding(vertical = 10.dp))
         Text(
-            "Sistema",
+            "Sistema:",
             fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(vertical = 16.dp)
         )
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 10.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ){
@@ -132,131 +137,14 @@ fun Ajustes(
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier.weight(3f)
             ) {
-                Text("Tema de color")
+                Text("Notificaciones")
                 Text(
-                    text = if (dark) "Dark" else "Light",
+                    text = if (receiveNotifications) "Recibir" else "No recibir",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
             SwitchTik(receiveNotifications, Modifier.weight(2f)){preferencesVM.changeReceiveNotifications()}
         }
-    }
-}
-
-@Composable
-fun SwitchTik(
-    checked: Boolean,
-    modifier: Modifier = Modifier,
-    onCheck:()->Unit
-){
-    // TODO: https://www.youtube.com/watch?v=Nvphdmi-6qc
-    var checkedSwitch = checked
-    Switch(
-        modifier = modifier,
-        checked = checkedSwitch,
-        onCheckedChange = {
-            checkedSwitch = !checkedSwitch
-            onCheck()
-        },
-        thumbContent = if (checkedSwitch) {
-            {
-                Icon(
-                    painter = painterResource(id = R.drawable.check),
-                    contentDescription = null,
-                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                )
-            }
-        } else {
-           null
-        }
-    )
-}
-@Composable
-fun SwitchDarkMode(
-    preferencesVM: PreferencesViewModel,
-    dark: Boolean,
-    modifier: Modifier = Modifier
-){
-    // TODO: https://www.youtube.com/watch?v=Nvphdmi-6qc
-    var checkedDark = dark
-    Switch(
-        modifier = modifier,
-        checked = checkedDark,
-        onCheckedChange = {
-            checkedDark = !checkedDark
-            preferencesVM.changeTheme(!dark)
-        },
-        thumbContent = if (checkedDark) {
-            {
-                Icon(
-                    painter = painterResource(id = R.drawable.dark),
-                    contentDescription = null,
-                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                )
-            }
-        } else {
-            {
-                Icon(
-                    painter = painterResource(id = R.drawable.light),
-                    contentDescription = null,
-                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                )
-            }
-        }
-    )
-}
-@Composable
-fun LanguageSelection(
-    show: Boolean,
-    idioma: AppLanguage,
-    preferencesVM: PreferencesViewModel,
-    onDismiss:()-> Unit
-) {
-    if(show){
-        AlertDialog(
-            onDismissRequest = {},
-            confirmButton = {
-                TextButton(onClick = { onDismiss()}) {
-                    Text(text = "Cancelar")
-                }
-            },
-            title = {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.language),
-                        contentDescription = null)
-                    Text(text = "Selecciona tu idioma")
-                }},
-            text = {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(
-                            selected = idioma.code == "es",
-                            onClick = {
-                                preferencesVM.changeLang(AppLanguage.ES)
-                                onDismiss()
-                            }
-                        )
-                        Text("Castellano")
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        RadioButton(
-                            selected = idioma.code == "eu",
-                            onClick = {
-                                preferencesVM.changeLang(AppLanguage.EU)
-                                onDismiss()
-                            }
-                        )
-                        Text("Euskera")
-                    }
-                }
-            }
-        )
     }
 }
 

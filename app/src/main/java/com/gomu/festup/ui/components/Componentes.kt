@@ -114,6 +114,12 @@ fun TopBarMainView(
             title = "Editar perfil"
             showBackArrow = true
         }
+        AppScreens.Ajustes.route -> {
+            showTopBar = true
+            showPerfil = false
+            title = "Preferencias @${mainVM.usuarioMostrar.value!!.username}"
+            showBackArrow = true
+        }
         else -> {
             title = stringResource(id = R.string.app_name)
             showPerfil = true
