@@ -82,6 +82,8 @@ data class RemoteSeguidor(
 )
 
 
+
+
 @Serializable
 data class RemoteEvento(
     val id: String,
@@ -90,6 +92,13 @@ data class RemoteEvento(
     val numeroAsistentes: Int,
     val descripcion: String,
     val localizacion: String
+)
+
+
+@Serializable
+data class RemoteMessage(
+    val title: String,
+    val body: String
 )
 
 private val bearerTokenStorage = mutableListOf<BearerTokens>()
@@ -358,12 +367,29 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  NOTIFICACIONES ------------------------------
     suspend fun subscribeUser(FCMClientToken: String) {
-        Log.d("subs",FCMClientToken)
         httpClient.post("http://34.16.74.167/notifications/subscribe") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
     }
+    suspend fun subscribeToUser(FCMClientToken: String, username: String) {
+        httpClient.post("http://34.16.74.167/notifications/subscribeToUser") {
+            contentType(ContentType.Application.Json)
+            parameter("username", username)
+            setBody(mapOf("fcm_client_token" to FCMClientToken))
+        }
+    }
+
+
+    suspend fun unsubscribeFromUser(FCMClientToken: String, username: String) {
+        httpClient.delete("http://34.16.74.167/notifications/unsubscribeFromUser") {
+            contentType(ContentType.Application.Json)
+            parameter("username", username)
+            setBody(mapOf("fcm_client_token" to FCMClientToken))
+        }
+    }
+
+
 
     // ---------------------------  IMAGEN DE PERFIL ------------------------------
 

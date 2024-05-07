@@ -258,8 +258,9 @@ fun SeguidoresYSeguidos(
             ){
                 if (alreadySiguiendo.value != null) {
                     if (!alreadySiguiendo.value!!) {
+
                         TextButton(
-                            onClick = { mainVM.newSiguiendo(usuario.username) },
+                            onClick = { mainVM.newSiguiendo(usuario.username); mainVM.subscribeToUser(mainVM.usuarioMostrar.value!!.username) },
                             modifier = Modifier
                                 .padding(vertical = 16.dp)
                                 .background(
@@ -278,7 +279,7 @@ fun SeguidoresYSeguidos(
                     }
                     else {
                         TextButton(
-                            onClick = { mainVM.unfollow(usuario.username) },
+                            onClick = { mainVM.unfollow(usuario.username); mainVM.unsubscribeFromUser(mainVM.usuarioMostrar.value!!.username)  },
                             modifier = Modifier
                                 .padding(vertical = 16.dp)
                                 .background(

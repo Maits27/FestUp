@@ -25,6 +25,7 @@ import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
 import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
+import com.gomu.festup.RemoteDatabase.RemoteMessage
 import com.gomu.festup.utils.localUriToBitmap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
@@ -362,4 +363,50 @@ class MainVM @Inject constructor(
             })
         }
     }
+
+    fun subscribeToUser(username: String) {
+        val fcm = FirebaseMessaging.getInstance()
+        // Eliminar el token FCM actual
+        fcm.deleteToken().addOnSuccessListener {
+            // Obtener el nuevo token
+            fcm.token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    return@OnCompleteListener
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    try{
+                        userRepository.subscribeToUser(task.result, username)
+                    }
+                    catch (e:Exception){
+                        Log.d("Exception", e.printStackTrace().toString())
+                    }
+
+                }
+            })
+        }
+    }
+
+    fun unsubscribeFromUser(username: String) {
+        val fcm = FirebaseMessaging.getInstance()
+        // Eliminar el token FCM actual
+        fcm.deleteToken().addOnSuccessListener {
+            // Obtener el nuevo token
+            fcm.token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    return@OnCompleteListener
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    try{
+                        userRepository.unsubscribeFromUser(task.result, username)
+                    }
+                    catch (e:Exception){
+                        Log.d("Exception", e.printStackTrace().toString())
+                    }
+
+                }
+            })
+        }
+    }
+
+
 }
