@@ -340,7 +340,6 @@ class MainVM @Inject constructor(
         }
     }
 
-
     fun subscribeUser() {
         val fcm = FirebaseMessaging.getInstance()
         // Eliminar el token FCM actual

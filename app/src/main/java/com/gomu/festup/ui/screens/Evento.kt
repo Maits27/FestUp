@@ -6,17 +6,24 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -44,6 +52,7 @@ import com.gomu.festup.ui.components.cards.UsuarioCard
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Evento(
     navController: NavController,
@@ -63,31 +72,61 @@ fun Evento(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxSize()
+            .padding(top = 10.dp)
     ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 6.dp, vertical = 3.dp)
+        ) {
+            Row (
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(6.dp)
+            ){
+                AsyncImage(
+                    model = imageUri,
+                    contentDescription = "Event image",
+                    onError = {
+                        imageUri = "http://34.16.74.167/eventoImages/no-image.png"
+                    },
+                    placeholder = painterResource(id = R.drawable.no_image),
+                    modifier = Modifier
+                        .height(150.dp)
+                        .width(150.dp)
+                        .padding(start = 6.dp)
+                        .clip(RoundedCornerShape(35.dp))
+                        .align(Alignment.Top)
+                )
+                Spacer(modifier = Modifier.size(16.dp))
+                DatosEvento(evento, mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!), apuntado, mainVM)
+            }
+        }
         Row (
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ){
-            AsyncImage(
-                model = imageUri,
-                contentDescription = "Event image",
-                onError = {
-                    imageUri = "http://34.16.74.167/eventoImages/no-image.png"
-                },
-                placeholder = painterResource(id = R.drawable.no_image),
-                modifier = Modifier
-                    .height(150.dp)
-                    .padding(16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.info),
+                contentDescription = null
             )
-            DatosEvento(evento)
+            Text(
+                text = "Descripcion",
+                style = TextStyle(fontSize = 20.sp),
+                modifier = Modifier.padding(8.dp)
+            )
         }
         Text(
             text = evento.descripcion,
             style = TextStyle(fontSize = 16.sp),
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier
+                .padding(start = 16.dp, top = 8.dp)
+                .align(Alignment.Start)
         )
-        EstadisticasEvento(mainVM = mainVM, evento = evento, apuntado = apuntado)
+
         Divider(modifier = Modifier.padding(10.dp))
         Text(
             text = "Asistentes:",
@@ -109,51 +148,60 @@ fun Evento(
 }
 
 @Composable
-fun DatosEvento(evento: Evento) {
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
-        modifier = Modifier.padding(16.dp)
-    ) {
-        Text(
-            text = evento.fecha.toStringNuestro(),
-            style = TextStyle(fontSize = 16.sp),
-            maxLines = 1,
-            modifier = Modifier.padding(8.dp)
-        )
-        Text(
-            text = evento.localizacion,
-            style = TextStyle(fontSize = 16.sp),
-            modifier = Modifier.padding(8.dp)
-        )
-    }
-}
+fun DatosEvento(evento: Evento, edadMedia: Int, apuntado: Boolean, mainVM: MainVM) {
 
-@Composable
-fun EstadisticasEvento(mainVM: MainVM, evento: Evento, apuntado: Boolean){
     var apuntarse by remember { mutableStateOf(false) }
     var desapuntarse by remember { mutableStateOf(false) }
+
     Column (
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier.padding(vertical = 30.dp)
+    ) {
         Row (
-            horizontalArrangement = Arrangement.Center,
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-        ){
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.calendar),
+                contentDescription = null
+            )
+            Text(
+                text = evento.fecha.toStringNuestro(),
+                style = TextStyle(fontSize = 16.sp),
+                maxLines = 1,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+        Row (
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.location),
+                contentDescription = null
+            )
+            Text(
+                text = evento.localizacion,
+                style = TextStyle(fontSize = 16.sp),
+                maxLines = 1,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+        Row (
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
                 Text(
                     text = "Edad media",
                     style = TextStyle(fontSize = 16.sp),
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
                 Box(
                     modifier = Modifier
@@ -166,66 +214,43 @@ fun EstadisticasEvento(mainVM: MainVM, evento: Evento, apuntado: Boolean){
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "${mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!)}", // TODO EDAD MEDIA
+                        text = edadMedia.toString(),
                         color = Color.White,
                         style = TextStyle(fontSize = 24.sp)
                     )
                 }
             }
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Personas",
-                    style = TextStyle(fontSize = 16.sp),
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(8.dp)
-                )
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.onSecondary,
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .padding(8.dp)
-                        .wrapContentSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = mainVM.numeroDeAsistentes(mainVM.eventoMostrar.value!!).toString(),
-                        color = Color.White,
-                        style = TextStyle(fontSize = 24.sp)
-                    )
-                }
-            }
-            Column (
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ){
-                Button(
-                    onClick = { apuntarse = true },
-                ) {
-                    Text(
-                        text = "Apuntarme",
-                        style = TextStyle(fontSize = 17.sp)
-                    )
-                }
+            Spacer(modifier = Modifier.size(20.dp))
 
-                Button(
-                    onClick = { desapuntarse = true},
-                ) {
-                    Text(
-                        text = "Desapuntarse",
-                        style = TextStyle(fontSize = 17.sp)
-                    )
-                }
+            Button(
+                onClick = { apuntarse = true },
+                shape = RoundedCornerShape(70),
+                modifier = Modifier
+                    .size(35.dp)
+                    .align(Alignment.Bottom)
+                    .padding(horizontal = 1.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.add),
+                    contentDescription = null,
+                )
             }
+            Button(
+                onClick = { desapuntarse = true },
+                shape = RoundedCornerShape(70),
+                modifier = Modifier
+                    .size(35.dp)
+                    .align(Alignment.Bottom)
+                    .padding(horizontal = 1.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.delete),
+                    contentDescription = null,
+                )
+            }
+
         }
     }
-
     Apuntarse(show = apuntarse, apuntado = apuntado,  mainVM = mainVM) { apuntarse = false }
     Desapuntarse(show = desapuntarse , apuntado = apuntado, mainVM = mainVM) { desapuntarse = false }
 }
-

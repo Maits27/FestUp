@@ -393,10 +393,6 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  IMAGEN DE PERFIL ------------------------------
 
-
-
-
-
     suspend fun setCuadrillaImage(nombre: String, image: Bitmap) {
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
