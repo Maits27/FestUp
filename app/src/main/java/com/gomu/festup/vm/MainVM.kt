@@ -362,6 +362,28 @@ class MainVM @Inject constructor(
             })
         }
     }
+    fun unSubscribeUser() {
+        val fcm = FirebaseMessaging.getInstance()
+        // Eliminar el token FCM actual
+        fcm.deleteToken().addOnSuccessListener {
+            // Obtener el nuevo token
+            fcm.token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    return@OnCompleteListener
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    try{
+                        userRepository.unSubscribeUser(task.result)
+                        Log.d("FCM", "Usuario desuscrito")
+                    }
+                    catch (e:Exception){
+                        Log.d("Exception", e.printStackTrace().toString())
+                    }
+
+                }
+            })
+        }
+    }
 
     fun subscribeToUser(username: String) {
         val fcm = FirebaseMessaging.getInstance()

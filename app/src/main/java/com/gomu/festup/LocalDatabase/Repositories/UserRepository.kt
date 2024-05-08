@@ -58,6 +58,7 @@ interface IUserRepository: ILoginSettings {
     suspend fun descargarSeguidores()
 
     suspend fun subscribeUser(token: String)
+    suspend fun unSubscribeUser(token: String)
     suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date) : Usuario
 
     suspend fun subscribeToUser(token: String, username: String)
@@ -201,6 +202,9 @@ class UserRepository @Inject constructor(
 
     override suspend fun subscribeUser(token: String){
         httpClient.subscribeUser(token)
+    }
+    override suspend fun unSubscribeUser(token: String){
+        httpClient.unSubscribeUser(token)
     }
 
     override suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date) : Usuario {

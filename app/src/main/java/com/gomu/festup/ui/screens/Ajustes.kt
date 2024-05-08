@@ -42,14 +42,12 @@ import com.gomu.festup.vm.PreferencesViewModel
 
 @Composable
 fun Ajustes(
-    navController: NavController,
     preferencesVM: PreferencesViewModel,
-    mainVM: MainVM
+    mainVM: MainVM,
+    idioma: AppLanguage,
+    dark: Boolean,
+    receiveNotifications: Boolean
 ) {
-    val idioma by preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(initial = preferencesVM.currentSetLang)
-    val dark by preferencesVM.darkTheme(mainVM.currentUser.value!!.username).collectAsState(initial = true)
-    val receiveNotifications by preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = true)
-
     var showIdiomas by remember { mutableStateOf(false) }
 
     Column (
@@ -130,7 +128,7 @@ fun Ajustes(
             horizontalArrangement = Arrangement.Start
         ){
             Icon(
-                painter = painterResource(id = R.drawable.color),
+                painter = painterResource(id = R.drawable.notifications_active),
                 contentDescription = null,
                 modifier = Modifier.weight(1f))
             Column(
@@ -143,7 +141,7 @@ fun Ajustes(
                     style = MaterialTheme.typography.bodySmall
                 )
             }
-            SwitchTik(receiveNotifications, Modifier.weight(2f)){preferencesVM.changeReceiveNotifications()}
+            SwitchTik(preferencesVM, mainVM, receiveNotifications, Modifier.weight(2f))
         }
     }
 }

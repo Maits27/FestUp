@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -71,6 +72,10 @@ fun App(
             )
         }
     ){ innerPadding ->
+        val idioma by preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(initial = preferencesVM.currentSetLang)
+        val dark by preferencesVM.darkTheme(mainVM.currentUser.value!!.username).collectAsState(initial = true)
+        val receiveNotifications by preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = false)
+
         NavHost(
             modifier = Modifier.padding(innerPadding),
             navController = navController,
@@ -96,7 +101,7 @@ fun App(
             ) {
                 SeguidoresSeguidosList(startPage = it.arguments?.getInt("startPage"), mainVM = mainVM, navController = navController)
             }
-            composable(AppScreens.Ajustes.route) { Ajustes(navController, preferencesVM, mainVM) }
+            composable(AppScreens.Ajustes.route) { Ajustes(preferencesVM, mainVM, idioma, dark, receiveNotifications) }
             composable(AppScreens.EditPerfil.route) { EditPerfil(navController, mainVM) }
         }
     }
