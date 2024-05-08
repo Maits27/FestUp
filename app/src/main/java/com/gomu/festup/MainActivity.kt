@@ -11,8 +11,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
@@ -114,16 +117,19 @@ enum class NotificationID(val id: Int) {
 @Composable
 fun Principal(mainVM: MainVM, identVM: IdentVM, preferencesViewModel: PreferencesViewModel) {
     val mainNavController = rememberNavController()
+    val dark by preferencesViewModel.darkTheme(mainVM.currentUser.value?.username?:"").collectAsState(initial = true)
 
     NavHost(
         navController = mainNavController,
         startDestination = AppScreens.LoginPage.route
     ) {
         composable(AppScreens.LoginPage.route) {
-            LoginPage(mainNavController, mainVM, identVM)
+            LoginPage(mainNavController, mainVM, identVM, preferencesViewModel)
         }
         composable(AppScreens.App.route) {
-            App(mainNavController, mainVM, preferencesViewModel)
+            FestUpTheme(dark) {
+                App(mainNavController, mainVM, preferencesViewModel)
+            }
         }
     }
 }

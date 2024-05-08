@@ -3,9 +3,12 @@ package com.gomu.festup.ui.screens
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.location.Geocoder
 import android.location.Location
 import android.util.Log
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,6 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat.setTint
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.LocalDatabase.Entities.Evento
@@ -35,6 +40,8 @@ import com.gomu.festup.utils.getLatLngFromAddress
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -90,6 +97,12 @@ fun EventsMap(
                     Marker(
                         state = MarkerState(position = location.location),
                         title = location.evento.nombre,
+                        icon = bitmapDescriptorFromVector(
+                            LocalContext.current,
+                            R.drawable.location,
+                            size = 120,
+                            alpha = 255
+                        ),
                         snippet = location.evento.fecha.toStringNuestro(),
                         onInfoWindowClick = {
                             mainVM.eventoMostrar.value = location.evento
@@ -115,7 +128,29 @@ fun EventsMap(
         }
     }
 }
+fun bitmapDescriptorFromVector(
+    context: Context,
+    @DrawableRes vectorResId: Int,
+    size: Int? = null,
+    alpha: Int = 255,
+    color: Int? = null,
+): BitmapDescriptor {
 
+    // Load drawable and apply options: alpha, color and size
+    val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)!!.also {
+        if (color != null) setTint(it, color)
+        it.alpha = alpha
+
+        it.setBounds(0, 0, size ?: it.intrinsicWidth, size ?: it.intrinsicHeight)
+    }
+
+    // Convert to bitmap
+    val bitmap = Bitmap.createBitmap(size ?: vectorDrawable.intrinsicWidth, size ?: vectorDrawable.intrinsicHeight, Bitmap.Config.RGBA_F16)
+    vectorDrawable.draw(Canvas(bitmap))
+
+    // Convert to BitmapDescriptor and return
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
+}
 data class EventOnMap(
     val evento: Evento,
     val location: LatLng

@@ -63,6 +63,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Usuario
@@ -72,6 +73,7 @@ import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.IdentVM
 import com.gomu.festup.vm.MainVM
+import com.gomu.festup.vm.PreferencesViewModel
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -85,7 +87,8 @@ import java.util.Date
 fun LoginPage(
     mainNavController: NavController,
     mainVM: MainVM,
-    identVM: IdentVM
+    identVM: IdentVM,
+    preferencesVM: PreferencesViewModel
 ) {
     Log.d("SERVER PETICION", "main")
     mainVM.descargarUsuarios()
@@ -129,8 +132,8 @@ fun LoginPage(
                 Text(text = "Registrarse", modifier = Modifier.padding(vertical = 15.dp))
             }
         }
-        if (selectedTab == 0) LoginForm(mainNavController, mainVM, identVM)
-        else RegistroForm(mainNavController, mainVM, identVM)
+        if (selectedTab == 0) LoginForm(mainNavController, mainVM, identVM, preferencesVM)
+        else RegistroForm(mainNavController, mainVM, identVM, preferencesVM)
     }
 }
 
@@ -138,7 +141,8 @@ fun LoginPage(
 fun LoginForm(
     mainNavController: NavController,
     mainVM: MainVM,
-    identVM: IdentVM
+    identVM: IdentVM,
+    preferencesVM: PreferencesViewModel
 ) {
     var username by remember {
         mutableStateOf("")
@@ -175,6 +179,7 @@ fun LoginForm(
                         Log.d("CURRENTUSER", currentUser.toString())
                         nuestroLocationProvider(context, mainVM)
                         mainVM.currentUser.value = currentUser
+                        preferencesVM.changeUser(currentUser.username)
 
                         withContext(Dispatchers.Main) {
                             mainNavController.navigate(AppScreens.App.route)
@@ -258,7 +263,8 @@ fun LoginForm(
 fun RegistroForm(
     mainNavController: NavController,
     mainVM: MainVM,
-    identVM: IdentVM
+    identVM: IdentVM,
+    preferencesVM: PreferencesViewModel
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -312,7 +318,7 @@ fun RegistroForm(
         val correct = checkRegisterForm(context, username, email, nombre, password, confirmPassword)
         if (correct) {
             showLoading = true
-            registration(imageUri, mainNavController, mainVM, identVM, context, username, password,
+            registration(imageUri, mainNavController, mainVM, identVM, preferencesVM, context, username, password,
                 email, nombre, birthDate)
             showLoading = false
         }
@@ -523,6 +529,7 @@ fun registration(
     mainNavController: NavController,
     mainVM: MainVM,
     identVM: IdentVM,
+    preferencesVM: PreferencesViewModel,
     context: Context,
     username: String,
     password: String,
@@ -549,6 +556,7 @@ fun registration(
                     mainVM.descargarDatos()
                 }
                 mainVM.currentUser.value = usuario
+                preferencesVM.changeUser(usuario.username)
                 withContext(Dispatchers.Main) {
                     mainNavController.navigate(AppScreens.App.route)
                 }
