@@ -14,11 +14,13 @@ import com.gomu.festup.RemoteDatabase.HTTPClient
 import com.gomu.festup.RemoteDatabase.RemoteCuadrillaAsistente
 import com.gomu.festup.RemoteDatabase.RemoteEvento
 import com.gomu.festup.RemoteDatabase.RemoteUsuarioAsistente
+import com.gomu.festup.ui.widget.EventoWidget
 import com.gomu.festup.utils.formatearFechaRemoto
 import com.gomu.festup.utils.remoteCAsistenteToCAsistente
 import com.gomu.festup.utils.remoteEventoToEvento
 import com.gomu.festup.utils.remoteUAsistenteToUAsistente
 import com.gomu.festup.utils.remoteUsuarioToUsuario
+import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.utils.toStringRemoto
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +32,7 @@ interface IEventoRepository {
     fun todosLosEventos(): Flow<List<Evento>>
     fun usuariosEventos(): Flow<List<UsuariosAsistentes>>
     fun eventosUsuario(username: String): Flow<List<Evento>>
-
+    fun eventosUsuarioForWidget(username: String): List<EventoWidget>
     fun eventosSeguidos(username: String): Flow<List<Evento>>
     suspend fun estaApuntado(username: String, id: String): Boolean
     fun cuadrillasUsuarioApuntadas(username: String, id: String): Flow<List<Cuadrilla>>
@@ -102,6 +104,15 @@ class EventoRepository @Inject constructor(
 
     override fun eventosUsuario(username: String): Flow<List<Evento>> {
         return eventoDao.eventosUsuario(username)
+    }
+
+    override fun eventosUsuarioForWidget(username: String): List<EventoWidget> {
+        val eventosDB = eventoDao.eventosUsuarioList(username)
+        return eventosDB.map{
+            EventoWidget(nombre = it.nombre, fecha = it.fecha.toStringNuestro(),
+                numeroAsistentes = it.numeroAsistentes
+            )
+        }
     }
 
     override fun eventosSeguidos(username: String): Flow<List<Evento>> {
