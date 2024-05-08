@@ -2,11 +2,15 @@ package com.gomu.festup.ui.widget
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.state.updateAppWidgetState
 import com.gomu.festup.LocalDatabase.Repositories.EventoRepository
+import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
+import com.gomu.festup.Preferences.IGeneralPreferences
+import com.gomu.festup.Preferences.PreferencesRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,17 +40,19 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
 
     @Inject
     lateinit var eventoRepository: EventoRepository
-
-    private val currentUsername: String? = "aingerubellido" // TODO conseguir el real del DataStore
+    @Inject
+    lateinit var preferencesRepository: ILoginSettings
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
 
 
         CoroutineScope(Dispatchers.IO).launch {
-            // Get the list of events
-            lateinit var eventos: List<EventoWidget>
-            if (currentUsername != null) eventos = eventoRepository.eventosUsuarioForWidget(currentUsername)
+            val currentUsername = preferencesRepository.getLastLoggedUser()
+            // Get the list of events of the last logged user
+            val eventos = if (currentUsername != null) eventoRepository.eventosUsuarioForWidget(currentUsername)
+                          else emptyList()
+            Log.d("FestUpWidget", "$currentUsername eventos: $eventos")
             // Get the widget manager
             val manager = GlanceAppWidgetManager(context)
             // We get all the glace IDs that are a FestUpWidget (remember than we can have more
@@ -56,8 +62,7 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
             glanceIds.forEach { glanceId ->
                 updateAppWidgetState(context, glanceId) { prefs ->
                     prefs[FestUpWidget.eventosKey] = Json.encodeToString(eventos)
-                    if (currentUsername != null) prefs[FestUpWidget.userIsLoggedIn] = true
-                    else prefs[FestUpWidget.userIsLoggedIn] = false
+                    prefs[FestUpWidget.userIsLoggedIn] = (currentUsername != null)
                 }
                 // We update the widget
                 FestUpWidget().update(context, glanceId)

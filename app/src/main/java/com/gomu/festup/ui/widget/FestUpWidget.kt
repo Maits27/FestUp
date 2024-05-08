@@ -57,9 +57,9 @@ data class EventoWidget(
     val numeroAsistentes: Int
 )
 
-val colorFondo = Color(0xFF534340)
-val textColor = Color(0xFFFFB4A6)
-val colorFondoCard = Color(0xFF442A25)
+val colorFondo = Color(0xFF141318)      // Using background-dark from theme
+val textColor = Color(0xFFCEBDFE)       // Using primary-dark from theme
+val colorFondoCard = Color(0xFF4C3E76)  // Using primaryContainer-dark from theme
 
 class FestUpWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Single
@@ -121,19 +121,11 @@ class FestUpWidget : GlanceAppWidget() {
             if (userIsLoggedIn) {
                 if (eventos.isNotEmpty()) {
                     LazyColumn(modifier = GlanceModifier.padding(15.dp)) {
-                        item {
-                            EventoCard(evento = EventoWidget(nombre = "San Roque", fecha = "14-08-2024", numeroAsistentes = 1000)) // TODO de prueba
-                        }
-                        item {
-                            Spacer(modifier = GlanceModifier.padding(bottom = 10.dp))
-                        }
-                        item {
-                            EventoCard(evento = EventoWidget(nombre = "San Jorge", fecha = "23-04-2024", numeroAsistentes = 2000)) // TODO de prueba
-                            Spacer(modifier = GlanceModifier.padding(bottom = 10.dp))
-                        }
                         eventos.forEach {
                             item {
                                 EventoCard(it)
+                            }
+                            item {
                                 Spacer(modifier = GlanceModifier.padding(bottom = 10.dp))
                             }
                         }

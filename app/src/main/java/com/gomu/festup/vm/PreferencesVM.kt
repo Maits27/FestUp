@@ -2,6 +2,7 @@ package com.gomu.festup.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
 import com.gomu.festup.Preferences.IGeneralPreferences
 import com.gomu.festup.data.AppLanguage
 import com.gomu.festup.utils.LanguageManager
@@ -17,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PreferencesViewModel @Inject constructor(
     private val preferencesRepository: IGeneralPreferences,
+    private val loginRepository: ILoginSettings,
     private val languageManager: LanguageManager
 ) : ViewModel() {
 
@@ -40,8 +42,11 @@ class PreferencesViewModel @Inject constructor(
      **                    Eventos                  **
      *************************************************/
 
-    fun changeUser(email: String){
-        _currentUser.value = email
+    fun changeUser(username: String){
+        _currentUser.value = username
+        viewModelScope.launch(Dispatchers.IO) {
+            loginRepository.setLastLoggedUser(username)
+        }
     }
 
 
