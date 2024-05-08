@@ -15,6 +15,8 @@ import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.RemoteDatabase.HTTPClient
 import com.gomu.festup.RemoteDatabase.RemoteCuadrilla
 import com.gomu.festup.RemoteDatabase.RemoteIntegrante
+import com.gomu.festup.utils.remoteIntegranteToIntegrante
+import com.gomu.festup.utils.remotecuadrillaToCuadrilla
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -30,7 +32,7 @@ interface ICuadrillaRepository {
     fun cuadrillaUsuario(username: String): List<Cuadrilla>
     fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>>
     fun eventosCuadrilla(nombreCuadrilla: String): List<Evento>
-    suspend fun insertUser(usuario: Usuario): Boolean
+    suspend fun insertUser(nombreUsuario: String, nombreCuadrilla: String): Boolean
 
     suspend fun eliminarIntegrante(cuadrilla: Cuadrilla, username: String): Boolean
 
@@ -40,6 +42,12 @@ interface ICuadrillaRepository {
 
     fun getIntegrantes(): Flow<List<Integrante>>
     suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean
+
+   fun getCuadrillaAccessToken(nombre: String): String
+
+    suspend fun descargarCuadrillas()
+
+    suspend fun descargarIntegrantes()
 }
 @Singleton
 class CuadrillaRepository @Inject constructor(
@@ -84,8 +92,15 @@ class CuadrillaRepository @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertUser(usuario: Usuario): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun insertUser(nombreUsuario: String, nombreCuadrilla: String): Boolean {
+        return try {
+            httpClient.insertIntegrante(RemoteIntegrante(nombreUsuario, nombreCuadrilla))
+            integranteDao.insertIntegrante(Integrante(nombreUsuario, nombreCuadrilla))
+            true
+        }
+        catch (_:Exception){
+            false
+        }
     }
 
     override suspend fun eliminarIntegrante(cuadrilla: Cuadrilla, username: String): Boolean {
@@ -94,6 +109,7 @@ class CuadrillaRepository @Inject constructor(
             integranteDao.eliminarIntegrante(Integrante(username,cuadrilla.nombre))
             val integrantesCuadrilla = integranteDao.getIntegrantesCuadrilla(cuadrilla.nombre)
 
+            // Si la cuadrilla se queda vacía, se borra
             if (integrantesCuadrilla.first().isEmpty()){
                 httpClient.deleteCuadrilla(cuadrilla.nombre)
                 cuadrillaDao.eliminarCuadrilla(cuadrilla)
@@ -130,4 +146,21 @@ class CuadrillaRepository @Inject constructor(
             false
         }
     }
+
+    override fun getCuadrillaAccessToken(nombre: String): String {
+        return httpClient.getCuadrillaAccessToken(nombre)
+    }
+
+    override suspend fun descargarCuadrillas(){
+        cuadrillaDao.eliminarCuadrillas()
+        val cuadrillaList = httpClient.getCuadrillas()
+        cuadrillaList.map { cuadrillaDao.insertCuadrilla(remotecuadrillaToCuadrilla(it)) }
+    }
+
+    override suspend fun descargarIntegrantes(){
+        integranteDao.eliminarIntegrantes()
+        val integrantesList = httpClient.getIntegrantes()
+        integrantesList.map { integranteDao.insertIntegrante(remoteIntegranteToIntegrante(it)) }
+    }
+
 }

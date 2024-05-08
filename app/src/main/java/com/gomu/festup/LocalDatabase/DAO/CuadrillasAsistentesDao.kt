@@ -34,4 +34,8 @@ interface CuadrillasAsistentesDao {
 
     @Delete
     suspend fun deleteAsistente(asistente: CuadrillasAsistentes)
+
+    @Transaction
+    @Query("DELETE FROM CuadrillasAsistentes ")
+    suspend fun eliminarCuadrillasAsistentes()
 }

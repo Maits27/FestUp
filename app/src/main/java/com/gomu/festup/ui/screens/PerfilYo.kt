@@ -2,22 +2,18 @@ package com.gomu.festup.ui.screens
 
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,9 +22,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -41,29 +34,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
-import com.gomu.festup.ui.components.CuadrillaCard
+import com.gomu.festup.ui.components.cards.CuadrillaCard
 import com.gomu.festup.vm.MainVM
 
 
@@ -76,7 +64,13 @@ fun PerfilYo(
     mainVM: MainVM
 ) {
     var usuario = mainVM.currentUser.value!!
-    if (!yo) usuario = mainVM.usuarioMostrar.value!!
+
+    if (!yo) {
+        usuario = mainVM.usuarioMostrar.value!!
+        mainVM.alreadySiguiendo(usuario.username)
+    }
+
+    val alreadySiguiendo = mainVM.alreadySiguiendo
 
     val cuadrillas = mainVM.getCuadrillasUsuario(usuario).collectAsState(initial = emptyList())
 
@@ -98,7 +92,7 @@ fun PerfilYo(
                 edad = mainVM.calcularEdad(usuario),
                 yo)
         }
-        SeguidoresYSeguidos(yo, usuario, mainVM)
+        SeguidoresYSeguidos(yo, usuario, mainVM, navController, alreadySiguiendo)
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -112,8 +106,8 @@ fun PerfilYo(
         if (yo) {
             BotonesPerfil(
                 navController= navController,
-                mainNavController = mainNavController,
-                username = usuario.nombre)
+                mainNavController = mainNavController
+            )
         }
     }
 }
@@ -184,36 +178,18 @@ fun ListadoCuadrillas(
                 )
             )
         }
-
     }
 }
 
 
 @Composable
-fun EstasSeguro(show: Boolean, mensaje: String, onDismiss:()->Unit, onConfirm:() -> Unit){
-    if(show){
-        AlertDialog(
-            onDismissRequest = {},
-            dismissButton = {
-                TextButton(onClick = { onDismiss() }) {
-                    Text(text = "No")
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = { onConfirm() }) {
-                    Text(text = "Si")
-                }
-            },
-            title = {
-                Text(text = "¿Estás seguro?") },
-            text = {
-                Text(text = mensaje)
-            }
-        )
-    }
-}
-@Composable
-fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM){
+fun SeguidoresYSeguidos(
+    yo: Boolean,
+    usuario: Usuario,
+    mainVM: MainVM,
+    navController: NavController,
+    alreadySiguiendo: MutableState<Boolean?>
+){
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -230,7 +206,7 @@ fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM){
         ){
             Text(text = "Seguidores")
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/0") },
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .background(
@@ -254,7 +230,7 @@ fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM){
         ){
             Text(text = "Seguidos")
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/1") },
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .background(
@@ -280,22 +256,46 @@ fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM){
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                     .align(Alignment.Bottom)
             ){
-                TextButton(
-                    onClick = { /*TODO*/ },
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                ) {
-                    Text(
-                        text = "Follow",
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
+                if (alreadySiguiendo.value != null) {
+                    if (!alreadySiguiendo.value!!) {
+
+                        TextButton(
+                            onClick = { mainVM.newSiguiendo(usuario.username); mainVM.subscribeToUser(mainVM.usuarioMostrar.value!!.username) },
+                            modifier = Modifier
+                                .padding(vertical = 16.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                        ) {
+                            Text(
+                                text = "Follow",
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                    }
+                    else {
+                        TextButton(
+                            onClick = { mainVM.unfollow(usuario.username); mainVM.unsubscribeFromUser(mainVM.usuarioMostrar.value!!.username)  },
+                            modifier = Modifier
+                                .padding(vertical = 16.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                        ) {
+                            Text(
+                                text = "Unfollow",
+                                style = TextStyle(
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -303,13 +303,16 @@ fun SeguidoresYSeguidos(yo: Boolean, usuario: Usuario, mainVM: MainVM){
 }
 
 @Composable
-fun BotonesPerfil(mainNavController: NavController, navController: NavController, username: String){
+fun BotonesPerfil(
+    mainNavController: NavController,
+    navController: NavController
+){
     Row (
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ){
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(AppScreens.Ajustes.route) },
             modifier = Modifier.weight(1f)
         ) {
             Icon(
@@ -317,7 +320,7 @@ fun BotonesPerfil(mainNavController: NavController, navController: NavController
                 contentDescription = "Settings")
         }
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate(AppScreens.EditPerfil.route) },
             modifier = Modifier.weight(1f)
         ) {
             Icon(
@@ -369,7 +372,7 @@ fun TopProfile(
                 onError = {
                     imageUri = Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")
                 },
-                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                placeholder = painterResource(id = R.drawable.no_user),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)

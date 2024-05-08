@@ -19,11 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.gomu.festup.LocalDatabase.Entities.Evento
-import com.gomu.festup.ui.components.EventoCard
+import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.vm.MainVM
-import java.util.Date
 
 
 @Composable
@@ -56,7 +58,7 @@ fun Feed(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Eventos",
+                    text = "Mis eventos",
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
@@ -66,7 +68,7 @@ fun Feed(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Seguidos",
+                    text = "Podría interesarte",
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
@@ -86,10 +88,22 @@ fun Feed(
 
 @Composable
 fun EventosList(eventos: List<Evento>, mainVM: MainVM, navController: NavController) {
-    LazyColumn {
-        items(eventos) { evento ->
-            EventoCard(evento = evento, mainVM, navController)
+    if (eventos.isNotEmpty()) {
+        LazyColumn {
+            items(eventos) { evento ->
+                EventoCard(evento = evento, mainVM, navController)
+            }
         }
+    }
+    else {
+        Text(
+            text = "No hay eventos",
+            modifier = Modifier.padding(top = 20.dp),
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        )
     }
 }
 

@@ -26,9 +26,9 @@ import androidx.navigation.NavController
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Usuario
-import com.gomu.festup.ui.components.CuadrillaCard
-import com.gomu.festup.ui.components.EventoCard
-import com.gomu.festup.ui.components.UsuarioCard
+import com.gomu.festup.ui.components.cards.CuadrillaCard
+import com.gomu.festup.ui.components.cards.EventoCard
+import com.gomu.festup.ui.components.cards.UsuarioCard
 import com.gomu.festup.vm.MainVM
 
 

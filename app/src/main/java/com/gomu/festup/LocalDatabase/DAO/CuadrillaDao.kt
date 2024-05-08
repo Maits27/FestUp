@@ -42,6 +42,9 @@ interface CuadrillaDao {
     @Query("SELECT * FROM Cuadrilla")
     fun getCuadrillas(): Flow<List<Cuadrilla>>
 
+    @Transaction
+    @Query("DELETE FROM Cuadrilla ")
+    suspend fun eliminarCuadrillas()
 
 
 

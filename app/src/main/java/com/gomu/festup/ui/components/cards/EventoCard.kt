@@ -1,4 +1,4 @@
-package com.gomu.festup.ui.components
+package com.gomu.festup.ui.components.cards
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -18,11 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.LocalDatabase.Entities.Evento
+import com.gomu.festup.R
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 
@@ -39,7 +41,7 @@ fun EventoCard(
     }
 
     var imageUri by remember {
-        mutableStateOf("http://34.16.74.167/cuadrillaProfileImages/${evento.id}.png")
+        mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
     }
 
     Card(
@@ -55,6 +57,7 @@ fun EventoCard(
             AsyncImage(
                 model = imageUri,
                 contentDescription = "cuadrillaImage",
+                placeholder = painterResource(id = R.drawable.no_image),
                 onError = {
                     imageUri = "http://34.16.74.167/eventoImages/no-image.png"
                 },

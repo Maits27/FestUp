@@ -1,10 +1,8 @@
 package com.gomu.festup.RemoteDatabase
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.util.Log
-import androidx.room.PrimaryKey
-import com.gomu.festup.utils.randomNum
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
@@ -19,12 +17,13 @@ import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import java.io.ByteArrayOutputStream
-import java.util.Date
-import java.util.UUID
+import java.io.IOException
 
 
 import javax.inject.Inject
@@ -35,7 +34,14 @@ class AuthenticationException : Exception()
 
 
 @Serializable
-data class AuthUser(
+data class RemoteUsuario(
+    val username: String,
+    val email: String,
+    val nombre: String,
+    val fechaNacimiento: String
+)
+@Serializable
+data class RemoteAuthUsuario(
     val username: String,
     val password: String,
     val email: String,
@@ -59,8 +65,8 @@ data class RemoteUsuarioAsistente(
 
 @Serializable
 data class RemoteCuadrillaAsistente(
-    val nombreCuadrilla: String,
-    val idEvento: String
+    val nombre: String,
+    val id: String
 )
 
 @Serializable
@@ -76,6 +82,8 @@ data class RemoteSeguidor(
 )
 
 
+
+
 @Serializable
 data class RemoteEvento(
     val id: String,
@@ -84,6 +92,13 @@ data class RemoteEvento(
     val numeroAsistentes: Int,
     val descripcion: String,
     val localizacion: String
+)
+
+
+@Serializable
+data class RemoteMessage(
+    val title: String,
+    val body: String
 )
 
 private val bearerTokenStorage = mutableListOf<BearerTokens>()
@@ -134,11 +149,32 @@ class AuthClient @Inject constructor() {
     }
 
     @Throws(UserExistsException::class)
-    suspend fun createUser(user: AuthUser) {
+    suspend fun createUser(user: RemoteAuthUsuario) {
         httpClient.post("http://34.16.74.167/createUser") {
             contentType(ContentType.Application.Json)
             setBody(user)
         }
+    }
+
+    suspend fun setUserProfile(username: String, image: Bitmap) {
+        val stream = ByteArrayOutputStream()
+        image.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        val byteArray = stream.toByteArray()
+        Log.d("Image", "size: " + byteArray.size.toString())
+        httpClient.submitFormWithBinaryData(
+            url = "http://34.16.74.167/setUserProfileImage",
+            formData = formData {
+                append("image", byteArray, Headers.build {
+                    append(HttpHeaders.ContentType, "image/png")
+                    append(HttpHeaders.ContentDisposition, "filename=$username.png")
+                })
+            }
+        ) { method = HttpMethod.Put }
+    }
+    @Throws(IOException::class)
+    suspend fun getUsuarios(): List<RemoteUsuario> = runBlocking {
+        val response = httpClient.get("http://34.16.74.167/getUsers")
+        response.body()
     }
 }
 
@@ -178,15 +214,23 @@ class HTTPClient @Inject constructor() {
     }
 
     // ---------------------------  USER ------------------------------
-    suspend fun getUsuarios(): List<AuthUser> = runBlocking {
-        val response = httpClient.get("http:/34.16.74.167/getUsers")
+    @Throws(IOException::class)
+    suspend fun getUsuarios(): List<RemoteUsuario> = runBlocking {
+        val response = httpClient.get("http://34.16.74.167/getUsers")
         response.body()
     }
 
-    fun getUsuario(username: String): AuthUser = runBlocking {
+    fun getUsuario(username: String): RemoteUsuario = runBlocking {
         Log.d("USUARIO", "get")
-        val response = httpClient.get("http:/34.16.74.167/getUser?username=$username")
+        val response = httpClient.get("http://34.16.74.167/getUser?username=$username")
         response.body()
+    }
+
+    fun editUser(usuario: RemoteUsuario) = runBlocking {
+        httpClient.post("http://34.16.74.167/editUser") {
+            contentType(ContentType.Application.Json)
+            setBody(usuario)
+        }
     }
 
     // ---------------------------  USUARIO ASISTENTE ------------------------------
@@ -230,7 +274,7 @@ class HTTPClient @Inject constructor() {
         }
     }
 
-    suspend fun getCuadrillaAccessToken(nombre: String): String = runBlocking {
+    fun getCuadrillaAccessToken(nombre: String): String = runBlocking {
         val response = httpClient.get("http://34.16.74.167/getCuadrillaAccessToken?nombre=$nombre")
         response.body()
     }
@@ -241,6 +285,7 @@ class HTTPClient @Inject constructor() {
     suspend fun getCuadrillasAsistentes(): List<RemoteCuadrillaAsistente> = runBlocking {
         val response = httpClient.get("http://34.16.74.167/getCuadrillasAsistentes")
         response.body()
+
     }
     suspend fun insertCuadrillaAsistente(cuadrillaAsistente: RemoteCuadrillaAsistente) = runBlocking {
         httpClient.post("http://34.16.74.167/insertCuadrillaAsistente") {
@@ -262,11 +307,12 @@ class HTTPClient @Inject constructor() {
         val response = httpClient.get("http://34.16.74.167/getEventos")
         response.body()
     }
-    suspend fun insertEvento(evento: RemoteEvento) = runBlocking {
-        httpClient.post("http://34.16.74.167/insertEvento") {
+    suspend fun insertEvento(evento: RemoteEvento) : RemoteEvento = runBlocking {
+        val response = httpClient.post("http://34.16.74.167/insertEvento") {
             contentType(ContentType.Application.Json)
             setBody(evento)
         }
+        response.body()
     }
     suspend fun deleteEvento(eventoId: Int) = runBlocking {
         httpClient.post("http://34.16.74.167/deleteEvento") {
@@ -321,31 +367,31 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  NOTIFICACIONES ------------------------------
     suspend fun subscribeUser(FCMClientToken: String) {
-        httpClient.post("http://34.16.74.167") {
+        httpClient.post("http://34.16.74.167/notifications/subscribe") {
             contentType(ContentType.Application.Json)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
     }
-
-    // ---------------------------  IMAGEN DE PERFIL ------------------------------
-
-
-    suspend fun setUserProfile(username: String, image: Bitmap) {
-        val stream = ByteArrayOutputStream()
-        image.compress(Bitmap.CompressFormat.PNG, 100, stream)
-        val byteArray = stream.toByteArray()
-        Log.d("Image", byteArray.size.toString())
-        httpClient.submitFormWithBinaryData(
-            url = "http://34.16.74.167/userProfileImages",
-            formData = formData {
-                append("image", byteArray, Headers.build {
-                    append(HttpHeaders.ContentType, "image/png")
-                    append(HttpHeaders.ContentDisposition, "filename=$username.png")
-                })
-            }
-        ) { method = HttpMethod.Put }
+    suspend fun subscribeToUser(FCMClientToken: String, username: String) {
+        httpClient.post("http://34.16.74.167/notifications/subscribeToUser") {
+            contentType(ContentType.Application.Json)
+            parameter("username", username)
+            setBody(mapOf("fcm_client_token" to FCMClientToken))
+        }
     }
 
+
+    suspend fun unsubscribeFromUser(FCMClientToken: String, username: String) {
+        httpClient.delete("http://34.16.74.167/notifications/unsubscribeFromUser") {
+            contentType(ContentType.Application.Json)
+            parameter("username", username)
+            setBody(mapOf("fcm_client_token" to FCMClientToken))
+        }
+    }
+
+
+
+    // ---------------------------  IMAGEN DE PERFIL ------------------------------
 
     suspend fun setCuadrillaImage(nombre: String, image: Bitmap) {
         val stream = ByteArrayOutputStream()
@@ -363,19 +409,20 @@ class HTTPClient @Inject constructor() {
         ) { method = HttpMethod.Put }
     }
 
-    suspend fun setEventoProfile(id: String, image: Bitmap) {
+    suspend fun setEventoProfileImage(id: String, image: Bitmap) {
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
         httpClient.submitFormWithBinaryData(
-            url = "http://34.16.74.167:8000/eventoImages/${id}",
+            url = "http://34.16.74.167/insertEventoImage",
             formData = formData {
-                append("file", byteArray, Headers.build {
+                append("image", byteArray, Headers.build {
                     append(HttpHeaders.ContentType, "image/png")
-                    append(HttpHeaders.ContentDisposition, "filename=profile_image.png")
+                    append(HttpHeaders.ContentDisposition, "filename=$id.png")
                 })
             }
         ) { method = HttpMethod.Put }
     }
+
 
 }

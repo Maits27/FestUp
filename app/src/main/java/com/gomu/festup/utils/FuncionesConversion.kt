@@ -2,6 +2,21 @@ package com.gomu.festup.utils
 
 import android.content.Context
 import android.location.Geocoder
+import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
+import com.gomu.festup.LocalDatabase.Entities.CuadrillasAsistentes
+import com.gomu.festup.LocalDatabase.Entities.Evento
+import com.gomu.festup.LocalDatabase.Entities.Integrante
+import com.gomu.festup.LocalDatabase.Entities.Seguidores
+import com.gomu.festup.LocalDatabase.Entities.Usuario
+import com.gomu.festup.LocalDatabase.Entities.UsuariosAsistentes
+import com.gomu.festup.RemoteDatabase.RemoteCuadrilla
+import com.gomu.festup.RemoteDatabase.RemoteCuadrillaAsistente
+import com.gomu.festup.RemoteDatabase.RemoteEvento
+import com.gomu.festup.RemoteDatabase.RemoteIntegrante
+import com.gomu.festup.RemoteDatabase.RemoteSeguidor
+import com.gomu.festup.RemoteDatabase.RemoteUsuario
+import com.gomu.festup.RemoteDatabase.RemoteUsuarioAsistente
+import com.google.android.gms.maps.model.LatLng
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
@@ -55,7 +70,7 @@ fun Date.toStringRemoto(): String{
 }
 
 
-fun getLatLngFromAddress(context: Context, mAddress: String): Pair<Double, Double>? {
+fun getLatLngFromAddress(context: Context, mAddress: String): LatLng? {
     val coder = Geocoder(context)
     try {
         val addressList = coder.getFromLocationName(mAddress, 1)
@@ -63,9 +78,67 @@ fun getLatLngFromAddress(context: Context, mAddress: String): Pair<Double, Doubl
             return null
         }
         val location = addressList[0]
-        return Pair(location.latitude, location.longitude)
+        return LatLng(location.latitude, location.longitude)
     } catch (e: Exception) {
         e.printStackTrace()
         return null
     }
+}
+
+
+fun remoteUsuarioToUsuario(remoteUsuario: RemoteUsuario): Usuario{
+    return Usuario(
+        remoteUsuario.username,
+        remoteUsuario.email,
+        remoteUsuario.nombre,
+        remoteUsuario.fechaNacimiento.formatearFecha()
+    )
+}
+
+fun remotecuadrillaToCuadrilla(remoteCuadrilla: RemoteCuadrilla): Cuadrilla{
+    return Cuadrilla(
+        remoteCuadrilla.nombre,
+        remoteCuadrilla.descripcion,
+        remoteCuadrilla.lugar
+    )
+}
+
+
+fun remoteEventoToEvento(remoteEvento: RemoteEvento): Evento{
+    return Evento(
+        remoteEvento.id,
+        remoteEvento.nombre,
+        remoteEvento.fecha.formatearFecha(),
+        remoteEvento.numeroAsistentes,
+        remoteEvento.descripcion,
+        remoteEvento.localizacion
+    )
+}
+
+fun remoteUAsistenteToUAsistente(remoteUAsistente: RemoteUsuarioAsistente): UsuariosAsistentes{
+    return UsuariosAsistentes(
+        remoteUAsistente.username,
+        remoteUAsistente.idEvento
+    )
+}
+
+fun remoteCAsistenteToCAsistente(remoteCAsistente: RemoteCuadrillaAsistente): CuadrillasAsistentes{
+    return CuadrillasAsistentes(
+        remoteCAsistente.nombre,
+        remoteCAsistente.id
+    )
+}
+
+fun remoteIntegranteToIntegrante(remoteIntegrante: RemoteIntegrante): Integrante{
+    return Integrante(
+        remoteIntegrante.username,
+        remoteIntegrante.nombre
+    )
+}
+
+fun remoteSeguidorToSeguidor(remoteSeguidor: RemoteSeguidor): Seguidores{
+    return Seguidores(
+        remoteSeguidor.seguidor,
+        remoteSeguidor.seguido
+    )
 }

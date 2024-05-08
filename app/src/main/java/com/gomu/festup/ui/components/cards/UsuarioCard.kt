@@ -1,4 +1,4 @@
-package com.gomu.festup.ui.components
+package com.gomu.festup.ui.components.cards
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +40,12 @@ fun UsuarioCard(
 
     val onCardClick: (Usuario) -> Unit = {
         mainVM.usuarioMostrar.value = usuario
-        navController.navigate(AppScreens.PerfilUser.route)
+        if (mainVM.currentUser.value== mainVM.usuarioMostrar.value){
+            navController.navigate(AppScreens.PerfilYo.route)
+        }
+        else{
+            navController.navigate(AppScreens.PerfilUser.route)
+        }
     }
 
     var imageUri by remember {
@@ -64,9 +69,9 @@ fun UsuarioCard(
                 model = imageUri,
                 contentDescription = "User image",
                 onError = {
-                    imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-user.png"
+                    imageUri = "http://34.16.74.167/userProfileImages/no-user.png"
                 },
-                placeholder = painterResource(id = R.drawable.party),
+                placeholder = painterResource(id = R.drawable.no_user),
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
@@ -118,7 +123,7 @@ fun UsuarioCardParaEventosAlert(
                 onError = {
                     imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-user.png"
                 },
-                placeholder = painterResource(id = R.drawable.party),
+                placeholder = painterResource(id = R.drawable.no_image),
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)

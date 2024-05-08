@@ -7,6 +7,8 @@ plugins {
     id("dagger.hilt.android.plugin")
     //id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
     kotlin("plugin.serialization")
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -77,6 +79,10 @@ dependencies {
 
      */
 
+    // Datastore Dependencies
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+
     // KTOR
     val ktor_version="2.2.2"
     implementation ("io.ktor:ktor-client-core:$ktor_version")
@@ -129,4 +135,12 @@ dependencies {
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation ("com.google.firebase:firebase-messaging-ktx:23.2.1")
+
+    // Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
 }

@@ -11,6 +11,7 @@ import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.CuadrillaWithUsuarios
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 @Dao
 interface UsuarioDao {
@@ -35,10 +36,16 @@ interface UsuarioDao {
 
     @Transaction
     @Query("SELECT * FROM Usuario WHERE username=:username")
-    fun getUsuario(username: String): Usuario?
+    fun getUsuario(username: String): Usuario
 
     @Update
     fun editarUsuario(usuario: Usuario): Int
+
+    @Transaction
+    @Query( "UPDATE Usuario " +
+            "SET nombre=:nombre, email=:email, fechaNacimiento=:fecha " +
+            "WHERE username=:ususername")
+    fun editarUsuario(ususername: String, email: String, nombre: String, fecha: Date)
 
     @Transaction
     @Query("SELECT * FROM Usuario WHERE username != :username")
@@ -46,6 +53,6 @@ interface UsuarioDao {
 
 
     @Transaction
-    @Query("SELECT * FROM Usuario WHERE username=:username and password=:password")
-    fun verifyUser(username: String, password: String): Usuario
+    @Query("DELETE FROM Usuario ")
+    suspend fun eliminarUsuarios()
 }

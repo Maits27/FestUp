@@ -56,6 +56,7 @@ import coil.compose.AsyncImage
 import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
+import com.gomu.festup.utils.localUriToBitmap
 import com.gomu.festup.vm.MainVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -188,17 +189,8 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                     // Crear cuadrilla
                     CoroutineScope(Dispatchers.IO).launch {
                         var imageBitmap: Bitmap? = null
-                        if (imageUri != null) {
-                            val contentResolver: ContentResolver = context.contentResolver
-                            val source = ImageDecoder.createSource(contentResolver, imageUri!!)
-                            imageBitmap = ImageDecoder.decodeBitmap(source)
-                        }
-                        /*
-                        * For older versions:
-                        * val bitmap = context.contentResolver.openInputStream(uri)?.use { stream ->
-                            Bitmap.createBitmap(BitmapFactory.decodeStream(stream))
-                        * }
-                        }*/
+                        if (imageUri != null) context.localUriToBitmap(imageUri!!)
+
                         val insertCorrecto = withContext(Dispatchers.IO) {
                             mainVM.crearCuadrilla(
                                 cuadrilla = Cuadrilla(

@@ -6,11 +6,13 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.utils.formatearFecha
+import com.gomu.festup.utils.localUriToBitmap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -23,28 +25,36 @@ class IdentVM @Inject constructor(
 
 
     @RequiresApi(Build.VERSION_CODES.P)
-    suspend fun registrarUsuario(context: Context, username: String, password:String, email: String, nombre: String, fechaNacimiento: String, uri: Uri?): Usuario? {
+    suspend fun registrarUsuario(
+        context: Context,
+        username: String,
+        password:String,
+        email: String,
+        nombre: String,
+        fechaNacimiento: String,
+        uri: Uri?
+    ): Usuario? {
         try{
             val fechaNacimientoDate = fechaNacimiento.formatearFecha()
-            val newUser = Usuario(username,password,email,nombre,fechaNacimientoDate)
-            val signInCorrect = userRepository.insertUsuario(newUser)
+            val newUser = Usuario(username,email,nombre,fechaNacimientoDate)
+            val signInCorrect = userRepository.insertUsuario(newUser,password)
             if (signInCorrect){
-                var imageBitmap: Bitmap? = null
-                if (uri != null) {
-                    val contentResolver: ContentResolver = context.contentResolver
-                    val source = ImageDecoder.createSource(contentResolver, uri)
-                    imageBitmap = ImageDecoder.decodeBitmap(source)
+                if (uri != null && uri != Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")) {
+                    val imageBitmap = context.localUriToBitmap(uri)
+                    Log.d("Sign up", "Setting user image")
                     userRepository.setUserProfile(username, imageBitmap)
+                    Log.d("Sign up", "User image sended to server")
                 }
             }
-
+            Log.d("Sign up", "Sign up correct $signInCorrect")
             return if (signInCorrect) newUser else null
         }catch (e:Exception){
+            Log.d("Excepcion al registrar usuario", e.toString())
             throw Exception("Excepcion al registrar usuario", e)
         }
     }
 
-    suspend fun inicarSesion(username: String, password:String): Boolean {
+    suspend fun iniciarSesion(username: String, password:String): Boolean {
         return userRepository.verifyUser(username, password)
     }
 }
