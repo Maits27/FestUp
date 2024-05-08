@@ -339,7 +339,18 @@ class MainVM @Inject constructor(
             alreadySiguiendo.value = false
         }
     }
-
+    fun suscribirASeguidos(usuariosLista: List<Usuario>, usuario: Usuario = currentUser.value!!){
+        usuariosLista.map { usuarioLista ->
+            Log.d("SUSCRIBE FROM",usuarioLista.username)
+            subscribeToUser(usuarioLista.username)
+        }
+    }
+    fun unSuscribeASeguidos(usuariosLista: List<Usuario>, usuario: Usuario = currentUser.value!!){
+        usuariosLista.map { usuarioLista ->
+            Log.d("UNSUSCRIBE FROM",usuarioLista.username)
+            unsubscribeFromUser(usuarioLista.username)
+        }
+    }
     fun subscribeUser() {
         val fcm = FirebaseMessaging.getInstance()
         // Eliminar el token FCM actual

@@ -6,6 +6,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,6 +26,7 @@ fun SwitchTik(
     checked: Boolean,
     modifier: Modifier = Modifier
 ){
+    var seguidos = mainVM.listaSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
     var checkedSwitch by remember { mutableStateOf(checked) }
 
     Switch(
@@ -35,8 +37,10 @@ fun SwitchTik(
             preferencesVM.changeReceiveNotifications()
             if (checkedSwitch){
                 mainVM.subscribeUser()
+                mainVM.suscribirASeguidos(seguidos.value)
             }else{
                 mainVM.unSubscribeUser()
+                mainVM.unSuscribeASeguidos(seguidos.value)
                 Log.d("UNSUSCRIBE", "DONE")
             }
         },
