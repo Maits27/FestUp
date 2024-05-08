@@ -56,6 +56,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.gomu.festup.R
+import com.gomu.festup.alarmMng.AlarmItem
+import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.getLatLngFromAddress
@@ -74,6 +76,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 
@@ -87,6 +92,8 @@ fun AddEvento(
     mainVM: MainVM
 ) {
     val coroutineScope = rememberCoroutineScope()
+
+    val scheduler = AndroidAlarmScheduler(LocalContext.current)
 
     var eventName by remember {
         mutableStateOf("")
@@ -162,21 +169,34 @@ fun AddEvento(
             }*/
 
             CoroutineScope(Dispatchers.IO).launch {
+                val newEvento = Evento(
+                    id = "",
+                    nombre = eventName,
+                    fecha = fechaEvento,
+                    descripcion = description,
+                    localizacion = location,
+                    numeroAsistentes = 1
+                )
                 val insertCorrecto = withContext(Dispatchers.IO) {
                     var imageBitmap: Bitmap? = null
                     if (imageUri != null) imageBitmap = context.localUriToBitmap(imageUri!!)
-                    mainVM.insertarEvento(Evento(
-                        id = "",
-                        nombre = eventName,
-                        fecha = fechaEvento,
-                        descripcion = description,
-                        localizacion = location,
-                        numeroAsistentes = 1
-                    ),
-                        image = imageBitmap)
+                    mainVM.insertarEvento(newEvento, imageBitmap)
                 }
                 if (insertCorrecto) {
                     withContext(Dispatchers.Main) {
+
+                        val date = LocalDateTime.ofInstant(
+                            Instant.ofEpochMilli(datePickerState.selectedDateMillis!!),
+                            ZoneId.systemDefault()
+                        ).toLocalDate()
+
+                        val scheduleTime = LocalDateTime.of(date.year,
+                            date.month,
+                            date.minusDays(1).dayOfMonth,
+                            LocalDateTime.now().hour,
+                            LocalDateTime.now().minute + 1
+                        )
+                        scheduler.schedule(AlarmItem(scheduleTime, newEvento.nombre, newEvento.localizacion, newEvento.id))
                         navController.popBackStack()
                     }
                 } else {

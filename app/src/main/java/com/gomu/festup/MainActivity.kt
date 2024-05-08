@@ -3,6 +3,7 @@ package com.gomu.festup
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -39,18 +40,17 @@ class MainActivity : ComponentActivity() {
     private val identVM by viewModels<IdentVM>()
     private val preferencesVM by viewModels<PreferencesViewModel>()
 
+    // Set a CHANNEL_ID
+    companion object{
+        const val CHANNEL_ID = "FestUpNotifChannel"
+    }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        //askLocationPermission()
+        createNotificationChannel()
 
         super.onCreate(savedInstanceState)
-
-        val notificationChannel = NotificationChannel(MyNotificationChannels.NOTIFICATIONS_CHANNEL.name, "canal de notificaciones", NotificationManager.IMPORTANCE_LOW)
-        notificationChannel.description = "descripcion canal notificaciones"
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(notificationChannel)
 
         setContent {
             FestUpTheme {
@@ -61,31 +61,20 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-            } else {
-            }
+    // Function to create a local notification channel
+    private fun createNotificationChannel() {
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "FestUpNotificationChannel",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Canal de notificaciones para FestUp"
         }
-
-    fun askLocationPermission() {
-        when {
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                // You can use the API that requires the permission.
-            }
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                this, Manifest.permission.ACCESS_FINE_LOCATION) -> {
-            }
-            else -> {
-                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-        }
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
+
 
     @OptIn(ExperimentalPermissionsApi::class)
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
