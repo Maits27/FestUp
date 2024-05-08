@@ -4,10 +4,12 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,9 +18,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -35,23 +39,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
+import com.gomu.festup.LocalDatabase.Entities.Seguidores
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
-import com.gomu.festup.ui.components.cards.CuadrillaCard
+import com.gomu.festup.ui.components.cards.CuadrillaMiniCard
+import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.vm.MainVM
 
 
@@ -76,26 +86,33 @@ fun PerfilYo(
     val cuadrillas = mainVM.getCuadrillasUsuario(usuario).collectAsState(initial = emptyList())
 
     Column (
-        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primaryContainer)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             TopProfile(
                 mainVM = mainVM,
-                username = usuario.username,
-                email = usuario.email,
                 edad = mainVM.calcularEdad(usuario),
-                yo)
+                yo = yo,
+                recibirNotificaciones = recibirNotificaciones,
+                alreadySiguiendo = alreadySiguiendo,
+                usuario = usuario,
+                navController = navController
+            )
         }
-        SeguidoresYSeguidos(yo, recibirNotificaciones, usuario, mainVM, navController, alreadySiguiendo)
         Column(
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .clip(RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp))
+                .background(MaterialTheme.colorScheme.background)
         ) {
             ListadoCuadrillas(
                 cuadrillas = cuadrillas.value,
@@ -103,6 +120,7 @@ fun PerfilYo(
                 navController = navController,
                 mainVM = mainVM
             )
+            EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
         }
         if (yo) {
             BotonesPerfil(
@@ -147,17 +165,14 @@ fun ListadoCuadrillas(
         }
     }
     if (cuadrillas.isNotEmpty()) {
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        LazyRow(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             items(cuadrillas) {
-                CuadrillaCard(
+                CuadrillaMiniCard(
                     cuadrilla = it,
                     mainVM = mainVM,
-                    navController = navController,
-                    isRemoveAvailable = yo
+                    navController = navController
                 )
             }
         }
@@ -182,6 +197,32 @@ fun ListadoCuadrillas(
     }
 }
 
+@Composable
+fun EventosUsuario(
+    mainVM: MainVM,
+    usuario: Usuario,
+    navController: NavController
+) {
+    val eventos = mainVM.eventosUsuario(usuario).collectAsState(initial = emptyList())
+
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Text(
+            text = "Eventos",
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        )
+        LazyColumn {
+            items(eventos.value) { evento ->
+                EventoCard(evento = evento, mainVM = mainVM, navController = navController)
+            }
+        }
+    }
+}
+
 
 @Composable
 fun SeguidoresYSeguidos(
@@ -192,118 +233,85 @@ fun SeguidoresYSeguidos(
     navController: NavController,
     alreadySiguiendo: MutableState<Boolean?>
 ){
-    Row (
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ){
-        val seguidores = mainVM.listaSeguidores(usuario).collectAsState(initial = emptyList())
-        val seguidos = mainVM.listaSeguidos(usuario).collectAsState(initial = emptyList())
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(top = 16.dp, end = 16.dp)
-        ){
-            Text(text = "Seguidores")
-            TextButton(
-                onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/0") },
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(10.dp)
-                    )
-            ) {
-                Text(
-                    text = seguidores.value.size.toString(),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
-        }
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
-        ){
-            Text(text = "Seguidos")
-            TextButton(
-                onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/1") },
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(10.dp)
-                    )
-            ) {
-                Text(
-                    text = seguidos.value.size.toString(),
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
+    val seguidores = mainVM.listaSeguidores(usuario).collectAsState(initial = emptyList())
+    val seguidos = mainVM.listaSeguidos(usuario).collectAsState(initial = emptyList())
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Seguidores(navController = navController, seguidores = seguidores)
+            Seguidos(navController = navController, seguidos = seguidos)
         }
         if(!yo){
-            Spacer(modifier = Modifier.weight(1f))
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom,
-                modifier = Modifier
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                    .align(Alignment.Bottom)
-            ){
-                if (alreadySiguiendo.value != null) {
-                    if (!alreadySiguiendo.value!!) {
+            FollowButton(
+                alreadySiguiendo = alreadySiguiendo,
+                mainVM = mainVM,
+                recibirNotificaciones = recibirNotificaciones,
+                usuario = usuario
+            )
+        }
+    }
+}
 
-                        TextButton(
-                            onClick = {
-                                mainVM.newSiguiendo(usuario.username)
-                                if(recibirNotificaciones){
-                                    mainVM.subscribeToUser(mainVM.usuarioMostrar.value!!.username)
-                                }},
-                            modifier = Modifier
-                                .padding(vertical = 16.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.primaryContainer,
-                                    shape = RoundedCornerShape(10.dp)
-                                )
-                        ) {
-                            Text(
-                                text = "Follow",
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                        }
-                    }
-                    else {
-                        TextButton(
-                            onClick = { mainVM.unfollow(usuario.username); mainVM.unsubscribeFromUser(mainVM.usuarioMostrar.value!!.username)  },
-                            modifier = Modifier
-                                .padding(vertical = 16.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.primaryContainer,
-                                    shape = RoundedCornerShape(10.dp)
-                                )
-                        ) {
-                            Text(
-                                text = "Unfollow",
-                                style = TextStyle(
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            )
-                        }
-                    }
-                }
-            }
+@Composable
+fun Seguidores(navController: NavController, seguidores: State<List<Usuario>>) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.padding(top = 16.dp, end = 16.dp)
+    ) {
+        Text(text = "Seguidores")
+        TextButton(
+            onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/0") },
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    shape = RoundedCornerShape(10.dp)
+                )
+        ) {
+            Text(
+                text = seguidores.value.size.toString(),
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.padding(top = 16.dp, start = 16.dp)
+    ) {
+        Text(text = "Seguidos")
+        TextButton(
+            onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/1") },
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    shape = RoundedCornerShape(10.dp)
+                )
+        ) {
+            Text(
+                text = seguidos.value.size.toString(),
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            )
         }
     }
 }
@@ -315,7 +323,8 @@ fun BotonesPerfil(
 ){
     Row (
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ){
         IconButton(
             onClick = { navController.navigate(AppScreens.Ajustes.route) },
@@ -346,18 +355,21 @@ fun BotonesPerfil(
         }
     }
 }
+
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun TopProfile(
     mainVM: MainVM,
-    username: String,
-    email: String,
+    usuario: Usuario,
+    navController: NavController,
+    alreadySiguiendo: MutableState<Boolean?>,
+    recibirNotificaciones: Boolean,
     edad: Int,
     yo: Boolean
 ){
     val context = LocalContext.current
     var imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/$username.png"))
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
     }
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
@@ -366,8 +378,50 @@ fun TopProfile(
         Log.d("IMAGEN", "0")
         if (uri!=null) {
             imageUri = uri
-            mainVM.updateUserImage(context, username, uri)
+            mainVM.updateUserImage(context, usuario.username, uri)
         }
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            ProfileImage(username = usuario.username, yo = yo, singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+            Text(
+                text = usuario.nombre,
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = "$edad años",
+                modifier = Modifier.padding(5.dp),
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center
+            )
+        }
+        SeguidoresYSeguidos(
+            yo = yo,
+            recibirNotificaciones = recibirNotificaciones,
+            usuario = usuario,
+            mainVM = mainVM,
+            navController = navController,
+            alreadySiguiendo = alreadySiguiendo
+        )
+    }
+}
+
+@Composable
+fun ProfileImage(
+    username: String,
+    yo: Boolean,
+    singlePhotoPickerLauncher: ActivityResultLauncher<PickVisualMediaRequest>,
+) {
+    var imageUri by remember {
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/$username.png"))
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {
@@ -414,27 +468,48 @@ fun TopProfile(
             }
         }
     }
-    Text(
-        text = username,
-        style = TextStyle(
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-    )
-    Text(
-        text = email,
-        modifier = Modifier.padding(5.dp),
-        style = TextStyle(
-            fontSize = 15.sp
-        )
-    )
-    Text(
-        text = "$edad años",
-        modifier = Modifier.padding(5.dp),
-        style = TextStyle(
-            fontSize = 15.sp
-        )
-    )
+}
 
+@Composable
+fun FollowButton(
+    alreadySiguiendo: MutableState<Boolean?>,
+    mainVM: MainVM,
+    recibirNotificaciones: Boolean,
+    usuario: Usuario
+) {
+
+    val onClickFollow: () -> Unit = {
+        mainVM.newSiguiendo(usuario.username)
+        if(recibirNotificaciones){
+            mainVM.subscribeToUser(mainVM.usuarioMostrar.value!!.username)
+        }
+    }
+
+    val onClickUnfollow: () -> Unit = {
+        mainVM.unfollow(usuario.username)
+        mainVM.unsubscribeFromUser(mainVM.usuarioMostrar.value!!.username)
+    }
+
+    val buttonText = if (alreadySiguiendo.value != null && !alreadySiguiendo.value!!) "Follow" else "Unfollow"
+
+    val onClick = if (alreadySiguiendo.value != null && !alreadySiguiendo.value!!) onClickFollow else onClickUnfollow
+
+    TextButton(
+        onClick = { onClick() },
+        modifier = Modifier
+            .padding(vertical = 16.dp)
+            .background(
+                color = MaterialTheme.colorScheme.onPrimary,
+                shape = RoundedCornerShape(10.dp)
+            )
+    ) {
+        Text(
+            text = buttonText,
+            style = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            )
+        )
+    }
 }
 
