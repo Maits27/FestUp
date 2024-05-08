@@ -64,6 +64,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.glance.appwidget)
     // BBDD remotas
     /*
     implementation("io.ktor:ktor-client-core:2.0.0")
