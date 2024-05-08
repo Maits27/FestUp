@@ -16,6 +16,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -59,6 +61,7 @@ import com.gomu.festup.R
 import com.gomu.festup.alarmMng.AlarmItem
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.utils.addEventOnCalendar
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.getLatLngFromAddress
 import com.gomu.festup.utils.localUriToBitmap
@@ -91,9 +94,10 @@ fun AddEvento(
     navController: NavController,
     mainVM: MainVM
 ) {
-    val coroutineScope = rememberCoroutineScope()
 
     val scheduler = AndroidAlarmScheduler(LocalContext.current)
+
+    var addOnCalendar by remember { mutableStateOf(false) }
 
     var eventName by remember {
         mutableStateOf("")
@@ -197,6 +201,14 @@ fun AddEvento(
                             LocalDateTime.now().minute + 1
                         )
                         scheduler.schedule(AlarmItem(scheduleTime, newEvento.nombre, newEvento.localizacion, newEvento.id))
+
+                        if( addOnCalendar ) {
+                            addEventOnCalendar(
+                                context,
+                                newEvento.nombre,
+                                datePickerState.selectedDateMillis!!
+                            )
+                        }
                         navController.popBackStack()
                     }
                 } else {
@@ -292,6 +304,17 @@ fun AddEvento(
                         .padding(18.dp)
                 )
             }
+        }
+        Row (
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Checkbox(
+                checked = addOnCalendar,
+                onCheckedChange = { addOnCalendar = it },
+            )
+            Text(text = "Añadir a calendario")
         }
         OutlinedTextField(
             value = description,

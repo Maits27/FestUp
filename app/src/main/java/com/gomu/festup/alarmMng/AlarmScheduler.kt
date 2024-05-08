@@ -18,7 +18,6 @@ data class AlarmItem(
     val eventId: String
 )
 
-
 interface AlarmScheduler {
     fun schedule(alarmItem: AlarmItem)
 
