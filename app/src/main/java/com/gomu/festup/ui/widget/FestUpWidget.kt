@@ -2,6 +2,7 @@ package com.gomu.festup.ui.widget
 
 import android.content.Context
 import android.content.res.Resources
+import android.util.Log
 import androidx.annotation.DimenRes
 import androidx.annotation.RestrictTo
 import androidx.compose.material.icons.Icons
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
@@ -55,6 +57,10 @@ data class EventoWidget(
     val numeroAsistentes: Int
 )
 
+val colorFondo = Color(0xFF534340)
+val textColor = Color(0xFFFFB4A6)
+val colorFondoCard = Color(0xFF442A25)
+
 class FestUpWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Single
     override val stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
@@ -65,6 +71,7 @@ class FestUpWidget : GlanceAppWidget() {
         // As we can only have basic types in DataStore, we need to use a string key for events
         // it will be encoded as a JSON to decode later on.
         val eventosKey = stringPreferencesKey("eventos")
+        val userIsLoggedIn = booleanPreferencesKey("loggedInUser")
     }
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
@@ -85,9 +92,8 @@ class FestUpWidget : GlanceAppWidget() {
         val eventosString: String? = prefs[eventosKey]
         val eventos: List<EventoWidget> = if (eventosString != null) Json.decodeFromString(eventosString)
                                           else emptyList()
+        val userIsLoggedIn = prefs[userIsLoggedIn] ?: false
 
-        val colorFondo = Color(0xFF534340)
-        val textColor = Color(0xFFFFB4A6)
 
         Column(
             modifier = GlanceModifier.fillMaxSize().background(colorFondo).padding(top = 10.dp)
@@ -112,32 +118,53 @@ class FestUpWidget : GlanceAppWidget() {
                     modifier = GlanceModifier.size(30.dp)
                 )
             }
-            LazyColumn(modifier = GlanceModifier.padding(15.dp)) {
-                item {
-                    EventoCard(evento = EventoWidget(nombre = "San Roque", fecha = "14-08-2024", numeroAsistentes = 1000)) // TODO de prueba
-                }
-                item {
-                    Spacer(modifier = GlanceModifier.padding(bottom = 10.dp))
-                }
-                item {
-                    EventoCard(evento = EventoWidget(nombre = "San Jorge", fecha = "23-04-2024", numeroAsistentes = 2000)) // TODO de prueba
-                    Spacer(modifier = GlanceModifier.padding(bottom = 10.dp))
-                }
-                eventos.forEach {
-                    item {
-                        EventoCard(it)
-                        Spacer(modifier = GlanceModifier.padding(bottom = 10.dp))
+            if (userIsLoggedIn) {
+                if (eventos.isNotEmpty()) {
+                    LazyColumn(modifier = GlanceModifier.padding(15.dp)) {
+                        item {
+                            EventoCard(evento = EventoWidget(nombre = "San Roque", fecha = "14-08-2024", numeroAsistentes = 1000)) // TODO de prueba
+                        }
+                        item {
+                            Spacer(modifier = GlanceModifier.padding(bottom = 10.dp))
+                        }
+                        item {
+                            EventoCard(evento = EventoWidget(nombre = "San Jorge", fecha = "23-04-2024", numeroAsistentes = 2000)) // TODO de prueba
+                            Spacer(modifier = GlanceModifier.padding(bottom = 10.dp))
+                        }
+                        eventos.forEach {
+                            item {
+                                EventoCard(it)
+                                Spacer(modifier = GlanceModifier.padding(bottom = 10.dp))
+                            }
+                        }
                     }
                 }
+                else {
+                    Text(
+                        text = "No tienes eventos en los próximos días",
+                        style = TextStyle(
+                            color = ColorProvider(textColor),
+                            textAlign = TextAlign.Center
+                        ),
+                        modifier = GlanceModifier.fillMaxSize().padding(vertical = 10.dp, horizontal = 50.dp)
+                    )
+                }
+            }
+            else {
+                Text(
+                    text = "Inicia sesión para poder ver los próximos eventos",
+                    style = TextStyle(
+                        color = ColorProvider(textColor),
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = GlanceModifier.fillMaxSize().padding(vertical = 10.dp, horizontal = 50.dp)
+                )
             }
         }
     }
 
     @Composable
     fun EventoCard(evento: EventoWidget) {
-        val colorFondoCard = Color(0xFF442A25)
-        val textColor = Color(0xFFFFB4A6)
-
         Row(
             modifier = GlanceModifier
                 .fillMaxWidth()

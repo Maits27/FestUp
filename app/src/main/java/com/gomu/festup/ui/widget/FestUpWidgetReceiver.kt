@@ -37,7 +37,7 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
     @Inject
     lateinit var eventoRepository: EventoRepository
 
-    private val currentUsername = "aingerubellido" // TODO conseguir el real del DataStore
+    private val currentUsername: String? = "aingerubellido" // TODO conseguir el real del DataStore
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
@@ -45,7 +45,8 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
 
         CoroutineScope(Dispatchers.IO).launch {
             // Get the list of events
-            val eventos = eventoRepository.eventosUsuarioForWidget(currentUsername)
+            lateinit var eventos: List<EventoWidget>
+            if (currentUsername != null) eventos = eventoRepository.eventosUsuarioForWidget(currentUsername)
             // Get the widget manager
             val manager = GlanceAppWidgetManager(context)
             // We get all the glace IDs that are a FestUpWidget (remember than we can have more
@@ -55,6 +56,8 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
             glanceIds.forEach { glanceId ->
                 updateAppWidgetState(context, glanceId) { prefs ->
                     prefs[FestUpWidget.eventosKey] = Json.encodeToString(eventos)
+                    if (currentUsername != null) prefs[FestUpWidget.userIsLoggedIn] = true
+                    else prefs[FestUpWidget.userIsLoggedIn] = false
                 }
                 // We update the widget
                 FestUpWidget().update(context, glanceId)
