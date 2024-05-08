@@ -6,6 +6,7 @@ import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Space
 import android.widget.Toast
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -50,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -276,21 +279,21 @@ fun AddEvento(
                     .size(25.dp)
             )
         }
+        OutlinedTextField(
+            value = eventName,
+            onValueChange = { eventName = it },
+            label = { Text(text = "Nombre") },
+            modifier = modifierForInputs
+        )
         Row(
             modifier = modifierForInputs.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedTextField(
-                value = eventName,
-                onValueChange = { eventName = it },
-                label = { Text(text = "Nombre") },
-                modifier = Modifier.weight(1f)
-            )
             Box (
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .padding(top = 8.dp, start = 15.dp)
+                    .padding(top = 8.dp)
                     .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
                     .clickable {
                         showDatePicker = true
@@ -304,17 +307,24 @@ fun AddEvento(
                         .padding(18.dp)
                 )
             }
-        }
-        Row (
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ){
-            Checkbox(
-                checked = addOnCalendar,
-                onCheckedChange = { addOnCalendar = it },
-            )
-            Text(text = "Añadir a calendario")
+            Spacer(modifier = Modifier.size(10.dp))
+            Column (
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ){
+                Icon(
+                    painter = painterResource(id = R.drawable.add_calendar),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.size(5.dp))
+                Checkbox(
+                    checked = addOnCalendar,
+                    onCheckedChange = { addOnCalendar = it },
+                    modifier = Modifier.scale(0.7f).size(18.dp)
+                )
+            }
+
         }
         OutlinedTextField(
             value = description,
