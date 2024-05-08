@@ -18,10 +18,13 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
@@ -48,11 +51,14 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import java.util.Date
 
 
@@ -62,7 +68,7 @@ fun EventsMap(
     mainVM: MainVM
 ) {
     val context = LocalContext.current
-    val eventos = mainVM.getEventos().collectAsState(initial = emptyList())
+
     var miLocalizacion = mainVM.localizacion.value
 
     // TODO: Si se usa elvis no funciona bien
@@ -75,15 +81,35 @@ fun EventsMap(
         }
     }
 
-    val locations by remember {
-        derivedStateOf {
-            eventos.value.map { evento ->
-                val location = getLatLngFromAddress(context, evento.localizacion)
+    var locations by remember { mutableStateOf<List<EventOnMap>?>(null) }
 
+    LaunchedEffect(Unit) {
+        val mappedLocations = withContext(Dispatchers.IO) {
+            val eventos = mainVM.getEventos().first()
+            eventos.mapNotNull { evento ->
+                val location = getLatLngFromAddress(context, evento.localizacion)
                 if (location != null) EventOnMap(evento, location)
                 else null
             }
         }
+        locations = mappedLocations
+        Log.d("locations", locations!!.size.toString())
+    }
+
+    val mapProperties by remember {
+        mutableStateOf(
+            MapProperties(isMyLocationEnabled = true)
+        )
+    }
+
+    val mapUiSettings by remember {
+        mutableStateOf(
+            MapUiSettings(
+                mapToolbarEnabled = false,
+                myLocationButtonEnabled = false,
+                zoomControlsEnabled = false
+            )
+        )
     }
 
     Box(
@@ -92,27 +118,26 @@ fun EventsMap(
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            properties = MapProperties(isMyLocationEnabled = true)
+            properties = mapProperties,
+            uiSettings =  mapUiSettings
         ) {
-            locations.forEach { location ->
-                if (location != null) {
-                    Marker(
-                        state = MarkerState(position = location.location),
-                        title = location.evento.nombre,
-                        icon = bitmapDescriptorFromVector(
-                            LocalContext.current,
-                            R.drawable.location,
-                            size = 120,
-                            alpha = 255,
-                            color = MaterialTheme.colorScheme.primary.toArgb()
-                        ),
-                        snippet = location.evento.fecha.toStringNuestro(),
-                        onInfoWindowClick = {
-                            mainVM.eventoMostrar.value = location.evento
-                            navController.navigate(AppScreens.Evento.route)
-                        }
-                    )
-                }
+            locations?.forEach { location ->
+                Marker(
+                    state = MarkerState(position = location.location),
+                    title = location.evento.nombre,
+                    icon = bitmapDescriptorFromVector(
+                        LocalContext.current,
+                        R.drawable.location,
+                        size = 120,
+                        alpha = 255,
+                        color = MaterialTheme.colorScheme.primary.toArgb()
+                    ),
+                    snippet = location.evento.fecha.toStringNuestro(),
+                    onInfoWindowClick = {
+                        mainVM.eventoMostrar.value = location.evento
+                        navController.navigate(AppScreens.Evento.route)
+                    }
+                )
             }
         }
 
