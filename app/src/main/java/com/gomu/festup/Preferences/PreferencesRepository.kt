@@ -86,7 +86,7 @@ class PreferencesRepository @Inject constructor(
      */
     override fun getReceiveNotifications(username: String): Flow<Boolean> =
         context.dataStore.data.map { preferences ->
-            preferences[PREFERENCE_NOTIFICATIONS(username)] ?: true
+            preferences[PREFERENCE_NOTIFICATIONS(username)] ?: false
         }
 
     override suspend fun changeReceiveNotifications(username: String) {

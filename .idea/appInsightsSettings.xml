@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.gomu.festup" />
+                  <option name="mobileSdkAppId" value="1:203411056524:android:01f802e71f23e9661498a9" />
+                  <option name="projectId" value="das2024-418411" />
+                  <option name="projectNumber" value="203411056524" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

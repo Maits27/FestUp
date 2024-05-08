@@ -61,6 +61,7 @@ fun PerfilYo(
     mainNavController: NavController,
     navController: NavController,
     yo: Boolean = false,
+    recibirNotificaciones: Boolean,
     mainVM: MainVM
 ) {
     var usuario = mainVM.currentUser.value!!
@@ -92,7 +93,7 @@ fun PerfilYo(
                 edad = mainVM.calcularEdad(usuario),
                 yo)
         }
-        SeguidoresYSeguidos(yo, usuario, mainVM, navController, alreadySiguiendo)
+        SeguidoresYSeguidos(yo, recibirNotificaciones, usuario, mainVM, navController, alreadySiguiendo)
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -185,6 +186,7 @@ fun ListadoCuadrillas(
 @Composable
 fun SeguidoresYSeguidos(
     yo: Boolean,
+    recibirNotificaciones: Boolean,
     usuario: Usuario,
     mainVM: MainVM,
     navController: NavController,
@@ -260,7 +262,11 @@ fun SeguidoresYSeguidos(
                     if (!alreadySiguiendo.value!!) {
 
                         TextButton(
-                            onClick = { mainVM.newSiguiendo(usuario.username); mainVM.subscribeToUser(mainVM.usuarioMostrar.value!!.username) },
+                            onClick = {
+                                mainVM.newSiguiendo(usuario.username)
+                                if(recibirNotificaciones){
+                                    mainVM.subscribeToUser(mainVM.usuarioMostrar.value!!.username)
+                                }},
                             modifier = Modifier
                                 .padding(vertical = 16.dp)
                                 .background(

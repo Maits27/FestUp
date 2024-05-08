@@ -372,6 +372,12 @@ class HTTPClient @Inject constructor() {
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
     }
+    suspend fun unSubscribeUser(FCMClientToken: String) {
+        httpClient.post("http://34.16.74.167/notifications/unsubscribe") {
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("fcm_client_token" to FCMClientToken))
+        }
+    }
     suspend fun subscribeToUser(FCMClientToken: String, username: String) {
         httpClient.post("http://34.16.74.167/notifications/subscribeToUser") {
             contentType(ContentType.Application.Json)

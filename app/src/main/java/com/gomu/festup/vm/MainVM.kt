@@ -339,7 +339,18 @@ class MainVM @Inject constructor(
             alreadySiguiendo.value = false
         }
     }
-
+    fun suscribirASeguidos(usuariosLista: List<Usuario>, usuario: Usuario = currentUser.value!!){
+        usuariosLista.map { usuarioLista ->
+            Log.d("SUSCRIBE FROM",usuarioLista.username)
+            subscribeToUser(usuarioLista.username)
+        }
+    }
+    fun unSuscribeASeguidos(usuariosLista: List<Usuario>, usuario: Usuario = currentUser.value!!){
+        usuariosLista.map { usuarioLista ->
+            Log.d("UNSUSCRIBE FROM",usuarioLista.username)
+            unsubscribeFromUser(usuarioLista.username)
+        }
+    }
     fun subscribeUser() {
         val fcm = FirebaseMessaging.getInstance()
         // Eliminar el token FCM actual
@@ -353,6 +364,28 @@ class MainVM @Inject constructor(
                     try{
                         userRepository.subscribeUser(task.result)
                         Log.d("FCM", "Usuario suscrito")
+                    }
+                    catch (e:Exception){
+                        Log.d("Exception", e.printStackTrace().toString())
+                    }
+
+                }
+            })
+        }
+    }
+    fun unSubscribeUser() {
+        val fcm = FirebaseMessaging.getInstance()
+        // Eliminar el token FCM actual
+        fcm.deleteToken().addOnSuccessListener {
+            // Obtener el nuevo token
+            fcm.token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    return@OnCompleteListener
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    try{
+                        userRepository.unSubscribeUser(task.result)
+                        Log.d("FCM", "Usuario desuscrito")
                     }
                     catch (e:Exception){
                         Log.d("Exception", e.printStackTrace().toString())
