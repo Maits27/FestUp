@@ -9,6 +9,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.CuadrillasAsistentes
+import com.gomu.festup.LocalDatabase.Entities.Evento
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -27,7 +28,11 @@ interface CuadrillasAsistentesDao {
     fun getCuadrillasAsistentesEvento(id: String): Flow<List<String>>
     @Transaction
     @Query("SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla=:name")
-    fun getEventosCuadrilla(name: String): Flow<List<String>>
+    fun getEventosIdCuadrilla(name: String): Flow<List<String>>
+
+    @Transaction
+    @Query("SELECT * FROM Evento WHERE id IN (SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla=:nombreCuadrilla)")
+    fun getEventosCuadrilla(nombreCuadrilla: String): Flow<List<Evento>>
 
     @Update
     fun editarCuadrillasAsistentes(asistente: CuadrillasAsistentes): Int

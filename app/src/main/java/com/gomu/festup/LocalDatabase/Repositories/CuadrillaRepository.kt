@@ -31,7 +31,6 @@ interface ICuadrillaRepository {
     suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla, image: Bitmap?): Boolean
     fun cuadrillaUsuario(username: String): List<Cuadrilla>
     fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>>
-    fun eventosCuadrilla(nombreCuadrilla: String): List<Evento>
     suspend fun insertUser(nombreUsuario: String, nombreCuadrilla: String): Boolean
 
     suspend fun eliminarIntegrante(cuadrilla: Cuadrilla, username: String): Boolean
@@ -86,10 +85,6 @@ class CuadrillaRepository @Inject constructor(
     override fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>> {
         // TODO primero remoto
         return cuadrillaDao.getUsuariosDeCuadrilla(nombre)
-    }
-
-    override fun eventosCuadrilla(nombreCuadrilla: String): List<Evento> {
-        TODO("Not yet implemented")
     }
 
     override suspend fun insertUser(nombreUsuario: String, nombreCuadrilla: String): Boolean {

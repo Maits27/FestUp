@@ -111,7 +111,7 @@ fun PerfilYo(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .clip(RoundedCornerShape(30.dp, 30.dp, 0.dp, 0.dp))
+                .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
                 .background(MaterialTheme.colorScheme.background)
         ) {
             ListadoCuadrillas(
@@ -368,19 +368,7 @@ fun TopProfile(
     yo: Boolean
 ){
     val context = LocalContext.current
-    var imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
-    }
 
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        Log.d("IMAGEN", "0")
-        if (uri!=null) {
-            imageUri = uri
-            mainVM.updateUserImage(context, usuario.username, uri)
-        }
-    }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -390,7 +378,7 @@ fun TopProfile(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfileImage(username = usuario.username, yo = yo, singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+            ProfileImage(usuario = usuario, yo = yo, mainVM = mainVM)
             Text(
                 text = usuario.nombre,
                 fontSize = 15.sp,
@@ -414,14 +402,27 @@ fun TopProfile(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun ProfileImage(
-    username: String,
+    usuario: Usuario,
+    mainVM: MainVM,
     yo: Boolean,
-    singlePhotoPickerLauncher: ActivityResultLauncher<PickVisualMediaRequest>,
 ) {
+    val context = LocalContext.current
+
     var imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/$username.png"))
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
+    }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        Log.d("IMAGEN", "0")
+        if (uri!=null) {
+            imageUri = uri
+            mainVM.updateUserImage(context, usuario.username, uri)
+        }
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {

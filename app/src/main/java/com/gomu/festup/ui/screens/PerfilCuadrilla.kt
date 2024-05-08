@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -15,14 +16,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -54,13 +60,16 @@ import com.gomu.festup.R
 import com.gomu.festup.vm.MainVM
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.IconButton
+import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
+import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.ui.components.cards.UsuarioCard
+import com.gomu.festup.ui.components.cards.UsuarioMiniCard
 import com.gomu.festup.utils.openWhatsApp
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -73,13 +82,8 @@ fun PerfilCuadrilla(
     val usuariosCuadrilla = mainVM.usuariosCuadrilla().collectAsState(initial = emptyList())
 
 
-    var integrante = mainVM.getIntegrante(cuadrilla, mainVM.currentUser.value!!).collectAsState(initial = emptyList())
-    Log.d("AAAAAA", integrante.value.isEmpty().toString())
-    var pertenezco = false
-    if (integrante.value.isNotEmpty()){
-        pertenezco=true
-    }
-
+    val integrante = mainVM.getIntegrante(cuadrilla, mainVM.currentUser.value!!).collectAsState(initial = emptyList())
+    val pertenezco = integrante.value.isNotEmpty()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -89,35 +93,35 @@ fun PerfilCuadrilla(
         floatingActionButtonPosition = FabPosition.Center
     ) { padding ->
         Column (
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize().padding(padding)
+                .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            ){
-                TopProfileCuadrilla(
-                    mainVM =  mainVM,
-                    cuadrilla = cuadrilla,
-                    numIntegrantes = usuariosCuadrilla.value.size,
-                    pertenezco = pertenezco
-                )
-            }
+            TopProfileCuadrilla(
+                mainVM =  mainVM,
+                cuadrilla = cuadrilla,
+                pertenezco = pertenezco
+            )
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
+                    .background(MaterialTheme.colorScheme.background)
             ) {
                 ListadoUsuarios(
                     usuarios = usuariosCuadrilla.value,
                     pertenezco,
                     mainVM,
-                    navController
+                    navController,
+                    numeroIntegrantes = usuariosCuadrilla.value.size
+                )
+                EventosCuadrilla(
+                    mainVM = mainVM,
+                    navController = navController,
+                    cuadrilla = cuadrilla
                 )
             }
-
         }
     }
 }
@@ -150,12 +154,51 @@ fun EliminarCuadrilla(cuadrilla: Cuadrilla, mainVM: MainVM) {
 fun TopProfileCuadrilla(
     mainVM: MainVM,
     cuadrilla: Cuadrilla,
-    numIntegrantes: Int,
     pertenezco: Boolean
 ){
+    Row (
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .fillMaxWidth()
+            .padding(bottom = 16.dp)
+    ) {
+        CuadrillaProfileImage(cuadrilla, pertenezco, mainVM)
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(15.dp),
+        ) {
+            Text(
+                text = cuadrilla.descripcion,
+                style = TextStyle(
+                    fontSize = 15.sp
+                ),
+                textAlign = TextAlign.Justify,
+                modifier = Modifier.padding(5.dp)
+            )
+            Row {
+                Icon(imageVector = Icons.Default.LocationOn, contentDescription = "Location")
+                Text(
+                    text = cuadrilla.lugar,
+                    modifier = Modifier.padding(5.dp),
+                    style = TextStyle(
+                        fontSize = 15.sp
+                    )
+                )
+            }
+        }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.P)
+@Composable
+fun CuadrillaProfileImage(
+    cuadrilla: Cuadrilla,
+    pertenezco: Boolean,
+    mainVM: MainVM
+) {
     val context = LocalContext.current
+
     var imageUri by remember {
-        // TODO esto tendrá que ser cuadrilla.profileImagePath
         mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"))
     }
 
@@ -202,36 +245,6 @@ fun TopProfileCuadrilla(
             }
         }
     }
-    Text(
-        text = cuadrilla.nombre,
-        style = TextStyle(
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-    )
-    Text(
-        text = cuadrilla.lugar,
-        modifier = Modifier.padding(5.dp),
-        style = TextStyle(
-            fontSize = 15.sp
-        )
-    )
-    Text(
-        text = "Integrantes: ${numIntegrantes}",
-        modifier = Modifier.padding(5.dp),
-        style = TextStyle(
-            fontSize = 15.sp
-        )
-    )
-    Text(
-        text = cuadrilla.descripcion,
-        style = TextStyle(
-            fontSize = 15.sp
-        ),
-        textAlign = TextAlign.Justify,
-        modifier = Modifier.padding(horizontal = 15.dp)
-    )
-
 }
 
 
@@ -317,7 +330,8 @@ fun ListadoUsuarios(
     usuarios: List<Usuario>,
     pertenezco: Boolean,
     mainVM: MainVM,
-    navController: NavController
+    navController: NavController,
+    numeroIntegrantes: Int
 ){
     var showShare by rememberSaveable { mutableStateOf(false) }
     var showJoin by rememberSaveable { mutableStateOf(false) }
@@ -329,7 +343,7 @@ fun ListadoUsuarios(
         modifier = Modifier.padding(16.dp)
     ){
         Text(
-            text = "Integrantes:",
+            text = "Integrantes: $numeroIntegrantes",
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -337,44 +351,24 @@ fun ListadoUsuarios(
             modifier = Modifier.weight(3f)
         )
         if (pertenezco){
-            Button(
-                modifier = Modifier
-                    .weight(1f),
-                onClick = {
-                    showShare = true
-                }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.send), "",
-                )
+            Button( modifier = Modifier.weight(1f), onClick = { showShare = true }) {
+                Icon(painter = painterResource(id = R.drawable.send), "")
             }
         }
         else{
-            Button(
-                modifier = Modifier
-                    .weight(1f),
-                onClick = {
-                    showJoin = true
-                }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.join), "",
-                )
+            Button( modifier = Modifier.weight(1f), onClick = { showJoin = true }) {
+                Icon(painter = painterResource(id = R.drawable.join), "")
             }
         }
     }
 
     if (usuarios.isNotEmpty()){
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
-            contentPadding = PaddingValues(bottom=80.dp),
+        LazyRow(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .fillMaxSize()
         ) {
             items(usuarios) {
-                UsuarioCard(usuario = it, mainVM = mainVM, navController = navController)
+                UsuarioMiniCard(usuario = it, mainVM = mainVM, navController = navController)
             }
         }
     }
@@ -400,5 +394,31 @@ fun ListadoUsuarios(
     Unirse( showJoin, token, mainVM.cuadrillaMostrar.value!!.nombre) {
         mainVM.agregarIntegrante(mainVM.currentUser.value!!.username, mainVM.cuadrillaMostrar.value!!.nombre)
         showJoin = false
+    }
+}
+
+@Composable
+fun EventosCuadrilla(
+    mainVM: MainVM,
+    navController: NavController,
+    cuadrilla: Cuadrilla
+) {
+    val eventos = mainVM.eventosCuadrilla(cuadrilla).collectAsState(initial = emptyList())
+
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Text(
+            text = "Eventos",
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        )
+        LazyColumn {
+            items(eventos.value) { evento ->
+                EventoCard(evento = evento, mainVM = mainVM, navController = navController)
+            }
+        }
     }
 }

@@ -46,6 +46,8 @@ interface IEventoRepository {
     suspend fun updateEvento(evento: Evento): Boolean
     suspend fun setEventoProfileImage(id: String, image: Bitmap): Boolean
 
+    fun eventosCuadrilla(nombreCuadrilla: String) : Flow<List<Evento>>
+
     suspend fun descargarEventos()
 
     suspend fun descargarUsuariosAsistentes()
@@ -161,6 +163,10 @@ class EventoRepository @Inject constructor(
 
     override fun usuariosEvento(id: String): Flow<List<Usuario>>{
         return eventoDao.getUsuariosDeEvento(id)
+    }
+
+    override fun eventosCuadrilla(nombreCuadrilla: String): Flow<List<Evento>> {
+        return cuadrillasAsistentesDao.getEventosCuadrilla(nombreCuadrilla)
     }
 
     override suspend fun updateEvento(evento: Evento): Boolean {

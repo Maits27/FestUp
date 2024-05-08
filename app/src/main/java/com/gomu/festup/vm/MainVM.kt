@@ -286,10 +286,10 @@ class MainVM @Inject constructor(
         return eventoRepository.eventosSeguidos(usuario.username)
     }
 
-
-    fun eventosCuadrilla(cuadrilla: Cuadrilla): Flow<List<Cuadrilla>> {
-        return eventoRepository.cuadrillasEvento(cuadrilla.nombre)
+    fun eventosCuadrilla(cuadrilla: Cuadrilla): Flow<List<Evento>> {
+        return eventoRepository.eventosCuadrilla(cuadrilla.nombre)
     }
+
 
     fun setEventoProfile(context: Context, uri: Uri?, id: String): Boolean = runBlocking {
         var ivImage = ImageView(context)
