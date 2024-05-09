@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -47,7 +48,6 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.R
 import com.gomu.festup.ui.components.dialogs.Apuntarse
 import com.gomu.festup.ui.components.cards.CuadrillaCard
-import com.gomu.festup.ui.components.dialogs.Desapuntarse
 import com.gomu.festup.ui.components.cards.UsuarioCard
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
@@ -165,7 +165,6 @@ fun Evento(
 fun DatosEvento(evento: Evento, edadMedia: Int, apuntado: Boolean, mainVM: MainVM) {
 
     var apuntarse by remember { mutableStateOf(false) }
-    var desapuntarse by remember { mutableStateOf(false) }
 
     Column (
         horizontalAlignment = Alignment.Start,
@@ -229,7 +228,6 @@ fun DatosEvento(evento: Evento, edadMedia: Int, apuntado: Boolean, mainVM: MainV
                 ) {
                     Text(
                         text = edadMedia.toString(),
-                        color = Color.White,
                         style = TextStyle(fontSize = 24.sp)
                     )
                 }
@@ -249,22 +247,7 @@ fun DatosEvento(evento: Evento, edadMedia: Int, apuntado: Boolean, mainVM: MainV
                     modifier = Modifier.size(8.dp)
                 )
             }
-            Button(
-                onClick = { desapuntarse = true },
-                shape = RoundedCornerShape(70),
-                modifier = Modifier
-                    .align(Alignment.Bottom)
-                    .padding(horizontal = 2.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.delete),
-                    contentDescription = null,
-                    modifier = Modifier.size(8.dp)
-                )
-            }
-
         }
     }
     Apuntarse(show = apuntarse, apuntado = apuntado,  mainVM = mainVM) { apuntarse = false }
-    Desapuntarse(show = desapuntarse , apuntado = apuntado, mainVM = mainVM) { desapuntarse = false }
 }

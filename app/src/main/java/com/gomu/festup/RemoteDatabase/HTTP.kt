@@ -138,7 +138,7 @@ class AuthClient @Inject constructor() {
     @Throws(AuthenticationException::class, Exception::class)
     suspend fun authenticate(username: String, password: String) {
         val tokenInfo: TokenInfo = httpClient.submitForm(
-            url = "http://34.16.74.167/iniciarSesion",
+            url = "http://34.16.74.167/auth/iniciarSesion",
             formParameters = Parameters.build {
                 append("grant_type", "password")
                 append("username", username)
@@ -198,7 +198,7 @@ class HTTPClient @Inject constructor() {
                 refreshTokens {
 
                     val refreshTokenInfo: TokenInfo = client.submitForm(
-                        url = "http://34.16.74.167/refresh",
+                        url = "http://34.16.74.167/auth/refresh",
                         formParameters = Parameters.build {
                             append("grant_type", "refresh_token")
                             append("refresh_token", oldTokens?.refreshToken ?: "")

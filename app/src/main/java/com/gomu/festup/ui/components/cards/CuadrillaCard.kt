@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.components.cards
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,10 +9,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +25,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -108,6 +115,8 @@ fun CuadrillaCard(
 @Composable
 fun CuadrillaCardParaEventosAlert(
     cuadrilla: Cuadrilla,
+    apuntado: Boolean,
+    mainVM: MainVM,
     onClick: () -> Unit,
 ) {
 
@@ -115,11 +124,12 @@ fun CuadrillaCardParaEventosAlert(
         mutableStateOf("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
     }
 
+    var checkedSwitch by remember { mutableStateOf(apuntado) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .clickable { onClick() }
+            .padding(2.dp)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -135,7 +145,7 @@ fun CuadrillaCardParaEventosAlert(
                 onError = {
                     imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png"
                 },
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier.size(50.dp).clip(CircleShape)
             )
             Column(
                 Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
@@ -143,7 +153,7 @@ fun CuadrillaCardParaEventosAlert(
                 Text(
                     text = cuadrilla.nombre,
                     fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleMedium
                 )
                 Text(
                     text = cuadrilla.lugar,
@@ -151,7 +161,30 @@ fun CuadrillaCardParaEventosAlert(
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
-
+            Switch(
+                modifier = Modifier.scale(0.7f),
+                checked = checkedSwitch,
+                onCheckedChange = {
+                    checkedSwitch = !checkedSwitch
+                    if (checkedSwitch){
+                        mainVM.apuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
+                    }
+                    else{
+                        mainVM.desapuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
+                    }
+                },
+                thumbContent = if (checkedSwitch) {
+                    {
+                        Icon(
+                            painter = painterResource(id = R.drawable.check),
+                            contentDescription = null,
+                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                        )
+                    }
+                } else {
+                    null
+                }
+            )
         }
     }
 }
