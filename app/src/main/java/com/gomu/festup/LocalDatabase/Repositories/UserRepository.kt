@@ -34,19 +34,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface IUserRepository: ILoginSettings {
-    fun logIn(email: String, login:Boolean): RemoteAuthUsuario?
-    suspend fun exists(username: String):Boolean
+
     suspend fun insertUsuario(user: Usuario, password: String): Boolean
-    fun todosLosUsuarios(): Flow<List<Usuario>>
     suspend fun verifyUser(username: String, passwd:String): Boolean
-    suspend fun editarUsuario(user: Usuario): Int
     fun getAQuienSigue(username: String): Flow<List<Usuario>>
     fun getSeguidores(username: String): Flow<List<Usuario>>
     fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>>
     suspend fun newSeguidor(currentUsername: String, username: String): Unit
     suspend fun alreadySiguiendo(currentUsername: String, username: String): Boolean
     suspend fun deleteSeguidores(currentUsername: String, usernameToUnfollow: String)
-    suspend fun getUserProfile(username: String): Bitmap
     suspend fun setUserProfile(username: String, image: Bitmap):Boolean
 
     fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>
@@ -96,10 +92,6 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override fun todosLosUsuarios(): Flow<List<Usuario>> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun verifyUser(username: String, password: String): Boolean {
         return try {
             //usuarioDao.verifyUser(username,password)
@@ -108,10 +100,6 @@ class UserRepository @Inject constructor(
         } catch (e: UserExistsException) {
             false
         }
-    }
-
-    override suspend fun editarUsuario(user: Usuario): Int {
-        TODO("Not yet implemented")
     }
 
     override fun getAQuienSigue(username: String): Flow<List<Usuario>> {
@@ -150,9 +138,6 @@ class UserRepository @Inject constructor(
         return usuarioDao.getCuadrillasUsuario(username)
     }
 
-    override suspend fun getUserProfile(username: String): Bitmap {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun setUserProfile(username: String, image: Bitmap): Boolean {
         return try {
@@ -170,20 +155,11 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun getLastLoggedUser(): String? {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun setLastLoggedUser(user: String) {
-        TODO("Not yet implemented")
-    }
-
     override fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>> {
         // TODO PRIMERO RECOGER DEL REMOTO Y LUEGO PONERLOS AQUI
         return usuarioDao.getUsuariosMenosCurrent(usuario.username)
     }
 
-    //TODO CONSULTA DE GET USUARIO (Falta el token?)
     override fun getUsuario(username: String): Usuario{
         return usuarioDao.getUsuario(username)
     }
@@ -191,7 +167,10 @@ class UserRepository @Inject constructor(
     override suspend fun descargarUsuarios(){
         usuarioDao.eliminarUsuarios()
         val userList = authClient.getUsuarios()
-        userList.map{usuarioDao.insertUsuario(remoteUsuarioToUsuario(it))}
+        userList.map{
+            Log.d("lista creada", it.username)
+            usuarioDao.insertUsuario(remoteUsuarioToUsuario(it))
+        }
     }
 
     override suspend fun descargarSeguidores(){

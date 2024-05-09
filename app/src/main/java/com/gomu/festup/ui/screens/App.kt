@@ -90,8 +90,8 @@ fun App(
 
             composable(AppScreens.AddCuadrilla.route) { AddCuadrilla(navController, mainVM) }
             composable(AppScreens.AddEvento.route) { AddEvento(navController, mainVM) }
-            composable(AppScreens.PerfilYo.route) { PerfilYo(mainNavController, navController, yo = true, receiveNotifications, mainVM = mainVM) }
-            composable(AppScreens.PerfilUser.route) { PerfilYo(mainNavController, navController, yo = false, receiveNotifications, mainVM = mainVM) }
+            composable(AppScreens.PerfilYo.route) { PerfilYo(mainNavController, navController, preferencesVM, yo = true, receiveNotifications, mainVM = mainVM) }
+            composable(AppScreens.PerfilUser.route) { PerfilYo(mainNavController, navController, preferencesVM, yo = false, receiveNotifications, mainVM = mainVM) }
             composable(AppScreens.PerfilCuadrilla.route) { PerfilCuadrilla(navController, mainVM = mainVM) }
             composable(
                 AppScreens.SeguidoresSeguidosList.route + "/{startPage}",

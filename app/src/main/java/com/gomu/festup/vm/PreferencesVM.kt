@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,6 +29,8 @@ class PreferencesViewModel @Inject constructor(
     private val _currentUser = MutableStateFlow("")
 
     val currentUser: Flow<String> = _currentUser
+
+    val lastLoggedUser: String = runBlocking { return@runBlocking loginRepository.getLastLoggedUser() }
 
     val currentSetLang by languageManager::currentLang
 

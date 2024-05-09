@@ -63,6 +63,7 @@ import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.cards.CuadrillaMiniCard
 import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.vm.MainVM
+import com.gomu.festup.vm.PreferencesViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -70,6 +71,7 @@ import com.gomu.festup.vm.MainVM
 fun PerfilYo(
     mainNavController: NavController,
     navController: NavController,
+    preferencesViewModel: PreferencesViewModel,
     yo: Boolean = false,
     recibirNotificaciones: Boolean,
     mainVM: MainVM
@@ -125,7 +127,8 @@ fun PerfilYo(
         if (yo) {
             BotonesPerfil(
                 navController= navController,
-                mainNavController = mainNavController
+                mainNavController = mainNavController,
+                preferencesViewModel = preferencesViewModel
             )
         }
     }
@@ -319,7 +322,8 @@ fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>) {
 @Composable
 fun BotonesPerfil(
     mainNavController: NavController,
-    navController: NavController
+    navController: NavController,
+    preferencesViewModel: PreferencesViewModel
 ){
     Row (
         verticalAlignment = Alignment.CenterVertically,
@@ -346,6 +350,7 @@ fun BotonesPerfil(
             onClick = {
                 navController.popBackStack()
                 mainNavController.popBackStack()
+                preferencesViewModel.changeUser("")
             },
             modifier = Modifier.weight(1f)
         ) {

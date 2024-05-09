@@ -81,10 +81,10 @@ class MainVM @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             try{
                 userRepository.descargarUsuarios()
-                serverOk.value = true
             }catch (e: Exception) {
                 Log.d("SERVER PETICION", e.toString())
             }
+            serverOk.value = true
         }
     }
 
