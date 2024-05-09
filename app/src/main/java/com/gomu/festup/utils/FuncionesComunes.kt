@@ -43,3 +43,14 @@ fun openWhatsApp(token: String, nombre: String, context: Context) {
     } catch (_: Exception) {
     }
 }
+
+fun openTelegram(token: String, nombre: String, context: Context) {
+    try {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, "El codigo para unirte a la cuadrilla $nombre es el siguiente: \n\n $token" )
+        intent.`package` = "org.telegram.messenger"
+        context.startActivity(intent)
+    } catch (_: Exception) {
+    }
+}

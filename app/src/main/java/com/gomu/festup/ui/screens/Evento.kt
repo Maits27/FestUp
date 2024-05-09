@@ -1,6 +1,8 @@
 package com.gomu.festup.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,16 +18,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,11 +37,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -48,10 +51,12 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.R
 import com.gomu.festup.ui.components.dialogs.Apuntarse
 import com.gomu.festup.ui.components.cards.CuadrillaCard
+import com.gomu.festup.ui.components.cards.CuadrillaCardParaEventosAlert
 import com.gomu.festup.ui.components.cards.UsuarioCard
+import com.gomu.festup.ui.components.cards.UsuarioCardParaEventosAlert
+import com.gomu.festup.utils.addEventOnCalendar
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
-import kotlinx.coroutines.flow.first
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,6 +69,11 @@ fun Evento(
     val users = mainVM.getUsuariosEvento(evento).collectAsState(initial = emptyList()).value
     val cuadrillas = mainVM.getCuadrillasEvento(evento).collectAsState(initial = emptyList()).value
     val apuntado = mainVM.estaApuntado(mainVM.currentUser.value!!, evento.id)
+
+    var apuntarse by remember { mutableStateOf(false) }
+    var showInfo by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     var imageUri by remember {
         mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
@@ -81,63 +91,95 @@ fun Evento(
                 .fillMaxWidth()
                 .padding(horizontal = 6.dp, vertical = 3.dp)
         ) {
-            Row (
+            Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(6.dp)
-            ){
-                AsyncImage(
-                    model = imageUri,
-                    contentDescription = "Event image",
-                    onError = {
-                        imageUri = "http://34.16.74.167/eventoImages/no-image.png"
-                    },
-                    placeholder = painterResource(id = R.drawable.no_image),
-                    modifier = Modifier
-                        .height(150.dp)
-                        .width(150.dp)
-                        .padding(start = 6.dp)
-                        .clip(RoundedCornerShape(35.dp))
-                        .align(Alignment.Top)
-                )
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(6.dp)
+                ) {
+                    AsyncImage(
+                        model = imageUri,
+                        contentDescription = "Event image",
+                        onError = {
+                            imageUri = "http://34.16.74.167/eventoImages/no-image.png"
+                        },
+                        placeholder = painterResource(id = R.drawable.no_image),
+                        modifier = Modifier
+                            .height(150.dp)
+                            .width(150.dp)
+                            .padding(start = 6.dp)
+                            .clip(RoundedCornerShape(35.dp))
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.padding(top = 12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .padding(vertical = 5.dp, horizontal = 5.dp)
+                                .clickable {
+                                    addEventOnCalendar(context, evento.nombre, evento.fecha.time + 86400000)
+                                    Toast.makeText(
+                                        context,
+                                        "Evento añadido al calendario correctamente",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.add_calendar),
+                                contentDescription = null,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .padding(vertical = 5.dp, horizontal = 5.dp)
+                                .clickable { showInfo = true }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.info),
+                                contentDescription = null,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.size(16.dp))
-                DatosEvento(evento, mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!), apuntado, mainVM)
+                DatosEvento(
+                    evento,
+                    mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!),
+                    numAsistentes
+                )
             }
         }
-        Row (
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp)
+        Button(
+            onClick = { apuntarse = true },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.info),
-                contentDescription = null
-            )
-            Text(
-                text = "Descripcion",
-                style = TextStyle(fontSize = 20.sp),
-                modifier = Modifier.padding(8.dp)
-            )
+            Text(text = "Apuntarse ")
         }
-        Text(
-            text = evento.descripcion,
-            style = TextStyle(fontSize = 16.sp),
-            modifier = Modifier
-                .padding(start = 16.dp, top = 8.dp)
-                .align(Alignment.Start)
-        )
-
-        Divider(modifier = Modifier.padding(10.dp))
-
         Row (
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "Asistentes: $numAsistentes",
+                text = "Asistentes: ",
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
@@ -159,12 +201,12 @@ fun Evento(
             }
         }
     }
+    Apuntarse(show = apuntarse, apuntado = apuntado,  mainVM = mainVM) { apuntarse = false }
+    ShowInfo(show = showInfo, evento = evento) { showInfo = false }
 }
 
 @Composable
-fun DatosEvento(evento: Evento, edadMedia: Int, apuntado: Boolean, mainVM: MainVM) {
-
-    var apuntarse by remember { mutableStateOf(false) }
+fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int) {
 
     Column (
         horizontalAlignment = Alignment.Start,
@@ -174,10 +216,17 @@ fun DatosEvento(evento: Evento, edadMedia: Int, apuntado: Boolean, mainVM: MainV
         Row (
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(vertical = 8.dp, horizontal = 16.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.calendar),
-                contentDescription = null
+                contentDescription = null,
+                modifier = Modifier.size(25.dp)
             )
             Text(
                 text = evento.fecha.toStringNuestro(),
@@ -186,25 +235,35 @@ fun DatosEvento(evento: Evento, edadMedia: Int, apuntado: Boolean, mainVM: MainV
                 modifier = Modifier.padding(8.dp)
             )
         }
+        Spacer(modifier = Modifier.size(10.dp))
         Row (
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.inverseOnSurface,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .fillMaxWidth()
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.location),
-                contentDescription = null
+                contentDescription = null,
+                modifier = Modifier.size(25.dp)
             )
             Text(
                 text = evento.localizacion,
                 style = TextStyle(fontSize = 16.sp),
                 maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(8.dp)
             )
         }
         Row (
-            horizontalArrangement = Arrangement.Start,
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -219,7 +278,7 @@ fun DatosEvento(evento: Evento, edadMedia: Int, apuntado: Boolean, mainVM: MainV
                 Box(
                     modifier = Modifier
                         .background(
-                            color = MaterialTheme.colorScheme.onSecondary,
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
                             shape = RoundedCornerShape(12.dp)
                         )
                         .padding(8.dp)
@@ -232,22 +291,54 @@ fun DatosEvento(evento: Evento, edadMedia: Int, apuntado: Boolean, mainVM: MainV
                     )
                 }
             }
-            Spacer(modifier = Modifier.size(5.dp))
-
-            Button(
-                onClick = { apuntarse = true },
-                shape = RoundedCornerShape(70),
-                modifier = Modifier
-                    .align(Alignment.Bottom)
-                    .padding(horizontal = 2.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.add),
-                    contentDescription = null,
-                    modifier = Modifier.size(8.dp)
+            Spacer(modifier = Modifier.size(16.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+                Text(
+                    text = "Asistentes",
+                    style = TextStyle(fontSize = 16.sp),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(8.dp)
+                        .wrapContentSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = numAsistentes.toString(),
+                        style = TextStyle(fontSize = 24.sp)
+                    )
+                }
             }
         }
     }
-    Apuntarse(show = apuntarse, apuntado = apuntado,  mainVM = mainVM) { apuntarse = false }
+}
+
+
+@Composable
+fun ShowInfo(show: Boolean, evento: Evento, onDismiss: () -> Unit){
+    if(show){
+        AlertDialog(
+            onDismissRequest = { onDismiss() },
+            confirmButton = {
+                TextButton(onClick = { onDismiss()}) {
+                    Text(text = "Cerrar")
+                }
+            },
+            title = {
+                Text(text = "Información de ${evento.nombre}")
+            },
+            text = {
+                Text(text = evento.descripcion)
+            }
+        )
+    }
 }

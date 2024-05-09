@@ -2,10 +2,8 @@ package com.gomu.festup.ui.screens
 
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -14,9 +12,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -60,7 +57,6 @@ import com.gomu.festup.R
 import com.gomu.festup.vm.MainVM
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -68,8 +64,8 @@ import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
 import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
-import com.gomu.festup.ui.components.cards.UsuarioCard
 import com.gomu.festup.ui.components.cards.UsuarioMiniCard
+import com.gomu.festup.utils.openTelegram
 import com.gomu.festup.utils.openWhatsApp
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -95,7 +91,8 @@ fun PerfilCuadrilla(
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxSize().padding(padding)
+                .fillMaxSize()
+                .padding(padding)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             TopProfileCuadrilla(
@@ -262,6 +259,7 @@ fun Compartir(show:Boolean, accessToken: String, nombreCuadrilla: String,  onCon
             text = {
                 Column {
                     Text(text = "Recuerda que cualquier persona con el codigo podra unirse")
+                    Spacer(modifier = Modifier.size(10.dp))
                     Row {
                         IconButton(onClick = { openWhatsApp(accessToken, nombreCuadrilla, context) }) {
                             Icon(
@@ -270,10 +268,11 @@ fun Compartir(show:Boolean, accessToken: String, nombreCuadrilla: String,  onCon
                                 modifier = Modifier.padding(5.dp)
                             )
                         }
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(onClick = { openTelegram(accessToken, nombreCuadrilla, context) }) {
                             Icon(
-                                painter = painterResource(id = R.drawable.message),
-                                contentDescription = null
+                                painter = painterResource(id = R.drawable.telegram),
+                                contentDescription = null,
+                                modifier = Modifier.padding(4.dp)
                             )
                         }
                     }
@@ -357,7 +356,7 @@ fun ListadoUsuarios(
         }
         else{
             Button( modifier = Modifier.weight(1f), onClick = { showJoin = true }) {
-                Icon(painter = painterResource(id = R.drawable.join), "")
+                Icon(painter = painterResource(id = R.drawable.add_calendar), "")
             }
         }
     }

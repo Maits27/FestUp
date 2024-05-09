@@ -22,7 +22,7 @@ fun Apuntarse(show: Boolean, apuntado: Boolean, mainVM: MainVM, onDismiss:() -> 
             onDismissRequest = { onDismiss() },
             confirmButton = {
                 TextButton(onClick = { onDismiss()}) {
-                    Text(text = "Salir")
+                    Text(text = "Cerrar")
                 }
             },
             title = {
