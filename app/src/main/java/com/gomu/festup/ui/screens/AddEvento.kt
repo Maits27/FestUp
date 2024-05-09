@@ -182,7 +182,6 @@ fun AddEvento(
                     fecha = fechaEvento,
                     descripcion = description,
                     localizacion = location,
-                    numeroAsistentes = 1
                 )
                 val insertCorrecto = withContext(Dispatchers.IO) {
                     var imageBitmap: Bitmap? = null

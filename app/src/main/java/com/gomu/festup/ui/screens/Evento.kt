@@ -51,6 +51,7 @@ import com.gomu.festup.ui.components.dialogs.Desapuntarse
 import com.gomu.festup.ui.components.cards.UsuarioCard
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
+import kotlinx.coroutines.flow.first
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +60,7 @@ fun Evento(
     mainVM: MainVM
 ) {
     val evento = mainVM.eventoMostrar.value!!
+    val numAsistentes = mainVM.numeroDeAsistentes(evento)
     val users = mainVM.getUsuariosEvento(evento).collectAsState(initial = emptyList()).value
     val cuadrillas = mainVM.getCuadrillasEvento(evento).collectAsState(initial = emptyList()).value
     val apuntado = mainVM.estaApuntado(mainVM.currentUser.value!!, evento.id)
@@ -128,10 +130,22 @@ fun Evento(
         )
 
         Divider(modifier = Modifier.padding(10.dp))
-        Text(
-            text = "Asistentes:",
-            style = TextStyle(fontSize = 17.sp)
-        )
+
+        Row (
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = "Asistentes: $numAsistentes",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.weight(3f)
+            )
+        }
+
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -220,32 +234,32 @@ fun DatosEvento(evento: Evento, edadMedia: Int, apuntado: Boolean, mainVM: MainV
                     )
                 }
             }
-            Spacer(modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.size(5.dp))
 
             Button(
                 onClick = { apuntarse = true },
                 shape = RoundedCornerShape(70),
                 modifier = Modifier
-                    .size(35.dp)
                     .align(Alignment.Bottom)
-                    .padding(horizontal = 1.dp)
+                    .padding(horizontal = 2.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.add),
                     contentDescription = null,
+                    modifier = Modifier.size(8.dp)
                 )
             }
             Button(
                 onClick = { desapuntarse = true },
                 shape = RoundedCornerShape(70),
                 modifier = Modifier
-                    .size(35.dp)
                     .align(Alignment.Bottom)
-                    .padding(horizontal = 1.dp)
+                    .padding(horizontal = 2.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.delete),
                     contentDescription = null,
+                    modifier = Modifier.size(8.dp)
                 )
             }
 

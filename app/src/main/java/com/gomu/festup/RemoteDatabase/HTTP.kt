@@ -89,7 +89,6 @@ data class RemoteEvento(
     val id: String,
     val nombre: String,
     val fecha: String,
-    val numeroAsistentes: Int,
     val descripcion: String,
     val localizacion: String
 )

@@ -47,4 +47,8 @@ interface IntegranteDao{
     @Transaction
     @Query("DELETE FROM Integrante ")
     suspend fun eliminarIntegrantes()
+
+    @Transaction
+    @Query("SELECT * FROM Integrante WHERE nombreCuadrilla IN (SELECT nombreCuadrilla FROM CuadrillasAsistentes WHERE idEvento = :idEvento)")
+    fun integrantesCuadrillasEvento(idEvento:String): Flow<List<Integrante>>
 }

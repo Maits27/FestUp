@@ -141,8 +141,12 @@ class MainVM @Inject constructor(
     }
     fun numeroDeAsistentes(evento: Evento): Int = runBlocking {
         val usuarios = getUsuariosEvento(evento).first()
-        val cuadrillas = getCuadrillasEvento(evento).first()
+        val cuadrillas = getIntegrantesCuadrillasEvento(evento).first()
         usuarios.size + cuadrillas.size
+    }
+
+    fun getIntegrantesCuadrillasEvento(evento: Evento): Flow<List<Integrante>>{
+        return cuadrillaRepository.integrantesCuadrillasEvento(evento.id)
     }
 
 

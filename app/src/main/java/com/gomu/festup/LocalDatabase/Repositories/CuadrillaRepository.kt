@@ -47,6 +47,8 @@ interface ICuadrillaRepository {
     suspend fun descargarCuadrillas()
 
     suspend fun descargarIntegrantes()
+
+    fun integrantesCuadrillasEvento(id: String): Flow<List<Integrante>>
 }
 @Singleton
 class CuadrillaRepository @Inject constructor(
@@ -156,6 +158,10 @@ class CuadrillaRepository @Inject constructor(
         integranteDao.eliminarIntegrantes()
         val integrantesList = httpClient.getIntegrantes()
         integrantesList.map { integranteDao.insertIntegrante(remoteIntegranteToIntegrante(it)) }
+    }
+
+    override fun integrantesCuadrillasEvento(id: String): Flow<List<Integrante>> {
+        return integranteDao.integrantesCuadrillasEvento(id)
     }
 
 }

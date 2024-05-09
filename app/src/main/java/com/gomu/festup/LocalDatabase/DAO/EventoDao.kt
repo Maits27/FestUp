@@ -87,4 +87,7 @@ interface EventoDao {
     fun getEventosSeguidos(username: String, today: Date = Date()): Flow<List<Evento>>
 
 
+
+
+
 }

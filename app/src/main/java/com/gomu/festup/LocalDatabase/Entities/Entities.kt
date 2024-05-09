@@ -32,7 +32,6 @@ data class Evento(
     @PrimaryKey val id: String,
     val nombre: String,
     val fecha: Date,
-    val numeroAsistentes: Int,
     val descripcion: String,
     val localizacion: String
 )

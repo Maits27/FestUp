@@ -24,6 +24,7 @@ import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.utils.toStringRemoto
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -53,6 +54,8 @@ interface IEventoRepository {
     suspend fun descargarUsuariosAsistentes()
 
     suspend fun descargarCuadrillasAsistentes()
+
+
 }
 @Singleton
 class EventoRepository @Inject constructor(
@@ -71,7 +74,6 @@ class EventoRepository @Inject constructor(
                 id = "", // TODO (evento.id) cambiar esto cuando se genere correctamente el id
                 nombre = evento.nombre,
                 fecha = fechaString,
-                numeroAsistentes = evento.numeroAsistentes,
                 descripcion = evento.descripcion,
                 localizacion = evento.localizacion)
             )
@@ -84,7 +86,6 @@ class EventoRepository @Inject constructor(
                 id = insertedEvento.id,
                 nombre = evento.nombre,
                 fecha = fechaString.formatearFechaRemoto(),
-                numeroAsistentes = evento.numeroAsistentes,
                 descripcion = evento.descripcion,
                 localizacion = evento.localizacion
             )
@@ -109,13 +110,15 @@ class EventoRepository @Inject constructor(
     }
 
     override fun eventosUsuarioForWidget(username: String): List<EventoWidget> {
+
         val eventosDB = eventoDao.eventosUsuarioList(username)
         return eventosDB.map{
             EventoWidget(nombre = it.nombre, fecha = it.fecha.toStringNuestro(),
-                numeroAsistentes = it.numeroAsistentes
+                numeroAsistentes = 1 //todo
             )
         }
     }
+
 
     override fun eventosSeguidos(username: String): Flow<List<Evento>> {
         return eventoDao.getEventosSeguidos(username)
@@ -160,6 +163,8 @@ class EventoRepository @Inject constructor(
     override fun cuadrillasEvento(id: String): Flow<List<Cuadrilla>> {
         return eventoDao.getCuadrillasDeEvento(id)
     }
+
+
 
     override fun usuariosEvento(id: String): Flow<List<Usuario>>{
         return eventoDao.getUsuariosDeEvento(id)

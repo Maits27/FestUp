@@ -109,7 +109,6 @@ fun remoteEventoToEvento(remoteEvento: RemoteEvento): Evento{
         remoteEvento.id,
         remoteEvento.nombre,
         remoteEvento.fecha.formatearFecha(),
-        remoteEvento.numeroAsistentes,
         remoteEvento.descripcion,
         remoteEvento.localizacion
     )
