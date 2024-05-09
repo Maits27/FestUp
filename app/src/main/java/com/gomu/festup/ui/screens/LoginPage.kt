@@ -81,15 +81,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
-@SuppressLint("UnrememberedMutableState")
+@SuppressLint("UnrememberedMutableState", "CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun LoginPage(
     mainNavController: NavController,
     mainVM: MainVM,
     identVM: IdentVM,
-    preferencesVM: PreferencesViewModel
+    preferencesVM: PreferencesViewModel,
+    lastLoggedUser: Usuario?
 ) {
+    if (lastLoggedUser!=null){
+        Log.d("Last logged user", lastLoggedUser?.toString()?:"Es null")
+    }
     Log.d("SERVER PETICION", "main")
     mainVM.descargarUsuarios()
     var selectedTab by remember {
@@ -132,17 +136,19 @@ fun LoginPage(
                 Text(text = "Registrarse", modifier = Modifier.padding(vertical = 15.dp))
             }
         }
-        if (selectedTab == 0) LoginForm(mainNavController, mainVM, identVM, preferencesVM)
+        if (selectedTab == 0) LoginForm(mainNavController, mainVM, identVM, preferencesVM, lastLoggedUser)
         else RegistroForm(mainNavController, mainVM, identVM, preferencesVM)
     }
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun LoginForm(
     mainNavController: NavController,
     mainVM: MainVM,
     identVM: IdentVM,
-    preferencesVM: PreferencesViewModel
+    preferencesVM: PreferencesViewModel,
+    lastLoggedUser: Usuario?
 ) {
     var username by remember {
         mutableStateOf("")
@@ -199,6 +205,8 @@ fun LoginForm(
         }
     }
 
+
+
     val modifierForInputs = Modifier.padding(vertical = 10.dp)
     var visiblePasswordLogIn by rememberSaveable{mutableStateOf(false)}
     Column (
@@ -252,6 +260,26 @@ fun LoginForm(
         else CircularProgressIndicator(modifier = Modifier
             .align(Alignment.End)
             .padding(end = 54.dp))
+    }
+
+    if(mainVM.serverOk.value && lastLoggedUser != null){
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+            Log.d("SERVER OK", mainVM.serverOk.value.toString())
+            Log.d("LASTLOGGED USER", lastLoggedUser.toString())
+            Log.d("", "cambio")
+
+            nuestroLocationProvider(context, mainVM)
+            mainVM.currentUser.value = lastLoggedUser
+            preferencesVM.changeUser(lastLoggedUser.username)
+            identVM.recuperarSesion(preferencesVM.lastBearerToken, preferencesVM.lastRefreshToken)
+
+            withContext(Dispatchers.Main) {
+                mainNavController.navigate(AppScreens.App.route)
+                showLoading = false
+            }
+        }
     }
 }
 

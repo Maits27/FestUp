@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,6 +30,10 @@ class PreferencesViewModel @Inject constructor(
 
     val currentUser: Flow<String> = _currentUser
 
+    val lastLoggedUser: String = runBlocking { return@runBlocking loginRepository.getLastLoggedUser() }
+    val lastBearerToken: String = runBlocking { return@runBlocking loginRepository.getLastBearerToken() }
+    val lastRefreshToken: String = runBlocking { return@runBlocking loginRepository.getLastRefreshToken() }
+
     val currentSetLang by languageManager::currentLang
 
     val idioma: (String)-> Flow<AppLanguage> = { preferencesRepository.language(it).map { AppLanguage.getFromCode(it) } }
@@ -36,7 +41,6 @@ class PreferencesViewModel @Inject constructor(
     val darkTheme: (String)-> Flow<Boolean> = { preferencesRepository.getThemePreference(it)}
 
     val receiveNotifications: (String)-> Flow<Boolean> = { preferencesRepository.getReceiveNotifications(it)}
-
 
     /*************************************************
      **                    Eventos                  **

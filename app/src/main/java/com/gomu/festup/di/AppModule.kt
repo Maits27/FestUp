@@ -73,10 +73,11 @@ object AppModule {
     fun providesUserRepository(
         usuarioDao: UsuarioDao,
         seguidoresDao: SeguidoresDao,
+        loginSettings: ILoginSettings,
         authClient: AuthClient,
         httpClient: HTTPClient
     ): IUserRepository = 
-        UserRepository(usuarioDao, seguidoresDao, authClient, httpClient)
+        UserRepository(usuarioDao, seguidoresDao, loginSettings, authClient, httpClient)
 
     @Singleton
     @Provides

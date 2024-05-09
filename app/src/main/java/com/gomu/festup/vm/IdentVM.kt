@@ -57,4 +57,7 @@ class IdentVM @Inject constructor(
     suspend fun iniciarSesion(username: String, password:String): Boolean {
         return userRepository.verifyUser(username, password)
     }
+    fun recuperarSesion(token: String, refresh: String){
+        userRepository.recuperarSesion(token, refresh)
+    }
 }

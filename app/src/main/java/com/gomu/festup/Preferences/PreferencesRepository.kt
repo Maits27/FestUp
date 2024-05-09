@@ -25,17 +25,35 @@ class PreferencesRepository @Inject constructor(
     private val context: Context,
 ) : IGeneralPreferences, ILoginSettings {
     val LAST_LOGGED_USER = stringPreferencesKey("last_logged_user")
+    val LAST_BEARER_TOKEN = stringPreferencesKey("last_bearer_token")
+    val LAST_REFRESH_TOKEN = stringPreferencesKey("last_refresh_token")
     fun PREFERENCE_LANGUAGE(username: String) = stringPreferencesKey("${username}_preference_lang")
     fun PREFERENCE_THEME_DARK(username: String) = booleanPreferencesKey("${username}_preference_theme")
     fun PREFERENCE_NOTIFICATIONS(username: String) = booleanPreferencesKey("${username}_preference_save")
 
 
-    override suspend fun getLastLoggedUser(): String? = context.dataStore.data.first()[LAST_LOGGED_USER]
+    override suspend fun getLastLoggedUser(): String = context.dataStore.data.first()[LAST_LOGGED_USER]?:""
 
     // Set the last logged user on DataStore Preferences
     override suspend fun setLastLoggedUser(user: String) {
         context.dataStore.edit { preferences ->
             preferences[LAST_LOGGED_USER] = user
+        }
+    }
+
+    override suspend fun getLastBearerToken(): String = context.dataStore.data.first()[LAST_BEARER_TOKEN]?:""
+
+    override suspend fun setLastBearerToken(token: String) {
+        context.dataStore.edit { preferences ->
+            preferences[LAST_BEARER_TOKEN] = token
+        }
+    }
+
+    override suspend fun getLastRefreshToken(): String = context.dataStore.data.first()[LAST_REFRESH_TOKEN]?:""
+
+    override suspend fun setLastRefreshToken(token: String) {
+        context.dataStore.edit { preferences ->
+            preferences[LAST_REFRESH_TOKEN] = token
         }
     }
 

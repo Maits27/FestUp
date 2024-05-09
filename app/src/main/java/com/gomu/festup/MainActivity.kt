@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.FestUpTheme
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.screens.App
 import com.gomu.festup.ui.screens.LoginPage
@@ -49,14 +51,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         createNotificationChannel()
-
         super.onCreate(savedInstanceState)
 
         setContent {
             FestUpTheme {
                 AskPermissions()
+                val lastLoggedUser = mainVM.actualizarCurrentUser(preferencesVM.lastLoggedUser)
                 // A surface container using the 'background' color from the theme
-                Principal(mainVM, identVM, preferencesVM)
+                Principal(mainVM, identVM, preferencesVM, lastLoggedUser)
             }
         }
     }
@@ -106,7 +108,13 @@ enum class NotificationID(val id: Int) {
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun Principal(mainVM: MainVM, identVM: IdentVM, preferencesViewModel: PreferencesViewModel) {
+fun Principal(
+    mainVM: MainVM,
+    identVM: IdentVM,
+    preferencesViewModel: PreferencesViewModel,
+    lastLoggedUser: Usuario?
+) {
+
     val mainNavController = rememberNavController()
     val dark by preferencesViewModel.darkTheme(mainVM.currentUser.value?.username?:"").collectAsState(initial = true)
 
@@ -115,7 +123,7 @@ fun Principal(mainVM: MainVM, identVM: IdentVM, preferencesViewModel: Preference
         startDestination = AppScreens.LoginPage.route
     ) {
         composable(AppScreens.LoginPage.route) {
-            LoginPage(mainNavController, mainVM, identVM, preferencesViewModel)
+            LoginPage(mainNavController, mainVM, identVM, preferencesViewModel, lastLoggedUser)
         }
         composable(AppScreens.App.route) {
             FestUpTheme(dark) {
