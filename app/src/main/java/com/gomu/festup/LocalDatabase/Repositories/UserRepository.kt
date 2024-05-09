@@ -66,14 +66,17 @@ interface IUserRepository: ILoginSettings {
 class UserRepository @Inject constructor(
     private val usuarioDao: UsuarioDao,
     private val seguidoresDao: SeguidoresDao,
+    private val loginSettings: ILoginSettings,
     private val authClient: AuthClient,
     private val httpClient: HTTPClient
 ) : IUserRepository {
-    override fun logIn(email: String, login: Boolean): RemoteAuthUsuario? {
+    override suspend fun getLastLoggedUser(): String = loginSettings.getLastLoggedUser()
+    override suspend fun setLastLoggedUser(user: String) = loginSettings.setLastLoggedUser(user)
+    override suspend fun getLastBearerToken(): String {
         TODO("Not yet implemented")
     }
 
-    override suspend fun exists(username: String): Boolean {
+    override suspend fun setLastBearerToken(token: String) {
         TODO("Not yet implemented")
     }
 
