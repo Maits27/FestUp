@@ -6,4 +6,7 @@ interface ILoginSettings {
 
     suspend fun getLastBearerToken(): String
     suspend fun setLastBearerToken(token: String)
+
+    suspend fun getLastRefreshToken(): String
+    suspend fun setLastRefreshToken(token: String)
 }

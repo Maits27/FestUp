@@ -37,6 +37,7 @@ interface IUserRepository: ILoginSettings {
 
     suspend fun insertUsuario(user: Usuario, password: String): Boolean
     suspend fun verifyUser(username: String, passwd:String): Boolean
+    fun recuperarSesion(token: String, refresh: String)
     fun getAQuienSigue(username: String): Flow<List<Usuario>>
     fun getSeguidores(username: String): Flow<List<Usuario>>
     fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>>
@@ -72,13 +73,10 @@ class UserRepository @Inject constructor(
 ) : IUserRepository {
     override suspend fun getLastLoggedUser(): String = loginSettings.getLastLoggedUser()
     override suspend fun setLastLoggedUser(user: String) = loginSettings.setLastLoggedUser(user)
-    override suspend fun getLastBearerToken(): String {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun setLastBearerToken(token: String) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getLastBearerToken(): String =loginSettings.getLastBearerToken()
+    override suspend fun setLastBearerToken(token: String) =loginSettings.setLastBearerToken(token)
+    override suspend fun getLastRefreshToken(): String = loginSettings.getLastRefreshToken()
+    override suspend fun setLastRefreshToken(token: String) = loginSettings.setLastRefreshToken(token)
 
     override suspend fun insertUsuario(usuario: Usuario, password: String): Boolean {
         return try {
@@ -103,6 +101,10 @@ class UserRepository @Inject constructor(
         } catch (e: UserExistsException) {
             false
         }
+    }
+
+    override fun recuperarSesion(token: String, refresh: String) {
+        authClient.addBearerToken(token, refresh)
     }
 
     override fun getAQuienSigue(username: String): Flow<List<Usuario>> {

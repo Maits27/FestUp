@@ -31,6 +31,8 @@ class PreferencesViewModel @Inject constructor(
     val currentUser: Flow<String> = _currentUser
 
     val lastLoggedUser: String = runBlocking { return@runBlocking loginRepository.getLastLoggedUser() }
+    val lastBearerToken: String = runBlocking { return@runBlocking loginRepository.getLastBearerToken() }
+    val lastRefreshToken: String = runBlocking { return@runBlocking loginRepository.getLastRefreshToken() }
 
     val currentSetLang by languageManager::currentLang
 
@@ -39,7 +41,6 @@ class PreferencesViewModel @Inject constructor(
     val darkTheme: (String)-> Flow<Boolean> = { preferencesRepository.getThemePreference(it)}
 
     val receiveNotifications: (String)-> Flow<Boolean> = { preferencesRepository.getReceiveNotifications(it)}
-
 
     /*************************************************
      **                    Eventos                  **

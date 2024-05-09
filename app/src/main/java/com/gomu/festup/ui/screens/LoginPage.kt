@@ -266,7 +266,6 @@ fun LoginForm(
 
         CoroutineScope(Dispatchers.IO).launch {
 
-
             Log.d("SERVER OK", mainVM.serverOk.value.toString())
             Log.d("LASTLOGGED USER", lastLoggedUser.toString())
             Log.d("", "cambio")
@@ -274,6 +273,7 @@ fun LoginForm(
             nuestroLocationProvider(context, mainVM)
             mainVM.currentUser.value = lastLoggedUser
             preferencesVM.changeUser(lastLoggedUser.username)
+            identVM.recuperarSesion(preferencesVM.lastBearerToken, preferencesVM.lastRefreshToken)
 
             withContext(Dispatchers.Main) {
                 mainNavController.navigate(AppScreens.App.route)

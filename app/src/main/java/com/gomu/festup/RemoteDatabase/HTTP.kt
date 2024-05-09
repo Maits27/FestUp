@@ -3,6 +3,7 @@ package com.gomu.festup.RemoteDatabase
 import android.graphics.Bitmap
 import android.util.Log
 import com.gomu.festup.LocalDatabase.Entities.Usuario
+import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
@@ -114,7 +115,7 @@ data class TokenInfo(
 
 
 @Singleton
-class AuthClient @Inject constructor() {
+class AuthClient @Inject constructor(private val loginSettings: ILoginSettings) {
     private val httpClient = HttpClient(CIO) {
 
         expectSuccess = true
@@ -146,6 +147,11 @@ class AuthClient @Inject constructor() {
                 append("password", password)
             }).body()
         bearerTokenStorage.add(BearerTokens(tokenInfo.accessToken, tokenInfo.refreshToken))
+        loginSettings.setLastBearerToken(tokenInfo.accessToken)
+        loginSettings.setLastRefreshToken(tokenInfo.refreshToken)
+    }
+    fun addBearerToken(token: String, refresh: String){
+        bearerTokenStorage.add(BearerTokens(token, refresh))
     }
 
     @Throws(UserExistsException::class)
