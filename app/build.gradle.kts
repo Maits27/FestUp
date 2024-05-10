@@ -15,6 +15,7 @@ android {
     namespace = "com.gomu.festup"
     compileSdk = 34
 
+
     defaultConfig {
         applicationId = "com.gomu.festup"
         minSdk = 26

@@ -10,6 +10,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.gomu.festup.R
 import com.gomu.festup.ui.components.cards.CuadrillaCardParaEventosAlert
 import com.gomu.festup.ui.components.cards.UsuarioCardParaEventosAlert
 import com.gomu.festup.vm.MainVM
@@ -28,7 +30,7 @@ fun Apuntarse(
             onDismissRequest = { onDismiss() },
             confirmButton = {
                 TextButton(onClick = { onDismiss()}) {
-                    Text(text = "Aceptar")
+                    Text(text = stringResource(id = R.string.aceptar))
                 }
             },
             title = {

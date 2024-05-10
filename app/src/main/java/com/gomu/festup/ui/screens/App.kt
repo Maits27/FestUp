@@ -47,7 +47,9 @@ fun App(
 ) {
     val navController = rememberNavController()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-
+    preferencesVM.restartLang(
+        preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
+            initial = preferencesVM.currentSetLang).value)
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {

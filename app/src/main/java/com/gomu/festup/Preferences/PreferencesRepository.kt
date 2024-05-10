@@ -3,6 +3,7 @@ package com.gomu.festup.Preferences
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -65,7 +66,7 @@ class PreferencesRepository @Inject constructor(
      */
     override fun language(username: String): Flow<String> =
         context.dataStore.data.map { preferences ->
-        preferences[PREFERENCE_LANGUAGE(username)] ?: "en"
+        preferences[PREFERENCE_LANGUAGE(username)] ?: "es"
 
     }
 

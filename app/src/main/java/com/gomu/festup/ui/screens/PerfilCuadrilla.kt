@@ -61,6 +61,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
 import com.gomu.festup.ui.components.EditImageIcon
@@ -278,7 +279,7 @@ fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String,  onDismis
             dismissButton = {
                 TextButton(onClick = { onDismiss() }
                 ) {
-                    Text(text = "Cancelar")
+                    Text(text = stringResource(id = R.string.cancel))
                 }
             },
             confirmButton = {

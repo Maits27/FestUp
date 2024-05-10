@@ -1,5 +1,6 @@
 package com.gomu.festup.vm
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
@@ -58,9 +59,13 @@ class PreferencesViewModel @Inject constructor(
 
     // Cambio del idioma de preferencia
     fun changeLang(i: AppLanguage) {
+        Log.d("IDIOMAS", "cambiando a: ${i.code}")
         languageManager.changeLang(i)
         viewModelScope.launch(Dispatchers.IO) {
             preferencesRepository.setLanguage(currentUser.first(), i.code)
+            Log.d("Usuario:", currentUser.first().toString())
+            Log.d("NUEVO IDIOMA", preferencesRepository.language(currentUser.first()).toString())
+
         }
     }
 
