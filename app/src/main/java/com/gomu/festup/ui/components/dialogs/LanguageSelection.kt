@@ -30,8 +30,8 @@ fun LanguageSelection(
         AlertDialog(
             onDismissRequest = {onDismiss()},
             confirmButton = {
-                TextButton(onClick = { onDismiss()}) {
-                    Text(text = "Cancelar")
+                TextButton(onClick = { onDismiss()}) {// TODO ESTE LO DEJARÍA SOLO CON UNA OPCION DE CANCELAR PARA QUE CAMBIE EL IDIOMA y ya
+                    Text(text = "Aceptar")
                 }
             },
             title = {
@@ -54,7 +54,6 @@ fun LanguageSelection(
                             selected = idioma.code == "es",
                             onClick = {
                                 preferencesVM.changeLang(AppLanguage.ES)
-                                onDismiss()
                             }
                         )
                         Text("Castellano")
@@ -64,7 +63,6 @@ fun LanguageSelection(
                             selected = idioma.code == "eu",
                             onClick = {
                                 preferencesVM.changeLang(AppLanguage.EU)
-                                onDismiss()
                             }
                         )
                         Text("Euskera")

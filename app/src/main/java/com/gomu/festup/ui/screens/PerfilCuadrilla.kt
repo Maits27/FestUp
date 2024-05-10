@@ -277,6 +277,12 @@ fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String,  onDismis
 
         AlertDialog(
             onDismissRequest = { onDismiss() },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }
+                ) {
+                    Text(text = "Cancelar")
+                }
+            },
             confirmButton = {
                 TextButton(onClick = {
                     if (input == accessToken){
