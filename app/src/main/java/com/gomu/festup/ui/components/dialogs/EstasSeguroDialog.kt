@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 fun EstasSeguroDialog(show: Boolean, mensaje: String, onDismiss:()->Unit, onConfirm:() -> Unit){
     if(show){
         AlertDialog(
-            onDismissRequest = {},
+            onDismissRequest = {onDismiss()},
             dismissButton = {
                 TextButton(onClick = { onDismiss() }) {
                     Text(text = "No")

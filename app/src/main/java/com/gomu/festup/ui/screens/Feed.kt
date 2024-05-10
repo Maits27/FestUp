@@ -37,8 +37,6 @@ fun Feed(
     val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
     val seguidos = mainVM.eventosSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
 
-    // Tab seleccionado al principio
-    var selectedTabIndex by remember { mutableStateOf(0) }
 
     Column (
         Modifier
@@ -49,12 +47,12 @@ fun Feed(
     )
     {
         TabRow(
-            selectedTabIndex
+            mainVM.selectedTabFeed.value
 
         ) {
             Tab(
-                selected = selectedTabIndex == 0,
-                onClick = { selectedTabIndex = 0 },
+                selected = mainVM.selectedTabFeed.value == 0,
+                onClick = { mainVM.selectedTabFeed.value = 0 },
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
@@ -63,8 +61,8 @@ fun Feed(
                 )
             }
             Tab(
-                selected = selectedTabIndex == 1,
-                onClick = { selectedTabIndex = 1 },
+                selected = mainVM.selectedTabFeed.value == 1,
+                onClick = { mainVM.selectedTabFeed.value = 1 },
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
@@ -74,7 +72,7 @@ fun Feed(
             }
         }
 
-        when (selectedTabIndex) {
+        when (mainVM.selectedTabFeed.value) {
             0 -> {
                 EventosList(eventos.value, mainVM, navController)
             }

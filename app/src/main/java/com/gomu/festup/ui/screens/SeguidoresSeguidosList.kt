@@ -53,8 +53,14 @@ fun SeguidoresSeguidosList(
                 Text(text = "Seguidos", modifier = Modifier.padding(vertical = 15.dp))
             }
         }
-        if (selectedTab == 0) SeguidoresOrSeguidos(usuarios = seguidores, mainVM = mainVM, navController = navController)
-        else SeguidoresOrSeguidos(usuarios = seguidos, mainVM = mainVM, navController = navController)
+        when (selectedTab) {
+            0 -> {
+                SeguidoresOrSeguidos(usuarios = seguidores, mainVM = mainVM, navController = navController)
+            }
+            1 -> {
+                SeguidoresOrSeguidos(usuarios = seguidos, mainVM = mainVM, navController = navController)
+            }
+        }
     }
 }
 
