@@ -10,9 +10,11 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gomu.festup.R
 import com.gomu.festup.data.AppLanguage
@@ -30,8 +32,8 @@ fun LanguageSelection(
         AlertDialog(
             onDismissRequest = {onDismiss()},
             confirmButton = {
-                TextButton(onClick = { onDismiss()}) {// TODO ESTE LO DEJARÍA SOLO CON UNA OPCION DE CANCELAR PARA QUE CAMBIE EL IDIOMA y ya
-                    Text(text = "Aceptar")
+                TextButton(onClick = { onDismiss()}) {
+                    Text(text = stringResource(id = R.string.aceptar))
                 }
             },
             title = {
@@ -53,7 +55,7 @@ fun LanguageSelection(
                         RadioButton(
                             selected = idioma.code == "es",
                             onClick = {
-                                preferencesVM.changeLang(AppLanguage.ES)
+                                preferencesVM.changeLang(AppLanguage.getFromCode("es"))
                             }
                         )
                         Text("Castellano")
@@ -62,7 +64,8 @@ fun LanguageSelection(
                         RadioButton(
                             selected = idioma.code == "eu",
                             onClick = {
-                                preferencesVM.changeLang(AppLanguage.EU)
+                                preferencesVM.changeLang(AppLanguage.getFromCode("eu"))
+                                preferencesVM.restartLang(AppLanguage.getFromCode("eu"))
                             }
                         )
                         Text("Euskera")

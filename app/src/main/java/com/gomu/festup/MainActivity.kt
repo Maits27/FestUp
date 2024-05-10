@@ -13,6 +13,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,7 +37,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val mainVM by viewModels<MainVM>()
     private val identVM by viewModels<IdentVM>()
@@ -57,6 +58,9 @@ class MainActivity : ComponentActivity() {
             FestUpTheme {
                 AskPermissions()
                 val lastLoggedUser = mainVM.actualizarCurrentUser(preferencesVM.lastLoggedUser)
+                preferencesVM.restartLang(
+                    preferencesVM.idioma("maitaneurruela").collectAsState(
+                        initial = preferencesVM.currentSetLang).value)
                 // A surface container using the 'background' color from the theme
                 Principal(mainVM, identVM, preferencesVM, lastLoggedUser)
             }

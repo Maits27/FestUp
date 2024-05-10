@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FestUp</string>
+    <string name="widget_desc">Datozen ekitaldiak</string>
+    <string name="aceptar">Onartu</string>
+    <string name="dark">Iluna</string>
+    <string name="light">Argia</string>
+    <string name="cancel">Utzi</string>
+    <string name="tema">Koloreak:</string>
+    <string name="sistema">Sistema:</string>
+    <string name="idioma">Hizkuntza</string>
+    <string name="visualizacion">Bistaratzea:</string>
+    <string name="notificaciones">Notifikazioak</string>
+    <string name="recibir">Jaso</string>
+    <string name="no_recibir">Ez jaso</string>
+</resources>
