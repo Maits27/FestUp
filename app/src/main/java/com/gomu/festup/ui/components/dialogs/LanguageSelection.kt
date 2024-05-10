@@ -44,7 +44,7 @@ fun LanguageSelection(
                     Icon(
                         painter = painterResource(id = R.drawable.language),
                         contentDescription = null)
-                    Text(text = "Selecciona tu idioma")
+                    Text(text = stringResource(id = R.string.insert_idioma))
                 }
             },
             text = {

@@ -15,9 +15,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gomu.festup.LocalDatabase.Entities.Usuario
+import com.gomu.festup.R
 import com.gomu.festup.ui.components.cards.UsuarioCard
 import com.gomu.festup.vm.MainVM
 
@@ -44,13 +46,13 @@ fun SeguidoresSeguidosList(
                 selected = selectedTab == 0,
                 onClick = { selectedTab = 0 },
             ) {
-                Text(text = "Seguidores", modifier = Modifier.padding(vertical = 15.dp))
+                Text(text = stringResource(id = R.string.seguidores), modifier = Modifier.padding(vertical = 15.dp))
             }
             Tab(
                 selected = selectedTab == 1,
                 onClick = { selectedTab = 1 },
             ) {
-                Text(text = "Seguidos", modifier = Modifier.padding(vertical = 15.dp))
+                Text(text =  stringResource(id = R.string.seguidos), modifier = Modifier.padding(vertical = 15.dp))
             }
         }
         when (selectedTab) {

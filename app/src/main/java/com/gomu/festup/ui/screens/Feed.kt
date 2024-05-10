@@ -19,11 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gomu.festup.LocalDatabase.Entities.Evento
+import com.gomu.festup.R
 import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.vm.MainVM
 
@@ -56,7 +58,7 @@ fun Feed(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Mis eventos",
+                    text = stringResource(id = R.string.mis_eventos),
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
@@ -66,7 +68,7 @@ fun Feed(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Podría interesarte",
+                    text = stringResource(id = R.string.interesarte),
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
@@ -95,7 +97,7 @@ fun EventosList(eventos: List<Evento>, mainVM: MainVM, navController: NavControl
     }
     else {
         Text(
-            text = "No hay eventos",
+            text = stringResource(id = R.string.no_events),
             modifier = Modifier.padding(top = 20.dp),
             style = TextStyle(
                 fontSize = 18.sp,

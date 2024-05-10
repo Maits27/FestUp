@@ -41,7 +41,6 @@ fun SwitchTik(
             }else{
                 mainVM.unSubscribeUser()
                 mainVM.unSuscribeASeguidos(seguidos.value)
-                Log.d("UNSUSCRIBE", "DONE")
             }
         },
         thumbContent = if (checkedSwitch) {

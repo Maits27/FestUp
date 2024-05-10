@@ -54,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -159,7 +160,7 @@ fun ListadoCuadrillas(
         modifier = Modifier.padding(16.dp)
     ){
         Text(
-            text = "Cuadrillas",
+            text = stringResource(id = R.string.cuadrillas),
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -200,7 +201,7 @@ fun ListadoCuadrillas(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "No hay cuadrillas",
+                text = stringResource(id = R.string.no_cuadrilla),
                 modifier = Modifier.padding(top = 10.dp),
                 style = TextStyle(
                     fontSize = 18.sp,
@@ -223,7 +224,7 @@ fun EventosUsuario(
         modifier = Modifier.padding(16.dp)
     ) {
         Text(
-            text = "Eventos",
+            text = stringResource(id = R.string.eventos),
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -281,7 +282,7 @@ fun Seguidores(navController: NavController, seguidores: State<List<Usuario>>) {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.padding(top = 16.dp, end = 16.dp)
     ) {
-        Text(text = "Seguidores")
+        Text(text = stringResource(id = R.string.seguidores))
         TextButton(
             onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/0") },
             modifier = Modifier
@@ -309,7 +310,7 @@ fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>) {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.padding(top = 16.dp, start = 16.dp)
     ) {
-        Text(text = "Seguidos")
+        Text(text = stringResource(id = R.string.seguidos))
         TextButton(
             onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/1") },
             modifier = Modifier
@@ -385,7 +386,6 @@ fun TopProfile(
 ){
     val context = LocalContext.current
 
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -401,7 +401,7 @@ fun TopProfile(
                 textAlign = TextAlign.Center
             )
             Text(
-                text = "$edad años",
+                text = context.getString(R.string.age, edad.toString()),
                 modifier = Modifier.padding(5.dp),
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center
@@ -434,7 +434,6 @@ fun ProfileImage(
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
-        Log.d("IMAGEN", "0")
         if (uri!=null) {
             imageUri = uri
             mainVM.updateUserImage(context, usuario.username, uri)
@@ -445,7 +444,7 @@ fun ProfileImage(
         Box(Modifier.padding(16.dp)) {
             AsyncImage(
                 model = imageUri,
-                contentDescription = "User image",
+                contentDescription = context.getString(R.string.user_image),
                 error = painterResource(id = R.drawable.no_user),
                 placeholder = painterResource(id = R.drawable.no_user),
                 contentScale = ContentScale.Crop,
@@ -481,7 +480,9 @@ fun FollowButton(
         mainVM.unsubscribeFromUser(mainVM.usuarioMostrar.value!!.username)
     }
 
-    val buttonText = if (alreadySiguiendo.value != null && !alreadySiguiendo.value!!) "Follow" else "Unfollow"
+    val buttonText = if (alreadySiguiendo.value != null && !alreadySiguiendo.value!!) stringResource(
+        id = R.string.follow
+    ) else stringResource(id = R.string.unfollow)
 
     val onClick = if (alreadySiguiendo.value != null && !alreadySiguiendo.value!!) onClickFollow else onClickUnfollow
 

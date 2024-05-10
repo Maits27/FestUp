@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -74,7 +75,7 @@ fun UsuarioCard(
         ){
             AsyncImage(
                 model = imageUri,
-                contentDescription = "User image",
+                contentDescription = stringResource(id = R.string.user_image),
                 placeholder = painterResource(id = R.drawable.no_user),
                 modifier = Modifier
                     .size(50.dp)
@@ -124,7 +125,7 @@ fun UsuarioCardParaEventosAlert(
         ){
             AsyncImage(
                 model = imageUri,
-                contentDescription = "User image",
+                contentDescription = stringResource(id = R.string.user_image),
                 placeholder = painterResource(id = R.drawable.no_image),
                 modifier = Modifier
                     .size(50.dp)

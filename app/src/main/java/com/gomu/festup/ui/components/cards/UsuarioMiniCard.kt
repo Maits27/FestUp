@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -54,7 +55,7 @@ fun UsuarioMiniCard(
     ) {
         AsyncImage(
             model = imageUri,
-            contentDescription = "Usuario profile image",
+            contentDescription = stringResource(id = R.string.user_image),
             error = painterResource(id = R.drawable.no_user),
             modifier = Modifier
                 .border(2.dp, color = MaterialTheme.colorScheme.primary, CircleShape)

@@ -92,12 +92,7 @@ fun LoginPage(
     preferencesVM: PreferencesViewModel,
     lastLoggedUser: Usuario?
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    if (lastLoggedUser!=null){
-        Log.d("Last logged user", lastLoggedUser?.toString()?:"Es null")
-    }
-    Log.d("SERVER PETICION", "main")
 
     if (!mainVM.serverOk.value){
         CoroutineScope(Dispatchers.IO).launch {
@@ -109,7 +104,6 @@ fun LoginPage(
                     withContext(Dispatchers.IO) {
                         mainVM.descargarDatos()
                     }
-                    Log.d("CURRENTUSER", lastLoggedUser.toString())
                     nuestroLocationProvider(context, mainVM)
                     mainVM.currentUser.value = lastLoggedUser
                     preferencesVM.changeUser(lastLoggedUser.username)
@@ -127,18 +121,8 @@ fun LoginPage(
         }
     }
 
-
-
     var selectedTab by remember {
         mutableIntStateOf(0)
-    }
-
-    var loginSelected by remember {
-        mutableStateOf(false)
-    }
-
-    var registerSelected by remember {
-        mutableStateOf(false)
     }
 
     Column(
@@ -149,7 +133,7 @@ fun LoginPage(
             selectedTabIndex = selectedTab
         ) {
             Tab(
-                selected = selectedTab==0,
+                selected = selectedTab == 0,
                 onClick = { selectedTab = 0 },
             ) {
                 Text(text = "Iniciar sesión", modifier = Modifier.padding(vertical = 15.dp))
@@ -163,7 +147,7 @@ fun LoginPage(
         }
         when (selectedTab) {
             0 -> {
-                LoginForm(mainNavController, mainVM, identVM, preferencesVM, lastLoggedUser)
+                LoginForm(mainNavController, mainVM, identVM, preferencesVM)
             }
             1 -> {
                 RegistroForm(mainNavController, mainVM, identVM, preferencesVM)
@@ -180,7 +164,6 @@ fun LoginForm(
     mainVM: MainVM,
     identVM: IdentVM,
     preferencesVM: PreferencesViewModel,
-    lastLoggedUser: Usuario?
 ) {
     var username by remember {
         mutableStateOf("")
@@ -214,7 +197,6 @@ fun LoginForm(
                             mainVM.actualizarCurrentUser(username)
                         }
                         mainVM.actualizarWidget(context)
-                        Log.d("CURRENTUSER", currentUser.toString())
                         nuestroLocationProvider(context, mainVM)
                         mainVM.currentUser.value = currentUser
                         preferencesVM.changeUser(currentUser.username)

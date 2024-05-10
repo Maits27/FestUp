@@ -21,11 +21,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Usuario
+import com.gomu.festup.R
 import com.gomu.festup.ui.components.cards.CuadrillaCard
 import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.ui.components.cards.UsuarioCard
@@ -60,7 +62,6 @@ fun Search(
         )
     }
 
-    // TODO fecha rara
     val filteredEventos = eventos.value.filter {
         it.nombre.contains(searchText, ignoreCase = true) || it.fecha.toString().contains(
             searchText,
@@ -90,7 +91,7 @@ fun Search(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Usuarios",
+                    text = stringResource(id = R.string.usuarios),
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
@@ -100,7 +101,7 @@ fun Search(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Cuadrillas",
+                    text = stringResource(id = R.string.cuadrillas),
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
@@ -110,7 +111,7 @@ fun Search(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "Eventos",
+                    text = stringResource(id = R.string.eventos),
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
@@ -123,7 +124,7 @@ fun Search(
                 .fillMaxWidth()
                 .padding(16.dp)
                 .height(50.dp),
-            placeholder = { Text(text = "Buscar...") }
+            placeholder = { Text(text = stringResource(id = R.string.buscar)) }
         )
 
         when (mainVM.selectedTabSearch.value) {
@@ -155,7 +156,6 @@ fun <T> ElementoList(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> ElementoItem(
     elemento: T,

@@ -149,9 +149,12 @@ fun PerfilCuadrilla(
             }
         }
         Box(
-            modifier = Modifier.fillMaxSize().pullRefresh(refreshState).verticalScroll(
-                scrollState,
-            ),
+            modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(refreshState)
+                .verticalScroll(
+                    scrollState,
+                ),
             contentAlignment = Alignment.Center
         ) {
             PullRefreshIndicator(
@@ -177,7 +180,7 @@ fun EliminarCuadrilla(cuadrilla: Cuadrilla, mainVM: MainVM) {
         },
         text = {
             Text(
-                text = "Abandonar ${cuadrilla.nombre}"
+                text = stringResource(id = R.string.abandonar, cuadrilla.nombre)
             )
         }
     )
@@ -271,7 +274,12 @@ fun CuadrillaProfileImage(
 
 
 @Composable
-fun Compartir(show:Boolean, accessToken: String, nombreCuadrilla: String,  onDismiss: () -> Unit){
+fun Compartir(
+    show:Boolean,
+    accessToken: String,
+    nombreCuadrilla: String,
+    onDismiss: () -> Unit
+){
     if(show){
         val context = LocalContext.current
 
@@ -279,10 +287,10 @@ fun Compartir(show:Boolean, accessToken: String, nombreCuadrilla: String,  onDis
             onDismissRequest = { onDismiss() },
             confirmButton = {},
             title = {
-                Text(text = "¿Estas seguro de que quieres compartir el codigo de la cuadrilla?") },
+                Text(text = context.getString(R.string.token_conf)) },
             text = {
                 Column {
-                    Text(text = "Recuerda que cualquier persona con el codigo podra unirse")
+                    Text(text = context.getString(R.string.recordatorio_token))
                     Spacer(modifier = Modifier.size(10.dp))
                     Row {
                         IconButton(onClick = { openWhatsApp(accessToken, nombreCuadrilla, context) }) {
@@ -329,23 +337,23 @@ fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String,  onDismis
                     else {
                         Toast.makeText(
                             context,
-                            "Código incorrecto. Por favor, inténtalo de nuevo.",
+                            context.getString(R.string.incorrect_token),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 }) {
-                    Text(text = "Unirme")
+                    Text(text = context.getString(R.string.unirse))
                 }
             },
             title = {
-                Text(text = "¿Quieres unirte a $nombreCuadrilla?") },
+                Text(text = context.getString(R.string.pregunta_unirse, nombreCuadrilla)) },
             text = {
                 Column {
-                    Text(text = "Introduce el codigo de la cuadrilla para unirte")
+                    Text(text = context.getString(R.string.insert_token))
                     OutlinedTextField(
                         value = input,
                         onValueChange = { input = it },
-                        label = { Text("Codigo de la cuadrilla") },
+                        label = { Text(context.getString(R.string.token)) },
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 16.dp),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                     )
@@ -373,7 +381,7 @@ fun ListadoUsuarios(
         modifier = Modifier.padding(16.dp)
     ){
         Text(
-            text = "Integrantes: $numeroIntegrantes",
+            text = stringResource(id = R.string.integrantes, numeroIntegrantes),
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -411,7 +419,7 @@ fun ListadoUsuarios(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "No hay usuarios",
+                text = stringResource(id = R.string.no_users),
                 modifier = Modifier.padding(top = 10.dp),
                 style = TextStyle(
                     fontSize = 18.sp,
@@ -439,7 +447,7 @@ fun EventosCuadrilla(
         modifier = Modifier.padding(16.dp)
     ) {
         Text(
-            text = "Eventos",
+            text = stringResource(id = R.string.eventos),
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold

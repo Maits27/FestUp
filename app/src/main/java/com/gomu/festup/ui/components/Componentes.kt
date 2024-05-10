@@ -43,7 +43,7 @@ fun FloatButton(onClick: () -> Unit){
         },
         text = {
             Text(
-                text = "Nuevo evento"
+                text = stringResource(id = R.string.nuevo_evento)
             )
         }
     )
@@ -126,14 +126,14 @@ fun TopBarMainView(
         AppScreens.EditPerfil.route -> {
             showTopBar = true
             showPerfil = false
-            title = "Editar perfil"
+            title = context.getString(R.string.edit_profile)
             showBackArrow = true
             showRefreshButton = false
         }
         AppScreens.Ajustes.route -> {
             showTopBar = true
             showPerfil = false
-            title = "Preferencias @${mainVM.usuarioMostrar.value!!.username}"
+            title = context.getString(R.string.preferences, mainVM.usuarioMostrar.value!!.username)
             showBackArrow = true
             showRefreshButton = false
         }
@@ -192,7 +192,6 @@ fun BottomBarMainView(
 ){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    // TODO: Cambiar dependiendo de la ruta
 
     if (
         currentDestination?.route == AppScreens.Feed.route ||
