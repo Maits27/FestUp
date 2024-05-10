@@ -76,9 +76,7 @@ fun UsuarioCard(
             AsyncImage(
                 model = imageUri,
                 contentDescription = "User image",
-                onError = {
-                    imageUri = "http://34.16.74.167/userProfileImages/no-user.png"
-                },
+                error = painterResource(id = R.drawable.no_user),
                 placeholder = painterResource(id = R.drawable.no_user),
                 modifier = Modifier
                     .size(50.dp)
@@ -130,9 +128,7 @@ fun UsuarioCardParaEventosAlert(
             AsyncImage(
                 model = imageUri,
                 contentDescription = "User image",
-                onError = {
-                    imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-user.png"
-                },
+                error = painterResource(id = R.drawable.no_user),
                 placeholder = painterResource(id = R.drawable.no_image),
                 modifier = Modifier
                     .size(50.dp)

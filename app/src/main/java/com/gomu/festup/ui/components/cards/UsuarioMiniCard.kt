@@ -16,11 +16,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Usuario
+import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.vm.MainVM
 
@@ -53,9 +55,7 @@ fun UsuarioMiniCard(
         AsyncImage(
             model = imageUri,
             contentDescription = "Usuario profile image",
-            onError = {
-                imageUri = "http://34.16.74.167/userProfileImages/no-user.png"
-            },
+            error = painterResource(id = R.drawable.no_user),
             modifier = Modifier
                 .border(2.dp, color = MaterialTheme.colorScheme.primary, CircleShape)
                 .size(50.dp)

@@ -104,9 +104,7 @@ fun Evento(
                     AsyncImage(
                         model = imageUri,
                         contentDescription = "Event image",
-                        onError = {
-                            imageUri = "http://34.16.74.167/eventoImages/no-image.png"
-                        },
+                        error = painterResource(id = R.drawable.no_image),
                         placeholder = painterResource(id = R.drawable.no_image),
                         modifier = Modifier
                             .height(150.dp)
@@ -127,12 +125,18 @@ fun Evento(
                                 )
                                 .padding(vertical = 5.dp, horizontal = 5.dp)
                                 .clickable {
-                                    addEventOnCalendar(context, evento.nombre, evento.fecha.time + 86400000)
-                                    Toast.makeText(
+                                    addEventOnCalendar(
                                         context,
-                                        "Evento añadido al calendario correctamente",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                        evento.nombre,
+                                        evento.fecha.time + 86400000
+                                    )
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "Evento añadido al calendario correctamente",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
                                 }
                         ) {
                             Icon(
@@ -169,7 +173,9 @@ fun Evento(
         }
         Button(
             onClick = { apuntarse = true },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Text(text = "Apuntarse ")
         }
@@ -269,7 +275,9 @@ fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int) {
         Row (
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

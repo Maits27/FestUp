@@ -58,9 +58,7 @@ fun EventoCard(
                 model = imageUri,
                 contentDescription = "cuadrillaImage",
                 placeholder = painterResource(id = R.drawable.no_image),
-                onError = {
-                    imageUri = "http://34.16.74.167/eventoImages/no-image.png"
-                },
+                error = painterResource(id = R.drawable.no_image),
                 contentScale = ContentScale.FillHeight,
                 modifier = Modifier.size(50.dp)
             )
