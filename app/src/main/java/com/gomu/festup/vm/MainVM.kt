@@ -11,6 +11,8 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
@@ -67,26 +69,27 @@ class MainVM @Inject constructor(
 
     val alreadySiguiendo: MutableState<Boolean?> = mutableStateOf(null)
 
+    var selectedTabFeed: MutableState<Int> = mutableIntStateOf(0)
+
+    var selectedTabSearch: MutableState<Int> = mutableIntStateOf(0)
 
     /*****************************************************
      ****************** METODOS USUARIO ******************
      *****************************************************/
 
-    fun descargarUsuarios(){
-        Log.d("SERVER PETICION", "main dentro")
-
-        CoroutineScope(Dispatchers.IO).launch {
-            try{
-                userRepository.descargarUsuarios()
-            }catch (e: Exception) {
-                Log.d("SERVER PETICION", e.toString())
-            }
+    suspend fun descargarUsuarios(){
+        Log.d("DESCARGAR USUARIOS", "main dentro")
+        try{
+            userRepository.descargarUsuarios()
             serverOk.value = true
+        }catch (e: Exception) {
+            Log.d("SERVER PETICION", e.toString())
         }
     }
 
 
     fun descargarDatos(){
+        Log.d("DESCARGAR DATOS", "main dentro")
         viewModelScope.launch(Dispatchers.IO) {
             try{
                 cuadrillaRepository.descargarCuadrillas()

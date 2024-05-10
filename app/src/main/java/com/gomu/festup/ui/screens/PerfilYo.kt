@@ -350,9 +350,9 @@ fun BotonesPerfil(
         }
         IconButton(
             onClick = {
+                preferencesViewModel.changeUser("")
                 navController.popBackStack()
                 mainNavController.popBackStack()
-                preferencesViewModel.changeUser("")
             },
             modifier = Modifier.weight(1f)
         ) {
