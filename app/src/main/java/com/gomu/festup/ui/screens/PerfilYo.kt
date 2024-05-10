@@ -60,10 +60,12 @@ import com.gomu.festup.LocalDatabase.Entities.Seguidores
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.EditImageIcon
 import com.gomu.festup.ui.components.cards.CuadrillaMiniCard
 import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.vm.MainVM
 import com.gomu.festup.vm.PreferencesViewModel
+import kotlin.math.sin
 
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -447,31 +449,7 @@ fun ProfileImage(
         }
         // Icono para editar imagen
         if(yo) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(bottom = 16.dp, end = 8.dp)
-                    .clip(CircleShape)
-                    .clickable(onClick = {
-                        singlePhotoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    })
-            ) {
-                //Añadir circle y edit
-                Icon(
-                    painterResource(id = R.drawable.circle),
-                    contentDescription = null,
-                    Modifier.size(40.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Icon(
-                    painterResource(id = R.drawable.edit),
-                    contentDescription = null,
-                    Modifier.size(18.dp),
-                    tint = MaterialTheme.colorScheme.surface
-                )
-            }
+            EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
         }
     }
 }

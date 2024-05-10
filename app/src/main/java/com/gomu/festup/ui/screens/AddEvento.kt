@@ -64,6 +64,7 @@ import com.gomu.festup.R
 import com.gomu.festup.alarmMng.AlarmItem
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.EditImageIcon
 import com.gomu.festup.utils.addEventOnCalendar
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.getLatLngFromAddress
@@ -267,16 +268,7 @@ fun AddEvento(
                         .size(150.dp)
                 )
             }
-            Icon(
-                imageVector = Icons.Rounded.Edit,
-                tint = MaterialTheme.colorScheme.surface,
-                contentDescription = "Edit",
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .align(Alignment.BottomEnd)
-                    .size(25.dp)
-            )
+            EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
         }
         OutlinedTextField(
             value = eventName,
@@ -320,7 +312,9 @@ fun AddEvento(
                 Checkbox(
                     checked = addOnCalendar,
                     onCheckedChange = { addOnCalendar = it },
-                    modifier = Modifier.scale(0.7f).size(18.dp)
+                    modifier = Modifier
+                        .scale(0.7f)
+                        .size(18.dp)
                 )
             }
 

@@ -62,6 +62,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import coil.compose.AsyncImage
+import com.gomu.festup.ui.components.EditImageIcon
 import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.ui.components.cards.UsuarioMiniCard
@@ -224,23 +225,7 @@ fun CuadrillaProfileImage(
             )
         }
         // Icono para editar imagen
-        if(pertenezco) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(bottom = 16.dp, end = 8.dp)
-                    .clip(CircleShape)
-                    .clickable(onClick = {
-                        singlePhotoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    })
-            ) {
-                //Añadir circle y edit
-                Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
-                Icon(painterResource(id = R.drawable.edit), contentDescription = null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.surface)
-            }
-        }
+        if(pertenezco) EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
     }
 }
 
