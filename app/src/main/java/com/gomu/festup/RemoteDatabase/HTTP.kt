@@ -312,7 +312,7 @@ class HTTPClient @Inject constructor() {
         val response = httpClient.get("http://34.16.74.167/getEventos")
         response.body()
     }
-    suspend fun insertEvento(evento: RemoteEvento) : RemoteEvento = runBlocking {
+    suspend fun insertEvento(evento: RemoteEvento): RemoteEvento = runBlocking {
         val response = httpClient.post("http://34.16.74.167/insertEvento") {
             contentType(ContentType.Application.Json)
             setBody(evento)
