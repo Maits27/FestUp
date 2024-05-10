@@ -75,21 +75,19 @@ class MainVM @Inject constructor(
      ****************** METODOS USUARIO ******************
      *****************************************************/
 
-    fun descargarUsuarios(){
-        Log.d("SERVER PETICION", "main dentro")
-
-        CoroutineScope(Dispatchers.IO).launch {
-            try{
-                userRepository.descargarUsuarios()
-            }catch (e: Exception) {
-                Log.d("SERVER PETICION", e.toString())
-            }
+    suspend fun descargarUsuarios(){
+        Log.d("DESCARGAR USUARIOS", "main dentro")
+        try{
+            userRepository.descargarUsuarios()
             serverOk.value = true
+        }catch (e: Exception) {
+            Log.d("SERVER PETICION", e.toString())
         }
     }
 
 
     fun descargarDatos(){
+        Log.d("DESCARGAR DATOS", "main dentro")
         viewModelScope.launch(Dispatchers.IO) {
             try{
                 cuadrillaRepository.descargarCuadrillas()

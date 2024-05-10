@@ -77,6 +77,7 @@ import com.gomu.festup.vm.PreferencesViewModel
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
@@ -91,11 +92,42 @@ fun LoginPage(
     preferencesVM: PreferencesViewModel,
     lastLoggedUser: Usuario?
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     if (lastLoggedUser!=null){
         Log.d("Last logged user", lastLoggedUser?.toString()?:"Es null")
     }
     Log.d("SERVER PETICION", "main")
-    mainVM.descargarUsuarios()
+
+    if (!mainVM.serverOk.value){
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    mainVM.descargarUsuarios()
+                }
+                if (lastLoggedUser!= null) {
+                    withContext(Dispatchers.IO) {
+                        mainVM.descargarDatos()
+                    }
+                    Log.d("CURRENTUSER", lastLoggedUser.toString())
+                    nuestroLocationProvider(context, mainVM)
+                    mainVM.currentUser.value = lastLoggedUser
+                    preferencesVM.changeUser(lastLoggedUser.username)
+                    if (mainVM.serverOk.value){
+                        withContext(Dispatchers.Main) {
+                            mainNavController.navigate(AppScreens.App.route)
+                        }
+                    }
+
+                }
+            } catch (e: Exception) {
+                Log.e("Excepcion al iniciar sesion", e.toString())
+            }
+        }
+    }
+
+
+
     var selectedTab by remember {
         mutableIntStateOf(0)
     }
@@ -262,25 +294,7 @@ fun LoginForm(
             .padding(end = 54.dp))
     }
 
-    if(mainVM.serverOk.value && lastLoggedUser != null){
 
-        CoroutineScope(Dispatchers.IO).launch {
-
-            Log.d("SERVER OK", mainVM.serverOk.value.toString())
-            Log.d("LASTLOGGED USER", lastLoggedUser.toString())
-            Log.d("", "cambio")
-
-            nuestroLocationProvider(context, mainVM)
-            mainVM.currentUser.value = lastLoggedUser
-            preferencesVM.changeUser(lastLoggedUser.username)
-            identVM.recuperarSesion(preferencesVM.lastBearerToken, preferencesVM.lastRefreshToken)
-
-            withContext(Dispatchers.Main) {
-                mainNavController.navigate(AppScreens.App.route)
-                showLoading = false
-            }
-        }
-    }
 }
 
 
