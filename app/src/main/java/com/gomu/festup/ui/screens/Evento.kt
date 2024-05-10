@@ -43,11 +43,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Evento
+import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
+import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
+import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
+import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.R
 import com.gomu.festup.ui.components.dialogs.Apuntarse
 import com.gomu.festup.ui.components.cards.CuadrillaCard
@@ -58,7 +64,6 @@ import com.gomu.festup.utils.addEventOnCalendar
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Evento(
     navController: NavController,
@@ -94,12 +99,12 @@ fun Evento(
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(6.dp)
+                modifier = Modifier.padding(horizontal = 6.dp, vertical = 20.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(6.dp)
+                    verticalArrangement = Arrangement.Top,
+                    modifier = Modifier.weight(1f)
                 ) {
                     AsyncImage(
                         model = imageUri,
@@ -109,7 +114,6 @@ fun Evento(
                         modifier = Modifier
                             .height(150.dp)
                             .width(150.dp)
-                            .padding(start = 6.dp)
                             .clip(RoundedCornerShape(35.dp))
                     )
                     Row(
@@ -117,13 +121,11 @@ fun Evento(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.padding(top = 12.dp)
                     ) {
-                        Box(
+                        Icon(
+                            painter = painterResource(id = R.drawable.add_calendar),
+                            contentDescription = null,
                             modifier = Modifier
-                                .background(
-                                    color = MaterialTheme.colorScheme.inverseOnSurface,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .padding(vertical = 5.dp, horizontal = 5.dp)
+                                .size(30.dp)
                                 .clickable {
                                     addEventOnCalendar(
                                         context,
@@ -138,36 +140,23 @@ fun Evento(
                                         )
                                         .show()
                                 }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.add_calendar),
-                                contentDescription = null,
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
+                        )
                         Spacer(modifier = Modifier.size(10.dp))
-                        Box(
+                        Icon(
+                            painter = painterResource(id = R.drawable.info),
+                            contentDescription = null,
                             modifier = Modifier
-                                .background(
-                                    color = MaterialTheme.colorScheme.inverseOnSurface,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .padding(vertical = 5.dp, horizontal = 5.dp)
+                                .size(30.dp)
                                 .clickable { showInfo = true }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.info),
-                                contentDescription = null,
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.size(16.dp))
                 DatosEvento(
                     evento,
                     mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!),
-                    numAsistentes
+                    numAsistentes,
+                    Modifier.padding(vertical = 1.dp).weight(1f)
                 )
             }
         }
@@ -175,24 +164,18 @@ fun Evento(
             onClick = { apuntarse = true },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = 16.dp)
         ) {
             Text(text = "Apuntarse ")
         }
-        Row (
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "Asistentes: ",
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.weight(3f)
-            )
-        }
+        Text(
+            text = "Asistentes: ",
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(10.dp).align(Alignment.Start)
+        )
 
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -218,12 +201,12 @@ fun Evento(
 }
 
 @Composable
-fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int) {
+fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int, modifier: Modifier=Modifier) {
 
     Column (
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.padding(vertical = 30.dp)
+        modifier = modifier
     ) {
         Row (
             horizontalArrangement = Arrangement.Start,
@@ -233,7 +216,8 @@ fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int) {
                     color = MaterialTheme.colorScheme.inverseOnSurface,
                     shape = RoundedCornerShape(8.dp)
                 )
-                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .padding(vertical = 6.dp, horizontal = 16.dp)
+                .fillMaxWidth()
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.calendar),
@@ -256,7 +240,7 @@ fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int) {
                     color = MaterialTheme.colorScheme.inverseOnSurface,
                     shape = RoundedCornerShape(8.dp)
                 )
-                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .padding(vertical = 6.dp, horizontal = 16.dp)
                 .fillMaxWidth()
         ) {
             Icon(
@@ -285,7 +269,7 @@ fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int) {
             ){
                 Text(
                     text = "Edad media",
-                    style = TextStyle(fontSize = 16.sp),
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
@@ -312,7 +296,7 @@ fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int) {
             ){
                 Text(
                     text = "Asistentes",
-                    style = TextStyle(fontSize = 16.sp),
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )

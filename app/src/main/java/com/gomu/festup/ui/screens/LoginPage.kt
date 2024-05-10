@@ -113,6 +113,8 @@ fun LoginPage(
                     nuestroLocationProvider(context, mainVM)
                     mainVM.currentUser.value = lastLoggedUser
                     preferencesVM.changeUser(lastLoggedUser.username)
+                    identVM.recuperarSesion(preferencesVM.lastBearerToken,preferencesVM.lastRefreshToken)
+                    mainVM.descargarDatos()
                     if (mainVM.serverOk.value){
                         withContext(Dispatchers.Main) {
                             mainNavController.navigate(AppScreens.App.route)

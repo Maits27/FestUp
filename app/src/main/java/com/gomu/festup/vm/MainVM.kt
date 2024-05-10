@@ -89,7 +89,6 @@ class MainVM @Inject constructor(
 
 
     fun descargarDatos(){
-        Log.d("DESCARGAR DATOS", "main dentro")
         viewModelScope.launch(Dispatchers.IO) {
             try{
                 cuadrillaRepository.descargarCuadrillas()

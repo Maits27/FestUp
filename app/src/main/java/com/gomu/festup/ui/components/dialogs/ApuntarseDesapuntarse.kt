@@ -15,8 +15,12 @@ import com.gomu.festup.ui.components.cards.UsuarioCardParaEventosAlert
 import com.gomu.festup.vm.MainVM
 
 @Composable
-fun Apuntarse(show: Boolean, apuntado: Boolean, mainVM: MainVM, onDismiss:() -> Unit){
-    val context = LocalContext.current
+fun Apuntarse(
+    show: Boolean,
+    apuntado: Boolean,
+    mainVM: MainVM,
+    onDismiss:() -> Unit
+){
     if(show){
         var cuadrillasNoApuntadas = mainVM.cuadrillasUsuarioNoApuntadas(mainVM.currentUser.value!!, mainVM.eventoMostrar.value!!.id).collectAsState(initial = emptyList())
         var cuadrillasApuntadas = mainVM.cuadrillasUsuarioApuntadas(mainVM.currentUser.value!!, mainVM.eventoMostrar.value!!.id).collectAsState(initial = emptyList())
@@ -24,7 +28,7 @@ fun Apuntarse(show: Boolean, apuntado: Boolean, mainVM: MainVM, onDismiss:() -> 
             onDismissRequest = { onDismiss() },
             confirmButton = {
                 TextButton(onClick = { onDismiss()}) {
-                    Text(text = "Cerrar")
+                    Text(text = "Aceptar")
                 }
             },
             title = {
@@ -42,7 +46,6 @@ fun Apuntarse(show: Boolean, apuntado: Boolean, mainVM: MainVM, onDismiss:() -> 
                             mainVM,
                         ){
                             mainVM.apuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
-                            onDismiss()
                         }
                     }
                     items(cuadrillasApuntadas.value){cuadrilla ->
@@ -52,7 +55,6 @@ fun Apuntarse(show: Boolean, apuntado: Boolean, mainVM: MainVM, onDismiss:() -> 
                             mainVM
                         ){
                             mainVM.desapuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
-                            onDismiss()
                         }
                     }
                 }

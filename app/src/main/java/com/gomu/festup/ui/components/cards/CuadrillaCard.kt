@@ -52,9 +52,7 @@ fun CuadrillaCard(
         navController.navigate(AppScreens.PerfilCuadrilla.route)
     }
 
-    var imageUri by remember {
-        mutableStateOf("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
-    }
+    var imageUri ="http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
 
     Card(
         modifier = Modifier
@@ -72,8 +70,10 @@ fun CuadrillaCard(
             AsyncImage(
                 model = imageUri,
                 contentDescription = "Cuadrilla profile image",
-                error = painterResource(id = R.drawable.no_cuadrilla),
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(CircleShape),
+                error = painterResource(id = R.drawable.no_cuadrilla)
             )
             Column(
                 Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
@@ -118,9 +118,7 @@ fun CuadrillaCardParaEventosAlert(
     onClick: () -> Unit,
 ) {
 
-    var imageUri by remember {
-        mutableStateOf("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
-    }
+    var imageUri="http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
 
     var checkedSwitch by remember { mutableStateOf(apuntado) }
 
@@ -140,10 +138,10 @@ fun CuadrillaCardParaEventosAlert(
                 model = imageUri,
                 contentDescription = "Cuadrilla profile image",
                 placeholder = painterResource(id = R.drawable.no_cuadrilla),
-                error = painterResource(id = R.drawable.no_cuadrilla),
                 modifier = Modifier
                     .size(50.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                error = painterResource(id = R.drawable.no_cuadrilla)
             )
             Column(
                 Modifier.padding(vertical = 10.dp, horizontal = 10.dp)

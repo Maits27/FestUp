@@ -244,6 +244,7 @@ fun AddEvento(
             .verticalScroll(rememberScrollState())
     ) {
         Box (
+            contentAlignment = Alignment.BottomEnd,
             modifier = Modifier.clickable {
                 singlePhotoPickerLauncher.launch(
                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)

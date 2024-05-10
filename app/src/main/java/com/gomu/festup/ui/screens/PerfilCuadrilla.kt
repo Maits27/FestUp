@@ -2,6 +2,7 @@ package com.gomu.festup.ui.screens
 
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -230,12 +231,12 @@ fun CuadrillaProfileImage(
 
 
 @Composable
-fun Compartir(show:Boolean, accessToken: String, nombreCuadrilla: String,  onConfirm: () -> Unit){
+fun Compartir(show:Boolean, accessToken: String, nombreCuadrilla: String,  onDismiss: () -> Unit){
     if(show){
         val context = LocalContext.current
 
         AlertDialog(
-            onDismissRequest = { onConfirm() },
+            onDismissRequest = { onDismiss() },
             confirmButton = {},
             title = {
                 Text(text = "¿Estas seguro de que quieres compartir el codigo de la cuadrilla?") },
@@ -266,14 +267,20 @@ fun Compartir(show:Boolean, accessToken: String, nombreCuadrilla: String,  onCon
 }
 
 @Composable
-fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String,  onConfirm: () -> Unit){
+fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String,  onDismiss: () -> Unit, onConfirm: () -> Unit){
     if(show){
 
         var input by rememberSaveable {mutableStateOf("")}
         val context = LocalContext.current
 
         AlertDialog(
-            onDismissRequest = { onConfirm() },
+            onDismissRequest = { onDismiss() },
+            dismissButton = {
+                TextButton(onClick = { onDismiss() }
+                ) {
+                    Text(text = "Cancelar")
+                }
+            },
             confirmButton = {
                 TextButton(onClick = {
                     if (input == accessToken){
@@ -318,6 +325,7 @@ fun ListadoUsuarios(
     var showShare by rememberSaveable { mutableStateOf(false) }
     var showJoin by rememberSaveable { mutableStateOf(false) }
     val token = mainVM.getCuadrillaAccessToken(mainVM.cuadrillaMostrar.value!!.nombre)
+    Log.d("TOKEN", token)
 
     Row (
         horizontalArrangement = Arrangement.Center,
@@ -339,7 +347,7 @@ fun ListadoUsuarios(
         }
         else{
             Button( modifier = Modifier.weight(1f), onClick = { showJoin = true }) {
-                Icon(painter = painterResource(id = R.drawable.add_calendar), "")
+                Icon(painter = painterResource(id = R.drawable.join), "")
             }
         }
     }
@@ -373,7 +381,7 @@ fun ListadoUsuarios(
         }
     }
     Compartir(showShare, token, mainVM.cuadrillaMostrar.value!!.nombre) { showShare = false }
-    Unirse( showJoin, token, mainVM.cuadrillaMostrar.value!!.nombre) {
+    Unirse( showJoin, token, mainVM.cuadrillaMostrar.value!!.nombre, onDismiss = {showJoin=false}) {
         mainVM.agregarIntegrante(mainVM.currentUser.value!!.username, mainVM.cuadrillaMostrar.value!!.nombre)
         showJoin = false
     }
