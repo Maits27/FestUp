@@ -56,9 +56,8 @@ fun UsuarioCard(
         }
     }
 
-    var imageUri by remember {
-        mutableStateOf("http://34.16.74.167/userProfileImages/${usuario.username}.png")
-    }
+
+    var imageUri= "http://34.16.74.167/userProfileImages/${usuario.username}.png"
 
     Card(
         modifier = Modifier
@@ -76,13 +75,12 @@ fun UsuarioCard(
             AsyncImage(
                 model = imageUri,
                 contentDescription = "User image",
-                onError = {
-                    imageUri = "http://34.16.74.167/userProfileImages/no-user.png"
-                },
                 placeholder = painterResource(id = R.drawable.no_user),
                 modifier = Modifier
                     .size(50.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                error = painterResource(id = R.drawable.no_user)
+
             )
             Spacer(modifier = Modifier.size(15.dp))
             Column {
@@ -107,11 +105,8 @@ fun UsuarioCardParaEventosAlert(
     apuntado: Boolean,
     mainVM: MainVM
 ) {
-    val context = LocalContext.current
 
-    var imageUri by remember {
-        mutableStateOf("http://34.16.74.167/userProfileImages/${usuario.username}.png")
-    }
+    var imageUri="http://34.16.74.167/userProfileImages/${usuario.username}.png"
 
     var checkedSwitch by remember { mutableStateOf(apuntado) }
 
@@ -130,13 +125,11 @@ fun UsuarioCardParaEventosAlert(
             AsyncImage(
                 model = imageUri,
                 contentDescription = "User image",
-                onError = {
-                    imageUri = "http://34.16.74.167/cuadrillaProfileImages/no-user.png"
-                },
                 placeholder = painterResource(id = R.drawable.no_image),
                 modifier = Modifier
                     .size(50.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                error = painterResource(id = R.drawable.no_user)
             )
             Column (
                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 10.dp)

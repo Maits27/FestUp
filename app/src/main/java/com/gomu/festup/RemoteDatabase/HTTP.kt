@@ -95,12 +95,6 @@ data class RemoteEvento(
 )
 
 
-@Serializable
-data class RemoteMessage(
-    val title: String,
-    val body: String
-)
-
 private val bearerTokenStorage = mutableListOf<BearerTokens>()
 
 
@@ -281,7 +275,7 @@ class HTTPClient @Inject constructor() {
 
     fun getCuadrillaAccessToken(nombre: String): String = runBlocking {
         val response = httpClient.get("http://34.16.74.167/getCuadrillaAccessToken?nombre=$nombre")
-        response.body()
+        response.body<String>().replace("\"", "")
     }
 
 
