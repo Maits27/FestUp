@@ -22,11 +22,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -69,7 +74,13 @@ import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.ui.components.cards.UsuarioMiniCard
 import com.gomu.festup.utils.openTelegram
 import com.gomu.festup.utils.openWhatsApp
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun PerfilCuadrilla(
@@ -79,9 +90,23 @@ fun PerfilCuadrilla(
     val cuadrilla= mainVM.cuadrillaMostrar.value!!
     val usuariosCuadrilla = mainVM.usuariosCuadrilla().collectAsState(initial = emptyList())
 
-
     val integrante = mainVM.getIntegrante(cuadrilla, mainVM.currentUser.value!!).collectAsState(initial = emptyList())
     val pertenezco = integrante.value.isNotEmpty()
+
+    var refresh by remember{ mutableStateOf(false) }
+
+    val scrollState = rememberScrollState()
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = refresh,
+        onRefresh = {
+            CoroutineScope(Dispatchers.IO).launch{
+                refresh = true
+                mainVM.actualizarDatos()
+                refresh = false
+            }
+        },
+    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -121,6 +146,20 @@ fun PerfilCuadrilla(
                     cuadrilla = cuadrilla
                 )
             }
+        }
+        Box(
+            modifier = Modifier.fillMaxSize().pullRefresh(refreshState).verticalScroll(
+                scrollState,
+            ),
+            contentAlignment = Alignment.Center
+        ) {
+            PullRefreshIndicator(
+                refreshing = refresh,
+                state = refreshState,
+                modifier = Modifier.align(
+                    Alignment.TopCenter,
+                ),
+            )
         }
     }
 }

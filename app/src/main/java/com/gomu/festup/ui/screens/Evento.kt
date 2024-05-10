@@ -83,7 +83,6 @@ fun Evento(
 
     val context = LocalContext.current
 
-
     var imageUri by remember {
         mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
     }
