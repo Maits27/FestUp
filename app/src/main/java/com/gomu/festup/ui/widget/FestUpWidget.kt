@@ -90,15 +90,16 @@ class FestUpWidget : GlanceAppWidget() {
         val prefs = currentState<Preferences>()
 
         val eventosString: String? = prefs[eventosKey]
-        val eventos: List<EventoWidget> = if (eventosString != null) Json.decodeFromString(eventosString)
-                                          else emptyList()
+        val eventos: List<EventoWidget> =
+            if (eventosString != null) Json.decodeFromString(eventosString)
+            else emptyList()
         val userIsLoggedIn = prefs[userIsLoggedIn] ?: false
 
 
         Column(
             modifier = GlanceModifier.fillMaxSize().background(colorFondo).padding(top = 10.dp)
         ) {
-            Row (
+            Row(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = GlanceModifier.fillMaxWidth()
             ) {
@@ -130,26 +131,26 @@ class FestUpWidget : GlanceAppWidget() {
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     Text(
                         text = "No tienes eventos en los próximos días",
                         style = TextStyle(
                             color = ColorProvider(textColor),
                             textAlign = TextAlign.Center
                         ),
-                        modifier = GlanceModifier.fillMaxSize().padding(vertical = 10.dp, horizontal = 50.dp)
+                        modifier = GlanceModifier.fillMaxSize()
+                            .padding(vertical = 10.dp, horizontal = 50.dp)
                     )
                 }
-            }
-            else {
+            } else {
                 Text(
                     text = "Inicia sesión para poder ver los próximos eventos",
                     style = TextStyle(
                         color = ColorProvider(textColor),
                         textAlign = TextAlign.Center
                     ),
-                    modifier = GlanceModifier.fillMaxSize().padding(vertical = 10.dp, horizontal = 50.dp)
+                    modifier = GlanceModifier.fillMaxSize()
+                        .padding(vertical = 10.dp, horizontal = 50.dp)
                 )
             }
         }
@@ -162,7 +163,6 @@ class FestUpWidget : GlanceAppWidget() {
                 .fillMaxWidth()
                 .background(colorFondoCard)
                 .padding(horizontal = 10.dp, vertical = 10.dp)
-                .border(width = 5.dp, color = ColorProvider(colorFondoCard))
         ) {
             Text(
                 text = evento.nombre,
@@ -174,51 +174,20 @@ class FestUpWidget : GlanceAppWidget() {
                 style = TextStyle(color = ColorProvider(textColor)),
                 modifier = GlanceModifier.padding(horizontal = 5.dp)
             )
-            Row (
+            Row(
                 horizontalAlignment = Alignment.End,
                 modifier = GlanceModifier.fillMaxWidth()
-            ){
+            ) {
                 Text(
                     text = evento.numeroAsistentes.toString(),
                     style = TextStyle(textAlign = TextAlign.End, color = ColorProvider(textColor)),
                     modifier = GlanceModifier.padding(end = 10.dp)
                 )
-                Image(provider = ImageProvider(R.drawable.round_people_24), contentDescription = "People")
+                Image(
+                    provider = ImageProvider(R.drawable.round_people_24),
+                    contentDescription = "People"
+                )
             }
         }
     }
-    /*
-Código sacado de futuras versiones de Glance:
-https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:glance/glance-wear-tiles/src/main/java/androidx/glance/wear/tiles/Border.kt?q=file:androidx%2Fglance%2Fwear%2Ftiles%2FBorder.kt%20function:border
-*/
-
-    /**
-     * Apply a border around an element, border width is provided in Dp
-     *
-     * @param width The width of the border, in DP
-     * @param color The color of the border
-     */
-    public fun GlanceModifier.border(
-        width: Dp,
-        color: ColorProvider
-    ): GlanceModifier = this.then(
-        BorderModifier(BorderDimension(dp = width), color)
-    )
-
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public data class BorderModifier(
-        public val width: BorderDimension,
-        public val color: ColorProvider
-    ) : GlanceModifier.Element
-
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public data class BorderDimension(
-        public val dp: Dp = 0.dp,
-        @DimenRes public val resourceId: Int = 0
-    ) {
-        fun toDp(resources: Resources): Dp =
-            if (resourceId == 0) dp
-            else (resources.getDimension(resourceId) / resources.displayMetrics.density).dp
-    }
 }
-

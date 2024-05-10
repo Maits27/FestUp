@@ -16,12 +16,14 @@ import com.gomu.festup.RemoteDatabase.RemoteIntegrante
 import com.gomu.festup.RemoteDatabase.RemoteSeguidor
 import com.gomu.festup.RemoteDatabase.RemoteUsuario
 import com.gomu.festup.RemoteDatabase.RemoteUsuarioAsistente
+import com.gomu.festup.ui.widget.EventoWidget
 import com.google.android.gms.maps.model.LatLng
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Random;
+import kotlin.reflect.KFunction1
 
 private val md = MessageDigest.getInstance("SHA-512")
 
@@ -140,4 +142,16 @@ fun remoteSeguidorToSeguidor(remoteSeguidor: RemoteSeguidor): Seguidores{
         remoteSeguidor.seguidor,
         remoteSeguidor.seguido
     )
+}
+
+fun getWidgetEventos(
+    eventos: List<Evento>, numeroAsistentesEvento: (Evento) -> Int
+) : List<EventoWidget> {
+    return eventos.map {
+        EventoWidget(
+            nombre = it.nombre,
+            fecha = it.fecha.toStringNuestro(),
+            numeroAsistentes = numeroAsistentesEvento(it)
+        )
+    }
 }
