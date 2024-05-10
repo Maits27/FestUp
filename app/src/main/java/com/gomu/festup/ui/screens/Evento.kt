@@ -41,6 +41,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -111,7 +112,7 @@ fun Evento(
                 ) {
                     AsyncImage(
                         model = imageUri,
-                        contentDescription = "Event image",
+                        contentDescription = context.getString(R.string.evento_foto),
                         error = painterResource(id = R.drawable.no_image),
                         placeholder = painterResource(id = R.drawable.no_image),
                         modifier = Modifier
@@ -159,10 +160,10 @@ fun Evento(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
-            Text(text = "Apuntarse ")
+            Text(text = context.getString(R.string.apuntarse))
         }
         Text(
-            text = "Asistentes: ",
+            text = context.getString(R.string.asistentes),
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -192,12 +193,12 @@ fun Evento(
         showInfo = false
         mainVM.actualizarWidget(context)
     }
-    EstasSeguroDialog(show = showAddCalendar, mensaje = "¿Estas seguro de que quieres añadir ${evento.nombre} al calendario?", onDismiss = { showAddCalendar=false }) {
+    EstasSeguroDialog(show = showAddCalendar, mensaje = context.getString(R.string.estas_seguro_calendar, evento.nombre), onDismiss = { showAddCalendar=false }) {
         addEventOnCalendar(context = context, title = evento.nombre, evento.fecha.time + 86400000)
         Toast
             .makeText(
                 context,
-                "Evento añadido al calendario correctamente",
+                context.getString(R.string.evento_add_calendar_ok),
                 Toast.LENGTH_SHORT
             )
             .show()
@@ -207,7 +208,7 @@ fun Evento(
 
 @Composable
 fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int, modifier: Modifier=Modifier) {
-
+    val context = LocalContext.current
     Column (
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top,
@@ -273,7 +274,7 @@ fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int, modifier: Mo
                 verticalArrangement = Arrangement.Center
             ){
                 Text(
-                    text = "Edad media",
+                    text = context.getString(R.string.edad_media),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 8.dp)
@@ -300,7 +301,7 @@ fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int, modifier: Mo
                 verticalArrangement = Arrangement.Center
             ){
                 Text(
-                    text = "Asistentes",
+                    text = context.getString(R.string.asistentes),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 8.dp)
@@ -333,11 +334,11 @@ fun ShowInfo(show: Boolean, evento: Evento, onDismiss: () -> Unit){
             onDismissRequest = { onDismiss() },
             confirmButton = {
                 TextButton(onClick = { onDismiss()}) {
-                    Text(text = "Cerrar")
+                    Text(text = stringResource(id = R.string.cerrar))
                 }
             },
             title = {
-                Text(text = "Información de ${evento.nombre}")
+                Text(text = stringResource(id = R.string.info_evento, evento.nombre))
             },
             text = {
                 Text(text = evento.descripcion)

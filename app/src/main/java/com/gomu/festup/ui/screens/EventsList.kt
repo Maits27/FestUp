@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -39,7 +40,7 @@ fun EventsList(navController: NavController, mainVM: MainVM) {
             modifier = Modifier.padding(horizontal = 10.dp)
         ) {
             Text(
-                text = "Lista de eventos",
+                text = stringResource(id = R.string.event_list),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
             )

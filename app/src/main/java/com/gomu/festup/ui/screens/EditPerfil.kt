@@ -119,7 +119,7 @@ fun EditPerfil(
                 Box(Modifier.padding(16.dp)) {
                     AsyncImage(
                         model = imageUri,
-                        contentDescription = "User image",
+                        contentDescription = context.getString(R.string.user_image),
                         placeholder = painterResource(id = R.drawable.no_user),
                         contentScale = ContentScale.Crop,
                         error = painterResource(id = R.drawable.no_user),
@@ -160,7 +160,7 @@ fun EditPerfil(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text(text = "Email") },
+                label = { Text(text = context.getString(R.string.email)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = modifierForInputs
             )
@@ -168,14 +168,14 @@ fun EditPerfil(
             OutlinedTextField(
                 value = nombre,
                 onValueChange = { nombre = it },
-                label = { Text(text = "Nombre") },
+                label = { Text(text = context.getString(R.string.nombre)) },
                 modifier = modifierForInputs
             )
             // Añadir fecha de nacimiento
             OutlinedTextField(
                 value = birthDate,
                 onValueChange = {  },
-                label = { Text(text = "Fecha de nacimiento") },
+                label = { Text(text = context.getString(R.string.fecha_nacimiento)) },
                 modifier = modifierForInputs.clickable { showDatePicker = true },
                 colors = OutlinedTextFieldDefaults.colors(
                     disabledTextColor = MaterialTheme.colorScheme.onSurface,
@@ -187,7 +187,7 @@ fun EditPerfil(
             Button(
                 onClick = { onEditButtonClick() }
             ) {
-                Text(text = "Editar perfil")
+                Text(text = context.getString(R.string.edit_profile))
             }
         }
     }
@@ -204,7 +204,7 @@ fun EditPerfil(
                     }
                     showDatePicker = false
                 }) {
-                    Text(text = "Confirmar")
+                    Text(text = context.getString(R.string.aceptar))
                 }
             }
         ) {
@@ -212,7 +212,7 @@ fun EditPerfil(
                 state = datePickerState,
                 title = {
                     Text(
-                        text = "Fecha de nacimiento",
+                        text = context.getString(R.string.fecha_nacimiento),
                         textAlign = TextAlign.Center,
                         fontSize = 20.sp,
                         modifier = Modifier
@@ -237,9 +237,9 @@ fun checkEditPerfil(
     var correct = false
     val emailRegex = Regex("""\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Z|a-z]{2,}\b""")
 
-    if (email == "") formValidatorError(context, "Introduce un email")
-    else if (!email.matches(emailRegex)) formValidatorError(context,  "El formato del email no es correcto")
-    else if (nombre == "") formValidatorError(context,  "Introduce un nombre")
+    if (email == "") formValidatorError(context, context.getString(R.string.insert_email))
+    else if (!email.matches(emailRegex)) formValidatorError(context,  context.getString(R.string.email_incorrecto))
+    else if (nombre == "") formValidatorError(context, context.getString(R.string.insert_nombre))
     else correct = true
 
     return correct

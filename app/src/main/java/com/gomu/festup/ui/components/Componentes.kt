@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.glance.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.gomu.festup.R
@@ -54,6 +55,7 @@ fun TopBarMainView(
     navController: NavController,
     mainVM: MainVM
 ){
+    val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     // TODO: Cambiar dependiendo de la ruta
@@ -81,14 +83,14 @@ fun TopBarMainView(
     when (currentDestination?.route) {
         AppScreens.AddEvento.route -> {
             showTopBar = true
-            title = "Añadir evento"
+            title = context.getString(R.string.add_event)
             showPerfil = false
             showBackArrow = true
             showRefreshButton = false
         }
         AppScreens.AddCuadrilla.route -> {
             showTopBar = true
-            title = "Añadir cuadrilla"
+            title = context.getString(R.string.add_cuadrilla)
             showPerfil = false
             showBackArrow = true
             showRefreshButton = false

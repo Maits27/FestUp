@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -96,7 +97,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         verticalArrangement = Arrangement.Top
     ) {
         Text(
-            text = "Nueva cuadrilla",
+            text = stringResource(id = R.string.nueva_cuadrilla),
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -152,7 +153,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
-            label = { Text("Nombre de cuadrilla")},
+            label = { Text(stringResource(id = R.string.nombre_cuadrilla))},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 15.dp)
@@ -161,7 +162,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         OutlinedTextField(
             value = descripcion,
             onValueChange = { descripcion = it },
-            label = { Text("Descripción")},
+            label = { Text(stringResource(id = R.string.desc))},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 15.dp)
@@ -170,7 +171,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         OutlinedTextField(
             value = localizacion,
             onValueChange = { localizacion = it },
-            label = { Text("Localización")},
+            label = { Text(stringResource(id = R.string.loc))},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 15.dp)
@@ -180,11 +181,11 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         Button(
             onClick = {
                 if (nombre.isEmpty()) {
-                    Toast.makeText(context, "Inserta un nombre", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.insert_nombre), Toast.LENGTH_SHORT).show()
                 } else if (descripcion.isEmpty()) {
-                    Toast.makeText(context, "Inserta una descripción", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.insert_desc), Toast.LENGTH_SHORT).show()
                 } else if (localizacion.isEmpty()) {
-                    Toast.makeText(context, "Inserta una localización", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.insert_loc), Toast.LENGTH_SHORT).show()
                 } else {
                     // Crear cuadrilla
                     CoroutineScope(Dispatchers.IO).launch {
@@ -206,7 +207,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                             }
                         } else {
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, context.getString(R.string.error_intentalo), Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -220,7 +221,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                 .align(Alignment.End),
             shape = RoundedCornerShape(10.dp),
         ) {
-            Text(text = "Crear")
+            Text(text = context.getString(R.string.crear))
         }
     }
 }

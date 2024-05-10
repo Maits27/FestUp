@@ -52,7 +52,6 @@ fun Ajustes(
     receiveNotifications: Boolean
 ) {
     var showIdiomas by remember { mutableStateOf(false) }
-    val idiomaMaitane by preferencesVM.idioma("maitaneurruela").collectAsState(initial = AppLanguage.ES)
 
     Column (
         modifier = Modifier

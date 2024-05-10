@@ -55,6 +55,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,8 +99,8 @@ fun AddEvento(
     navController: NavController,
     mainVM: MainVM
 ) {
-
-    val scheduler = AndroidAlarmScheduler(LocalContext.current)
+    val context = LocalContext.current
+    val scheduler = AndroidAlarmScheduler(context)
 
     var addOnCalendar by remember { mutableStateOf(false) }
 
@@ -116,7 +117,7 @@ fun AddEvento(
     }
 
     var fecha by remember {
-        mutableStateOf("Fecha")
+        mutableStateOf(context.getString(R.string.fecha))
     }
 
     val datePickerState = rememberDatePickerState()
@@ -128,7 +129,6 @@ fun AddEvento(
         .fillMaxWidth()
         .padding(top = 15.dp)
 
-    val context = LocalContext.current
 
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
@@ -143,22 +143,22 @@ fun AddEvento(
     val onAddButtonClick: () -> Unit = {
         if (eventName == "") Toast.makeText(
             context,
-            "Introduce un nombre para el evento",
+            context.getString(R.string.insert_nombre_evento),
             Toast.LENGTH_SHORT
         ).show()
-        else if (fecha == "Fecha") Toast.makeText(
+        else if (fecha == context.getString(R.string.fecha)) Toast.makeText(
             context,
-            "Introduce una fecha para el evento",
+            context.getString(R.string.insert_date_evento),
             Toast.LENGTH_SHORT
         ).show()
         else if (description == "") Toast.makeText(
             context,
-            "Introduce una descripción para el evento",
+            context.getString(R.string.insert_desc_event),
             Toast.LENGTH_SHORT
         ).show()
         else if (location == "") Toast.makeText(
             context,
-            "Introduce una ubicación para el evento",
+            context.getString(R.string.insert_loc_evento),
             Toast.LENGTH_SHORT
         ).show()
         else {
@@ -216,7 +216,7 @@ fun AddEvento(
                     }
                 } else {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Ha ocurrido un error, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.error_intentalo), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -254,7 +254,7 @@ fun AddEvento(
             if (imageUri != null) {
                 AsyncImage(
                     model = imageUri,
-                    contentDescription = "Event photo",
+                    contentDescription = context.getString(R.string.evento_foto),
                     modifier = Modifier
                         .fillMaxWidth()
                         .size(150.dp)
@@ -263,7 +263,7 @@ fun AddEvento(
             else {
                 Image(
                     painter = painterResource(id = R.drawable.round_camera_alt_24),
-                    contentDescription = "Event image",
+                    contentDescription = context.getString(R.string.evento_foto),
                     modifier = Modifier
                         .fillMaxWidth()
                         .size(150.dp)
@@ -274,7 +274,7 @@ fun AddEvento(
         OutlinedTextField(
             value = eventName,
             onValueChange = { eventName = it },
-            label = { Text(text = "Nombre") },
+            label = { Text(text = context.getString(R.string.nombre)) },
             modifier = modifierForInputs
         )
         Row(
@@ -323,7 +323,7 @@ fun AddEvento(
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text(text = "Descripción") },
+            label = { Text(text = context.getString(R.string.desc)) },
             maxLines = 10,
             minLines = 5,
             modifier = modifierForInputs
@@ -338,7 +338,7 @@ fun AddEvento(
                     cameraPositionState.position = CameraPosition.fromLatLngZoom(mainVM.localizacionAMostrar.value!!, 10f)
                 }
             },
-            label = { Text(text = "Ubicación") },
+            label = { Text(text = context.getString(R.string.loc)) },
             modifier = modifierForInputs
         )
         GoogleMap(
@@ -360,7 +360,7 @@ fun AddEvento(
             onClick = { onAddButtonClick() },
             modifier = modifierForInputs.padding(bottom = 15.dp)
         ) {
-            Text(text = "Añadir")
+            Text(text = context.getString(R.string.add))
         }
     }
 
