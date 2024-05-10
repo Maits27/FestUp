@@ -14,6 +14,7 @@ import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -70,6 +71,9 @@ class MainVM @Inject constructor(
 
     val alreadySiguiendo: MutableState<Boolean?> = mutableStateOf(null)
 
+    var selectedTabFeed: MutableState<Int> = mutableIntStateOf(0)
+
+    var selectedTabSearch: MutableState<Int> = mutableIntStateOf(0)
 
     /*****************************************************
      ****************** METODOS USUARIO ******************

@@ -28,7 +28,7 @@ fun LanguageSelection(
 ) {
     if(show){
         AlertDialog(
-            onDismissRequest = {},
+            onDismissRequest = {onDismiss()},
             confirmButton = {
                 TextButton(onClick = { onDismiss()}) {
                     Text(text = "Cancelar")

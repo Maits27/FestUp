@@ -45,8 +45,6 @@ fun Search(
     val cuadrillas = mainVM.getCuadrillas().collectAsState(initial = emptyList())
     val eventos = mainVM.getEventos().collectAsState(initial = emptyList())
 
-    // Tab seleccionado al principio
-    var selectedTabIndex by remember { mutableStateOf(0) }
 
     val filteredPersonas = usuarios.value.filter {
         it.username.contains(searchText, ignoreCase = true) || it.nombre.contains(
@@ -84,11 +82,11 @@ fun Search(
 
         // Tabs
         TabRow(
-            selectedTabIndex
+            mainVM.selectedTabSearch.value
         ) {
             Tab(
-                selected = selectedTabIndex == 0,
-                onClick = { selectedTabIndex = 0 },
+                selected = mainVM.selectedTabSearch.value == 0,
+                onClick = { mainVM.selectedTabSearch.value = 0 },
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
@@ -97,8 +95,8 @@ fun Search(
                 )
             }
             Tab(
-                selected = selectedTabIndex == 1,
-                onClick = { selectedTabIndex = 1 },
+                selected = mainVM.selectedTabSearch.value == 1,
+                onClick = { mainVM.selectedTabSearch.value = 1 },
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
@@ -107,8 +105,8 @@ fun Search(
                 )
             }
             Tab(
-                selected = selectedTabIndex == 2,
-                onClick = { selectedTabIndex = 2 },
+                selected = mainVM.selectedTabSearch.value == 2,
+                onClick = { mainVM.selectedTabSearch.value = 2 },
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
@@ -128,7 +126,7 @@ fun Search(
             placeholder = { Text(text = "Buscar...") }
         )
 
-        when (selectedTabIndex) {
+        when (mainVM.selectedTabSearch.value) {
             0 -> {
                 ElementoList(filteredPersonas, navController, mainVM)
             }
