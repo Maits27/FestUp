@@ -40,6 +40,9 @@ interface EventoDao {
             "SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla IN ( " +
             "SELECT nombreCuadrilla FROM Integrante WHERE username = :username))" +
             "AND fecha >= :today  ORDER BY fecha")
+            /**
+             * Coge los eventos futuros de un usuario ordenados por fecha
+             */
     fun eventosUsuarioList(username: String, today: Date = Date()): List<Evento>
 
     @Transaction

@@ -201,8 +201,14 @@ fun Evento(
             }
         }
     }
-    Apuntarse(show = apuntarse, apuntado = apuntado,  mainVM = mainVM) { apuntarse = false }
-    ShowInfo(show = showInfo, evento = evento) { showInfo = false }
+    Apuntarse(show = apuntarse, apuntado = apuntado,  mainVM = mainVM) {
+        apuntarse = false
+        mainVM.actualizarWidget(context)
+    }
+    ShowInfo(show = showInfo, evento = evento) {
+        showInfo = false
+        mainVM.actualizarWidget(context)
+    }
 }
 
 @Composable

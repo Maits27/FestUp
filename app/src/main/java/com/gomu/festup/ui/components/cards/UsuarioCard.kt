@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -104,9 +105,9 @@ fun UsuarioCard(
 fun UsuarioCardParaEventosAlert(
     usuario: Usuario,
     apuntado: Boolean,
-    mainVM: MainVM,
-    onClick:()-> Unit
+    mainVM: MainVM
 ) {
+    val context = LocalContext.current
 
     var imageUri by remember {
         mutableStateOf("http://34.16.74.167/userProfileImages/${usuario.username}.png")
@@ -157,12 +158,8 @@ fun UsuarioCardParaEventosAlert(
                 checked = checkedSwitch,
                 onCheckedChange = {
                     checkedSwitch = !checkedSwitch
-                    if (checkedSwitch){
-                        mainVM.apuntarse(usuario, mainVM.eventoMostrar.value!!)
-                    }
-                    else{
-                        mainVM.desapuntarse(usuario, mainVM.eventoMostrar.value!!)
-                    }
+                    if (checkedSwitch) mainVM.apuntarse(usuario, mainVM.eventoMostrar.value!!)
+                    else mainVM.desapuntarse(usuario, mainVM.eventoMostrar.value!!)
                 },
                 thumbContent = if (checkedSwitch) {
                     {

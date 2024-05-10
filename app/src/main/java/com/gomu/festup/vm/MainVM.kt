@@ -1,9 +1,7 @@
 package com.gomu.festup.vm
 
-import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.location.Location
@@ -13,9 +11,9 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
@@ -24,8 +22,11 @@ import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
 import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
+import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
-import com.gomu.festup.RemoteDatabase.RemoteMessage
+import com.gomu.festup.Preferences.PreferencesRepository
+import com.gomu.festup.ui.widget.FestUpWidget
+import com.gomu.festup.utils.getWidgetEventos
 import com.gomu.festup.utils.localUriToBitmap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
@@ -33,18 +34,13 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.util.Date
 import javax.inject.Inject
 
@@ -52,7 +48,8 @@ import javax.inject.Inject
 class MainVM @Inject constructor(
     private val userRepository: IUserRepository,
     private val cuadrillaRepository: ICuadrillaRepository,
-    private val eventoRepository: IEventoRepository
+    private val eventoRepository: IEventoRepository,
+    private val preferencesRepository: ILoginSettings
 ): ViewModel() {
     var serverOk: MutableState<Boolean> = mutableStateOf(false)
 
@@ -174,7 +171,39 @@ class MainVM @Inject constructor(
         return userRepository.getAQuienSigue(usuario.username)
     }
 
-
+    fun actualizarWidget(context: Context) {
+        Log.d("FestUpWidget", "Actualizando widget")
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentUsername = preferencesRepository.getLastLoggedUser()
+            // Get the list of events of the last logged user
+            val eventos = if (currentUsername != "") eventoRepository.eventosUsuarioList(currentUsername)
+            else emptyList()
+            val eventosWidget = getWidgetEventos(eventos, ::numeroDeAsistentes)
+            Log.d("FestUpWidget", "$currentUsername eventos: $eventosWidget")
+            // Get the widget manager
+            val manager = GlanceAppWidgetManager(context)
+            // We get all the glace IDs that are a FestUpWidget (remember than we can have more
+            // than one widget of the same type)
+            val glanceIds = manager.getGlanceIds(FestUpWidget::class.java)
+            // For each glanceId
+            glanceIds.forEach { glanceId ->
+                updateAppWidgetState(context, glanceId) { prefs ->
+                    prefs[FestUpWidget.eventosKey] = Json.encodeToString(eventosWidget)
+                    prefs[FestUpWidget.userIsLoggedIn] = (currentUsername != "")
+                }
+                // We update the widget
+                FestUpWidget().update(context, glanceId)
+            }
+        }
+        //updateWidgetData()
+        /*viewModelScope.launch(Dispatchers.IO) {
+            val manager = GlanceAppWidgetManager(context)
+            val glanceIds = manager.getGlanceIds(FestUpWidget::class.java)
+            glanceIds.forEach { glanceId ->
+                FestUpWidget().update(context, glanceId)
+            }
+        }*/
+    }
 
     fun actualizarCurrentUser(username: String): Usuario = runBlocking(Dispatchers.IO){
         userRepository.getUsuario(username)

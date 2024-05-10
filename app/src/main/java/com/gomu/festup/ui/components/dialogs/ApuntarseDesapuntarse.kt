@@ -9,12 +9,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
 import com.gomu.festup.ui.components.cards.CuadrillaCardParaEventosAlert
 import com.gomu.festup.ui.components.cards.UsuarioCardParaEventosAlert
 import com.gomu.festup.vm.MainVM
 
 @Composable
 fun Apuntarse(show: Boolean, apuntado: Boolean, mainVM: MainVM, onDismiss:() -> Unit){
+    val context = LocalContext.current
     if(show){
         var cuadrillasNoApuntadas = mainVM.cuadrillasUsuarioNoApuntadas(mainVM.currentUser.value!!, mainVM.eventoMostrar.value!!.id).collectAsState(initial = emptyList())
         var cuadrillasApuntadas = mainVM.cuadrillasUsuarioApuntadas(mainVM.currentUser.value!!, mainVM.eventoMostrar.value!!.id).collectAsState(initial = emptyList())
@@ -29,23 +31,9 @@ fun Apuntarse(show: Boolean, apuntado: Boolean, mainVM: MainVM, onDismiss:() -> 
                 Text(text = mainVM.eventoMostrar.value!!.nombre) },
             text = {
                 LazyColumn {
-                    if(!apuntado){
-                        item {
-                            val usuario = mainVM.currentUser.value!!
-                            UsuarioCardParaEventosAlert(usuario = usuario, apuntado, mainVM) {
-                                mainVM.apuntarse(usuario, mainVM.eventoMostrar.value!!)
-                                onDismiss()
-                            }
-                        }
-                    }
-                    else{
-                        item {
-                            val usuario = mainVM.currentUser.value!!
-                            UsuarioCardParaEventosAlert(usuario = usuario, apuntado, mainVM) {
-                                mainVM.desapuntarse(usuario, mainVM.eventoMostrar.value!!)
-                                onDismiss()
-                            }
-                        }
+                    item {
+                        val usuario = mainVM.currentUser.value!!
+                        UsuarioCardParaEventosAlert(usuario = usuario, apuntado, mainVM)
                     }
                     items(cuadrillasNoApuntadas.value){cuadrilla ->
                         CuadrillaCardParaEventosAlert(
@@ -67,9 +55,7 @@ fun Apuntarse(show: Boolean, apuntado: Boolean, mainVM: MainVM, onDismiss:() -> 
                             onDismiss()
                         }
                     }
-
                 }
-
             }
         )
     }

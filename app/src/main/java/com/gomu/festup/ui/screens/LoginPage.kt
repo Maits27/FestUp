@@ -181,6 +181,7 @@ fun LoginForm(
                         val currentUser = withContext(Dispatchers.IO) {
                             mainVM.actualizarCurrentUser(username)
                         }
+                        mainVM.actualizarWidget(context)
                         Log.d("CURRENTUSER", currentUser.toString())
                         nuestroLocationProvider(context, mainVM)
                         mainVM.currentUser.value = currentUser
