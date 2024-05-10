@@ -437,9 +437,7 @@ fun ProfileImage(
             AsyncImage(
                 model = imageUri,
                 contentDescription = "User image",
-                onError = {
-                    imageUri = Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")
-                },
+                error = painterResource(id = R.drawable.no_user),
                 placeholder = painterResource(id = R.drawable.no_user),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

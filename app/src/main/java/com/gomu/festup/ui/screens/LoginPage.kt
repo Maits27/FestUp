@@ -387,9 +387,7 @@ fun RegistroForm(
                         contentDescription = "User image",
                         placeholder = painterResource(id = R.drawable.no_user),
                         contentScale = ContentScale.Crop,
-                        onError = {
-                            imageUri = Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")
-                        },
+                        error = painterResource(id = R.drawable.no_user),
                         modifier = Modifier
                             .size(120.dp)
                             .clip(CircleShape)

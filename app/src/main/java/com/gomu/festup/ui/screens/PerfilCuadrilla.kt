@@ -216,9 +216,7 @@ fun CuadrillaProfileImage(
                 model = imageUri,
                 contentDescription = null,
                 placeholder = painterResource(id = R.drawable.no_cuadrilla),
-                onError = {
-                    imageUri = Uri.parse("http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png")
-                },
+                error = painterResource(id = R.drawable.no_cuadrilla),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)

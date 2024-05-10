@@ -113,9 +113,7 @@ fun Evento(
                     AsyncImage(
                         model = imageUri,
                         contentDescription = "Event image",
-                        onError = {
-                            imageUri = "http://34.16.74.167/eventoImages/no-image.png"
-                        },
+                        error = painterResource(id = R.drawable.no_image),
                         placeholder = painterResource(id = R.drawable.no_image),
                         modifier = Modifier
                             .height(150.dp)
