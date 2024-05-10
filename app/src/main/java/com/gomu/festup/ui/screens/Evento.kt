@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -60,6 +61,7 @@ import com.gomu.festup.ui.components.cards.CuadrillaCard
 import com.gomu.festup.ui.components.cards.CuadrillaCardParaEventosAlert
 import com.gomu.festup.ui.components.cards.UsuarioCard
 import com.gomu.festup.ui.components.cards.UsuarioCardParaEventosAlert
+import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.utils.addEventOnCalendar
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
@@ -77,8 +79,10 @@ fun Evento(
 
     var apuntarse by remember { mutableStateOf(false) }
     var showInfo by remember { mutableStateOf(false) }
+    var showAddCalendar by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+
 
     var imageUri by remember {
         mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
@@ -129,21 +133,10 @@ fun Evento(
                             modifier = Modifier
                                 .size(30.dp)
                                 .clickable {
-                                    addEventOnCalendar(
-                                        context,
-                                        evento.nombre,
-                                        evento.fecha.time + 86400000
-                                    )
-                                    Toast
-                                        .makeText(
-                                            context,
-                                            "Evento añadido al calendario correctamente",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                        .show()
+                                    showAddCalendar = true
                                 }
                         )
-                        Spacer(modifier = Modifier.size(10.dp))
+                        Spacer(modifier = Modifier.size(16.dp))
                         Icon(
                             painter = painterResource(id = R.drawable.info),
                             contentDescription = null,
@@ -153,12 +146,13 @@ fun Evento(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.size(16.dp))
                 DatosEvento(
                     evento,
                     mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!),
                     numAsistentes,
-                    Modifier.padding(vertical = 1.dp).weight(1f)
+                    Modifier
+                        .padding(vertical = 1.dp)
+                        .weight(1f)
                 )
             }
         }
@@ -166,7 +160,7 @@ fun Evento(
             onClick = { apuntarse = true },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp, vertical = 14.dp)
         ) {
             Text(text = "Apuntarse ")
         }
@@ -176,9 +170,10 @@ fun Evento(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             ),
-            modifier = Modifier.padding(10.dp).align(Alignment.Start)
+            modifier = Modifier
+                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+                .align(Alignment.Start)
         )
-
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -199,6 +194,17 @@ fun Evento(
     ShowInfo(show = showInfo, evento = evento) {
         showInfo = false
         mainVM.actualizarWidget(context)
+    }
+    EstasSeguroDialog(show = showAddCalendar, mensaje = "¿Estas seguro de que quieres añadir ${evento.nombre} al calendario?", onDismiss = { showAddCalendar=false }) {
+        addEventOnCalendar(context = context, title = evento.nombre, evento.fecha.time + 86400000)
+        Toast
+            .makeText(
+                context,
+                "Evento añadido al calendario correctamente",
+                Toast.LENGTH_SHORT
+            )
+            .show()
+        showAddCalendar = false
     }
 }
 

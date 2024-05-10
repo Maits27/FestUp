@@ -88,20 +88,33 @@ class MainVM @Inject constructor(
     }
 
 
-    fun descargarDatos(){
-        viewModelScope.launch(Dispatchers.IO) {
-            try{
-                cuadrillaRepository.descargarCuadrillas()
-                cuadrillaRepository.descargarIntegrantes()
-                eventoRepository.descargarEventos()
-                eventoRepository.descargarUsuariosAsistentes()
-                eventoRepository.descargarCuadrillasAsistentes()
-                userRepository.descargarSeguidores()
-            }catch (e: Exception) {
-                Log.d("Excepccion al descargar datos",e.toString())
-            }
-        }
+    suspend fun descargarDatos(){
+        try{
+            cuadrillaRepository.descargarCuadrillas()
+            cuadrillaRepository.descargarIntegrantes()
+            eventoRepository.descargarEventos()
+            eventoRepository.descargarUsuariosAsistentes()
+            eventoRepository.descargarCuadrillasAsistentes()
+            userRepository.descargarSeguidores()
 
+        }catch (e: Exception) {
+            Log.d("Excepccion al descargar datos",e.toString())
+        }
+    }
+
+    suspend fun actualizarDatos(){
+        try {
+            userRepository.descargarUsuarios()
+            cuadrillaRepository.descargarCuadrillas()
+            cuadrillaRepository.descargarIntegrantes()
+            eventoRepository.descargarEventos()
+            eventoRepository.descargarUsuariosAsistentes()
+            eventoRepository.descargarCuadrillasAsistentes()
+            userRepository.descargarSeguidores()
+            Log.d("ACTUALIZAR DATOS", "Datos actualizados")
+        }catch (e: Exception) {
+            Log.d("Excepccion al descargar datos",e.toString())
+        }
     }
 
     fun editUsuario(username: String, email: String, nombre: String, fecha: Date) {

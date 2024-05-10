@@ -26,6 +26,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.vm.MainVM
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun FloatButton(onClick: () -> Unit){
@@ -71,88 +74,115 @@ fun TopBarMainView(
         mutableStateOf(false)
     }
 
+    var showRefreshButton by remember {
+        mutableStateOf(false)
+    }
+
     when (currentDestination?.route) {
         AppScreens.AddEvento.route -> {
             showTopBar = true
             title = "Añadir evento"
             showPerfil = false
             showBackArrow = true
+            showRefreshButton = false
         }
         AppScreens.AddCuadrilla.route -> {
             showTopBar = true
             title = "Añadir cuadrilla"
             showPerfil = false
             showBackArrow = true
+            showRefreshButton = false
         }
         AppScreens.PerfilYo.route -> {
             showTopBar = true
             showPerfil = false
             title = mainVM.usuarioMostrar.value!!.username
             showBackArrow = true
+            showRefreshButton = true
         }
         AppScreens.PerfilCuadrilla.route -> {
             showTopBar = true
             showPerfil = false
             showBackArrow = true
             title = mainVM.cuadrillaMostrar.value!!.nombre
+            showRefreshButton = true
         }
         AppScreens.PerfilUser.route -> {
             showTopBar = true
             showPerfil = false
             title = mainVM.usuarioMostrar.value!!.username
             showBackArrow = true
+            showRefreshButton = true
         }
         AppScreens.Evento.route -> {
             showTopBar = true
             showPerfil = false
             title = mainVM.eventoMostrar.value!!.nombre
             showBackArrow = true
+            showRefreshButton = true
         }
         AppScreens.EditPerfil.route -> {
             showTopBar = true
             showPerfil = false
             title = "Editar perfil"
             showBackArrow = true
+            showRefreshButton = false
         }
         AppScreens.Ajustes.route -> {
             showTopBar = true
             showPerfil = false
             title = "Preferencias @${mainVM.usuarioMostrar.value!!.username}"
             showBackArrow = true
+            showRefreshButton = false
         }
         else -> {
             title = stringResource(id = R.string.app_name)
             showPerfil = true
             showTopBar = true
             showBackArrow = false
+            showRefreshButton = false
         }
     }
 
-    if (showTopBar) {
-        TopAppBar(
-            title = {
-                Text(text = title)
-            },
-            actions = {
-                if (showPerfil) {
-                    IconButton(onClick = { mainVM.usuarioMostrar.value=mainVM.currentUser.value;navController.navigate(AppScreens.PerfilYo.route) }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.account),
-                            contentDescription = "",
-                            modifier = Modifier.size(35.dp)
-                        )
-                    }
-                }
-            },
-            navigationIcon = {
-                if (showBackArrow) {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back arrow")
-                    }
+    TopAppBar(
+        title = {
+            Text(text = title)
+        },
+        actions = {
+            if (showPerfil) {
+                IconButton(onClick = { mainVM.usuarioMostrar.value=mainVM.currentUser.value;navController.navigate(AppScreens.PerfilYo.route) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.account),
+                        contentDescription = "",
+                        modifier = Modifier.size(35.dp)
+                    )
                 }
             }
-        )
-    }
+            if (showRefreshButton) {
+                IconButton(
+                    onClick = {
+                        CoroutineScope(Dispatchers.IO).launch{
+                            mainVM.actualizarDatos()
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.refresh),
+                        contentDescription = "",
+                        modifier = Modifier.size(35.dp)
+                    )
+                }
+            }
+        },
+        navigationIcon = {
+            if (showBackArrow) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back arrow")
+                }
+            }
+        }
+    )
+
 }
 @Composable
 fun BottomBarMainView(

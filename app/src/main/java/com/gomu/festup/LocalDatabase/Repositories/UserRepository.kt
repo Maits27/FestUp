@@ -173,7 +173,6 @@ class UserRepository @Inject constructor(
         usuarioDao.eliminarUsuarios()
         val userList = authClient.getUsuarios()
         userList.map{
-            Log.d("lista creada", it.username)
             usuarioDao.insertUsuario(remoteUsuarioToUsuario(it))
         }
     }
