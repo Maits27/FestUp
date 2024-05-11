@@ -3,6 +3,7 @@ package com.gomu.festup.ui.components.cards
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -16,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -57,6 +59,7 @@ fun UsuarioMiniCard(
             model = imageUri,
             contentDescription = stringResource(id = R.string.user_image),
             error = painterResource(id = R.drawable.no_user),
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .border(2.dp, color = MaterialTheme.colorScheme.primary, CircleShape)
                 .size(50.dp)

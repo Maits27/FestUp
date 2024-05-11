@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -115,6 +116,7 @@ fun Evento(
                         contentDescription = context.getString(R.string.evento_foto),
                         error = painterResource(id = R.drawable.no_image),
                         placeholder = painterResource(id = R.drawable.no_image),
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .height(150.dp)
                             .width(150.dp)

@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -77,6 +78,7 @@ fun UsuarioCard(
                 model = imageUri,
                 contentDescription = stringResource(id = R.string.user_image),
                 placeholder = painterResource(id = R.drawable.no_user),
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape),
@@ -127,6 +129,7 @@ fun UsuarioCardParaEventosAlert(
                 model = imageUri,
                 contentDescription = stringResource(id = R.string.user_image),
                 placeholder = painterResource(id = R.drawable.no_image),
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape),
