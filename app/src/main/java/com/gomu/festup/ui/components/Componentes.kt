@@ -60,7 +60,6 @@ fun TopBarMainView(
     navController: NavController,
     mainVM: MainVM
 ){
-    val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
@@ -87,14 +86,14 @@ fun TopBarMainView(
     when (currentDestination?.route) {
         AppScreens.AddEvento.route -> {
             showTopBar = true
-            title = context.getString(R.string.add_event)
+            title = stringResource(id = R.string.add_event)
             showPerfil = false
             showBackArrow = true
             showRefreshButton = false
         }
         AppScreens.AddCuadrilla.route -> {
             showTopBar = true
-            title = context.getString(R.string.add_cuadrilla)
+            title = stringResource(id = R.string.add_cuadrilla)
             showPerfil = false
             showBackArrow = true
             showRefreshButton = false
@@ -130,14 +129,14 @@ fun TopBarMainView(
         AppScreens.EditPerfil.route -> {
             showTopBar = true
             showPerfil = false
-            title = context.getString(R.string.edit_profile)
+            title = stringResource(id = R.string.edit_profile)
             showBackArrow = true
             showRefreshButton = false
         }
         AppScreens.Ajustes.route -> {
             showTopBar = true
             showPerfil = false
-            title = context.getString(R.string.preferences, mainVM.usuarioMostrar.value!!.username)
+            title = stringResource(id = R.string.preferences, mainVM.usuarioMostrar.value!!.username)
             showBackArrow = true
             showRefreshButton = false
         }
@@ -197,24 +196,18 @@ fun BottomBarMainView(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    var showBottomBar by remember {
-        mutableStateOf(false)
-    }
-
-    if (
-        currentDestination?.route == AppScreens.Feed.route ||
-        currentDestination?.route == AppScreens.Search.route ||
-        currentDestination?.route == AppScreens.EventsMap.route ||
-        currentDestination?.route == AppScreens.EventsList.route)
-    {
-        showBottomBar  = true
-    }
 
     AnimatedVisibility(
-        visible = showBottomBar,
+        visible = (currentDestination?.route in listOf(
+            AppScreens.Feed.route,
+            AppScreens.Search.route,
+            AppScreens.EventsMap.route,
+            AppScreens.EventsList.route
+        )),
         enter = slideInVertically(initialOffsetY = { it }) + expandVertically(),
         exit = slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
     ) {
+
         NavigationBar(
             modifier = Modifier.height(70.dp)
         ) {
