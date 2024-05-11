@@ -34,8 +34,8 @@
     <string name="add_cuadrilla">Añadir cuadrilla</string>
     <string name="estas_seguro_calendar">¿Estás seguro de que quieres añadir %s al calendario?</string>
     <string name="evento_add_calendar_ok">Evento añadido al calendario correctamente</string>
-    <string name="edad_media">Edad media</string>
-    <string name="asistentes">Asistentes</string>
+    <string name="edad_media">Edad media:</string>
+    <string name="asistentes">Asistentes:</string>
     <string name="cerrar">Cerrar</string>
     <string name="info_evento">Información de %s</string>
     <string name="apuntarse">Apuntarse</string>
@@ -63,7 +63,7 @@
     <string name="integrantes">Integrantes: %s</string>
     <string name="no_users">No hay usuarios</string>
     <string name="no_cuadrilla">No hay cuadrillas</string>
-    <string name="eventos">Eventos</string>
+    <string name="eventos">Eventos:</string>
     <string name="cuadrillas">Cuadrillas</string>
     <string name="seguidores">Seguidores</string>
     <string name="seguidos">Seguidos</string>

@@ -3,6 +3,7 @@ package com.gomu.festup.ui.screens
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -109,7 +110,7 @@ fun Evento(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).padding(horizontal = 3.dp)
                 ) {
                     AsyncImage(
                         model = imageUri,
@@ -131,17 +132,17 @@ fun Evento(
                             painter = painterResource(id = R.drawable.add_calendar),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(30.dp)
+                                .size(25.dp).weight(1f)
                                 .clickable {
                                     showAddCalendar = true
                                 }
                         )
-                        Spacer(modifier = Modifier.size(16.dp))
+//                        Spacer(modifier = Modifier.size(30.dp))
                         Icon(
                             painter = painterResource(id = R.drawable.info),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(30.dp)
+                                .size(25.dp).weight(1f)
                                 .clickable { showInfo = true }
                         )
                     }
@@ -151,8 +152,8 @@ fun Evento(
                     mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!),
                     numAsistentes,
                     Modifier
-                        .padding(vertical = 1.dp)
-                        .weight(1f)
+                        .padding(5.dp)
+                        .weight(1.5f)
                 )
             }
         }
@@ -212,7 +213,7 @@ fun Evento(
 fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int, modifier: Modifier=Modifier) {
     val context = LocalContext.current
     Column (
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
         modifier = modifier
     ) {
@@ -266,20 +267,23 @@ fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int, modifier: Mo
         }
         Row (
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.weight(1f)
             ){
                 Text(
                     text = context.getString(R.string.edad_media),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
                 Box(
                     modifier = Modifier
@@ -300,13 +304,16 @@ fun DatosEvento(evento: Evento, edadMedia: Int, numAsistentes: Int, modifier: Mo
             Spacer(modifier = Modifier.size(16.dp))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.weight(1f)
             ){
                 Text(
                     text = context.getString(R.string.asistentes),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
                 Box(
                     modifier = Modifier

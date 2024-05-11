@@ -50,6 +50,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -248,23 +249,25 @@ fun SeguidoresYSeguidos(
     usuario: Usuario,
     mainVM: MainVM,
     navController: NavController,
-    alreadySiguiendo: MutableState<Boolean?>
+    alreadySiguiendo: MutableState<Boolean?>,
+    modifier: Modifier = Modifier
 ){
     val seguidores = mainVM.listaSeguidores(usuario).collectAsState(initial = emptyList())
     val seguidos = mainVM.listaSeguidos(usuario).collectAsState(initial = emptyList())
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
     ) {
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Seguidores(navController = navController, seguidores = seguidores)
-            Seguidos(navController = navController, seguidos = seguidos)
+            Seguidores(navController = navController, seguidores = seguidores, modifier = Modifier.weight(1f))
+            Seguidos(navController = navController, seguidos = seguidos, modifier = Modifier.weight(1f))
         }
         if(!yo){
             FollowButton(
@@ -278,11 +281,11 @@ fun SeguidoresYSeguidos(
 }
 
 @Composable
-fun Seguidores(navController: NavController, seguidores: State<List<Usuario>>) {
+fun Seguidores(navController: NavController, seguidores: State<List<Usuario>>, modifier: Modifier=Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(top = 16.dp, end = 16.dp)
+        modifier = modifier.padding(top = 16.dp, end = 5.dp)
     ) {
         Text(text = stringResource(id = R.string.seguidores))
         TextButton(
@@ -306,11 +309,11 @@ fun Seguidores(navController: NavController, seguidores: State<List<Usuario>>) {
 }
 
 @Composable
-fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>) {
+fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>, modifier: Modifier=Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(top = 16.dp, start = 16.dp)
+        modifier = modifier.padding(top = 16.dp, start = 5.dp)
     ) {
         Text(text = stringResource(id = R.string.seguidos))
         TextButton(
@@ -397,7 +400,8 @@ fun TopProfile(
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(1f)
         ) {
             ProfileImage(usuario = usuario, yo = yo, mainVM = mainVM)
             Text(
@@ -418,7 +422,8 @@ fun TopProfile(
             usuario = usuario,
             mainVM = mainVM,
             navController = navController,
-            alreadySiguiendo = alreadySiguiendo
+            alreadySiguiendo = alreadySiguiendo,
+            modifier = Modifier.weight(1.5f)
         )
     }
 }
