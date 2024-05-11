@@ -78,9 +78,9 @@ class MainVM @Inject constructor(
      *****************************************************/
 
     suspend fun descargarUsuarios(){
-        Log.d("DESCARGAR USUARIOS", "main dentro")
         try{
             userRepository.descargarUsuarios()
+            Log.d("DESCARGAR USUARIOS", "CORRECTO")
             serverOk.value = true
         }catch (e: Exception) {
             Log.d("SERVER PETICION", e.toString())
@@ -91,14 +91,16 @@ class MainVM @Inject constructor(
     suspend fun descargarDatos(){
         try{
             cuadrillaRepository.descargarCuadrillas()
+            Log.d("DESCARGAR DATOS", "CUADRILLAS DESCARGADAS")
             cuadrillaRepository.descargarIntegrantes()
             eventoRepository.descargarEventos()
             eventoRepository.descargarUsuariosAsistentes()
             eventoRepository.descargarCuadrillasAsistentes()
             userRepository.descargarSeguidores()
+            Log.d("DESCARGAR DATOS", "FIN")
 
         }catch (e: Exception) {
-            Log.d("Excepccion al descargar datos",e.toString())
+            Log.d("DESCARGAR DATOS",e.toString())
         }
     }
 
@@ -106,14 +108,15 @@ class MainVM @Inject constructor(
         try {
             userRepository.descargarUsuarios()
             cuadrillaRepository.descargarCuadrillas()
+            Log.d("ACTUALIZAR DATOS", "CUADRILLAS ACTUALIZADAS")
             cuadrillaRepository.descargarIntegrantes()
             eventoRepository.descargarEventos()
             eventoRepository.descargarUsuariosAsistentes()
             eventoRepository.descargarCuadrillasAsistentes()
             userRepository.descargarSeguidores()
-            Log.d("ACTUALIZAR DATOS", "Datos actualizados")
+            Log.d("ACTUALIZAR DATOS", "FIN")
         }catch (e: Exception) {
-            Log.d("Excepccion al descargar datos",e.toString())
+            Log.d("ACTUALIZAR DATOS",e.toString())
         }
     }
 
