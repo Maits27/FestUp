@@ -181,7 +181,7 @@ fun LoginForm(
 
     val onLoginButtonClick: () -> Unit = {
         if (username == "") Toast.makeText(context, "Introduce un nombre de usuario", Toast.LENGTH_SHORT).show()
-        else if (password == "") Toast.makeText(context, "Introduce una contrseña", Toast.LENGTH_SHORT).show()
+        else if (password == "") Toast.makeText(context, "Introduce una contraseña", Toast.LENGTH_SHORT).show()
         else {
             showLoading = true
             CoroutineScope(Dispatchers.IO).launch {
@@ -196,14 +196,15 @@ fun LoginForm(
                         val currentUser = withContext(Dispatchers.IO) {
                             mainVM.actualizarCurrentUser(username)
                         }
-                        mainVM.actualizarWidget(context)
                         nuestroLocationProvider(context, mainVM)
                         mainVM.currentUser.value = currentUser
                         preferencesVM.changeUser(currentUser.username)
 
                         withContext(Dispatchers.Main) {
+                            mainVM.actualizarWidget(context)
                             mainNavController.navigate(AppScreens.App.route)
                             showLoading = false
+                            mainVM.actualizarWidget(context)
                         }
 
                     } else {
@@ -580,7 +581,9 @@ fun registration(
                 mainVM.currentUser.value = usuario
                 preferencesVM.changeUser(usuario.username)
                 withContext(Dispatchers.Main) {
+                    mainVM.actualizarWidget(context) // Necesario repetirlo dos veces
                     mainNavController.navigate(AppScreens.App.route)
+                    mainVM.actualizarWidget(context)
                 }
             } else {
                 Handler(Looper.getMainLooper()).post {

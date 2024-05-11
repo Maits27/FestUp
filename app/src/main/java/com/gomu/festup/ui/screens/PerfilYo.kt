@@ -75,6 +75,7 @@ import com.gomu.festup.vm.PreferencesViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.sin
 
 
@@ -140,7 +141,8 @@ fun PerfilYo(
             BotonesPerfil(
                 navController= navController,
                 mainNavController = mainNavController,
-                preferencesViewModel = preferencesViewModel
+                preferencesViewModel = preferencesViewModel,
+                mainVM = mainVM
             )
         }
     }
@@ -335,8 +337,10 @@ fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>) {
 fun BotonesPerfil(
     mainNavController: NavController,
     navController: NavController,
-    preferencesViewModel: PreferencesViewModel
+    preferencesViewModel: PreferencesViewModel,
+    mainVM: MainVM
 ){
+    val context = LocalContext.current
     Row (
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -363,6 +367,7 @@ fun BotonesPerfil(
                 preferencesViewModel.changeUser("")
                 navController.popBackStack()
                 mainNavController.popBackStack()
+                mainVM.actualizarWidget(context)
             },
             modifier = Modifier.weight(1f)
         ) {
