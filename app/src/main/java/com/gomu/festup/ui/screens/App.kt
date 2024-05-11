@@ -2,6 +2,9 @@ package com.gomu.festup.ui.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -75,27 +78,77 @@ fun App(
             startDestination = AppScreens.Feed.route
         ) {
 
-            composable(AppScreens.Feed.route) { Feed(navController, mainVM) }
-            composable(AppScreens.Search.route) { Search(navController, mainVM) }
-            composable(AppScreens.EventsMap.route) { EventsMap(navController, mainVM) }
-            composable(AppScreens.EventsList.route) { EventsList(navController, mainVM) }
-            composable(AppScreens.Evento.route) { Evento(navController, mainVM) }
+            composable(AppScreens.Feed.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { Feed(navController, mainVM) }
 
-            composable(AppScreens.AddCuadrilla.route) { AddCuadrilla(navController, mainVM) }
-            composable(AppScreens.AddEvento.route) { AddEvento(navController, mainVM) }
-            composable(AppScreens.PerfilYo.route) { PerfilYo(mainNavController, navController, preferencesVM, yo = true, receiveNotifications, mainVM = mainVM) }
-            composable(AppScreens.PerfilUser.route) { PerfilYo(mainNavController, navController, preferencesVM, yo = false, receiveNotifications, mainVM = mainVM) }
-            composable(AppScreens.PerfilCuadrilla.route) { PerfilCuadrilla(navController, mainVM = mainVM) }
+            composable(AppScreens.Search.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { Search(navController, mainVM) }
+
+            composable(AppScreens.EventsMap.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { EventsMap(navController, mainVM) }
+
+            composable(AppScreens.EventsList.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { EventsList(navController, mainVM) }
+
+            composable(AppScreens.Evento.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { Evento(navController, mainVM) }
+
+            composable(AppScreens.AddCuadrilla.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { AddCuadrilla(navController, mainVM) }
+
+            composable(AppScreens.AddEvento.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { AddEvento(navController, mainVM) }
+
+            composable(AppScreens.PerfilYo.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = true, receiveNotifications, mainVM = mainVM) }
+
+            composable(AppScreens.PerfilUser.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = false, receiveNotifications, mainVM = mainVM) }
+
+            composable(AppScreens.PerfilCuadrilla.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { PerfilCuadrilla(navController, mainVM = mainVM) }
+
             composable(
                 AppScreens.SeguidoresSeguidosList.route + "/{startPage}",
                 arguments = listOf(
                     navArgument(name = "startPage") { type = NavType.IntType }
-                )
+                ),
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+
             ) {
                 SeguidoresSeguidosList(startPage = it.arguments?.getInt("startPage"), mainVM = mainVM, navController = navController)
             }
-            composable(AppScreens.Ajustes.route) { Ajustes(preferencesVM, mainVM, idioma, dark, receiveNotifications) }
-            composable(AppScreens.EditPerfil.route) { EditPerfil(navController, mainVM) }
+
+            composable(AppScreens.Ajustes.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { Ajustes(preferencesVM, mainVM, idioma, dark, receiveNotifications) }
+
+            composable(AppScreens.EditPerfil.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { EditPerfil(navController, mainVM) }
 
         }
     }

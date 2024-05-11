@@ -1,5 +1,10 @@
 package com.gomu.festup.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -58,7 +63,6 @@ fun TopBarMainView(
     val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    // TODO: Cambiar dependiendo de la ruta
 
     var title by remember {
         mutableStateOf("")
@@ -193,31 +197,62 @@ fun BottomBarMainView(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
+    var showBottomBar by remember {
+        mutableStateOf(false)
+    }
+
     if (
         currentDestination?.route == AppScreens.Feed.route ||
         currentDestination?.route == AppScreens.Search.route ||
         currentDestination?.route == AppScreens.EventsMap.route ||
-        currentDestination?.route == AppScreens.EventsList.route) {
+        currentDestination?.route == AppScreens.EventsList.route)
+    {
+        showBottomBar  = true
+    }
+
+    AnimatedVisibility(
+        visible = showBottomBar,
+        enter = slideInVertically(initialOffsetY = { it }) + expandVertically(),
+        exit = slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
+    ) {
         NavigationBar(
             modifier = Modifier.height(70.dp)
         ) {
             NavigationBarItem(
-                selected = currentDestination.route == AppScreens.Feed.route,
+                selected = currentDestination?.route == AppScreens.Feed.route,
                 onClick = { navController.navigate(AppScreens.Feed.route) },
-                icon = { Icon(painter = painterResource(id = R.drawable.home), contentDescription = "Home", modifier = Modifier.size(30.dp)) }
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.home),
+                        contentDescription = "Home",
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
             )
 
             NavigationBarItem(
-                selected = currentDestination.route == AppScreens.Search.route,
+                selected = currentDestination?.route == AppScreens.Search.route,
                 onClick = { navController.navigate(AppScreens.Search.route) },
-                icon = { Icon(painter = painterResource(id = R.drawable.lupa), contentDescription = "Search", modifier = Modifier.size(30.dp)) }
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.lupa),
+                        contentDescription = "Search",
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
             )
 
             NavigationBarItem(
-                selected = currentDestination.route == AppScreens.EventsMap.route ||
-                           currentDestination.route == AppScreens.EventsList.route,
+                selected = currentDestination?.route == AppScreens.EventsMap.route ||
+                        currentDestination?.route == AppScreens.EventsList.route,
                 onClick = { navController.navigate(AppScreens.EventsMap.route) },
-                icon = { Icon(painter = painterResource(id = R.drawable.party), contentDescription = "Events", modifier = Modifier.size(30.dp)) }
+                icon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.party),
+                        contentDescription = "Events",
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
             )
         }
     }

@@ -58,9 +58,6 @@ class MainActivity : AppCompatActivity() {
             FestUpTheme {
                 AskPermissions()
                 val lastLoggedUser = mainVM.actualizarCurrentUser(preferencesVM.lastLoggedUser)
-                preferencesVM.restartLang(
-                    preferencesVM.idioma("maitaneurruela").collectAsState(
-                        initial = preferencesVM.currentSetLang).value)
                 // A surface container using the 'background' color from the theme
                 Principal(mainVM, identVM, preferencesVM, lastLoggedUser)
             }
