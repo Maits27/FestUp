@@ -1,6 +1,7 @@
 package com.gomu.festup.ui.widget
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -64,6 +65,7 @@ class FestUpWidget : GlanceAppWidget() {
         // it will be encoded as a JSON to decode later on.
         val eventosKey = stringPreferencesKey("eventos")
         val userIsLoggedIn = booleanPreferencesKey("loggedInUser")
+        val idiomaUser = stringPreferencesKey("idioma")
     }
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
@@ -86,8 +88,8 @@ class FestUpWidget : GlanceAppWidget() {
             if (eventosString != null) Json.decodeFromString(eventosString)
             else emptyList()
         val userIsLoggedIn = prefs[userIsLoggedIn] ?: false
-
-
+        val idiomaUser = prefs[idiomaUser]
+        Log.d("Idioma widget", idiomaUser.toString())
         Column(
             modifier = GlanceModifier.fillMaxSize().background(colorFondo).padding(top = 10.dp)
         ) {
@@ -96,7 +98,7 @@ class FestUpWidget : GlanceAppWidget() {
                 modifier = GlanceModifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Próximos eventos",
+                    text = if (idiomaUser == "eu") "Datozen ekitaldiak" else "Próximos eventos",
                     style = TextStyle(
                         textAlign = TextAlign.Center,
                         color = ColorProvider(textColor),
@@ -125,7 +127,7 @@ class FestUpWidget : GlanceAppWidget() {
                     }
                 } else {
                     Text(
-                        text = "No tienes eventos en los próximos días",
+                        text = if (idiomaUser == "eu") "Ez daukazu ekitaldirik hurrengo egunetan" else "No tienes eventos en los próximos días",
                         style = TextStyle(
                             color = ColorProvider(textColor),
                             textAlign = TextAlign.Center

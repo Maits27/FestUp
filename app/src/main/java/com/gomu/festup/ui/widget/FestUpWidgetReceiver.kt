@@ -12,6 +12,7 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Repositories.CuadrillaRepository
 import com.gomu.festup.LocalDatabase.Repositories.EventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
+import com.gomu.festup.Preferences.IGeneralPreferences
 import com.gomu.festup.utils.getWidgetEventos
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -47,6 +48,8 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
     lateinit var preferencesRepository: ILoginSettings
     @Inject
     lateinit var cuadrillaRepository: CuadrillaRepository
+    @Inject
+    lateinit var preferences: IGeneralPreferences
 
 
     override fun onUpdate(
@@ -70,6 +73,7 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
     fun updateWidgetData(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val currentUsername = preferencesRepository.getLastLoggedUser()
+            val currentLanguage = preferences.language(currentUsername).first()
             // Get the list of events of the last logged user
             val eventos = if (currentUsername != "") eventoRepository.eventosUsuarioList(currentUsername)
             else emptyList()
@@ -85,6 +89,7 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
                 updateAppWidgetState(context, glanceId) { prefs ->
                     prefs[FestUpWidget.eventosKey] = Json.encodeToString(eventosWidget)
                     prefs[FestUpWidget.userIsLoggedIn] = (currentUsername != "")
+                    prefs[FestUpWidget.idiomaUser] = currentLanguage
                 }
                 // We update the widget
                 FestUpWidget().update(context, glanceId)
