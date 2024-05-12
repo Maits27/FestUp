@@ -68,6 +68,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Seguidores
 import com.gomu.festup.LocalDatabase.Entities.Usuario
@@ -508,7 +510,12 @@ fun ProfileImage(
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
             AsyncImage(                                                             // TODO: NO FUNCIONA
-                model = imageUri,
+                model = ImageRequest.Builder(context)
+                    .data(imageUri)
+                    .crossfade(true)
+                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                    .build(),
                 contentDescription = context.getString(R.string.user_image),
                 error = painterResource(id = R.drawable.no_user),
                 placeholder = painterResource(id = R.drawable.no_user),

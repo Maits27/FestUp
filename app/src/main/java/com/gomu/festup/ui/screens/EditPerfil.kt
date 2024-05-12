@@ -45,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gomu.festup.R
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.toStringNuestro
@@ -118,7 +120,12 @@ fun EditPerfil(
             Box(contentAlignment = Alignment.BottomEnd) {
                 Box(Modifier.padding(16.dp)) {
                     AsyncImage(
-                        model = imageUri,
+                        model = ImageRequest.Builder(context)
+                            .data(imageUri)
+                            .crossfade(true)
+                            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                            .build(),
                         contentDescription = context.getString(R.string.user_image),
                         placeholder = painterResource(id = R.drawable.no_user),
                         contentScale = ContentScale.Crop,

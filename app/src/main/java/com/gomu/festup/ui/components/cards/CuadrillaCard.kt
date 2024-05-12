@@ -29,12 +29,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
@@ -54,7 +57,9 @@ fun CuadrillaCard(
         navController.navigate(AppScreens.PerfilCuadrilla.route)
     }
 
-    var imageUri ="http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
+    val imageUri ="http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
+
+    val context = LocalContext.current
 
     Card(
         modifier = Modifier
@@ -70,7 +75,12 @@ fun CuadrillaCard(
                 .padding(13.dp)
         ) {
             AsyncImage(
-                model = imageUri,
+                model = ImageRequest.Builder(context)
+                    .data(imageUri)
+                    .crossfade(true)
+                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                    .build(),
                 contentDescription = stringResource(id = R.string.cuadrilla_imagen),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -117,11 +127,11 @@ fun CuadrillaCard(
 fun CuadrillaCardParaEventosAlert(
     cuadrilla: Cuadrilla,
     apuntado: Boolean,
-    mainVM: MainVM,
-    onClick: () -> Unit,
+    mainVM: MainVM
 ) {
+    val context = LocalContext.current
 
-    var imageUri="http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
+    val imageUri="http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
 
     var checkedSwitch by remember { mutableStateOf(apuntado) }
 
@@ -138,7 +148,12 @@ fun CuadrillaCardParaEventosAlert(
                 .padding(13.dp)
         ) {
             AsyncImage(
-                model = imageUri,
+                model = ImageRequest.Builder(context)
+                    .data(imageUri)
+                    .crossfade(true)
+                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                    .build(),
                 contentDescription = stringResource(id = R.string.cuadrilla_imagen),
                 placeholder = painterResource(id = R.drawable.no_cuadrilla),
                 contentScale = ContentScale.Crop,

@@ -36,6 +36,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
@@ -59,7 +61,9 @@ fun UsuarioCard(
     }
 
 
-    var imageUri= "http://34.16.74.167/userProfileImages/${usuario.username}.png"
+    val imageUri= "http://34.16.74.167/userProfileImages/${usuario.username}.png"
+
+    val context = LocalContext.current
 
     Card(
         modifier = Modifier
@@ -75,7 +79,12 @@ fun UsuarioCard(
             horizontalArrangement = Arrangement.Start
         ){
             AsyncImage(
-                model = imageUri,
+                model = ImageRequest.Builder(context)
+                    .data(imageUri)
+                    .crossfade(true)
+                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                    .build(),
                 contentDescription = stringResource(id = R.string.user_image),
                 placeholder = painterResource(id = R.drawable.no_user),
                 contentScale = ContentScale.Crop,
@@ -108,8 +117,9 @@ fun UsuarioCardParaEventosAlert(
     apuntado: Boolean,
     mainVM: MainVM
 ) {
+    val context = LocalContext.current
 
-    var imageUri="http://34.16.74.167/userProfileImages/${usuario.username}.png"
+    val imageUri="http://34.16.74.167/userProfileImages/${usuario.username}.png"
 
     var checkedSwitch by remember { mutableStateOf(apuntado) }
 
@@ -126,7 +136,12 @@ fun UsuarioCardParaEventosAlert(
             horizontalArrangement = Arrangement.SpaceBetween
         ){
             AsyncImage(
-                model = imageUri,
+                model = ImageRequest.Builder(context)
+                    .data(imageUri)
+                    .crossfade(true)
+                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                    .build(),
                 contentDescription = stringResource(id = R.string.user_image),
                 placeholder = painterResource(id = R.drawable.no_image),
                 contentScale = ContentScale.Crop,

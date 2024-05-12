@@ -76,6 +76,8 @@ import com.gomu.festup.ui.components.cards.UsuarioMiniCard
 import com.gomu.festup.utils.openTelegram
 import com.gomu.festup.utils.openWhatsApp
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gomu.festup.ui.AppScreens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -259,7 +261,12 @@ fun CuadrillaProfileImage(
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(16.dp)) {
             AsyncImage(
-                model = imageUri,
+                model = ImageRequest.Builder(context)
+                    .data(imageUri)
+                    .crossfade(true)
+                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                    .build(),
                 contentDescription = null,
                 placeholder = painterResource(id = R.drawable.no_cuadrilla),
                 error = painterResource(id = R.drawable.no_cuadrilla),
