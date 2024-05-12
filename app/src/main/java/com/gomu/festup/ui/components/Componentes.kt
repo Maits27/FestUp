@@ -162,14 +162,15 @@ fun TopBarMainView(
 
     TopAppBar(
         title = {
-//            Text(text = title)
-            Image(
-                painter = painterResource(id = R.drawable.festup),
-                contentDescription = "Logo-FestUp",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(16.dp))
-            )
+            if (title == stringResource(id = R.string.app_name)){
+                Image(
+                    painter = painterResource(id = R.drawable.festup),
+                    contentDescription = "Logo-FestUp",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
+            } else Text(text = title)
         },
         actions = {
             if (showPerfil) {

@@ -482,6 +482,7 @@ fun ProfileImage(
     var imageUri by remember {
         mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
     }
+    Log.d("imageuri", imageUri.toString())
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -494,7 +495,7 @@ fun ProfileImage(
 
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
-            AsyncImage(
+            AsyncImage(                                                             // TODO: NO FUNCIONA
                 model = imageUri,
                 contentDescription = context.getString(R.string.user_image),
                 error = painterResource(id = R.drawable.no_user),
