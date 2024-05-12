@@ -2,6 +2,7 @@ package com.gomu.festup.ui.screens
 
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -45,6 +46,7 @@ fun App(
     preferencesVM.restartLang(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
             initial = preferencesVM.currentSetLang).value)
+    Log.d("LAST LOGGED USER DENTRO", preferencesVM.lastLoggedUser)
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {

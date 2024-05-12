@@ -93,6 +93,7 @@ fun LoginPage(
     preferencesVM: PreferencesViewModel,
     lastLoggedUser: Usuario?
 ) {
+
     if (mainVM.serverOk.value && lastLoggedUser!=null){
         mainNavController.navigate(AppScreens.App.route)
     }
@@ -115,7 +116,7 @@ fun LoginPage(
                 Text(text = "Iniciar sesión", modifier = Modifier.padding(vertical = 15.dp))
             }
             Tab(
-                selected = selectedTab==1,
+                selected = selectedTab == 1,
                 onClick = { selectedTab = 1 },
             ) {
                 Text(text = "Registrarse", modifier = Modifier.padding(vertical = 15.dp))

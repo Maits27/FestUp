@@ -136,6 +136,8 @@ fun Principal(
     ) {
         composable(AppScreens.LoginPage.route) {
             if (!mainVM.serverOk.value){
+                Log.d("He pasado por aqui", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                Log.d("LAST LOGGED USER", lastLoggedUser?.username?:"null")
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         withContext(Dispatchers.IO) {
@@ -144,8 +146,7 @@ fun Principal(
                         if (lastLoggedUser!= null) {
                             nuestroLocationProvider(context, mainVM)
                             mainVM.currentUser.value = lastLoggedUser
-                            preferencesVM.changeUser(lastLoggedUser.username)
-                            identVM.recuperarSesion(preferencesVM.lastBearerToken,preferencesVM.lastRefreshToken)
+                            identVM.recuperarSesion(preferencesVM.lastBearerToken, preferencesVM.lastRefreshToken)
                             withContext(Dispatchers.IO) {
                                 mainVM.descargarDatos()
                             }

@@ -1,6 +1,8 @@
 package com.gomu.festup.ui.screens
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -69,6 +71,7 @@ import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Seguidores
 import com.gomu.festup.LocalDatabase.Entities.Usuario
+import com.gomu.festup.MainActivity
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.EditImageIcon
@@ -181,7 +184,8 @@ fun PerfilYo(
             BotonesPerfil(
                 navController= navController,
                 mainNavController = mainNavController,
-                preferencesChangeUser = preferencesViewModel::changeUser,
+                preferencesVM = preferencesViewModel,
+                mainVM = mainVM,
                 actualizarWidget = mainVM::actualizarWidget
             )
         }
@@ -379,10 +383,12 @@ fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>, modif
 fun BotonesPerfil(
     mainNavController: NavController,
     navController: NavController,
-    preferencesChangeUser: (String) -> Unit,
+    preferencesVM: PreferencesViewModel,
+    mainVM: MainVM,
     actualizarWidget: (Context) -> Unit
 ){
     val context = LocalContext.current
+    val currentUser by preferencesVM.currentUser.collectAsState(initial = preferencesVM.lastLoggedUser)
     Row (
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -406,10 +412,13 @@ fun BotonesPerfil(
         }
         IconButton(
             onClick = {
-                preferencesChangeUser("")
-                navController.popBackStack()
+                preferencesVM.changeUser("")
+                mainVM.serverOk.value = false
                 mainNavController.popBackStack()
-                actualizarWidget(context)
+                (context as? Activity)?.finish()
+                val intent = Intent(context, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context.startActivity(intent)
             },
             modifier = Modifier.weight(1f)
         ) {
@@ -417,6 +426,7 @@ fun BotonesPerfil(
                 painter = painterResource(id = R.drawable.logout),
                 contentDescription = "Logout")
         }
+
     }
 }
 
@@ -440,7 +450,9 @@ fun TopProfile(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f).padding(bottom = 5.dp)
+            modifier = Modifier
+                .weight(1f)
+                .padding(bottom = 5.dp)
         ) {
             ProfileImage(usuario = usuario, yo = yo, updateUserImage = mainVM::updateUserImage, navController = navController)
             Text(
@@ -564,27 +576,3 @@ fun FollowButton(
         )
     }
 }
-
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true, backgroundColor = 0xFFB400FF)
-@Composable
-fun ProfileImagePreview() {
-    ProfileImage(
-        navController = rememberNavController(),
-        usuario = Usuario("Pepito", "ehu@ehu.eus", "Pepito", Date.from(Instant.now())),
-        updateUserImage = { _, _, _ -> },
-        yo = true
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BotonesPerfilPreview() {
-    BotonesPerfil(
-        mainNavController = rememberNavController(),
-        navController = rememberNavController(),
-        preferencesChangeUser = { _ -> },
-        actualizarWidget = { _ -> }
-    )
-}
-
