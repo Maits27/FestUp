@@ -138,6 +138,7 @@ fun EventoVertical(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EventoHorizontal(context: Context, navController: NavController, mainVM: MainVM, evento: Evento, numAsistentes: Int, users: List<Usuario>, cuadrillas: List<Cuadrilla>, onApuntarse : () -> Unit){
     Row(
@@ -147,8 +148,33 @@ fun EventoHorizontal(context: Context, navController: NavController, mainVM: Mai
             .fillMaxSize()
             .padding(8.dp)
     ) {
-
-        CardHorizontal(context, mainVM, evento, numAsistentes, Modifier.weight(1f))
+        var refresh by remember{ mutableStateOf(false) }
+        val scrollState = rememberScrollState()
+        val refreshState = rememberPullRefreshState(
+            refreshing = refresh,
+            onRefresh = {
+                CoroutineScope(Dispatchers.IO).launch{
+                    refresh = true
+                    mainVM.actualizarDatos()
+                    refresh = false
+                }
+            },
+        )
+        Box(
+            modifier = Modifier
+                .pullRefresh(refreshState)
+                .verticalScroll(
+                    scrollState,
+                ).weight(1f),
+            contentAlignment = Alignment.Center
+        ) {
+            CardHorizontal(context, mainVM, evento, numAsistentes)
+            PullRefreshIndicator(
+                refreshing = refresh,
+                state = refreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
+        }
 
         ColumnaAsistentes(
             context = context, navController = navController, mainVM = mainVM,
