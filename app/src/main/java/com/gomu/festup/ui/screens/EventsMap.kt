@@ -127,10 +127,9 @@ fun EventsMap(
                     title = location.evento.nombre,
                     icon = bitmapDescriptorFromVector(
                         LocalContext.current,
-                        R.drawable.location,
+                        R.drawable.logoloc_min,
                         size = 120,
-                        alpha = 255,
-                        color = MaterialTheme.colorScheme.primary.toArgb()
+                        alpha = 255
                     ),
                     snippet = location.evento.fecha.toStringNuestro(),
                     onInfoWindowClick = {

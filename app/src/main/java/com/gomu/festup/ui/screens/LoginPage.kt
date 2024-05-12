@@ -18,6 +18,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -203,7 +204,9 @@ fun LoginForm(
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Image(
             painter = painterResource(id = R.drawable.festup),
@@ -238,19 +241,25 @@ fun LoginForm(
             modifier = modifierForInputs
         )
         if (!showLoading) {
-            Button(
-                onClick = { onLoginButtonClick() },
-                enabled = mainVM.serverOk.value,
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(end = 54.dp)
-            ) {
-                Text(text = "Iniciar sesión")
+            Row (
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.align(Alignment.End)
+            ){
+                if(!mainVM.serverOk.value) Icon(painter = painterResource(id = R.drawable.no_wifi), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+                Button(
+                    onClick = { onLoginButtonClick() },
+                    enabled = mainVM.serverOk.value,
+                    modifier = Modifier
+                        .padding(start = 10.dp, end = 50.dp)
+                ) {
+                    Text(text = "Iniciar sesión")
+                }
             }
         }
         else CircularProgressIndicator(modifier = Modifier
             .align(Alignment.End)
-            .padding(end = 54.dp))
+            .padding(end = 50.dp))
     }
 
 
@@ -444,12 +453,22 @@ fun RegistroForm(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = modifierForInputs
             )
-            Button(
-                onClick = { onRegisterButtonClick() },
-                enabled = mainVM.serverOk.value
-            ) {
-                Text(text = "Registrarse")
+            Row (
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.align(Alignment.End)
+            ){
+                if(!mainVM.serverOk.value) Icon(painter = painterResource(id = R.drawable.no_wifi), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+                Button(
+                    onClick = { onRegisterButtonClick() },
+                    enabled = mainVM.serverOk.value,
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                ) {
+                    Text(text = "Registrarse")
+                }
             }
+
         }
         if (showLoading) CircularProgressIndicator(modifier = Modifier.size(100.dp))
     }
