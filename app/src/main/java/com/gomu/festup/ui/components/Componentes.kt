@@ -79,8 +79,9 @@ fun TopBarMainView(
         mutableStateOf(false)
     }
 
+    val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
 
-    when (currentDestination?.route) {
+    when (routeWithoutArguments) {
         AppScreens.AddEvento.route -> {
             showTopBar = true
             title = stringResource(id = R.string.add_event)
@@ -127,6 +128,23 @@ fun TopBarMainView(
             showTopBar = true
             showPerfil = false
             title = stringResource(id = R.string.preferences, mainVM.usuarioMostrar.value!!.username)
+            showBackArrow = true
+        }
+        AppScreens.SeguidoresSeguidosList.route -> {
+            showTopBar = true
+            showPerfil = false
+            title = mainVM.usuarioMostrar.value!!.username
+            showBackArrow = true
+        }
+        AppScreens.FullImageScreen.route -> {
+            showTopBar = true
+            showPerfil = false
+            val type = currentDestination.route?.split("/")?.get(1)
+            when (type) {
+                "user" -> title = mainVM.usuarioMostrar.value!!.username
+                "cuadrilla" -> title = mainVM.cuadrillaMostrar.value!!.nombre
+                "evento" -> title = mainVM.eventoMostrar.value!!.nombre
+            }
             showBackArrow = true
         }
         else -> {

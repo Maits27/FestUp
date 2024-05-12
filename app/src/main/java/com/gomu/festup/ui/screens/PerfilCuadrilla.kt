@@ -76,6 +76,7 @@ import com.gomu.festup.ui.components.cards.UsuarioMiniCard
 import com.gomu.festup.utils.openTelegram
 import com.gomu.festup.utils.openWhatsApp
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import com.gomu.festup.ui.AppScreens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -134,7 +135,8 @@ fun PerfilCuadrilla(
                 TopProfileCuadrilla(
                     mainVM =  mainVM,
                     cuadrilla = cuadrilla,
-                    pertenezco = pertenezco
+                    pertenezco = pertenezco,
+                    navController = navController
                 )
                 PullRefreshIndicator(
                     refreshing = refresh,
@@ -195,7 +197,8 @@ fun EliminarCuadrilla(cuadrilla: Cuadrilla, mainVM: MainVM) {
 fun TopProfileCuadrilla(
     mainVM: MainVM,
     cuadrilla: Cuadrilla,
-    pertenezco: Boolean
+    pertenezco: Boolean,
+    navController: NavController
 ){
     Row (
         modifier = Modifier
@@ -203,7 +206,7 @@ fun TopProfileCuadrilla(
             .fillMaxWidth()
             .padding(bottom = 16.dp)
     ) {
-        CuadrillaProfileImage(cuadrilla, pertenezco, mainVM)
+        CuadrillaProfileImage(cuadrilla, pertenezco, mainVM, navController = navController)
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(15.dp),
@@ -235,7 +238,8 @@ fun TopProfileCuadrilla(
 fun CuadrillaProfileImage(
     cuadrilla: Cuadrilla,
     pertenezco: Boolean,
-    mainVM: MainVM
+    mainVM: MainVM,
+    navController: NavController
 ) {
     val context = LocalContext.current
 
@@ -262,7 +266,14 @@ fun CuadrillaProfileImage(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .clickable {
+                        navController.navigate(
+                            AppScreens.FullImageScreen.route + "/" +
+                                    "cuadrilla" + "/" +
+                                    cuadrilla.nombre
+                        )
+                    }
             )
         }
         // Icono para editar imagen
