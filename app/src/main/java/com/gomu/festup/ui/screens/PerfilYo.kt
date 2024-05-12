@@ -89,6 +89,7 @@ fun PerfilYo(
     preferencesViewModel: PreferencesViewModel,
     yo: Boolean = false,
     recibirNotificaciones: Boolean,
+    showAge: Boolean,
     mainVM: MainVM
 ) {
     var usuario = mainVM.currentUser.value!!
@@ -141,7 +142,7 @@ fun PerfilYo(
 
                 TopProfile(
                     mainVM = mainVM,
-                    edad = mainVM.calcularEdad(usuario),
+                    edad = if(showAge) mainVM.calcularEdad(usuario) else -1,
                     yo = yo,
                     recibirNotificaciones = recibirNotificaciones,
                     alreadySiguiendo = alreadySiguiendo,
@@ -434,7 +435,7 @@ fun TopProfile(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f).padding(bottom = 5.dp)
         ) {
             ProfileImage(usuario = usuario, yo = yo, mainVM = mainVM)
             Text(
@@ -442,12 +443,14 @@ fun TopProfile(
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center
             )
-            Text(
-                text = context.getString(R.string.age, edad.toString()),
-                modifier = Modifier.padding(5.dp),
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center
-            )
+            if(edad!=-1){
+                Text(
+                    text = context.getString(R.string.age, edad.toString()),
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
         SeguidoresYSeguidos(
             yo = yo,
@@ -456,7 +459,7 @@ fun TopProfile(
             mainVM = mainVM,
             navController = navController,
             alreadySiguiendo = alreadySiguiendo,
-            modifier = Modifier.weight(1.5f)
+            modifier = Modifier.weight(1.2f)
         )
     }
 }
@@ -484,7 +487,7 @@ fun ProfileImage(
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {
-        Box(Modifier.padding(16.dp)) {
+        Box(Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
             AsyncImage(
                 model = imageUri,
                 contentDescription = context.getString(R.string.user_image),

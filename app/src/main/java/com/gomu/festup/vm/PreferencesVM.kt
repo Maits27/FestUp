@@ -43,6 +43,7 @@ class PreferencesViewModel @Inject constructor(
 
     val receiveNotifications: (String)-> Flow<Boolean> = { preferencesRepository.getReceiveNotifications(it)}
 
+    val mostrarEdad: (String) -> Flow<Boolean> = { preferencesRepository.getVisualizarEdad(it)}
     /*************************************************
      **                    Eventos                  **
      *************************************************/
@@ -89,5 +90,10 @@ class PreferencesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.changeReceiveNotifications(currentUser.first()) }
     }
 
+    ////////////////////// Edad //////////////////////
+
+    fun changeVisualizarEdad() {
+        viewModelScope.launch(Dispatchers.IO) { preferencesRepository.changeVisualizarEdad(currentUser.first()) }
+    }
 
 }

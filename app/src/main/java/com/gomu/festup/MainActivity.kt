@@ -67,27 +67,7 @@ class MainActivity : AppCompatActivity() {
                 AskPermissions()
                 val context = LocalContext.current
                 val lastLoggedUser = mainVM.actualizarCurrentUser(preferencesVM.lastLoggedUser)
-                if (!mainVM.serverOk.value){
-                    CoroutineScope(Dispatchers.IO).launch {
-                        try {
-                            withContext(Dispatchers.IO) {
-                                mainVM.descargarUsuarios()
-                            }
-                            if (lastLoggedUser!= null) {
-                                nuestroLocationProvider(context, mainVM)
-                                mainVM.currentUser.value = lastLoggedUser
-                                preferencesVM.changeUser(lastLoggedUser.username)
-                                identVM.recuperarSesion(preferencesVM.lastBearerToken,preferencesVM.lastRefreshToken)
-                                withContext(Dispatchers.IO) {
-                                    mainVM.descargarDatos()
-                                }
 
-                            }
-                        } catch (e: Exception) {
-                            Log.e("Excepcion al iniciar sesion", e.toString())
-                        }
-                    }
-                }
                 // A surface container using the 'background' color from the theme
                 Principal(mainVM, identVM, preferencesVM, lastLoggedUser)
             }
@@ -137,28 +117,50 @@ enum class NotificationID(val id: Int) {
     NOTIFICATIONS(0)
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun Principal(
     mainVM: MainVM,
     identVM: IdentVM,
-    preferencesViewModel: PreferencesViewModel,
+    preferencesVM: PreferencesViewModel,
     lastLoggedUser: Usuario?
 ) {
-
+    val context = LocalContext.current
     val mainNavController = rememberNavController()
-    val dark by preferencesViewModel.darkTheme(mainVM.currentUser.value?.username?:"").collectAsState(initial = true)
+    val dark by preferencesVM.darkTheme(mainVM.currentUser.value?.username?:"").collectAsState(initial = true)
 
     NavHost(
         navController = mainNavController,
         startDestination = AppScreens.LoginPage.route
     ) {
         composable(AppScreens.LoginPage.route) {
-            LoginPage(mainNavController, mainVM, identVM, preferencesViewModel, lastLoggedUser)
+            if (!mainVM.serverOk.value){
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        withContext(Dispatchers.IO) {
+                            mainVM.descargarUsuarios()
+                        }
+                        if (lastLoggedUser!= null) {
+                            nuestroLocationProvider(context, mainVM)
+                            mainVM.currentUser.value = lastLoggedUser
+                            preferencesVM.changeUser(lastLoggedUser.username)
+                            identVM.recuperarSesion(preferencesVM.lastBearerToken,preferencesVM.lastRefreshToken)
+                            withContext(Dispatchers.IO) {
+                                mainVM.descargarDatos()
+                            }
+
+                        }
+                    } catch (e: Exception) {
+                        Log.e("Excepcion al iniciar sesion", e.toString())
+                    }
+                }
+            }
+            LoginPage(mainNavController, mainVM, identVM, preferencesVM, lastLoggedUser)
         }
         composable(AppScreens.App.route) {
             FestUpTheme(dark) {
-                App(mainNavController, mainVM, preferencesViewModel)
+                App(mainNavController, mainVM, preferencesVM)
             }
         }
     }

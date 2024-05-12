@@ -31,6 +31,7 @@ class PreferencesRepository @Inject constructor(
     fun PREFERENCE_LANGUAGE(username: String) = stringPreferencesKey("${username}_preference_lang")
     fun PREFERENCE_THEME_DARK(username: String) = booleanPreferencesKey("${username}_preference_theme")
     fun PREFERENCE_NOTIFICATIONS(username: String) = booleanPreferencesKey("${username}_preference_save")
+    fun PREFERENCE_AGE(username: String) = booleanPreferencesKey("${username}_preference_age")
 
 
     override suspend fun getLastLoggedUser(): String = context.dataStore.data.first()[LAST_LOGGED_USER]?:""
@@ -114,6 +115,14 @@ class PreferencesRepository @Inject constructor(
         }
     }
 
-
+    override fun getVisualizarEdad(username: String): Flow<Boolean> =
+        context.dataStore.data.map { preferences ->
+            preferences[PREFERENCE_AGE(username)] ?: true
+        }
+    override suspend fun changeVisualizarEdad(username: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PREFERENCE_AGE(username)] = !getVisualizarEdad(username).first()
+        }
+    }
 
 }
