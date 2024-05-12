@@ -436,7 +436,7 @@ fun TopProfile(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.weight(1f)
         ) {
-            ProfileImage(usuario = usuario, yo = yo, mainVM = mainVM)
+            ProfileImage(usuario = usuario, yo = yo, mainVM = mainVM, navController = navController)
             Text(
                 text = usuario.nombre,
                 fontSize = 15.sp,
@@ -467,6 +467,7 @@ fun ProfileImage(
     usuario: Usuario,
     mainVM: MainVM,
     yo: Boolean,
+    navController: NavController
 ) {
     val context = LocalContext.current
 
@@ -494,6 +495,13 @@ fun ProfileImage(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
+                    .clickable {
+                        navController.navigate(
+                            AppScreens.FullImageScreen.route + "/" +
+                                    "user" + "/" +
+                                    usuario.username
+                        )
+                    }
             )
         }
         // Icono para editar imagen

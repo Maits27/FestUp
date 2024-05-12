@@ -70,6 +70,7 @@ import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.R
+import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.dialogs.Apuntarse
 import com.gomu.festup.ui.components.cards.CuadrillaCard
 import com.gomu.festup.ui.components.cards.CuadrillaCardParaEventosAlert
@@ -131,7 +132,7 @@ fun EventoVertical(
             .fillMaxSize()
             .padding(top = 13.dp)
     ) {
-        CardVertical(context, mainVM, evento, numAsistentes)
+        CardVertical(context, mainVM, evento, numAsistentes, navController = navController)
         ColumnaAsistentes(context = context, navController = navController, mainVM = mainVM, users = users, cuadrillas = cuadrillas, modifier = Modifier.fillMaxWidth()) {
             onApuntarse()
         }
@@ -187,7 +188,7 @@ fun EventoHorizontal(context: Context, navController: NavController, mainVM: Mai
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes: Int){
+fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes: Int, navController: NavController){
     var refresh by remember{ mutableStateOf(false) }
     val scrollState = rememberScrollState()
     val refreshState = rememberPullRefreshState(
@@ -239,6 +240,13 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
                             .height(150.dp)
                             .width(150.dp)
                             .clip(RoundedCornerShape(35.dp))
+                            .clickable {
+                                navController.navigate(
+                                    AppScreens.FullImageScreen.route + "/" +
+                                            "evento" + "/" +
+                                            evento.id
+                                )
+                            }
                     )
                     IconosEvento(context = context, mainVM = mainVM, evento = evento, modifier = Modifier.padding(top = 12.dp))
                 }

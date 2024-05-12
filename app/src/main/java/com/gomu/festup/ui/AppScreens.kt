@@ -22,4 +22,6 @@ sealed class AppScreens (val route: String) {
     object AddCuadrilla: AppScreens("AddCuadrilla")
     object AddEvento: AppScreens("AddEvento")
 
+    object FullImageScreen: AppScreens("FullImageScreen")
+
 }

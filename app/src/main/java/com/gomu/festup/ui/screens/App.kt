@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
@@ -149,7 +150,16 @@ fun App(
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
             ) { EditPerfil(navController, mainVM) }
-
+            composable(AppScreens.FullImageScreen.route + "/{type}/{filename}",
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { backStackEntry ->
+                val type = backStackEntry.arguments?.getString("type")
+                val filename = backStackEntry.arguments?.getString("filename")
+                if (filename != null && type != null) {
+                    FullImageScreen(type, filename)
+                }
+            }
         }
     }
 }
