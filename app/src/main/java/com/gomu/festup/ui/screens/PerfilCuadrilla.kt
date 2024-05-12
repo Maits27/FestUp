@@ -123,11 +123,27 @@ fun PerfilCuadrilla(
                 .padding(padding)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
-            TopProfileCuadrilla(
-                mainVM =  mainVM,
-                cuadrilla = cuadrilla,
-                pertenezco = pertenezco
-            )
+            Box(
+                modifier = Modifier
+                    .pullRefresh(refreshState)
+                    .verticalScroll(
+                        scrollState,
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                TopProfileCuadrilla(
+                    mainVM =  mainVM,
+                    cuadrilla = cuadrilla,
+                    pertenezco = pertenezco
+                )
+                PullRefreshIndicator(
+                    refreshing = refresh,
+                    state = refreshState,
+                    modifier = Modifier.align(
+                        Alignment.TopCenter,
+                    ),
+                )
+            }
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -147,23 +163,6 @@ fun PerfilCuadrilla(
                     cuadrilla = cuadrilla
                 )
             }
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(refreshState)
-                .verticalScroll(
-                    scrollState,
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            PullRefreshIndicator(
-                refreshing = refresh,
-                state = refreshState,
-                modifier = Modifier.align(
-                    Alignment.TopCenter,
-                ),
-            )
         }
     }
 }

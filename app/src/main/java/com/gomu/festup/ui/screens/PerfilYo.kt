@@ -80,6 +80,7 @@ import kotlinx.coroutines.withContext
 import kotlin.math.sin
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun PerfilYo(
@@ -101,6 +102,21 @@ fun PerfilYo(
 
     val cuadrillas = mainVM.getCuadrillasUsuario(usuario).collectAsState(initial = emptyList())
 
+    var refresh by remember{ mutableStateOf(false) }
+
+    val scrollState = rememberScrollState()
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = refresh,
+        onRefresh = {
+            CoroutineScope(Dispatchers.IO).launch{
+                refresh = true
+                mainVM.actualizarDatos()
+                refresh = false
+            }
+        },
+    )
+
     Column (
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -114,15 +130,32 @@ fun PerfilYo(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
-            TopProfile(
-                mainVM = mainVM,
-                edad = mainVM.calcularEdad(usuario),
-                yo = yo,
-                recibirNotificaciones = recibirNotificaciones,
-                alreadySiguiendo = alreadySiguiendo,
-                usuario = usuario,
-                navController = navController
-            )
+            Box(
+                modifier = Modifier
+                    .pullRefresh(refreshState)
+                    .verticalScroll(
+                        scrollState,
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+
+                TopProfile(
+                    mainVM = mainVM,
+                    edad = mainVM.calcularEdad(usuario),
+                    yo = yo,
+                    recibirNotificaciones = recibirNotificaciones,
+                    alreadySiguiendo = alreadySiguiendo,
+                    usuario = usuario,
+                    navController = navController
+                )
+                PullRefreshIndicator(
+                    refreshing = refresh,
+                    state = refreshState,
+                    modifier = Modifier.align(
+                        Alignment.TopCenter,
+                    ),
+                )
+            }
         }
         Column(
             modifier = Modifier

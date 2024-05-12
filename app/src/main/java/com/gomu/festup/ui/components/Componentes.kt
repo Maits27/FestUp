@@ -79,9 +79,6 @@ fun TopBarMainView(
         mutableStateOf(false)
     }
 
-    var showRefreshButton by remember {
-        mutableStateOf(false)
-    }
 
     when (currentDestination?.route) {
         AppScreens.AddEvento.route -> {
@@ -89,63 +86,54 @@ fun TopBarMainView(
             title = stringResource(id = R.string.add_event)
             showPerfil = false
             showBackArrow = true
-            showRefreshButton = false
         }
         AppScreens.AddCuadrilla.route -> {
             showTopBar = true
             title = stringResource(id = R.string.add_cuadrilla)
             showPerfil = false
             showBackArrow = true
-            showRefreshButton = false
         }
         AppScreens.PerfilYo.route -> {
             showTopBar = true
             showPerfil = false
             title = mainVM.usuarioMostrar.value!!.username
             showBackArrow = true
-            showRefreshButton = true
         }
         AppScreens.PerfilCuadrilla.route -> {
             showTopBar = true
             showPerfil = false
             showBackArrow = true
             title = mainVM.cuadrillaMostrar.value!!.nombre
-            showRefreshButton = true
         }
         AppScreens.PerfilUser.route -> {
             showTopBar = true
             showPerfil = false
             title = mainVM.usuarioMostrar.value!!.username
             showBackArrow = true
-            showRefreshButton = true
         }
         AppScreens.Evento.route -> {
             showTopBar = true
             showPerfil = false
             title = mainVM.eventoMostrar.value!!.nombre
             showBackArrow = true
-            showRefreshButton = true
         }
         AppScreens.EditPerfil.route -> {
             showTopBar = true
             showPerfil = false
             title = stringResource(id = R.string.edit_profile)
             showBackArrow = true
-            showRefreshButton = false
         }
         AppScreens.Ajustes.route -> {
             showTopBar = true
             showPerfil = false
             title = stringResource(id = R.string.preferences, mainVM.usuarioMostrar.value!!.username)
             showBackArrow = true
-            showRefreshButton = false
         }
         else -> {
             title = stringResource(id = R.string.app_name)
             showPerfil = true
             showTopBar = true
             showBackArrow = false
-            showRefreshButton = false
         }
     }
 
@@ -158,21 +146,6 @@ fun TopBarMainView(
                 IconButton(onClick = { mainVM.usuarioMostrar.value=mainVM.currentUser.value;navController.navigate(AppScreens.PerfilYo.route) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.account),
-                        contentDescription = "",
-                        modifier = Modifier.size(35.dp)
-                    )
-                }
-            }
-            if (showRefreshButton) {
-                IconButton(
-                    onClick = {
-                        CoroutineScope(Dispatchers.IO).launch{
-                            mainVM.actualizarDatos()
-                        }
-                    }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.refresh),
                         contentDescription = "",
                         modifier = Modifier.size(35.dp)
                     )

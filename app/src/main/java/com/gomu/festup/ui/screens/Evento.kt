@@ -20,7 +20,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -68,7 +74,11 @@ import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.utils.addEventOnCalendar
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Evento(
     navController: NavController,
@@ -90,6 +100,21 @@ fun Evento(
         mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
     }
 
+    var refresh by remember{ mutableStateOf(false) }
+
+    val scrollState = rememberScrollState()
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = refresh,
+        onRefresh = {
+            CoroutineScope(Dispatchers.IO).launch{
+                refresh = true
+                mainVM.actualizarDatos()
+                refresh = false
+            }
+        },
+    )
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
@@ -97,65 +122,81 @@ fun Evento(
             .fillMaxSize()
             .padding(top = 13.dp)
     ) {
-        Card(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 6.dp, vertical = 3.dp)
+                .pullRefresh(refreshState)
+                .verticalScroll(
+                    scrollState,
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 6.dp, vertical = 20.dp)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 6.dp, vertical = 3.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top,
-                    modifier = Modifier.weight(1f).padding(horizontal = 3.dp)
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 20.dp)
                 ) {
-                    AsyncImage(
-                        model = imageUri,
-                        contentDescription = context.getString(R.string.evento_foto),
-                        error = painterResource(id = R.drawable.no_image),
-                        placeholder = painterResource(id = R.drawable.no_image),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .height(150.dp)
-                            .width(150.dp)
-                            .clip(RoundedCornerShape(35.dp))
-                    )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.padding(top = 12.dp)
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Top,
+                        modifier = Modifier.weight(1f).padding(horizontal = 3.dp)
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.add_calendar),
-                            contentDescription = null,
+                        AsyncImage(
+                            model = imageUri,
+                            contentDescription = context.getString(R.string.evento_foto),
+                            error = painterResource(id = R.drawable.no_image),
+                            placeholder = painterResource(id = R.drawable.no_image),
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .size(25.dp).weight(1f)
-                                .clickable {
-                                    showAddCalendar = true
-                                }
+                                .height(150.dp)
+                                .width(150.dp)
+                                .clip(RoundedCornerShape(35.dp))
                         )
-//                        Spacer(modifier = Modifier.size(30.dp))
-                        Icon(
-                            painter = painterResource(id = R.drawable.info),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(25.dp).weight(1f)
-                                .clickable { showInfo = true }
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.padding(top = 12.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.add_calendar),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(25.dp).weight(1f)
+                                    .clickable {
+                                        showAddCalendar = true
+                                    }
+                            )
+                            //                        Spacer(modifier = Modifier.size(30.dp))
+                            Icon(
+                                painter = painterResource(id = R.drawable.info),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(25.dp).weight(1f)
+                                    .clickable { showInfo = true }
+                            )
+                        }
                     }
+                    DatosEvento(
+                        evento,
+                        mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!),
+                        numAsistentes,
+                        Modifier
+                            .padding(5.dp)
+                            .weight(1.5f)
+                    )
                 }
-                DatosEvento(
-                    evento,
-                    mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!),
-                    numAsistentes,
-                    Modifier
-                        .padding(5.dp)
-                        .weight(1.5f)
-                )
             }
+            PullRefreshIndicator(
+                refreshing = refresh,
+                state = refreshState,
+                modifier = Modifier.align(
+                    Alignment.TopCenter,
+                ),
+            )
         }
         Button(
             onClick = { apuntarse = true },
