@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -60,8 +61,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Seguidores
@@ -77,6 +80,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Instant
+import java.util.Date
 import kotlin.math.sin
 
 
@@ -175,8 +180,8 @@ fun PerfilYo(
             BotonesPerfil(
                 navController= navController,
                 mainNavController = mainNavController,
-                preferencesViewModel = preferencesViewModel,
-                mainVM = mainVM
+                preferencesChangeUser = preferencesViewModel::changeUser,
+                actualizarWidget = mainVM::actualizarWidget
             )
         }
     }
@@ -373,8 +378,8 @@ fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>, modif
 fun BotonesPerfil(
     mainNavController: NavController,
     navController: NavController,
-    preferencesViewModel: PreferencesViewModel,
-    mainVM: MainVM
+    preferencesChangeUser: (String) -> Unit,
+    actualizarWidget: (Context) -> Unit
 ){
     val context = LocalContext.current
     Row (
@@ -400,10 +405,10 @@ fun BotonesPerfil(
         }
         IconButton(
             onClick = {
-                preferencesViewModel.changeUser("")
+                preferencesChangeUser("")
                 navController.popBackStack()
                 mainNavController.popBackStack()
-                mainVM.actualizarWidget(context)
+                actualizarWidget(context)
             },
             modifier = Modifier.weight(1f)
         ) {
@@ -436,7 +441,7 @@ fun TopProfile(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.weight(1f)
         ) {
-            ProfileImage(usuario = usuario, yo = yo, mainVM = mainVM, navController = navController)
+            ProfileImage(usuario = usuario, yo = yo, updateUserImage = mainVM::updateUserImage, navController = navController)
             Text(
                 text = usuario.nombre,
                 fontSize = 15.sp,
@@ -465,7 +470,7 @@ fun TopProfile(
 @Composable
 fun ProfileImage(
     usuario: Usuario,
-    mainVM: MainVM,
+    updateUserImage: (Context, String, Uri?) -> Unit,
     yo: Boolean,
     navController: NavController
 ) {
@@ -480,7 +485,7 @@ fun ProfileImage(
     ) { uri ->
         if (uri!=null) {
             imageUri = uri
-            mainVM.updateUserImage(context, usuario.username, uri)
+            updateUserImage(context, usuario.username, uri)
         }
     }
 
@@ -554,5 +559,28 @@ fun FollowButton(
             )
         )
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.P)
+@Preview(showBackground = true, backgroundColor = 0xFFB400FF)
+@Composable
+fun ProfileImagePreview() {
+    ProfileImage(
+        navController = rememberNavController(),
+        usuario = Usuario("Pepito", "ehu@ehu.eus", "Pepito", Date.from(Instant.now())),
+        updateUserImage = { _, _, _ -> },
+        yo = true
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BotonesPerfilPreview() {
+    BotonesPerfil(
+        mainNavController = rememberNavController(),
+        navController = rememberNavController(),
+        preferencesChangeUser = { _ -> },
+        actualizarWidget = { _ -> }
+    )
 }
 
