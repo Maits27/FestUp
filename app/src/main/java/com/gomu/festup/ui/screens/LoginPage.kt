@@ -92,37 +92,9 @@ fun LoginPage(
     preferencesVM: PreferencesViewModel,
     lastLoggedUser: Usuario?
 ) {
-    val context = LocalContext.current
     if (mainVM.serverOk.value && lastLoggedUser!=null){
         mainNavController.navigate(AppScreens.App.route)
     }
-
-//    if (!mainVM.serverOk.value){
-//        CoroutineScope(Dispatchers.IO).launch {
-//            try {
-//                withContext(Dispatchers.IO) {
-//                    mainVM.descargarUsuarios()
-//                }
-//                if (lastLoggedUser!= null) {
-//                    nuestroLocationProvider(context, mainVM)
-//                    mainVM.currentUser.value = lastLoggedUser
-//                    preferencesVM.changeUser(lastLoggedUser.username)
-//                    identVM.recuperarSesion(preferencesVM.lastBearerToken,preferencesVM.lastRefreshToken)
-//                    withContext(Dispatchers.IO) {
-//                        mainVM.descargarDatos()
-//                    }
-//                    if (mainVM.serverOk.value){
-//                        withContext(Dispatchers.Main) {
-//                            mainNavController.navigate(AppScreens.App.route)
-//                        }
-//                    }
-//
-//                }
-//            } catch (e: Exception) {
-//                Log.e("Excepcion al iniciar sesion", e.toString())
-//            }
-//        }
-//    }
 
     var selectedTab by remember {
         mutableIntStateOf(0)
