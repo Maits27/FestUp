@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -44,15 +45,18 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -101,52 +105,101 @@ fun PerfilYo(
 
     val cuadrillas = mainVM.getCuadrillasUsuario(usuario).collectAsState(initial = emptyList())
 
-    Column (
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
-    ) {
-        Column(
+    val isVertical= LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    if (isVertical){
+        Column (
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
-            TopProfile(
-                mainVM = mainVM,
-                edad = mainVM.calcularEdad(usuario),
-                yo = yo,
-                recibirNotificaciones = recibirNotificaciones,
-                alreadySiguiendo = alreadySiguiendo,
-                usuario = usuario,
-                navController = navController
-            )
-        }
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            ListadoCuadrillas(
-                cuadrillas = cuadrillas.value,
-                yo,
-                navController = navController,
-                mainVM = mainVM
-            )
-            EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
-        }
-        if (yo) {
-            BotonesPerfil(
-                navController= navController,
-                mainNavController = mainNavController,
-                preferencesViewModel = preferencesViewModel,
-                mainVM = mainVM
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+            ) {
+                TopProfile(
+                    mainVM = mainVM,
+                    edad = mainVM.calcularEdad(usuario),
+                    yo = yo,
+                    recibirNotificaciones = recibirNotificaciones,
+                    alreadySiguiendo = alreadySiguiendo,
+                    usuario = usuario,
+                    navController = navController
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                ListadoCuadrillas(
+                    cuadrillas = cuadrillas.value,
+                    yo,
+                    navController = navController,
+                    mainVM = mainVM
+                )
+                EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
+            }
+            if (yo) {
+                BotonesPerfil(
+                    navController= navController,
+                    mainNavController = mainNavController,
+                    preferencesViewModel = preferencesViewModel,
+                    mainVM = mainVM
+                )
+            }
         }
     }
+    else{
+        Row(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+                    .background(MaterialTheme.colorScheme.primaryContainer).fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                TopProfile(
+                    mainVM = mainVM,
+                    edad = mainVM.calcularEdad(usuario),
+                    yo = yo,
+                    recibirNotificaciones = recibirNotificaciones,
+                    alreadySiguiendo = alreadySiguiendo,
+                    usuario = usuario,
+                    navController = navController
+                )
+
+                if (yo) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    BotonesPerfil(
+                        navController= navController,
+                        mainNavController = mainNavController,
+                        preferencesViewModel = preferencesViewModel,
+                        mainVM = mainVM
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                ListadoCuadrillas(
+                    cuadrillas = cuadrillas.value,
+                    yo,
+                    navController = navController,
+                    mainVM = mainVM
+                )
+                EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
+            }
+        }
+    }
+
+
 }
 
 
@@ -157,10 +210,11 @@ fun ListadoCuadrillas(
     navController: NavController,
     mainVM: MainVM
 ){
+    val isVertical= LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     Row (
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding( horizontal = 16.dp , vertical = if (isVertical) 16.dp else 10.dp)
     ){
         Text(
             text = stringResource(id = R.string.cuadrillas),
@@ -393,7 +447,6 @@ fun TopProfile(
     yo: Boolean
 ){
     val context = LocalContext.current
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
