@@ -133,7 +133,7 @@ fun Search(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = stringResource(id = R.string.eventos),
+                    text = stringResource(id = R.string.eventos_sin_dospuntos),
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }

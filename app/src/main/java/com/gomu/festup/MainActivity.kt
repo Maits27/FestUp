@@ -1,6 +1,7 @@
 package com.gomu.festup
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
@@ -29,12 +31,17 @@ import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.screens.App
 import com.gomu.festup.ui.screens.LoginPage
+import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.vm.IdentVM
 import com.gomu.festup.vm.MainVM
 import com.gomu.festup.vm.PreferencesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -48,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         const val CHANNEL_ID = "FestUpNotifChannel"
     }
 
+    @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -57,7 +65,29 @@ class MainActivity : AppCompatActivity() {
         setContent {
             FestUpTheme {
                 AskPermissions()
+                val context = LocalContext.current
                 val lastLoggedUser = mainVM.actualizarCurrentUser(preferencesVM.lastLoggedUser)
+                if (!mainVM.serverOk.value){
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            withContext(Dispatchers.IO) {
+                                mainVM.descargarUsuarios()
+                            }
+                            if (lastLoggedUser!= null) {
+                                nuestroLocationProvider(context, mainVM)
+                                mainVM.currentUser.value = lastLoggedUser
+                                preferencesVM.changeUser(lastLoggedUser.username)
+                                identVM.recuperarSesion(preferencesVM.lastBearerToken,preferencesVM.lastRefreshToken)
+                                withContext(Dispatchers.IO) {
+                                    mainVM.descargarDatos()
+                                }
+
+                            }
+                        } catch (e: Exception) {
+                            Log.e("Excepcion al iniciar sesion", e.toString())
+                        }
+                    }
+                }
                 // A surface container using the 'background' color from the theme
                 Principal(mainVM, identVM, preferencesVM, lastLoggedUser)
             }
