@@ -7,13 +7,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 
 @Composable
 fun FullImageScreen(
     type: String,
     filename: String
 ) {
+    val context = LocalContext.current
 
     lateinit var imageUri: Uri
 
@@ -30,7 +34,12 @@ fun FullImageScreen(
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(
-            model = imageUri,
+            model = ImageRequest.Builder(context)
+                .data(imageUri)
+                .crossfade(true)
+                .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                .build(),
             contentDescription = "Full screen image",
             modifier = Modifier.fillMaxSize()
         )

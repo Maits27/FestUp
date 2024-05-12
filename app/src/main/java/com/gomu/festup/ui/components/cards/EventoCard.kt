@@ -20,11 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.R
@@ -37,13 +40,14 @@ fun EventoCard(
     mainVM: MainVM,
     navController: NavController
 ) {
+    val context = LocalContext.current
 
     val onCardClick: (Evento) -> Unit = { eventoClicked ->
         mainVM.eventoMostrar.value = eventoClicked
         navController.navigate(AppScreens.Evento.route)
     }
 
-    var imageUri by remember {
+    val imageUri by remember {
         mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
     }
 
@@ -58,7 +62,12 @@ fun EventoCard(
             modifier = Modifier.padding(15.dp)
         ) {
             AsyncImage(
-                model = imageUri,
+                model = ImageRequest.Builder(context)
+                    .data(imageUri)
+                    .crossfade(true)
+                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                    .build(),
                 contentDescription = stringResource(id = R.string.cuadrilla_imagen),
                 placeholder = painterResource(id = R.drawable.no_image),
                 error = painterResource(id = R.drawable.no_image),

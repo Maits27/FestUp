@@ -62,6 +62,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Usuario
@@ -231,7 +233,12 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
                         .padding(horizontal = 3.dp)
                 ) {
                     AsyncImage(
-                        model = imageUri,
+                        model = ImageRequest.Builder(context)
+                            .data(imageUri)
+                            .crossfade(true)
+                            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                            .build(),
                         contentDescription = context.getString(R.string.evento_foto),
                         error = painterResource(id = R.drawable.no_image),
                         placeholder = painterResource(id = R.drawable.no_image),
@@ -286,7 +293,12 @@ fun CardHorizontal(context: Context, mainVM: MainVM, evento: Evento, numAsistent
             ) {
 
                 AsyncImage(
-                    model = imageUri,
+                    model = ImageRequest.Builder(context)
+                        .data(imageUri)
+                        .crossfade(true)
+                        .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                        .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                        .build(),
                     contentDescription = context.getString(R.string.evento_foto),
                     error = painterResource(id = R.drawable.no_image),
                     placeholder = painterResource(id = R.drawable.no_image),

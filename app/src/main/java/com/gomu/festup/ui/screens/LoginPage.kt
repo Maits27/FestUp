@@ -67,6 +67,8 @@ import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
@@ -349,7 +351,12 @@ fun RegistroForm(
             Box(contentAlignment = Alignment.BottomEnd) {
                 Box(Modifier.padding(16.dp)) {
                     AsyncImage(
-                        model = imageUri,
+                        model = ImageRequest.Builder(context)
+                            .data(imageUri)
+                            .crossfade(true)
+                            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                            .build(),
                         contentDescription = "User image",
                         placeholder = painterResource(id = R.drawable.no_user),
                         contentScale = ContentScale.Crop,
