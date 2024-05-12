@@ -228,7 +228,7 @@ fun LoginForm(
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
     ) {
         Image(
             painter = painterResource(id = R.drawable.festup),
@@ -291,7 +291,6 @@ fun RegistroForm(
     identVM: IdentVM,
     preferencesVM: PreferencesViewModel
 ) {
-    val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
 
