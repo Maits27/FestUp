@@ -389,7 +389,7 @@ fun RegistroForm(
             // Campo para añadir nombre de usuario
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it.lowercase().replace(" ", "") },
+                onValueChange = { username = it.lowercase().replace(" ", "").replace("\n", "") },
                 label = { Text(text = "Nombre de usuario") },
                 modifier = modifierForInputs
             )

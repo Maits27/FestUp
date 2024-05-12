@@ -113,7 +113,7 @@ fun EventsMap(
                     icon = bitmapDescriptorFromVector(
                         LocalContext.current,
                         R.drawable.logoloc_min,
-                        size = 120,
+                        size = 200,
                         alpha = 255
                     ),
                     snippet = location.evento.fecha.toStringNuestro(),

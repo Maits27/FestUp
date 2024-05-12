@@ -113,7 +113,7 @@ fun PerfilCuadrilla(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            if (pertenezco){ EliminarCuadrilla(cuadrilla = cuadrilla, mainVM = mainVM) }
+            if (pertenezco){ EliminarCuadrilla(navController, mainVM = mainVM, cuadrilla = cuadrilla) }
         },
         floatingActionButtonPosition = FabPosition.Center
     ) { padding ->
@@ -169,7 +169,7 @@ fun PerfilCuadrilla(
     }
 }
 @Composable
-fun EliminarCuadrilla(cuadrilla: Cuadrilla, mainVM: MainVM) {
+fun EliminarCuadrilla(navController: NavController, mainVM: MainVM, cuadrilla: Cuadrilla) {
     var verificacion by rememberSaveable{ mutableStateOf(false) }
     ExtendedFloatingActionButton(
         onClick = {verificacion=true},
@@ -189,7 +189,7 @@ fun EliminarCuadrilla(cuadrilla: Cuadrilla, mainVM: MainVM) {
         show = verificacion,
         mensaje = "¿Estás seguro de que deseas abandonar la cuadrilla?",
         onDismiss = { verificacion = false }
-    ) { mainVM.eliminarIntegrante(cuadrilla) ; verificacion = false  }
+    ) { mainVM.eliminarIntegrante(cuadrilla) ; verificacion = false ; navController.popBackStack() }
 }
 
 @RequiresApi(Build.VERSION_CODES.P)
