@@ -112,7 +112,7 @@ fun EventsMap(
                     title = location.evento.nombre,
                     icon = bitmapDescriptorFromVector(
                         LocalContext.current,
-                        R.drawable.logoloc_min_old,
+                        R.drawable.logoloc_min,
                         size = 120,
                         alpha = 255
                     ),
