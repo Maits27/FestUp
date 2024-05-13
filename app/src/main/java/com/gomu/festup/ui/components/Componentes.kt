@@ -214,7 +214,7 @@ fun TopBarMainView(
                     Icon(
                         painter = painterResource(id = R.drawable.round_people_24),
                         contentDescription = "",
-                        modifier = Modifier.size(35.dp)
+                        modifier = Modifier.size(27.dp)
                     )
                 }
             }
