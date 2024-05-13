@@ -44,25 +44,25 @@ fun SplashScreen(
 ) {
     val context = LocalContext.current
     val lastLoggedUser = preferencesVM.lastLoggedUser
-    if (lastLoggedUser != "") {
-        /* TODO
-        * 1. descargar datos
-        * 2. navController.navigate(AppScreens.App.route)
-        */
-        LaunchedEffect(Unit) {
-            CoroutineScope(Dispatchers.IO).launch {
+
+    LaunchedEffect(Unit) {
+        // El siguiente bloque se hace porque en descargarUsuarios es donde se comprueba si el server esta ok
+        CoroutineScope(Dispatchers.IO).launch {
+            withContext(Dispatchers.IO) {
+                mainVM.descargarUsuarios()
+            }
+            if (mainVM.serverOk.value && lastLoggedUser != "") {
                 descargarDatos(mainVM, preferencesVM, identVM, lastLoggedUser, context)
                 withContext(Dispatchers.Main) {
                     navController.navigate(AppScreens.App.route)
                 }
             }
+            else {
+                withContext(Dispatchers.Main) {
+                    navController.navigate(AppScreens.LoginPage.route)
+                }
+            }
         }
-
-        // TODO quitar la siguiente linea cuando funcione
-        //navController.navigate(AppScreens.LoginPage.route)
-    }
-    else {
-        navController.navigate(AppScreens.LoginPage.route)
     }
 
     SplashContent()
@@ -94,29 +94,19 @@ suspend fun descargarDatos(
     identVM: IdentVM,
     lastLoggedUserName: String,
     context: Context
-)
-{
+) {
     val lastLoggedUser = mainVM.actualizarCurrentUser(lastLoggedUserName)
-    if (!mainVM.serverOk.value){
-        Log.d("He pasado por aqui", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        Log.d("LAST LOGGED USER", lastLoggedUser.username ?:"null")
-        Log.d("LAST LOGGED USER-name", lastLoggedUserName ?:"null")
-        try {
-            withContext(Dispatchers.IO) {
-                mainVM.descargarUsuarios()
-            }
-            if (lastLoggedUser!= null) {
-                nuestroLocationProvider(context, mainVM)
-                mainVM.currentUser.value = lastLoggedUser
-                identVM.recuperarSesion(preferencesVM.lastBearerToken, preferencesVM.lastRefreshToken)
-                withContext(Dispatchers.IO) {
-                    mainVM.descargarDatos()
-                }
-            }
-            Log.d("Current user", mainVM.currentUser.value!!.username)
-        } catch (e: Exception) {
-            Log.e("Excepcion al iniciar sesion", e.toString())
+    try {
+        // withContext to wait descragarUsuarios() to finish
+        withContext(Dispatchers.IO) {
+            mainVM.descargarUsuarios()
         }
+        nuestroLocationProvider(context, mainVM)
+        mainVM.currentUser.value = lastLoggedUser
+        identVM.recuperarSesion(preferencesVM.lastBearerToken, preferencesVM.lastRefreshToken)
+        mainVM.descargarDatos()
+    } catch (e: Exception) {
+        Log.e("Excepcion al iniciar sesion", e.toString())
     }
 }
 
