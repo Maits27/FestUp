@@ -223,7 +223,7 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 20.dp)
             ) {
-                var imageUri by remember {
+                val imageUri by remember {
                     mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
                 }
                 Column(
@@ -237,8 +237,8 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
                         model = ImageRequest.Builder(context)
                             .data(imageUri)
                             .crossfade(true)
-                            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                            .memoryCachePolicy(CachePolicy.ENABLED)  // Para que la guarde en caché-RAM
+                            .diskCachePolicy(CachePolicy.ENABLED)    // Para que la guarde en caché-disco
                             .build(),
                         contentDescription = context.getString(R.string.evento_foto),
                         error = painterResource(id = R.drawable.no_image),
@@ -275,7 +275,7 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
 
 @Composable
 fun CardHorizontal(context: Context, mainVM: MainVM, evento: Evento, numAsistentes: Int, modifier: Modifier = Modifier){
-    var imageUri by remember {
+    val imageUri by remember {
         mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
     }
     val edadMedia = mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!)
@@ -297,8 +297,8 @@ fun CardHorizontal(context: Context, mainVM: MainVM, evento: Evento, numAsistent
                     model = ImageRequest.Builder(context)
                         .data(imageUri)
                         .crossfade(true)
-                        .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                        .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                        .memoryCachePolicy(CachePolicy.ENABLED)  // Para que la guarde en caché-RAM
+                        .diskCachePolicy(CachePolicy.ENABLED)    // Para que la guarde en caché-disco
                         .build(),
                     contentDescription = context.getString(R.string.evento_foto),
                     error = painterResource(id = R.drawable.no_image),

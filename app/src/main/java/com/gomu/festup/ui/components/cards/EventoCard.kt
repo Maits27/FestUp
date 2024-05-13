@@ -65,8 +65,8 @@ fun EventoCard(
                 model = ImageRequest.Builder(context)
                     .data(imageUri)
                     .crossfade(true)
-                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                    .memoryCachePolicy(CachePolicy.ENABLED)  // Para que la guarde en caché-RAM
+                    .diskCachePolicy(CachePolicy.ENABLED)    // Para que la guarde en caché-disco
                     .build(),
                 contentDescription = stringResource(id = R.string.cuadrilla_imagen),
                 placeholder = painterResource(id = R.drawable.no_image),
