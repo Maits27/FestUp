@@ -180,7 +180,9 @@ fun LoginForm(
                         }
 
                         withContext(Dispatchers.Main) {
-                            mainNavController.navigate(AppScreens.App.route)
+                            mainNavController.navigate(AppScreens.App.route) {
+                                popUpTo(0)
+                            }
                             showLoading = false
                             mainVM.actualizarWidget(context)
                         }
@@ -577,7 +579,9 @@ fun registration(
                 preferencesVM.changeUser(usuario.username)
                 withContext(Dispatchers.Main) {
                     mainVM.actualizarWidget(context) // Necesario repetirlo dos veces
-                    mainNavController.navigate(AppScreens.App.route)
+                    mainNavController.navigate(AppScreens.App.route) {
+                        popUpTo(0)
+                    }
                     mainVM.actualizarWidget(context)
                 }
             } else {
