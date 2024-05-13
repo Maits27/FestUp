@@ -290,7 +290,9 @@ fun PerfilYo(
 
             }
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).fillMaxSize(),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Center
             ) {
                 ListadoCuadrillas(
                     cuadrillas = cuadrillas.value,
