@@ -43,9 +43,9 @@ interface UsuarioDao {
 
     @Transaction
     @Query( "UPDATE Usuario " +
-            "SET nombre=:nombre, email=:email, fechaNacimiento=:fecha " +
+            "SET nombre=:nombre, email=:email, fechaNacimiento=:fecha, telefono=:telefono " +
             "WHERE username=:ususername")
-    fun editarUsuario(ususername: String, email: String, nombre: String, fecha: Date)
+    fun editarUsuario(ususername: String, email: String, nombre: String, fecha: Date, telefono: String)
 
     @Transaction
     @Query("SELECT * FROM Usuario WHERE username != :username")

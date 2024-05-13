@@ -46,6 +46,7 @@ fun SplashScreen(
     val lastLoggedUser = preferencesVM.lastLoggedUser
 
     LaunchedEffect(Unit) {
+        Log.d("SplashScreen", "server status ${mainVM.serverOk.value}")
         // El siguiente bloque se hace porque en descargarUsuarios es donde se comprueba si el server esta ok
         if (!mainVM.serverOk.value){
             CoroutineScope(Dispatchers.IO).launch {
