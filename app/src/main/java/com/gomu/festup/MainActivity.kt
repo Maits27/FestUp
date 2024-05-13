@@ -140,6 +140,7 @@ fun Principal(
             }
         }
         composable(AppScreens.LoginPage.route) {
+            // TODO quitar esto, no lo he quitado porque en el login cuando comprueba si serverOk siempre da false si quito esto
             if (!mainVM.serverOk.value){
                 Log.d("He pasado por aqui", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 Log.d("LAST LOGGED USER", lastLoggedUser?.username?:"null")
