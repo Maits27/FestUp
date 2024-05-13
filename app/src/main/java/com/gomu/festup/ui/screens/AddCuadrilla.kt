@@ -97,25 +97,15 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(40.dp)
-            //.verticalScroll(rememberScrollState())
-            ,
+                .padding(40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Text(
-                text = stringResource(id = R.string.nueva_cuadrilla),
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(bottom = 10.dp)
-                    .fillMaxWidth()
-            )
+
             Box(contentAlignment = Alignment.BottomEnd) {
                 Imagen(imageUri, context, R.drawable.no_cuadrilla) {}
                 EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
             }
-
 
 
             // Form
@@ -202,14 +192,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Text(
-                    text = stringResource(id = R.string.nueva_cuadrilla),
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(bottom = 10.dp, top = 30.dp)
-                        .fillMaxWidth()
-                )
+
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Imagen(imageUri, context, R.drawable.no_cuadrilla){}
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)

@@ -2,6 +2,7 @@ package com.gomu.festup.ui.screens
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.location.Location
 import android.net.Uri
@@ -26,8 +27,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -55,6 +58,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -214,8 +218,6 @@ fun AddEvento(
     }
 
 
-
-
     var miLocalizacion = mainVM.localizacion.value
     var cameraPositionState = rememberCameraPositionState {
         if (miLocalizacion != null) {
@@ -226,69 +228,143 @@ fun AddEvento(
         }
     }
 
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    if (isVertical){
+
+    }
+    else{
+
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 30.dp)
+            .padding(horizontal = if (isVertical) 30.dp else 70.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Box (
-            contentAlignment = Alignment.BottomEnd,
-
-        ) {
-            ImagenEvento(imageUri, context, R.drawable.round_camera_alt_24, 150.dp ) {}
-
-            EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
-        }
-        OutlinedTextField(
-            value = eventName,
-            onValueChange = { eventName = it },
-            label = { Text(text = context.getString(R.string.nombre)) },
-            modifier = modifierForInputs
-        )
-        Row(
-            modifier = modifierForInputs.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(top = 8.dp)
-                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
-                    .clickable {
-                        showDatePicker = true
-                    }
+        if (isVertical){
+            Box (contentAlignment = Alignment.BottomEnd,) {
+                ImagenEvento(imageUri, context, R.drawable.round_camera_alt_24, 150.dp ) {}
+                EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+            }
+            OutlinedTextField(
+                value = eventName,
+                onValueChange = { eventName = it },
+                label = { Text(text = context.getString(R.string.nombre)) },
+                modifier = modifierForInputs
+            )
+            Row(
+                modifier = modifierForInputs.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = fecha,
-                    textAlign = TextAlign.Center,
-                    fontSize = 17.sp,
+                Box (
                     modifier = Modifier
-                        .padding(18.dp)
-                )
-            }
-            Spacer(modifier = Modifier.size(10.dp))
-            Column (
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ){
-                Icon(
-                    painter = painterResource(id = R.drawable.add_calendar),
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.size(5.dp))
-                Checkbox(
-                    checked = addOnCalendar,
-                    onCheckedChange = { addOnCalendar = it },
-                    modifier = Modifier
-                        .scale(0.7f)
-                        .size(18.dp)
-                )
-            }
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(top = 8.dp)
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
+                        .clickable {
+                            showDatePicker = true
+                        }
+                ) {
+                    Text(
+                        text = fecha,
+                        textAlign = TextAlign.Center,
+                        fontSize = 17.sp,
+                        modifier = Modifier
+                            .padding(18.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.size(10.dp))
+                Column (
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ){
+                    Icon(
+                        painter = painterResource(id = R.drawable.add_calendar),
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.size(5.dp))
+                    Checkbox(
+                        checked = addOnCalendar,
+                        onCheckedChange = { addOnCalendar = it },
+                        modifier = Modifier
+                            .scale(0.7f)
+                            .size(18.dp)
+                    )
+                }
 
+            }
+        }
+        else{
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box (contentAlignment = Alignment.BottomEnd) {
+                    ImagenEvento(imageUri, context, R.drawable.round_camera_alt_24, 150.dp ) {}
+                    EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+                }
+
+                Column(
+                    modifier = Modifier.padding(start = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    OutlinedTextField(
+                        value = eventName,
+                        onValueChange = { eventName = it },
+                        label = { Text(text = context.getString(R.string.nombre)) },
+                        modifier = modifierForInputs
+                    )
+
+                    Row(
+                        modifier = modifierForInputs.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box (
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .padding(top = 8.dp)
+                                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
+                                .clickable {
+                                    showDatePicker = true
+                                }
+                        ) {
+                            Text(
+                                text = fecha,
+                                textAlign = TextAlign.Center,
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                                    .padding(18.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Column (
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ){
+                            Icon(
+                                painter = painterResource(id = R.drawable.add_calendar),
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.size(5.dp))
+                            Checkbox(
+                                checked = addOnCalendar,
+                                onCheckedChange = { addOnCalendar = it },
+                                modifier = Modifier
+                                    .scale(0.7f)
+                                    .size(18.dp)
+                            )
+                        }
+
+                    }
+                }
+
+            }
         }
         OutlinedTextField(
             value = description,
@@ -328,7 +404,7 @@ fun AddEvento(
         }
         Button(
             onClick = { onAddButtonClick() },
-            modifier = modifierForInputs.padding(bottom = 15.dp)
+            modifier = Modifier.padding(vertical = 15.dp)
         ) {
             Text(text = context.getString(R.string.add))
         }
