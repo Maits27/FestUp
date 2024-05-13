@@ -92,13 +92,8 @@ fun LoginPage(
     mainNavController: NavController,
     mainVM: MainVM,
     identVM: IdentVM,
-    preferencesVM: PreferencesViewModel,
-    lastLoggedUser: Usuario?
+    preferencesVM: PreferencesViewModel
 ) {
-
-    if (mainVM.serverOk.value && lastLoggedUser!=null){
-        mainNavController.navigate(AppScreens.App.route)
-    }
 
     var selectedTab by remember {
         mutableIntStateOf(0)
@@ -177,15 +172,15 @@ fun LoginForm(
                         }
                         nuestroLocationProvider(context, mainVM)
                         mainVM.currentUser.value = currentUser
-                        preferencesVM.changeUser(currentUser.username)
+                        withContext(Dispatchers.IO) {
+                            preferencesVM.changeUser(currentUser.username)
+                        }
 
                         withContext(Dispatchers.Main) {
-                            mainVM.actualizarWidget(context)
                             mainNavController.navigate(AppScreens.App.route)
                             showLoading = false
                             mainVM.actualizarWidget(context)
                         }
-
                     } else {
                         withContext(Dispatchers.Main) {
                             showLoading = false

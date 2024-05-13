@@ -215,14 +215,6 @@ class MainVM @Inject constructor(
                 FestUpWidget().update(context, glanceId)
             }
         }
-        //updateWidgetData()
-        /*viewModelScope.launch(Dispatchers.IO) {
-            val manager = GlanceAppWidgetManager(context)
-            val glanceIds = manager.getGlanceIds(FestUpWidget::class.java)
-            glanceIds.forEach { glanceId ->
-                FestUpWidget().update(context, glanceId)
-            }
-        }*/
     }
 
     fun actualizarCurrentUser(username: String): Usuario = runBlocking(Dispatchers.IO){

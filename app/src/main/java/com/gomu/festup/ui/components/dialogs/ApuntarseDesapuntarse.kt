@@ -21,6 +21,7 @@ fun Apuntarse(
     show: Boolean,
     apuntado: Boolean,
     mainVM: MainVM,
+    recibirNotificaciones: Boolean,
     onDismiss:() -> Unit
 ){
     if(show){
@@ -39,20 +40,22 @@ fun Apuntarse(
                 LazyColumn {
                     item {
                         val usuario = mainVM.currentUser.value!!
-                        UsuarioCardParaEventosAlert(usuario = usuario, apuntado, mainVM)
+                        UsuarioCardParaEventosAlert(usuario = usuario, apuntado, mainVM, recibirNotificaciones)
                     }
                     items(cuadrillasNoApuntadas.value){cuadrilla ->
                         CuadrillaCardParaEventosAlert(
                             cuadrilla = cuadrilla,
                             false,
                             mainVM,
+                            recibirNotificaciones
                         )
                     }
                     items(cuadrillasApuntadas.value){cuadrilla ->
                         CuadrillaCardParaEventosAlert(
                             cuadrilla = cuadrilla,
                             true,
-                            mainVM
+                            mainVM,
+                            recibirNotificaciones
                         )
                     }
                 }

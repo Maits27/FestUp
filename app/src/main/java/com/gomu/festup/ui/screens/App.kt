@@ -106,7 +106,7 @@ fun App(
             composable(AppScreens.Evento.route,
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { Evento(navController, mainVM) }
+            ) { Evento(navController, mainVM, receiveNotifications) }
 
             composable(AppScreens.AddCuadrilla.route,
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },

@@ -9,6 +9,9 @@ import androidx.core.app.ActivityCompat
 import com.gomu.festup.MainActivity
 import com.gomu.festup.vm.MainVM
 import com.google.android.gms.location.LocationServices
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 fun nuestroLocationProvider(context: Context, mainVM: MainVM){
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as MainActivity)
@@ -53,4 +56,20 @@ fun openTelegram(token: String, nombre: String, context: Context) {
         context.startActivity(intent)
     } catch (_: Exception) {
     }
+}
+
+fun getScheduleTime(mainVM: MainVM): LocalDateTime {
+    val date = LocalDateTime.ofInstant(
+        Instant.ofEpochMilli(mainVM.eventoMostrar.value!!.fecha.time),
+        ZoneId.systemDefault()
+    ).toLocalDate()
+
+    val scheduleTime = LocalDateTime.of(date.year,
+        date.month,
+        date.minusDays(1).dayOfMonth,
+        LocalDateTime.now().hour,
+        LocalDateTime.now().plusMinutes(1).minute
+    )
+
+    return scheduleTime
 }

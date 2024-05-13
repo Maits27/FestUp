@@ -25,7 +25,7 @@ fun SwitchTik(
     modifier: Modifier = Modifier,
     onCheck:(Boolean)-> Unit
 ){
-    var checkedSwitch by remember { mutableStateOf(checked) }
+    var checkedSwitch by rememberSaveable { mutableStateOf(checked) }
 
     Switch(
         modifier = modifier,
@@ -54,7 +54,7 @@ fun SwitchDarkMode(
     modifier: Modifier = Modifier
 ){
     // TODO: https://www.youtube.com/watch?v=Nvphdmi-6qc
-    var checkedDark by remember { mutableStateOf(dark) }
+    var checkedDark by rememberSaveable { mutableStateOf(dark) }
 
     Switch(
         modifier = modifier,
