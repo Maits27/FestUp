@@ -66,10 +66,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             FestUpTheme {
                 AskPermissions()
-                val lastLoggedUser = mainVM.actualizarCurrentUser(preferencesVM.lastLoggedUser)
-
-                // A surface container using the 'background' color from the theme
-                Principal(mainVM, identVM, preferencesVM, lastLoggedUser)
+                Principal(mainVM, identVM, preferencesVM)
             }
         }
     }
@@ -123,10 +120,8 @@ enum class NotificationID(val id: Int) {
 fun Principal(
     mainVM: MainVM,
     identVM: IdentVM,
-    preferencesVM: PreferencesViewModel,
-    lastLoggedUser: Usuario?
+    preferencesVM: PreferencesViewModel
 ) {
-    val context = LocalContext.current
     val mainNavController = rememberNavController()
     val dark by preferencesVM.darkTheme(mainVM.currentUser.value?.username?:"").collectAsState(initial = true)
 
@@ -140,29 +135,6 @@ fun Principal(
             }
         }
         composable(AppScreens.LoginPage.route) {
-            // TODO quitar esto, no lo he quitado porque en el login cuando comprueba si serverOk siempre da false si quito esto
-            if (!mainVM.serverOk.value){
-                Log.d("He pasado por aqui", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                Log.d("LAST LOGGED USER", lastLoggedUser?.username?:"null")
-                CoroutineScope(Dispatchers.IO).launch {
-                    try {
-                        withContext(Dispatchers.IO) {
-                            mainVM.descargarUsuarios()
-                        }
-                        if (lastLoggedUser!= null) {
-                            nuestroLocationProvider(context, mainVM)
-                            mainVM.currentUser.value = lastLoggedUser
-                            identVM.recuperarSesion(preferencesVM.lastBearerToken, preferencesVM.lastRefreshToken)
-                            withContext(Dispatchers.IO) {
-                                mainVM.descargarDatos()
-                            }
-
-                        }
-                    } catch (e: Exception) {
-                        Log.e("Excepcion al iniciar sesion", e.toString())
-                    }
-                }
-            }
             LoginPage(mainNavController, mainVM, identVM, preferencesVM)
         }
         composable(AppScreens.App.route) {
