@@ -76,6 +76,10 @@ fun TopBarMainView(
         mutableStateOf(false)
     }
 
+    var showAmigos by remember {
+        mutableStateOf(false)
+    }
+
     var showTopBar by remember {
         mutableStateOf(false)
     }
@@ -91,59 +95,69 @@ fun TopBarMainView(
             showTopBar = true
             title = stringResource(id = R.string.add_event)
             showPerfil = false
+            showAmigos = false
             showBackArrow = true
         }
         AppScreens.AddCuadrilla.route -> {
             showTopBar = true
             title = stringResource(id = R.string.add_cuadrilla)
             showPerfil = false
+            showAmigos = false
             showBackArrow = true
         }
         AppScreens.PerfilYo.route -> {
             showTopBar = true
             showPerfil = false
+            showAmigos = true
             title = mainVM.usuarioMostrar.value!!.username
             showBackArrow = true
         }
         AppScreens.PerfilCuadrilla.route -> {
             showTopBar = true
             showPerfil = false
+            showAmigos = false
             showBackArrow = true
             title = mainVM.cuadrillaMostrar.value!!.nombre
         }
         AppScreens.PerfilUser.route -> {
             showTopBar = true
             showPerfil = false
+            showAmigos = false
             title = mainVM.usuarioMostrar.value!!.username
             showBackArrow = true
         }
         AppScreens.Evento.route -> {
             showTopBar = true
             showPerfil = false
+            showAmigos = false
             title = mainVM.eventoMostrar.value!!.nombre
             showBackArrow = true
         }
         AppScreens.EditPerfil.route -> {
             showTopBar = true
             showPerfil = false
+            showAmigos = false
             title = stringResource(id = R.string.edit_profile)
             showBackArrow = true
         }
         AppScreens.Ajustes.route -> {
             showTopBar = true
             showPerfil = false
+            showAmigos = false
             title = stringResource(id = R.string.preferences, mainVM.usuarioMostrar.value!!.username)
             showBackArrow = true
         }
         AppScreens.SeguidoresSeguidosList.route -> {
             showTopBar = true
             showPerfil = false
+            showAmigos = false
             title = mainVM.usuarioMostrar.value!!.username
             showBackArrow = true
         }
         AppScreens.FullImageScreen.route -> {
             showTopBar = true
             showPerfil = false
+            showAmigos = false
             val type = currentDestination.route?.split("/")?.get(1)
             when (type) {
                 "user" -> title = mainVM.usuarioMostrar.value!!.username
@@ -152,9 +166,17 @@ fun TopBarMainView(
             }
             showBackArrow = true
         }
+        AppScreens.BuscarAmigos.route -> {
+            showTopBar = true
+            showPerfil = false
+            showAmigos = false
+            title = stringResource(id = R.string.buscar_amigos)
+            showBackArrow = true
+        }
         else -> {
             title = stringResource(id = R.string.app_name)
             showPerfil = true
+            showAmigos = false
             showTopBar = true
             showBackArrow = false
         }
@@ -174,9 +196,23 @@ fun TopBarMainView(
         },
         actions = {
             if (showPerfil) {
-                IconButton(onClick = { mainVM.usuarioMostrar.value=mainVM.currentUser.value;navController.navigate(AppScreens.PerfilYo.route) }) {
+                IconButton(onClick = {
+                    mainVM.usuarioMostrar.value=mainVM.currentUser.value;
+                    navController.navigate(AppScreens.PerfilYo.route)
+                }) {
                     Icon(
                         painter = painterResource(id = R.drawable.account),
+                        contentDescription = "",
+                        modifier = Modifier.size(35.dp)
+                    )
+                }
+            }
+            else if (showAmigos) {
+                IconButton(onClick = {
+                    navController.navigate(AppScreens.BuscarAmigos.route)
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_people_24),
                         contentDescription = "",
                         modifier = Modifier.size(35.dp)
                     )

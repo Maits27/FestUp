@@ -45,21 +45,14 @@ interface IUserRepository: ILoginSettings {
     suspend fun alreadySiguiendo(currentUsername: String, username: String): Boolean
     suspend fun deleteSeguidores(currentUsername: String, usernameToUnfollow: String)
     suspend fun setUserProfile(username: String, image: Bitmap):Boolean
-
     fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>
-
     fun getUsuario(username: String): Usuario
-
     suspend fun descargarUsuarios()
-
     suspend fun descargarSeguidores()
-
     suspend fun subscribeUser(token: String)
     suspend fun unSubscribeUser(token: String)
     suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date) : Usuario
-
     suspend fun subscribeToUser(token: String, username: String)
-
     suspend fun unsubscribeFromUser(token: String, username: String)
 
 }
@@ -161,7 +154,6 @@ class UserRepository @Inject constructor(
     }
 
     override fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>> {
-        // TODO PRIMERO RECOGER DEL REMOTO Y LUEGO PONERLOS AQUI
         return usuarioDao.getUsuariosMenosCurrent(usuario.username)
     }
 
@@ -192,7 +184,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date) : Usuario {
         usuarioDao.editarUsuario(username, email, nombre, fecha)
-        httpClient.editUser(RemoteUsuario(username = username, email = email, nombre = nombre, fechaNacimiento = fecha.toStringRemoto()))
+        httpClient.editUser(RemoteUsuario(username = username, email = email, nombre = nombre, fechaNacimiento = fecha.toStringRemoto(), telefono = "")) //TODO AÑADIR TELEFONO
         return usuarioDao.getUsuario(username)
     }
     override suspend fun subscribeToUser(token: String, username: String){

@@ -84,4 +84,5 @@
     <string name="edad">Edad</string>
     <string name="mostrar">Mostrar</string>
     <string name="no_mostrar">No mostrar</string>
+    <string name="buscar_amigos">Buscar amigos</string>
 </resources>

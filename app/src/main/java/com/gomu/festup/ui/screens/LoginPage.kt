@@ -74,6 +74,7 @@ import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.EditImageIcon
 import com.gomu.festup.ui.components.Imagen
+import com.gomu.festup.ui.components.EditImageIcon
 import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.IdentVM
@@ -286,6 +287,10 @@ fun RegistroForm(
         mutableStateOf("")
     }
 
+    var telefono by remember {
+        mutableStateOf("")
+    }
+
     var nombre by remember {
         mutableStateOf("")
     }
@@ -303,7 +308,7 @@ fun RegistroForm(
     }
 
     // Birth date DatePikcer
-    var datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState()
     var showDatePicker by remember {
         mutableStateOf(false)
     }
@@ -323,11 +328,11 @@ fun RegistroForm(
     }
 
     val onRegisterButtonClick: () -> Unit = {
-        val correct = checkRegisterForm(context, username, email, nombre, password, confirmPassword)
+        val correct = checkRegisterForm(context, username, email, telefono, nombre, password, confirmPassword)
         if (correct) {
             showLoading = true
-            registration(imageUri, mainNavController, mainVM, identVM, preferencesVM, context, username, password,
-                email, nombre, birthDate)
+            registration(imageUri, mainNavController, mainVM, identVM, preferencesVM, context,
+                username, password, email, nombre, birthDate, telefono)
             showLoading = false
         }
     }
@@ -350,6 +355,25 @@ fun RegistroForm(
             Box(contentAlignment = Alignment.BottomEnd) {
                 Imagen(imageUri, context, R.drawable.no_user) { }
                 EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+                Box(Modifier.padding(16.dp)) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(imageUri)
+                            .crossfade(true)
+                            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                            .build(),
+                        contentDescription = "User image",
+                        placeholder = painterResource(id = R.drawable.no_user),
+                        contentScale = ContentScale.Crop,
+                        error = painterResource(id = R.drawable.no_user),
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape)
+                    )
+                }
+                // Icono para editar imagen
+                EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
             }
 
             // Campo para añadir nombre de usuario
@@ -365,6 +389,14 @@ fun RegistroForm(
                 onValueChange = { email = it },
                 label = { Text(text = "Email") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = modifierForInputs
+            )
+            // Campo para añadir el número de teléfono
+            OutlinedTextField(
+                value = telefono,
+                onValueChange = { telefono = it },
+                label = { Text(text = "Teléfono") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = modifierForInputs
             )
             // Campo para añadir nombre
@@ -480,6 +512,7 @@ fun checkRegisterForm(
     context: Context,
     username: String,
     email: String,
+    telefono: String,
     nombre: String,
     password: String,
     confirmPassword: String
@@ -491,6 +524,7 @@ fun checkRegisterForm(
     else if (username.length > 30) formValidatorError(context, "El nombre de usuario no puede tener más de 30 caracteres")
     else if (email == "") formValidatorError(context, "Introduce un email")
     else if (!email.matches(emailRegex)) formValidatorError(context,  "El formato del email no es correcto")
+    else if (telefono == "") formValidatorError(context, "Introduce un número de teléfono")
     else if (nombre == "") formValidatorError(context,  "Introduce un nombre")
     else if (password == "") formValidatorError(context,  "Introduce una contraseña")
     else if (password.length < 6) formValidatorError(context,  "La contraseña debe contener al menos 6 caracteres")
@@ -517,7 +551,8 @@ fun registration(
     password: String,
     email: String,
     nombre: String,
-    birthDate: String
+    birthDate: String,
+    telefono: String
 ) {
     CoroutineScope(Dispatchers.IO).launch {
         Log.d("IMAGE", "Image uri: ${imageUri.toString()}")
@@ -530,6 +565,7 @@ fun registration(
                     email,
                     nombre,
                     birthDate,
+                    telefono,
                     imageUri
                 )
             }

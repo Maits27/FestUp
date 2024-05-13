@@ -25,6 +25,7 @@ data class UserCuadrillaAndEvent(
 )
 
 
+
 enum class AppLanguage(val language: String, val code: String) {
     EU("Euskera", "eu"),
     ES("Español", "es");
@@ -42,3 +43,8 @@ enum class AppLanguage(val language: String, val code: String) {
         }
     }
 }
+
+data class Contacto(
+    val nombre: String,
+    val telefono: String,
+)

@@ -32,11 +32,12 @@ class IdentVM @Inject constructor(
         email: String,
         nombre: String,
         fechaNacimiento: String,
+        telefono: String,
         uri: Uri?
     ): Usuario? {
         try{
             val fechaNacimientoDate = fechaNacimiento.formatearFecha()
-            val newUser = Usuario(username,email,nombre,fechaNacimientoDate)
+            val newUser = Usuario(username,email,nombre,fechaNacimientoDate, telefono)
             val signInCorrect = userRepository.insertUsuario(newUser,password)
             if (signInCorrect){
                 if (uri != null && uri != Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")) {
