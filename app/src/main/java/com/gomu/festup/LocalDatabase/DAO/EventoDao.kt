@@ -12,6 +12,7 @@ import com.gomu.festup.LocalDatabase.Entities.CuadrillaWithUsuarios
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Entities.UsuarioWithEventos
+import com.gomu.festup.data.CuadrillaAndEvent
 import com.gomu.festup.data.UserAndEvent
 import com.gomu.festup.data.UserCuadrillaAndEvent
 import kotlinx.coroutines.flow.Flow
@@ -111,18 +112,33 @@ interface EventoDao {
 
 
 
-    @Transaction
-    @Query("SELECT Integrante.username AS username, Integrante.nombreCuadrilla AS nombreCuadrilla, Evento.* FROM Evento " +
-            "INNER JOIN CuadrillasAsistentes ON Evento.id = CuadrillasAsistentes.idEvento " +
-            "INNER JOIN Integrante ON CuadrillasAsistentes.nombreCuadrilla = Integrante.nombreCuadrilla " +
-            "WHERE Evento.id IN ( " +
-            "    SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla IN (" +
-            "       SELECT nombreCuadrilla FROM Integrante WHERE username IN( " +
-            "           SELECT seguido FROM Seguidores WHERE seguidor = :username AND seguido != :username " + // Excluir el usuario
-            "    )) " +
-            ") AND username IN (SELECT seguido FROM Seguidores WHERE seguidor = :username AND seguido != :username)" +
-            "AND Evento.fecha >= :today ORDER BY Evento.fecha")
-    fun getUserCuadrillaAndEvent(username: String, today: Date = Date()): Flow<List<UserCuadrillaAndEvent>>
+//    @Transaction
+//    @Query("SELECT Integrante.username AS username, Integrante.nombreCuadrilla AS nombreCuadrilla, Evento.* FROM Evento " +
+//            "INNER JOIN CuadrillasAsistentes ON Evento.id = CuadrillasAsistentes.idEvento " +
+//            "INNER JOIN Integrante ON CuadrillasAsistentes.nombreCuadrilla = Integrante.nombreCuadrilla " +
+//            "WHERE Evento.id IN ( " +
+//            "    SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla IN (" +
+//            "       SELECT nombreCuadrilla FROM Integrante WHERE username IN( " +
+//            "           SELECT seguido FROM Seguidores WHERE seguidor = :username AND seguido != :username " + // Excluir el usuario
+//            "    )) " +
+//            ") AND username IN (SELECT seguido FROM Seguidores WHERE seguidor = :username AND seguido != :username)" +
+//            "AND Evento.fecha >= :today ORDER BY Evento.fecha")
+//    fun getUserCuadrillaAndEvent(username: String, today: Date = Date()): Flow<List<UserCuadrillaAndEvent>>
+@Transaction
+@Query("SELECT DISTINCT Integrante.nombreCuadrilla AS nombreCuadrilla, Evento.* FROM Evento " +
+        "INNER JOIN CuadrillasAsistentes ON Evento.id = CuadrillasAsistentes.idEvento " +
+        "INNER JOIN Integrante ON CuadrillasAsistentes.nombreCuadrilla = Integrante.nombreCuadrilla " +
+        "WHERE Evento.id IN ( " +
+        "    SELECT idEvento FROM CuadrillasAsistentes WHERE nombreCuadrilla IN (" +
+        "       SELECT nombreCuadrilla FROM Integrante WHERE username IN( " +
+        "           SELECT seguido FROM Seguidores WHERE seguidor = :username AND seguido != :username " + // Excluir el usuario
+        "    )) " +
+        ") AND Integrante.nombreCuadrilla IN (SELECT nombreCuadrilla FROM Integrante WHERE username IN" +
+        "(SELECT seguido FROM Seguidores WHERE seguidor = :username AND seguido != :username))" +
+        "AND Evento.fecha >= :today ORDER BY Evento.fecha")
+fun getUserCuadrillaAndEvent(username: String, today: Date = Date()): Flow<List<CuadrillaAndEvent>>
+
+
 
     @Transaction
     @Query("SELECT UsuariosAsistentes.username AS username, Evento.* FROM Evento " +

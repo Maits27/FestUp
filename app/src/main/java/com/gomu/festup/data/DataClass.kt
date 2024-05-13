@@ -14,6 +14,12 @@ data class UserAndEvent(
     @Embedded
     val evento: Evento
 )
+data class CuadrillaAndEvent(
+    @ColumnInfo(name = "nombreCuadrilla")
+    val nombreCuadrilla: String,
+    @Embedded
+    val evento: Evento
+)
 
 data class UserCuadrillaAndEvent(
     @ColumnInfo(name = "username")

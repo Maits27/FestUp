@@ -122,7 +122,9 @@ class EventoRepository @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun eventosSeguidos(username: String): Flow<List<UserCuadrillaAndEvent>> {
-        var cuadrillas = eventoDao.getUserCuadrillaAndEvent(username)
+        var cuadrillas = eventoDao.getUserCuadrillaAndEvent(username).map {
+            it.map { UserCuadrillaAndEvent("", it.nombreCuadrilla, it.evento) }
+        }
         var usuarios = eventoDao.getUserFollowedFromEvent(username).map {
             it.map {
                 UserCuadrillaAndEvent(it.username, "", it.evento)

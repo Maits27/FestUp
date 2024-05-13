@@ -122,7 +122,7 @@ fun EventoCardConUser(
                             .background(
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 shape = RoundedCornerShape(2.dp)
-                            )
+                            ).fillMaxWidth()
                     ){
                         Text(text = "@$usuario participa en:",
                             style = MaterialTheme.typography.bodySmall,
@@ -136,9 +136,9 @@ fun EventoCardConUser(
                             .background(
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 shape = RoundedCornerShape(8.dp)
-                            )
+                            ).fillMaxWidth()
                     ){
-                        Text(text = "La cuadrilla $cuadrilla de @$usuario participa en:",
+                        Text(text = "La cuadrilla $cuadrilla participa en:",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(5.dp))
