@@ -72,6 +72,7 @@ import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.EditImageIcon
 import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.IdentVM
@@ -284,6 +285,10 @@ fun RegistroForm(
         mutableStateOf("")
     }
 
+    var telefono by remember {
+        mutableStateOf("")
+    }
+
     var nombre by remember {
         mutableStateOf("")
     }
@@ -301,7 +306,7 @@ fun RegistroForm(
     }
 
     // Birth date DatePikcer
-    var datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState()
     var showDatePicker by remember {
         mutableStateOf(false)
     }
@@ -321,11 +326,11 @@ fun RegistroForm(
     }
 
     val onRegisterButtonClick: () -> Unit = {
-        val correct = checkRegisterForm(context, username, email, nombre, password, confirmPassword)
+        val correct = checkRegisterForm(context, username, email, telefono, nombre, password, confirmPassword)
         if (correct) {
             showLoading = true
-            registration(imageUri, mainNavController, mainVM, identVM, preferencesVM, context, username, password,
-                email, nombre, birthDate)
+            registration(imageUri, mainNavController, mainVM, identVM, preferencesVM, context,
+                username, password, email, nombre, birthDate)
             showLoading = false
         }
     }
@@ -363,31 +368,7 @@ fun RegistroForm(
                     )
                 }
                 // Icono para editar imagen
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .padding(bottom = 16.dp, end = 8.dp)
-                        .clip(CircleShape)
-                        .clickable(onClick = {
-                            singlePhotoPickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        })
-                ) {
-                    //Añadir circle y edit
-                    Icon(
-                        painterResource(id = R.drawable.circle),
-                        contentDescription = null,
-                        Modifier.size(40.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Icon(
-                        painterResource(id = R.drawable.edit),
-                        contentDescription = null,
-                        Modifier.size(18.dp),
-                        tint = MaterialTheme.colorScheme.surface
-                    )
-                }
+                EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
             }
             // Campo para añadir nombre de usuario
             OutlinedTextField(
@@ -402,6 +383,14 @@ fun RegistroForm(
                 onValueChange = { email = it },
                 label = { Text(text = "Email") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = modifierForInputs
+            )
+            // Campo para añadir el número de teléfono
+            OutlinedTextField(
+                value = telefono,
+                onValueChange = { telefono = it },
+                label = { Text(text = "Teléfono") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = modifierForInputs
             )
             // Campo para añadir nombre
@@ -517,6 +506,7 @@ fun checkRegisterForm(
     context: Context,
     username: String,
     email: String,
+    telefono: String,
     nombre: String,
     password: String,
     confirmPassword: String
@@ -528,6 +518,7 @@ fun checkRegisterForm(
     else if (username.length > 30) formValidatorError(context, "El nombre de usuario no puede tener más de 30 caracteres")
     else if (email == "") formValidatorError(context, "Introduce un email")
     else if (!email.matches(emailRegex)) formValidatorError(context,  "El formato del email no es correcto")
+    else if (telefono == "") formValidatorError(context, "Introduce un número de teléfono")
     else if (nombre == "") formValidatorError(context,  "Introduce un nombre")
     else if (password == "") formValidatorError(context,  "Introduce una contraseña")
     else if (password.length < 6) formValidatorError(context,  "La contraseña debe contener al menos 6 caracteres")
