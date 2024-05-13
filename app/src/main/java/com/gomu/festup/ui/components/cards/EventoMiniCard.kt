@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -66,9 +67,9 @@ fun EventoMiniCard(
             error = painterResource(id = R.drawable.no_image),
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .border(2.dp, color = MaterialTheme.colorScheme.primary, CircleShape)
+                .border(2.dp, color = MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
                 .size(50.dp)
-                .clip(CircleShape)
+                .clip(RoundedCornerShape(10.dp))
         )
         Text(text = evento.nombre, fontSize = 10.sp)
         Text(text = evento.fecha.toStringNuestro(), fontSize = 8.sp)

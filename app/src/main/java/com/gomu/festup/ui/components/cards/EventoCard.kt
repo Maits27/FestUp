@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.components.cards
 
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,6 +32,7 @@ import coil.request.ImageRequest
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.R
+import com.gomu.festup.ui.components.ImagenEvento
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 
@@ -49,8 +51,10 @@ fun EventoCard(
     }
 
     val imageUri by remember {
-        mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png"))
     }
+
+
 
     Card(
         modifier = Modifier
@@ -62,21 +66,8 @@ fun EventoCard(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(15.dp)
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(imageUri)
-                    .crossfade(true)
-                    .memoryCachePolicy(CachePolicy.ENABLED)  // Para que la guarde en caché-RAM
-                    .diskCachePolicy(CachePolicy.ENABLED)    // Para que la guarde en caché-disco
-                    .build(),
-                contentDescription = stringResource(id = R.string.cuadrilla_imagen),
-                placeholder = painterResource(id = R.drawable.no_image),
-                error = painterResource(id = R.drawable.no_image),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(RoundedCornerShape(10.dp))
-            )
+
+            ImagenEvento(imageUri, context, R.drawable.no_image, 50.dp) {}
             Column(
                 modifier = Modifier
                     .weight(1f)

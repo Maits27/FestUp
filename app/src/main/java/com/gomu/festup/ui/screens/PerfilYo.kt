@@ -90,6 +90,7 @@ import com.gomu.festup.MainActivity
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.EditImageIcon
+import com.gomu.festup.ui.components.Imagen
 import com.gomu.festup.ui.components.cards.CuadrillaMiniCard
 import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.ui.components.cards.EventoMiniCard
@@ -685,35 +686,16 @@ fun ProfileImage(
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {
-        Box(Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
-            AsyncImage(                                                             // TODO: NO FUNCIONA
-                model = ImageRequest.Builder(context)
-                    .data(imageUri)
-                    .crossfade(true)
-                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
-                    .build(),
-                contentDescription = context.getString(R.string.user_image),
-                error = painterResource(id = R.drawable.no_user),
-                placeholder = painterResource(id = R.drawable.no_user),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .clickable {
-                        navController.navigate(
-                            AppScreens.FullImageScreen.route + "/" +
-                                    "user" + "/" +
-                                    usuario.username
-                        )
-                    }
+        Imagen(imageUri, context, R.drawable.no_user) {
+            navController.navigate(
+                AppScreens.FullImageScreen.route + "/" +
+                        "user" + "/" +
+                        usuario.username
             )
         }
-        // Icono para editar imagen
-        if(yo) {
-            EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
-        }
+        if(yo) EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
     }
+
 }
 
 @Composable

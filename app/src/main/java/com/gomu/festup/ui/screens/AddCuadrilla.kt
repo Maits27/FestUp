@@ -29,7 +29,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -60,12 +59,14 @@ import coil.compose.AsyncImage
 import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
+import com.gomu.festup.ui.components.EditImageIcon
 import com.gomu.festup.utils.localUriToBitmap
 import com.gomu.festup.vm.MainVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.gomu.festup.ui.components.Imagen
 
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -110,7 +111,11 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                     .padding(bottom = 10.dp)
                     .fillMaxWidth()
             )
-            Imagen(imageUri,singlePhotoPickerLauncher)
+            Box(contentAlignment = Alignment.BottomEnd) {
+                Imagen(imageUri, context, R.drawable.no_cuadrilla) {}
+                EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+            }
+
 
 
             // Form
@@ -181,7 +186,6 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                 modifier = Modifier
                     .padding(vertical = 16.dp)
                     .align(Alignment.CenterHorizontally),
-                shape = RoundedCornerShape(10.dp),
             ) {
                 Text(text = context.getString(R.string.crear))
             }
@@ -206,7 +210,10 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                         .padding(bottom = 10.dp, top = 30.dp)
                         .fillMaxWidth()
                 )
-                Imagen(imageUri,singlePhotoPickerLauncher)
+                Box(contentAlignment = Alignment.BottomEnd) {
+                    Imagen(imageUri, context, R.drawable.no_cuadrilla){}
+                    EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+                }
             }
 
             Column(
@@ -284,7 +291,6 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                     modifier = Modifier
                         .padding(vertical = 16.dp)
                         .align(Alignment.CenterHorizontally),
-                    shape = RoundedCornerShape(10.dp),
                 ) {
                     Text(text = context.getString(R.string.crear))
                 }
@@ -294,53 +300,6 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 }
 
 
-
-
-@Composable
-fun Imagen(imageUri: Uri?, singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>) {
-    Box(contentAlignment = Alignment.BottomEnd) {
-        Box(Modifier.padding(16.dp)) {
-            // Mientras no este la imagen mostrar una "cargando"
-            //LoadingImagePlaceholder(size = 120.dp)
-            if (imageUri == null) {
-                AsyncImage(
-                    model = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png",
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape),
-                )
-            }
-            else {
-                AsyncImage(
-                    model = imageUri,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(CircleShape),
-                )
-            }
-        }
-        // Icono para editar imagen
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .padding(bottom = 16.dp, end = 8.dp)
-                .clip(CircleShape)
-                .clickable(onClick = {
-                    singlePhotoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                })
-        ) {
-            // Añadir circle y edit
-            Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
-            Icon(painterResource(id = R.drawable.edit), contentDescription = null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.surface)
-        }
-    }
-}
 
 @Composable
 fun LoadingImagePlaceholder(size: Dp = 100.dp) {

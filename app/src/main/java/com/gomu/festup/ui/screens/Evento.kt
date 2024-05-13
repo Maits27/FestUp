@@ -2,6 +2,7 @@ package com.gomu.festup.ui.screens
 
 import android.content.Context
 import android.content.res.Configuration
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -73,6 +74,9 @@ import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.EditImageIcon
+import com.gomu.festup.ui.components.Imagen
+import com.gomu.festup.ui.components.ImagenEvento
 import com.gomu.festup.ui.components.dialogs.Apuntarse
 import com.gomu.festup.ui.components.cards.CuadrillaCard
 import com.gomu.festup.ui.components.cards.CuadrillaCardParaEventosAlert
@@ -169,10 +173,11 @@ fun EventoHorizontal(context: Context, navController: NavController, mainVM: Mai
                 .pullRefresh(refreshState)
                 .verticalScroll(
                     scrollState,
-                ).weight(1f),
+                )
+                .weight(1f),
             contentAlignment = Alignment.Center
         ) {
-            CardHorizontal(context, mainVM, evento, numAsistentes)
+            CardHorizontal(context, mainVM, evento, numAsistentes, navController)
             PullRefreshIndicator(
                 refreshing = refresh,
                 state = refreshState,
@@ -224,8 +229,9 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 20.dp)
             ) {
                 val imageUri by remember {
-                    mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
+                    mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png"))
                 }
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top,
@@ -233,29 +239,14 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
                         .weight(1f)
                         .padding(horizontal = 3.dp)
                 ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(imageUri)
-                            .crossfade(true)
-                            .memoryCachePolicy(CachePolicy.ENABLED)  // Para que la guarde en caché-RAM
-                            .diskCachePolicy(CachePolicy.ENABLED)    // Para que la guarde en caché-disco
-                            .build(),
-                        contentDescription = context.getString(R.string.evento_foto),
-                        error = painterResource(id = R.drawable.no_image),
-                        placeholder = painterResource(id = R.drawable.no_image),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .height(150.dp)
-                            .width(150.dp)
-                            .clip(RoundedCornerShape(35.dp))
-                            .clickable {
-                                navController.navigate(
-                                    AppScreens.FullImageScreen.route + "/" +
-                                            "evento" + "/" +
-                                            evento.id
-                                )
-                            }
-                    )
+
+                    ImagenEvento(imageUri, context, R.drawable.no_image, 150.dp ) {
+                        navController.navigate(
+                            AppScreens.FullImageScreen.route + "/" +
+                                    "evento" + "/" +
+                                    evento.id
+                        )
+                    }
                     IconosEvento(context = context, mainVM = mainVM, evento = evento, modifier = Modifier.padding(top = 12.dp))
                 }
                 DatosEvento(evento, mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!), numAsistentes,
@@ -274,9 +265,9 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
 
 
 @Composable
-fun CardHorizontal(context: Context, mainVM: MainVM, evento: Evento, numAsistentes: Int, modifier: Modifier = Modifier){
+fun CardHorizontal(context: Context, mainVM: MainVM, evento: Evento, numAsistentes: Int, navController: NavController, modifier: Modifier = Modifier){
     val imageUri by remember {
-        mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png"))
     }
     val edadMedia = mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!)
 
@@ -292,23 +283,15 @@ fun CardHorizontal(context: Context, mainVM: MainVM, evento: Evento, numAsistent
             Row(
                 modifier = Modifier.padding(start = 6.dp, bottom = 6.dp, top = 20.dp)
             ) {
+                ImagenEvento(imageUri, context, R.drawable.no_image, 110.dp ) {
+                    navController.navigate(
+                        AppScreens.FullImageScreen.route + "/" +
+                                "evento" + "/" +
+                                evento.id
+                    )
+                }
 
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(imageUri)
-                        .crossfade(true)
-                        .memoryCachePolicy(CachePolicy.ENABLED)  // Para que la guarde en caché-RAM
-                        .diskCachePolicy(CachePolicy.ENABLED)    // Para que la guarde en caché-disco
-                        .build(),
-                    contentDescription = context.getString(R.string.evento_foto),
-                    error = painterResource(id = R.drawable.no_image),
-                    placeholder = painterResource(id = R.drawable.no_image),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .height(110.dp)
-                        .width(110.dp)
-                        .clip(RoundedCornerShape(35.dp))
-                )
+
                 DatosEvento(evento, edadMedia, numAsistentes,
                     Modifier.padding(vertical = 5.dp, horizontal = 10.dp))
 
@@ -479,7 +462,10 @@ fun DatosEvento(
         }
 
         if (isVertical){
-            EdadMediaYAsistentes(context = context, edadMedia = edadMedia, numAsistentes = numAsistentes, Modifier.fillMaxWidth().padding(top = 16.dp))
+            EdadMediaYAsistentes(context = context, edadMedia = edadMedia, numAsistentes = numAsistentes,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp))
         }
 
     }

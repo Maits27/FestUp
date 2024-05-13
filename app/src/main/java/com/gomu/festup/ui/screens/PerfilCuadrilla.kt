@@ -84,6 +84,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.Imagen
 import com.gomu.festup.ui.components.cards.EventoMiniCard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -318,33 +319,17 @@ fun CuadrillaProfileImage(
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {
-        Box(Modifier.padding(16.dp)) {
-            AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(imageUri)
-                    .crossfade(true)
-                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
-                    .build(),
-                contentDescription = null,
-                placeholder = painterResource(id = R.drawable.no_cuadrilla),
-                error = painterResource(id = R.drawable.no_cuadrilla),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .clickable {
-                        navController.navigate(
-                            AppScreens.FullImageScreen.route + "/" +
-                                    "cuadrilla" + "/" +
-                                    cuadrilla.nombre
-                        )
-                    }
+        Imagen(imageUri, context, R.drawable.no_cuadrilla) {
+            navController.navigate(
+                AppScreens.FullImageScreen.route + "/" +
+                        "cuadrilla" + "/" +
+                        cuadrilla.nombre
             )
         }
-        // Icono para editar imagen
         if(pertenezco) EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
     }
+
+
 }
 
 

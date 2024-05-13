@@ -54,6 +54,8 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.gomu.festup.R
+import com.gomu.festup.ui.components.EditImageIcon
+import com.gomu.festup.ui.components.Imagen
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
@@ -127,7 +129,10 @@ fun EditPerfil(
                     .verticalScroll(rememberScrollState())
             ) {
                 // Profile image
-                Imagen(imageUri,singlePhotoPickerLauncher,context)
+                Box(contentAlignment = Alignment.BottomEnd) {
+                    Imagen(imageUri, context, R.drawable.no_user){}
+                    EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+                }
 
                 // Campo para añadir email
                 OutlinedTextField(
@@ -177,7 +182,10 @@ fun EditPerfil(
                 verticalArrangement = Arrangement.Center
             ) {
                 // Profile image
-                Imagen(imageUri,singlePhotoPickerLauncher,context)
+                Box(contentAlignment = Alignment.BottomEnd) {
+                    Imagen(imageUri, context, R.drawable.no_user){}
+                    EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+                }
             }
 
             Column(
@@ -264,54 +272,6 @@ fun EditPerfil(
     }
 }
 
-@Composable
-fun Imagen(imageUri: Uri?, singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>, context: Context) {
-    Box(contentAlignment = Alignment.BottomEnd) {
-        Box(Modifier.padding(16.dp)) {
-            AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(imageUri)
-                    .crossfade(true)
-                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
-                    .build(),
-                contentDescription = context.getString(R.string.user_image),
-                placeholder = painterResource(id = R.drawable.no_user),
-                contentScale = ContentScale.Crop,
-                error = painterResource(id = R.drawable.no_user),
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-            )
-        }
-        // Icono para editar imagen
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .padding(bottom = 16.dp, end = 8.dp)
-                .clip(CircleShape)
-                .clickable(onClick = {
-                    singlePhotoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                })
-        ) {
-            //Añadir circle y edit
-            Icon(
-                painterResource(id = R.drawable.circle),
-                contentDescription = null,
-                Modifier.size(40.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Icon(
-                painterResource(id = R.drawable.edit),
-                contentDescription = null,
-                Modifier.size(18.dp),
-                tint = MaterialTheme.colorScheme.surface
-            )
-        }
-    }
-}
 
 fun checkEditPerfil(
     context: Context,

@@ -72,6 +72,8 @@ import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.EditImageIcon
+import com.gomu.festup.ui.components.Imagen
 import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.IdentVM
@@ -344,51 +346,12 @@ fun RegistroForm(
                 .verticalScroll(rememberScrollState())
         ) {
             // Profile image
+
             Box(contentAlignment = Alignment.BottomEnd) {
-                Box(Modifier.padding(16.dp)) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(imageUri)
-                            .crossfade(true)
-                            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
-                            .build(),
-                        contentDescription = "User image",
-                        placeholder = painterResource(id = R.drawable.no_user),
-                        contentScale = ContentScale.Crop,
-                        error = painterResource(id = R.drawable.no_user),
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape)
-                    )
-                }
-                // Icono para editar imagen
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .padding(bottom = 16.dp, end = 8.dp)
-                        .clip(CircleShape)
-                        .clickable(onClick = {
-                            singlePhotoPickerLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                            )
-                        })
-                ) {
-                    //Añadir circle y edit
-                    Icon(
-                        painterResource(id = R.drawable.circle),
-                        contentDescription = null,
-                        Modifier.size(40.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Icon(
-                        painterResource(id = R.drawable.edit),
-                        contentDescription = null,
-                        Modifier.size(18.dp),
-                        tint = MaterialTheme.colorScheme.surface
-                    )
-                }
+                Imagen(imageUri, context, R.drawable.no_user) { }
+                EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
             }
+
             // Campo para añadir nombre de usuario
             OutlinedTextField(
                 value = username,

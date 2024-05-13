@@ -1,6 +1,7 @@
 package com.gomu.festup.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.location.Location
 import android.net.Uri
@@ -8,6 +9,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Space
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -66,6 +68,7 @@ import com.gomu.festup.alarmMng.AlarmItem
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.EditImageIcon
+import com.gomu.festup.ui.components.ImagenEvento
 import com.gomu.festup.utils.addEventOnCalendar
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.getLatLngFromAddress
@@ -232,30 +235,10 @@ fun AddEvento(
     ) {
         Box (
             contentAlignment = Alignment.BottomEnd,
-            modifier = Modifier.clickable {
-                singlePhotoPickerLauncher.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                )
-            }
+
         ) {
-            if (imageUri != null) {
-                AsyncImage(
-                    model = imageUri,
-                    contentDescription = context.getString(R.string.evento_foto),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(150.dp)
-                )
-            }
-            else {
-                Image(
-                    painter = painterResource(id = R.drawable.round_camera_alt_24),
-                    contentDescription = context.getString(R.string.evento_foto),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(150.dp)
-                )
-            }
+            ImagenEvento(imageUri, context, R.drawable.round_camera_alt_24, 150.dp ) {}
+
             EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
         }
         OutlinedTextField(
@@ -399,8 +382,4 @@ fun AddEvento(
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun AddEventoPreview() {
-//    AddEvento(navController = rememberNavController())
-//}
+
