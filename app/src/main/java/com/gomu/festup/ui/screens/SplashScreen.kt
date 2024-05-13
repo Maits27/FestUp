@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.traceEventEnd
 import androidx.compose.ui.Alignment
@@ -42,17 +43,20 @@ fun SplashScreen(navController: NavController, mainVM: MainVM, preferencesVM: Pr
 
 @Composable
 fun SplashContent() {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.festup),
-            contentDescription = "Logo",
-            modifier = Modifier.padding(horizontal = 40.dp)
-        )
-        CircularProgressIndicator()
+    // Surface to use the theme
+    Surface {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.festup),
+                contentDescription = "Logo",
+                modifier = Modifier.padding(horizontal = 40.dp)
+            )
+            CircularProgressIndicator()
+        }
     }
 }
 
