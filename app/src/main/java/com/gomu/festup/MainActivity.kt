@@ -31,6 +31,7 @@ import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.screens.App
 import com.gomu.festup.ui.screens.LoginPage
+import com.gomu.festup.ui.screens.SplashScreen
 import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.vm.IdentVM
 import com.gomu.festup.vm.MainVM
@@ -132,8 +133,13 @@ fun Principal(
 
     NavHost(
         navController = mainNavController,
-        startDestination = AppScreens.LoginPage.route
+        startDestination = AppScreens.SplashScreen.route
     ) {
+        composable(AppScreens.SplashScreen.route) {
+            FestUpTheme(dark) {
+                SplashScreen(mainNavController, mainVM, preferencesVM)
+            }
+        }
         composable(AppScreens.LoginPage.route) {
             if (!mainVM.serverOk.value){
                 Log.d("He pasado por aqui", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")

@@ -24,4 +24,6 @@ sealed class AppScreens (val route: String) {
 
     object FullImageScreen: AppScreens("FullImageScreen")
 
+    object SplashScreen: AppScreens("SplashScreen")
+
 }
