@@ -177,15 +177,15 @@ fun LoginForm(
                         }
                         nuestroLocationProvider(context, mainVM)
                         mainVM.currentUser.value = currentUser
-                        preferencesVM.changeUser(currentUser.username)
+                        withContext(Dispatchers.IO) {
+                            preferencesVM.changeUser(currentUser.username)
+                        }
 
                         withContext(Dispatchers.Main) {
-                            mainVM.actualizarWidget(context)
                             mainNavController.navigate(AppScreens.App.route)
                             showLoading = false
                             mainVM.actualizarWidget(context)
                         }
-
                     } else {
                         withContext(Dispatchers.Main) {
                             showLoading = false

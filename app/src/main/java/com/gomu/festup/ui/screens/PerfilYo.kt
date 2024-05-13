@@ -84,6 +84,7 @@ import com.gomu.festup.vm.PreferencesViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.util.Date
@@ -414,13 +415,22 @@ fun BotonesPerfil(
         }
         IconButton(
             onClick = {
-                preferencesVM.changeUser("")
-                mainVM.serverOk.value = false
-                mainNavController.popBackStack()
-                (context as? Activity)?.finish()
-                val intent = Intent(context, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                context.startActivity(intent)
+                CoroutineScope(Dispatchers.IO).launch {
+                    withContext(Dispatchers.IO) {
+                        preferencesVM.changeUser("")
+                    }
+                    //Log.d("FestUpWidget", "DataStore username ${preferencesVM}")
+                    mainVM.serverOk.value = false
+                    mainVM.actualizarWidget(context)
+
+                    withContext(Dispatchers.Main) {
+                        mainNavController.popBackStack()
+                        (context as? Activity)?.finish()
+                        val intent = Intent(context, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        context.startActivity(intent)
+                    }
+                }
             },
             modifier = Modifier.weight(1f)
         ) {

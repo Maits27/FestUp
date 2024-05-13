@@ -70,7 +70,7 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
         updateWidgetData(context)
     }
 
-    fun updateWidgetData(context: Context) {
+    private fun updateWidgetData(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val currentUsername = preferencesRepository.getLastLoggedUser()
             val currentLanguage = preferences.language(currentUsername).first()

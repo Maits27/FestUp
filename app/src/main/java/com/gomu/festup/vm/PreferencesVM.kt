@@ -48,12 +48,10 @@ class PreferencesViewModel @Inject constructor(
      **                    Eventos                  **
      *************************************************/
 
-    fun changeUser(username: String){
+    suspend fun changeUser(username: String){
         Log.d("CAMBIO DE USUARIO", username)
         _currentUser.value = username
-        viewModelScope.launch(Dispatchers.IO) {
-            loginRepository.setLastLoggedUser(username)
-        }
+        loginRepository.setLastLoggedUser(username)
     }
 
 
