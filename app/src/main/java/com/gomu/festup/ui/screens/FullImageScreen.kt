@@ -27,8 +27,6 @@ fun FullImageScreen(
         "evento" -> imageUri = Uri.parse("http://34.16.74.167/eventoImages/$filename.png")
     }
 
-    Log.d("FullImageScreen", "imageUri: $imageUri")
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
