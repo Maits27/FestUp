@@ -66,7 +66,6 @@ class MainActivity : AppCompatActivity() {
         setContent {
             FestUpTheme {
                 AskPermissions()
-                val context = LocalContext.current
                 val lastLoggedUser = mainVM.actualizarCurrentUser(preferencesVM.lastLoggedUser)
 
                 // A surface container using the 'background' color from the theme
@@ -137,7 +136,7 @@ fun Principal(
     ) {
         composable(AppScreens.SplashScreen.route) {
             FestUpTheme(dark) {
-                SplashScreen(mainNavController, mainVM, preferencesVM)
+                SplashScreen(mainNavController, mainVM, preferencesVM, identVM)
             }
         }
         composable(AppScreens.LoginPage.route) {
@@ -163,7 +162,7 @@ fun Principal(
                     }
                 }
             }
-            LoginPage(mainNavController, mainVM, identVM, preferencesVM, lastLoggedUser)
+            LoginPage(mainNavController, mainVM, identVM, preferencesVM)
         }
         composable(AppScreens.App.route) {
             FestUpTheme(dark) {

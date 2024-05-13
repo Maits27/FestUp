@@ -92,13 +92,8 @@ fun LoginPage(
     mainNavController: NavController,
     mainVM: MainVM,
     identVM: IdentVM,
-    preferencesVM: PreferencesViewModel,
-    lastLoggedUser: Usuario?
+    preferencesVM: PreferencesViewModel
 ) {
-
-    if (mainVM.serverOk.value && lastLoggedUser!=null){
-        mainNavController.navigate(AppScreens.App.route)
-    }
 
     var selectedTab by remember {
         mutableIntStateOf(0)

@@ -424,7 +424,7 @@ fun BotonesPerfil(
                     mainVM.actualizarWidget(context)
 
                     withContext(Dispatchers.Main) {
-                        mainNavController.popBackStack()
+                        //mainNavController.popBackStack()
                         (context as? Activity)?.finish()
                         val intent = Intent(context, MainActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
