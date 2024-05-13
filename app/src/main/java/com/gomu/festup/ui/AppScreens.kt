@@ -26,4 +26,6 @@ sealed class AppScreens (val route: String) {
 
     object SplashScreen: AppScreens("SplashScreen")
 
+    object BuscarAmigos: AppScreens("BuscarAmigos")
+
 }

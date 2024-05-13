@@ -164,6 +164,9 @@ fun App(
                     FullImageScreen(type, filename)
                 }
             }
+            composable(AppScreens.BuscarAmigos.route) {
+                BuscarAmigos(mainVM, navController)
+            }
         }
     }
 }
