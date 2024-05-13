@@ -154,6 +154,7 @@ fun App(
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
             ) { EditPerfil(navController, mainVM) }
+
             composable(AppScreens.FullImageScreen.route + "/{type}/{filename}",
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
@@ -164,7 +165,10 @@ fun App(
                     FullImageScreen(type, filename)
                 }
             }
-            composable(AppScreens.BuscarAmigos.route) {
+            composable(AppScreens.BuscarAmigos.route,
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) {
                 BuscarAmigos(mainVM, navController)
             }
         }
