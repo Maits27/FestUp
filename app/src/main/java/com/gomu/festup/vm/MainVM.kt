@@ -28,6 +28,8 @@ import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.Preferences.PreferencesRepository
+import com.gomu.festup.data.UserAndEvent
+import com.gomu.festup.data.UserCuadrillaAndEvent
 import com.gomu.festup.ui.widget.FestUpWidget
 import com.gomu.festup.utils.getWidgetEventos
 import com.gomu.festup.utils.localUriToBitmap
@@ -39,6 +41,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -324,11 +327,19 @@ class MainVM @Inject constructor(
     }
 
     fun eventosUsuario(usuario: Usuario): Flow<List<Evento>> {
-        return  eventoRepository.eventosUsuario(usuario.username)
+        return eventoRepository.eventosUsuario(usuario.username)
+    }
+    fun eventosUsuarioConUser(usuario: Usuario): Flow<List<UserCuadrillaAndEvent>> {
+        val eventosYo = eventoRepository.eventosUsuario(usuario.username).map {
+            it.map {
+                UserCuadrillaAndEvent(usuario.username, "", it)
+            }
+        }
+        return eventosYo
     }
 
-    fun eventosSeguidos(usuario: Usuario): Flow<List<Evento>> {
-        return eventoRepository.eventosSeguidos(usuario.username)
+    fun eventosSeguidos(usuario: Usuario): Flow<List<UserCuadrillaAndEvent>> = runBlocking {
+        eventoRepository.eventosSeguidos(usuario.username)
     }
 
     fun eventosCuadrilla(cuadrilla: Cuadrilla): Flow<List<Evento>> {
