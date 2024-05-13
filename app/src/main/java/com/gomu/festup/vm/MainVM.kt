@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.location.Location
 import android.net.Uri
 import android.os.Build
+import android.provider.ContactsContract
 import android.util.Log
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
@@ -14,6 +15,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.ViewModel
@@ -485,5 +487,32 @@ class MainVM @Inject constructor(
         }
     }
 
+    fun listaAmigos(context: Context) {
+        // Esto se incluiría en el parámetro "projection" de "query"
+        /*val FROM_COLUMNS: Array<String> = arrayOf(
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)) {
+                ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
+            } else {
+                ContactsContract.Contacts.DISPLAY_NAME
+            }
+        )*/
 
+        val contentResolver = context.contentResolver
+        val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+        val cursor = contentResolver.query(uri, null, null, null, null)
+
+        val contactsUsingApp = mutableListOf<String>() // TODO se debería cerar una data class para guardar el nombre y el teléfono
+        if (cursor != null) {
+            if (cursor.count > 0) {
+                while (cursor.moveToNext()) {
+                    val contactName = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+                    val contactNumber = cursor.getString(cursor.getColumnIndexOrThrow(
+                        ContactsContract.CommonDataKinds.Phone.NUMBER))
+                    contactsUsingApp.add(contactNumber) // TODO y añadir el teléfono
+                    Log.d("Contact", "Name: $contactName, Number: $contactNumber")
+                }
+            }
+        }
+        cursor?.close()
+    }
 }
