@@ -14,6 +14,7 @@ import com.gomu.festup.RemoteDatabase.HTTPClient
 import com.gomu.festup.RemoteDatabase.RemoteCuadrillaAsistente
 import com.gomu.festup.RemoteDatabase.RemoteEvento
 import com.gomu.festup.RemoteDatabase.RemoteUsuarioAsistente
+import com.gomu.festup.data.UserCuadrillaAndEvent
 import com.gomu.festup.ui.widget.EventoWidget
 import com.gomu.festup.utils.formatearFechaRemoto
 import com.gomu.festup.utils.remoteCAsistenteToCAsistente
@@ -23,8 +24,12 @@ import com.gomu.festup.utils.remoteUsuarioToUsuario
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.utils.toStringRemoto
 import io.ktor.client.plugins.ResponseException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,7 +39,7 @@ interface IEventoRepository {
     fun usuariosEventos(): Flow<List<UsuariosAsistentes>>
     fun eventosUsuario(username: String): Flow<List<Evento>>
     fun eventosUsuarioList(username: String): List<Evento>
-    fun eventosSeguidos(username: String): Flow<List<Evento>>
+    suspend fun eventosSeguidos(username: String): Flow<List<UserCuadrillaAndEvent>>
     suspend fun estaApuntado(username: String, id: String): Boolean
     fun cuadrillasUsuarioApuntadas(username: String, id: String): Flow<List<Cuadrilla>>
     fun cuadrillasUsuarioNoApuntadas(username: String, id: String): Flow<List<Cuadrilla>>
@@ -114,8 +119,19 @@ class EventoRepository @Inject constructor(
     }
 
 
-    override fun eventosSeguidos(username: String): Flow<List<Evento>> {
-        return eventoDao.getEventosSeguidos(username)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun eventosSeguidos(username: String): Flow<List<UserCuadrillaAndEvent>> {
+        var cuadrillas = eventoDao.getUserCuadrillaAndEvent(username)
+        var usuarios = eventoDao.getUserFollowedFromEvent(username).map {
+            it.map {
+                UserCuadrillaAndEvent(it.username, "", it.evento)
+            }
+        }
+        return flowOf(cuadrillas, usuarios).flatMapConcat { flowOf(it) }.first()
+    }
+
+    fun eventosSeguidosPrevio(username: String): Flow<List<Evento>> {
+        return eventoDao.getEventosSeguidosPrevio(username)
     }
 
 

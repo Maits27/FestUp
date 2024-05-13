@@ -33,7 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.R
+import com.gomu.festup.data.UserAndEvent
+import com.gomu.festup.data.UserCuadrillaAndEvent
 import com.gomu.festup.ui.components.cards.EventoCard
+import com.gomu.festup.ui.components.cards.EventoCardConUser
 import com.gomu.festup.vm.MainVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +50,7 @@ fun Feed(
     mainVM: MainVM
     ) {
 
-    val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
+    val eventos = mainVM.eventosUsuarioConUser(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
     val seguidos = mainVM.eventosSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
 
     var refresh by remember{ mutableStateOf(false) }
@@ -125,11 +128,11 @@ fun Feed(
 }
 
 @Composable
-fun EventosList(eventos: List<Evento>, mainVM: MainVM, navController: NavController) {
+fun EventosList(eventos: List<UserCuadrillaAndEvent>, mainVM: MainVM, navController: NavController) {
     if (eventos.isNotEmpty()) {
         LazyColumn {
             items(eventos) { evento ->
-                EventoCard(evento = evento, mainVM, navController)
+                EventoCardConUser(eventoUser = evento, mainVM, navController)
             }
         }
     }

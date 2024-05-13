@@ -47,19 +47,21 @@ fun SplashScreen(
 
     LaunchedEffect(Unit) {
         // El siguiente bloque se hace porque en descargarUsuarios es donde se comprueba si el server esta ok
-        CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.IO) {
-                mainVM.descargarUsuarios()
-            }
-            if (mainVM.serverOk.value && lastLoggedUser != "") {
-                descargarDatos(mainVM, preferencesVM, identVM, lastLoggedUser, context)
-                withContext(Dispatchers.Main) {
-                    navController.navigate(AppScreens.App.route)
+        if (!mainVM.serverOk.value){
+            CoroutineScope(Dispatchers.IO).launch {
+                withContext(Dispatchers.IO) {
+                    mainVM.descargarUsuarios()
                 }
-            }
-            else {
-                withContext(Dispatchers.Main) {
-                    navController.navigate(AppScreens.LoginPage.route)
+                if (mainVM.serverOk.value && lastLoggedUser != "") {
+                    descargarDatos(mainVM, preferencesVM, identVM, lastLoggedUser, context)
+                    withContext(Dispatchers.Main) {
+                        navController.navigate(AppScreens.App.route)
+                    }
+                }
+                else {
+                    withContext(Dispatchers.Main) {
+                        navController.navigate(AppScreens.LoginPage.route)
+                    }
                 }
             }
         }
