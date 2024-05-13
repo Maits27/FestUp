@@ -64,6 +64,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -92,6 +93,7 @@ import com.gomu.festup.ui.components.EditImageIcon
 import com.gomu.festup.ui.components.cards.CuadrillaMiniCard
 import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.ui.components.cards.EventoMiniCard
+import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.vm.MainVM
 import com.gomu.festup.vm.PreferencesViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -144,6 +146,8 @@ fun PerfilYo(
 
     var showExpandedButtons by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    var verificacion by rememberSaveable{ mutableStateOf(false) }
 
     if (isVertical){
         Column (
@@ -260,15 +264,7 @@ fun PerfilYo(
                                     contentDescription = "Edit")
                             }
                             IconButton(
-                                onClick = {
-                                    preferencesViewModel.changeUser("")
-                                    mainVM.serverOk.value = false
-                                    mainNavController.popBackStack()
-                                    (context as? Activity)?.finish()
-                                    val intent = Intent(context, MainActivity::class.java)
-                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                    context.startActivity(intent)
-                                },
+                                onClick = { verificacion = true },
                                 modifier = Modifier.padding(5.dp)
 
                             ) {
@@ -305,6 +301,17 @@ fun PerfilYo(
         }
     }
 
+    EstasSeguroDialog(
+        show = verificacion,
+        mensaje = "¿Estás seguro de que deseas cerrar sesión?",
+        onDismiss = { verificacion = false }
+    ) { preferencesViewModel.changeUser("")
+        mainVM.serverOk.value = false
+        mainNavController.popBackStack()
+        (context as? Activity)?.finish()
+        val intent = Intent(context, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        context.startActivity(intent) }
 
 }
 
@@ -356,17 +363,15 @@ fun ListadoCuadrillas(
     }
     else {
         Column (
-            Modifier
-                .padding(horizontal = 40.dp, vertical = 80.dp)
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = stringResource(id = R.string.no_cuadrilla),
+                text = "No hay cuadrillas",
                 modifier = Modifier.padding(top = 10.dp),
                 style = TextStyle(
-                    fontSize = 18.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                 )
             )
@@ -418,9 +423,7 @@ fun EventosUsuario(
     }
     else {
         Column (
-            Modifier
-                .padding(horizontal = 40.dp, vertical = 80.dp)
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -428,7 +431,7 @@ fun EventosUsuario(
                 text = "No hay eventos",
                 modifier = Modifier.padding(top = 10.dp),
                 style = TextStyle(
-                    fontSize = 18.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                 )
             )
@@ -540,6 +543,7 @@ fun BotonesPerfil(
     mainVM: MainVM,
     actualizarWidget: (Context) -> Unit
 ){
+    var verificacion by rememberSaveable{ mutableStateOf(false) }
     val context = LocalContext.current
     val currentUser by preferencesVM.currentUser.collectAsState(initial = preferencesVM.lastLoggedUser)
     Row (
@@ -564,15 +568,7 @@ fun BotonesPerfil(
                 contentDescription = "Edit")
         }
         IconButton(
-            onClick = {
-                preferencesVM.changeUser("")
-                mainVM.serverOk.value = false
-                mainNavController.popBackStack()
-                (context as? Activity)?.finish()
-                val intent = Intent(context, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                context.startActivity(intent)
-            },
+            onClick = { verificacion = true},
             modifier = Modifier.weight(1f)
         ) {
             Icon(
@@ -581,6 +577,18 @@ fun BotonesPerfil(
         }
 
     }
+
+    EstasSeguroDialog(
+        show = verificacion,
+        mensaje = "¿Estás seguro de que deseas cerrar sesión?",
+        onDismiss = { verificacion = false }
+    ) { preferencesVM.changeUser("")
+        mainVM.serverOk.value = false
+        mainNavController.popBackStack()
+        (context as? Activity)?.finish()
+        val intent = Intent(context, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        context.startActivity(intent) }
 }
 
 @RequiresApi(Build.VERSION_CODES.P)

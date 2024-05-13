@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -15,8 +16,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,6 +30,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
@@ -76,9 +80,11 @@ import com.gomu.festup.ui.components.cards.UsuarioMiniCard
 import com.gomu.festup.utils.openTelegram
 import com.gomu.festup.utils.openWhatsApp
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.ui.platform.LocalConfiguration
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.cards.EventoMiniCard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -112,45 +118,92 @@ fun PerfilCuadrilla(
         },
     )
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            if (pertenezco){ EliminarCuadrilla(navController, mainVM = mainVM, cuadrilla = cuadrilla) }
-        },
-        floatingActionButtonPosition = FabPosition.Center
-    ) { padding ->
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(MaterialTheme.colorScheme.primaryContainer)
-        ) {
-            Box(
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    if (isVertical){
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            floatingActionButton = {
+                if (pertenezco){ EliminarCuadrilla(navController, mainVM = mainVM, cuadrilla = cuadrilla) }
+            },
+            floatingActionButtonPosition = FabPosition.Center
+        ) { padding ->
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .pullRefresh(refreshState)
-                    .verticalScroll(
-                        scrollState,
-                    ),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .padding(padding)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
             ) {
+                Box(
+                    modifier = Modifier
+                        .pullRefresh(refreshState)
+                        .verticalScroll(
+                            scrollState,
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    TopProfileCuadrilla(
+                        mainVM =  mainVM,
+                        cuadrilla = cuadrilla,
+                        pertenezco = pertenezco,
+                        navController = navController
+                    )
+                    PullRefreshIndicator(
+                        refreshing = refresh,
+                        state = refreshState,
+                        modifier = Modifier.align(
+                            Alignment.TopCenter,
+                        ),
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                ) {
+                    ListadoUsuarios(
+                        usuarios = usuariosCuadrilla.value,
+                        pertenezco,
+                        mainVM,
+                        navController,
+                        numeroIntegrantes = usuariosCuadrilla.value.size
+                    )
+                    EventosCuadrilla(
+                        mainVM = mainVM,
+                        navController = navController,
+                        cuadrilla = cuadrilla
+                    )
+                }
+            }
+        }
+    }
+    else{
+        Row(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize().weight(1f).background(MaterialTheme.colorScheme.primaryContainer),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
                 TopProfileCuadrilla(
                     mainVM =  mainVM,
                     cuadrilla = cuadrilla,
                     pertenezco = pertenezco,
                     navController = navController
                 )
-                PullRefreshIndicator(
-                    refreshing = refresh,
-                    state = refreshState,
-                    modifier = Modifier.align(
-                        Alignment.TopCenter,
-                    ),
-                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+                if (pertenezco){
+                    EliminarCuadrilla(navController, mainVM = mainVM, cuadrilla = cuadrilla)
+                }
+
             }
             Column(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(1f).fillMaxSize()
                     .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
                     .background(MaterialTheme.colorScheme.background)
             ) {
@@ -169,10 +222,15 @@ fun PerfilCuadrilla(
             }
         }
     }
+
 }
+
+
 @Composable
 fun EliminarCuadrilla(navController: NavController, mainVM: MainVM, cuadrilla: Cuadrilla) {
     var verificacion by rememberSaveable{ mutableStateOf(false) }
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
     ExtendedFloatingActionButton(
         onClick = {verificacion=true},
         icon = {
@@ -185,7 +243,8 @@ fun EliminarCuadrilla(navController: NavController, mainVM: MainVM, cuadrilla: C
             Text(
                 text = stringResource(id = R.string.abandonar, cuadrilla.nombre)
             )
-        }
+        },
+        containerColor =  if (isVertical) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onPrimary
     )
     EstasSeguroDialog(
         show = verificacion,
@@ -429,9 +488,7 @@ fun ListadoUsuarios(
     }
     else{
         Column (
-            Modifier
-                .padding(horizontal = 40.dp, vertical = 80.dp)
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -439,11 +496,12 @@ fun ListadoUsuarios(
                 text = stringResource(id = R.string.no_users),
                 modifier = Modifier.padding(top = 10.dp),
                 style = TextStyle(
-                    fontSize = 18.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
                 )
             )
         }
+
     }
     Compartir(showShare, token, mainVM.cuadrillaMostrar.value!!.nombre) { showShare = false }
     Unirse( showJoin, token, mainVM.cuadrillaMostrar.value!!.nombre, onDismiss = {showJoin=false}) {
@@ -459,21 +517,53 @@ fun EventosCuadrilla(
     cuadrilla: Cuadrilla
 ) {
     val eventos = mainVM.eventosCuadrilla(cuadrilla).collectAsState(initial = emptyList())
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    Column(
+    Text(
+        text = stringResource(id = R.string.eventos),
+        style = TextStyle(
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        ),
         modifier = Modifier.padding(16.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.eventos),
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-        )
-        LazyColumn {
-            items(eventos.value) { evento ->
-                EventoCard(evento = evento, mainVM = mainVM, navController = navController)
+    )
+    if (eventos.value.isNotEmpty()) {
+        if (isVertical) {
+            LazyColumn {
+                items(eventos.value) { evento ->
+                    EventoCard(evento = evento, mainVM = mainVM, navController = navController)
+                }
             }
+        }
+        else{
+            LazyRow(
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                items(eventos.value) {
+                    EventoMiniCard(
+                        evento = it,
+                        mainVM = mainVM,
+                        navController = navController
+                    )
+
+                }
+            }
+        }
+    }
+    else{
+        Column (
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Text(
+                text = "No hay eventos",
+                modifier = Modifier.padding(top = 10.dp),
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            )
         }
     }
 }

@@ -6,10 +6,10 @@
     <string name="dark">Oscuro</string>
     <string name="light">Claro</string>
     <string name="cancel">Cancelar</string>
-    <string name="tema">Tema de color:</string>
-    <string name="sistema">Sistema:</string>
+    <string name="tema">Tema de color</string>
+    <string name="sistema">Sistema</string>
     <string name="idioma">Idioma</string>
-    <string name="visualizacion">Visualización:</string>
+    <string name="visualizacion">Visualización</string>
     <string name="notificaciones">Notificaciones</string>
     <string name="recibir">Recibir</string>
     <string name="no_recibir">No recibir</string>

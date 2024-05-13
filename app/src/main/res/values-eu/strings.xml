@@ -6,10 +6,10 @@
     <string name="dark">Iluna</string>
     <string name="light">Argia</string>
     <string name="cancel">Utzi</string>
-    <string name="tema">Koloreak:</string>
-    <string name="sistema">Sistema:</string>
+    <string name="tema">Koloreak</string>
+    <string name="sistema">Sistema</string>
     <string name="idioma">Hizkuntza</string>
-    <string name="visualizacion">Bistaratzea:</string>
+    <string name="visualizacion">Bistaratzea</string>
     <string name="notificaciones">Notifikazioak</string>
     <string name="recibir">Jaso</string>
     <string name="no_recibir">Ez jaso</string>

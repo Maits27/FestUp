@@ -1,6 +1,7 @@
 package com.gomu.festup.ui.screens
 
 import android.content.ContentResolver
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -12,6 +13,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -43,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -86,142 +89,255 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         imageUri = uri
     }
 
-    Column (
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(40.dp)
-        //.verticalScroll(rememberScrollState())
-        ,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        Text(
-            text = stringResource(id = R.string.nueva_cuadrilla),
-            fontSize = 24.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(bottom = 10.dp)
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    if (isVertical){
+        Column (
+            Modifier
                 .fillMaxWidth()
-        )
-
-
-        Box(contentAlignment = Alignment.BottomEnd) {
-            Box(Modifier.padding(16.dp)) {
-                // Mientras no este la imagen mostrar una "cargando"
-                //LoadingImagePlaceholder(size = 120.dp)
-                if (imageUri == null) {
-                    AsyncImage(
-                        model = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png",
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape),
-                    )
-                }
-                else {
-                    AsyncImage(
-                        model = imageUri,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape),
-                    )
-                }
-            }
-            // Icono para editar imagen
-            Box(
-                contentAlignment = Alignment.Center,
+                .fillMaxHeight()
+                .padding(40.dp)
+            //.verticalScroll(rememberScrollState())
+            ,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Text(
+                text = stringResource(id = R.string.nueva_cuadrilla),
+                fontSize = 24.sp,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
-                    .padding(bottom = 16.dp, end = 8.dp)
-                    .clip(CircleShape)
-                    .clickable(onClick = {
-                        singlePhotoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
-                    })
+                    .padding(bottom = 10.dp)
+                    .fillMaxWidth()
+            )
+            Imagen(imageUri,singlePhotoPickerLauncher)
+
+
+            // Form
+            OutlinedTextField(
+                value = nombre,
+                onValueChange = { nombre = it.replace(" ", "").replace("\n", "")  },
+                label = { Text(stringResource(id = R.string.nombre_cuadrilla))},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp)
+            )
+
+            OutlinedTextField(
+                value = descripcion,
+                onValueChange = { descripcion = it },
+                label = { Text(stringResource(id = R.string.desc))},
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp)
+            )
+
+            OutlinedTextField(
+                value = localizacion,
+                onValueChange = { localizacion = it },
+                label = { Text(stringResource(id = R.string.loc))},
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+
+            // Create button
+            Button(
+                onClick = {
+                    if (nombre.isEmpty()) {
+                        Toast.makeText(context, context.getString(R.string.insert_nombre), Toast.LENGTH_SHORT).show()
+                    } else if (descripcion.isEmpty()) {
+                        Toast.makeText(context, context.getString(R.string.insert_desc), Toast.LENGTH_SHORT).show()
+                    } else if (localizacion.isEmpty()) {
+                        Toast.makeText(context, context.getString(R.string.insert_loc), Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Crear cuadrilla
+                        CoroutineScope(Dispatchers.IO).launch {
+                            var imageBitmap: Bitmap? = null
+                            if (imageUri != null) context.localUriToBitmap(imageUri!!)
+
+                            val insertCorrecto = withContext(Dispatchers.IO) {
+                                mainVM.crearCuadrilla(
+                                    cuadrilla = Cuadrilla(
+                                        nombre = nombre,
+                                        lugar = localizacion,
+                                        descripcion = descripcion
+                                    ),
+                                    image = imageBitmap)
+                            }
+                            if (insertCorrecto) {
+                                withContext(Dispatchers.Main) {
+                                    navController.popBackStack()
+                                }
+                            } else {
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(context, context.getString(R.string.error_intentalo), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                        // Foto de perfil TODO
+                        //mainVM.setCuadrillaProfile(context, imageUri, nombre)
+                    }
+                },
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .align(Alignment.CenterHorizontally),
+                shape = RoundedCornerShape(10.dp),
             ) {
-                // Añadir circle y edit
-                Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
-                Icon(painterResource(id = R.drawable.edit), contentDescription = null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.surface)
+                Text(text = context.getString(R.string.crear))
             }
         }
-
-        // Form
-        OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it.replace(" ", "").replace("\n", "")  },
-            label = { Text(stringResource(id = R.string.nombre_cuadrilla))},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp)
-        )
-
-        OutlinedTextField(
-            value = descripcion,
-            onValueChange = { descripcion = it },
-            label = { Text(stringResource(id = R.string.desc))},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp)
-        )
-
-        OutlinedTextField(
-            value = localizacion,
-            onValueChange = { localizacion = it },
-            label = { Text(stringResource(id = R.string.loc))},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp)
-        )
-
-        // Create button
-        Button(
-            onClick = {
-                if (nombre.isEmpty()) {
-                    Toast.makeText(context, context.getString(R.string.insert_nombre), Toast.LENGTH_SHORT).show()
-                } else if (descripcion.isEmpty()) {
-                    Toast.makeText(context, context.getString(R.string.insert_desc), Toast.LENGTH_SHORT).show()
-                } else if (localizacion.isEmpty()) {
-                    Toast.makeText(context, context.getString(R.string.insert_loc), Toast.LENGTH_SHORT).show()
-                } else {
-                    // Crear cuadrilla
-                    CoroutineScope(Dispatchers.IO).launch {
-                        var imageBitmap: Bitmap? = null
-                        if (imageUri != null) context.localUriToBitmap(imageUri!!)
-
-                        val insertCorrecto = withContext(Dispatchers.IO) {
-                            mainVM.crearCuadrilla(
-                                cuadrilla = Cuadrilla(
-                                    nombre = nombre,
-                                    lugar = localizacion,
-                                    descripcion = descripcion
-                                ),
-                                image = imageBitmap)
-                        }
-                        if (insertCorrecto) {
-                            withContext(Dispatchers.Main) {
-                                navController.popBackStack()
-                            }
-                        } else {
-                            withContext(Dispatchers.Main) {
-                                Toast.makeText(context, context.getString(R.string.error_intentalo), Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-
-                    // Foto de perfil TODO
-                    //mainVM.setCuadrillaProfile(context, imageUri, nombre)
-                }
-            },
-            modifier = Modifier
-                .padding(vertical = 16.dp)
-                .align(Alignment.End),
-            shape = RoundedCornerShape(10.dp),
+    }
+    else{
+        Row(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Text(text = context.getString(R.string.crear))
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                Text(
+                    text = stringResource(id = R.string.nueva_cuadrilla),
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(bottom = 10.dp, top = 30.dp)
+                        .fillMaxWidth()
+                )
+                Imagen(imageUri,singlePhotoPickerLauncher)
+            }
+
+            Column(
+                modifier = Modifier
+                    .weight(2f).padding(horizontal = 40.dp)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                // Form
+                OutlinedTextField(
+                    value = nombre,
+                    onValueChange = { nombre = it.replace(" ", "").replace("\n", "")  },
+                    label = { Text(stringResource(id = R.string.nombre_cuadrilla))},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
+                )
+
+                OutlinedTextField(
+                    value = descripcion,
+                    onValueChange = { descripcion = it },
+                    label = { Text(stringResource(id = R.string.desc))},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
+                )
+
+                OutlinedTextField(
+                    value = localizacion,
+                    onValueChange = { localizacion = it },
+                    label = { Text(stringResource(id = R.string.loc))},
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+
+                // Create button
+                Button(
+                    onClick = {
+                        if (nombre.isEmpty()) {
+                            Toast.makeText(context, context.getString(R.string.insert_nombre), Toast.LENGTH_SHORT).show()
+                        } else if (descripcion.isEmpty()) {
+                            Toast.makeText(context, context.getString(R.string.insert_desc), Toast.LENGTH_SHORT).show()
+                        } else if (localizacion.isEmpty()) {
+                            Toast.makeText(context, context.getString(R.string.insert_loc), Toast.LENGTH_SHORT).show()
+                        } else {
+                            // Crear cuadrilla
+                            CoroutineScope(Dispatchers.IO).launch {
+                                var imageBitmap: Bitmap? = null
+                                if (imageUri != null) context.localUriToBitmap(imageUri!!)
+
+                                val insertCorrecto = withContext(Dispatchers.IO) {
+                                    mainVM.crearCuadrilla(
+                                        cuadrilla = Cuadrilla(
+                                            nombre = nombre,
+                                            lugar = localizacion,
+                                            descripcion = descripcion
+                                        ),
+                                        image = imageBitmap)
+                                }
+                                if (insertCorrecto) {
+                                    withContext(Dispatchers.Main) {
+                                        navController.popBackStack()
+                                    }
+                                } else {
+                                    withContext(Dispatchers.Main) {
+                                        Toast.makeText(context, context.getString(R.string.error_intentalo), Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                            // Foto de perfil TODO
+                            //mainVM.setCuadrillaProfile(context, imageUri, nombre)
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .align(Alignment.CenterHorizontally),
+                    shape = RoundedCornerShape(10.dp),
+                ) {
+                    Text(text = context.getString(R.string.crear))
+                }
+            }
+        }
+    }
+}
+
+
+
+
+@Composable
+fun Imagen(imageUri: Uri?, singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>) {
+    Box(contentAlignment = Alignment.BottomEnd) {
+        Box(Modifier.padding(16.dp)) {
+            // Mientras no este la imagen mostrar una "cargando"
+            //LoadingImagePlaceholder(size = 120.dp)
+            if (imageUri == null) {
+                AsyncImage(
+                    model = "http://34.16.74.167/cuadrillaProfileImages/no-cuadrilla.png",
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape),
+                )
+            }
+            else {
+                AsyncImage(
+                    model = imageUri,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape),
+                )
+            }
+        }
+        // Icono para editar imagen
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .padding(bottom = 16.dp, end = 8.dp)
+                .clip(CircleShape)
+                .clickable(onClick = {
+                    singlePhotoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                })
+        ) {
+            // Añadir circle y edit
+            Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
+            Icon(painterResource(id = R.drawable.edit), contentDescription = null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.surface)
         }
     }
 }
