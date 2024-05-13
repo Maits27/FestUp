@@ -62,7 +62,7 @@
     <string name="integrantes">Integrantes: %s</string>
     <string name="no_users">No hay usuarios</string>
     <string name="no_cuadrilla">No hay cuadrillas</string>
-    <string name="eventos">Eventos:</string>
+    <string name="eventos">Eventos</string>
     <string name="cuadrillas">Cuadrillas</string>
     <string name="seguidores">Seguidores</string>
     <string name="seguidos">Seguidos</string>

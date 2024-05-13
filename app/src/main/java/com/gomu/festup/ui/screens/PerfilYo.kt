@@ -3,6 +3,7 @@ package com.gomu.festup.ui.screens
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -11,6 +12,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,9 +23,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
@@ -43,10 +47,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.MutableState
@@ -56,6 +67,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -79,6 +91,7 @@ import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.EditImageIcon
 import com.gomu.festup.ui.components.cards.CuadrillaMiniCard
 import com.gomu.festup.ui.components.cards.EventoCard
+import com.gomu.festup.ui.components.cards.EventoMiniCard
 import com.gomu.festup.vm.MainVM
 import com.gomu.festup.vm.PreferencesViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -127,73 +140,171 @@ fun PerfilYo(
             }
         },
     )
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    Column (
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primaryContainer)
-    ) {
-        Column(
+    var showExpandedButtons by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    if (isVertical){
+        Column (
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
-            Box(
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .pullRefresh(refreshState)
-                    .verticalScroll(
-                        scrollState,
-                    ),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primaryContainer)
             ) {
+                Box(
+                    modifier = Modifier
+                        .pullRefresh(refreshState)
+                        .verticalScroll(
+                            scrollState,
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
 
+                    TopProfile(
+                        mainVM = mainVM,
+                        edad = if(showAge) mainVM.calcularEdad(usuario) else -1,
+                        yo = yo,
+                        recibirNotificaciones = recibirNotificaciones,
+                        alreadySiguiendo = alreadySiguiendo,
+                        usuario = usuario,
+                        navController = navController
+                    )
+                    PullRefreshIndicator(
+                        refreshing = refresh,
+                        state = refreshState,
+                        modifier = Modifier.align(
+                            Alignment.TopCenter,
+                        ),
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                ListadoCuadrillas(
+                    cuadrillas = cuadrillas.value,
+                    yo,
+                    navController = navController,
+                    mainVM = mainVM
+                )
+                EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
+            }
+            if (yo) {
+                BotonesPerfil(
+                    navController= navController,
+                    mainNavController = mainNavController,
+                    preferencesVM = preferencesViewModel,
+                    mainVM = mainVM,
+                    actualizarWidget = mainVM::actualizarWidget
+                )
+            }
+        }
+    }
+    else{
+        Row(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
                 TopProfile(
                     mainVM = mainVM,
-                    edad = if(showAge) mainVM.calcularEdad(usuario) else -1,
+                    edad = mainVM.calcularEdad(usuario),
                     yo = yo,
                     recibirNotificaciones = recibirNotificaciones,
                     alreadySiguiendo = alreadySiguiendo,
                     usuario = usuario,
                     navController = navController
                 )
-                PullRefreshIndicator(
-                    refreshing = refresh,
-                    state = refreshState,
-                    modifier = Modifier.align(
-                        Alignment.TopCenter,
-                    ),
+                if (yo) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        if (showExpandedButtons) {
+                            IconButton(
+                                onClick = { navController.navigate(AppScreens.Ajustes.route) },
+                                modifier = Modifier.padding(5.dp)
+
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.settings),
+                                    contentDescription = "Settings")
+                            }
+                            IconButton(
+                                onClick = { navController.navigate(AppScreens.EditPerfil.route) },
+                                modifier = Modifier.padding(5.dp)
+
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.edit),
+                                    contentDescription = "Edit")
+                            }
+                            IconButton(
+                                onClick = {
+                                    preferencesViewModel.changeUser("")
+                                    mainVM.serverOk.value = false
+                                    mainNavController.popBackStack()
+                                    (context as? Activity)?.finish()
+                                    val intent = Intent(context, MainActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    context.startActivity(intent)
+                                },
+                                modifier = Modifier.padding(5.dp)
+
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.logout),
+                                    contentDescription = "Logout")
+                            }
+                        }
+                        IconButton(
+                            onClick = { showExpandedButtons = !showExpandedButtons },
+                            modifier = Modifier.padding(5.dp)
+
+                        ) {
+                            Icon(Icons.Filled.MoreVert, contentDescription = "Mostrar botones")
+                        }
+                    }
+
+                }
+
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                ListadoCuadrillas(
+                    cuadrillas = cuadrillas.value,
+                    yo,
+                    navController = navController,
+                    mainVM = mainVM
                 )
+                EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
             }
         }
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
-                .background(MaterialTheme.colorScheme.background)
-        ) {
-            ListadoCuadrillas(
-                cuadrillas = cuadrillas.value,
-                yo,
-                navController = navController,
-                mainVM = mainVM
-            )
-            EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
-        }
-        if (yo) {
-            BotonesPerfil(
-                navController= navController,
-                mainNavController = mainNavController,
-                preferencesVM = preferencesViewModel,
-                mainVM = mainVM,
-                actualizarWidget = mainVM::actualizarWidget
-            )
-        }
     }
-}
 
+
+}
 
 @Composable
 fun ListadoCuadrillas(
@@ -202,10 +313,11 @@ fun ListadoCuadrillas(
     navController: NavController,
     mainVM: MainVM
 ){
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     Row (
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = if (isVertical) 16.dp else 8.dp)
     ){
         Text(
             text = stringResource(id = R.string.cuadrillas),
@@ -267,23 +379,60 @@ fun EventosUsuario(
     navController: NavController
 ) {
     val eventos = mainVM.eventosUsuario(usuario).collectAsState(initial = emptyList())
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    Column(
+    Text(
+        text = stringResource(id = R.string.eventos),
+        style = TextStyle(
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        ),
         modifier = Modifier.padding(16.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.eventos),
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-        )
-        LazyColumn {
-            items(eventos.value) { evento ->
-                EventoCard(evento = evento, mainVM = mainVM, navController = navController)
+    )
+
+    if (eventos.value.isNotEmpty()) {
+        if (isVertical){
+            LazyColumn {
+                items(eventos.value) { evento ->
+                    EventoCard(evento = evento, mainVM = mainVM, navController = navController)
+                }
             }
         }
+        else{
+            LazyRow(
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                items(eventos.value) {
+                    EventoMiniCard(
+                        evento = it,
+                        mainVM = mainVM,
+                        navController = navController
+                    )
+
+                }
+            }
+        }
+
     }
+    else {
+        Column (
+            Modifier
+                .padding(horizontal = 40.dp, vertical = 80.dp)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Text(
+                text = "No hay eventos",
+                modifier = Modifier.padding(top = 10.dp),
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            )
+        }
+    }
+
 }
 
 

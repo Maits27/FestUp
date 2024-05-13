@@ -42,6 +42,7 @@ fun EventoCard(
 ) {
     val context = LocalContext.current
 
+
     val onCardClick: (Evento) -> Unit = { eventoClicked ->
         mainVM.eventoMostrar.value = eventoClicked
         navController.navigate(AppScreens.Evento.route)
