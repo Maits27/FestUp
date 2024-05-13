@@ -40,8 +40,14 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
+import com.gomu.festup.alarmMng.AlarmItem
+import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.utils.getScheduleTime
 import com.gomu.festup.vm.MainVM
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @Composable
 fun UsuarioCard(
@@ -115,13 +121,16 @@ fun UsuarioCard(
 fun UsuarioCardParaEventosAlert(
     usuario: Usuario,
     apuntado: Boolean,
-    mainVM: MainVM
+    mainVM: MainVM,
+    recibirNotificaciones: Boolean
 ) {
     val context = LocalContext.current
 
     val imageUri="http://34.16.74.167/userProfileImages/${usuario.username}.png"
 
     var checkedSwitch by remember { mutableStateOf(apuntado) }
+
+    val scheduler = AndroidAlarmScheduler(context)
 
     Card(
         modifier = Modifier
@@ -170,8 +179,35 @@ fun UsuarioCardParaEventosAlert(
                 checked = checkedSwitch,
                 onCheckedChange = {
                     checkedSwitch = !checkedSwitch
-                    if (checkedSwitch) mainVM.apuntarse(usuario, mainVM.eventoMostrar.value!!)
-                    else mainVM.desapuntarse(usuario, mainVM.eventoMostrar.value!!)
+
+                    if (checkedSwitch){
+                        Log.d("RECNOTIF", recibirNotificaciones.toString())
+                        if(recibirNotificaciones) {
+                            scheduler.schedule(
+                                AlarmItem(
+                                    getScheduleTime(mainVM),
+                                    mainVM.eventoMostrar.value!!.nombre,
+                                    mainVM.eventoMostrar.value!!.localizacion,
+                                    mainVM.eventoMostrar.value!!.id
+                                )
+                            )
+                        }
+                        mainVM.apuntarse(usuario, mainVM.eventoMostrar.value!!)
+                    }
+                    else{
+                        Log.d("RECNOTIF", recibirNotificaciones.toString())
+                        if(recibirNotificaciones) {
+                            scheduler.cancel(
+                                AlarmItem(
+                                    getScheduleTime(mainVM),
+                                    mainVM.eventoMostrar.value!!.nombre,
+                                    mainVM.eventoMostrar.value!!.localizacion,
+                                    mainVM.eventoMostrar.value!!.id
+                                )
+                            )
+                        }
+                        mainVM.desapuntarse(usuario, mainVM.eventoMostrar.value!!)
+                    }
                 },
                 thumbContent = if (checkedSwitch) {
                     {

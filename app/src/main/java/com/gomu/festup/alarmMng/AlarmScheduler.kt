@@ -6,7 +6,11 @@ import android.content.Intent
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import java.util.Date
 import android.app.PendingIntent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import com.gomu.festup.vm.MainVM
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Calendar
@@ -46,7 +50,7 @@ class AndroidAlarmScheduler (
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
             )
-            Log.d("AlarmScheduler", "Alarma programada para: ${alarmItem.alarmTime}")
+            Log.d("AlarmScheduler", "Alarma programada para: ${alarmItem.alarmTime} / ${alarmItem.eventId}")
         }
     }
 
@@ -59,5 +63,7 @@ class AndroidAlarmScheduler (
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
+        Log.d("AlarmScheduler", "Alarma cancelada en: ${alarmItem.alarmTime} / ${alarmItem.eventId}")
     }
 }
+

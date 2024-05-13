@@ -1,5 +1,7 @@
 package com.gomu.festup.ui.components.cards
 
+import android.util.Log
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,9 +42,15 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.R
+import com.gomu.festup.alarmMng.AlarmItem
+import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
+import com.gomu.festup.utils.getScheduleTime
 import com.gomu.festup.vm.MainVM
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 @Composable
 fun CuadrillaCard(
@@ -127,13 +135,16 @@ fun CuadrillaCard(
 fun CuadrillaCardParaEventosAlert(
     cuadrilla: Cuadrilla,
     apuntado: Boolean,
-    mainVM: MainVM
+    mainVM: MainVM,
+    recibirNotificaciones: Boolean
 ) {
     val context = LocalContext.current
 
     val imageUri="http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
 
     var checkedSwitch by remember { mutableStateOf(apuntado) }
+
+    val scheduler = AndroidAlarmScheduler(context)
 
     Card(
         modifier = Modifier
@@ -181,10 +192,33 @@ fun CuadrillaCardParaEventosAlert(
                 checked = checkedSwitch,
                 onCheckedChange = {
                     checkedSwitch = !checkedSwitch
+
                     if (checkedSwitch){
+                        Log.d("RECNOTIF", recibirNotificaciones.toString())
+                        if (recibirNotificaciones) {
+                            scheduler.schedule(
+                                AlarmItem(
+                                    getScheduleTime(mainVM),
+                                    mainVM.eventoMostrar.value!!.nombre,
+                                    mainVM.eventoMostrar.value!!.localizacion,
+                                    mainVM.eventoMostrar.value!!.id
+                                )
+                            )
+                        }
                         mainVM.apuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
                     }
                     else{
+                        Log.d("RECNOTIF", recibirNotificaciones.toString())
+                        if (recibirNotificaciones){
+                            scheduler.cancel(
+                                AlarmItem(
+                                getScheduleTime(mainVM),
+                                mainVM.eventoMostrar.value!!.nombre,
+                                mainVM.eventoMostrar.value!!.localizacion,
+                                mainVM.eventoMostrar.value!!.id
+                                )
+                            )
+                        }
                         mainVM.desapuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
                     }
                 },
