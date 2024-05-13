@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.components.cards
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,6 +50,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
+@SuppressLint("ResourceType")
 @Composable
 fun UsuarioCard(
     usuario: Usuario,

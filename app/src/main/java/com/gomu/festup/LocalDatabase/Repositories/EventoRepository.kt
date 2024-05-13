@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.zip
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -127,7 +128,9 @@ class EventoRepository @Inject constructor(
                 UserCuadrillaAndEvent(it.username, "", it.evento)
             }
         }
-        return flowOf(cuadrillas, usuarios).flatMapConcat { flowOf(it) }.first()
+        Log.d("cuadrillas", cuadrillas.first().toString())
+        Log.d("usuarios", usuarios.first().toString())
+        return cuadrillas.zip(usuarios) { c, u -> c + u }.map { it.sortedBy { it.evento.fecha } }
     }
 
     fun eventosSeguidosPrevio(username: String): Flow<List<Evento>> {

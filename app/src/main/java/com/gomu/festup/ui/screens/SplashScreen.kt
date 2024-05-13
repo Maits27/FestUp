@@ -112,10 +112,10 @@ suspend fun descargarDatos(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun SplashScreenPreview() {
-    FestUpTheme(darkTheme = true) {
-        SplashContent()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun SplashScreenPreview() {
+//    FestUpTheme(darkTheme = true) {
+//        SplashContent()
+//    }
+//}

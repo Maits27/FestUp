@@ -221,7 +221,9 @@ fun TopBarMainView(
         },
         navigationIcon = {
             if (showBackArrow) {
-                IconButton(onClick = { navController.popBackStack() }) {
+                IconButton(onClick = {
+                    navController.popBackStack()
+                }) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back arrow")
                 }
             }

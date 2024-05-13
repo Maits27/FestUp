@@ -124,6 +124,7 @@ fun PerfilYo(
         usuario = mainVM.usuarioMostrar.value!!
         mainVM.alreadySiguiendo(usuario.username)
     }
+    mainVM.usuarioMostrar.value = usuario
 
     val alreadySiguiendo = mainVM.alreadySiguiendo
 

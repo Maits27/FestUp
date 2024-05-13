@@ -118,27 +118,29 @@ fun EventoCardConUser(
                 if(cuadrilla==""){
                     Box(
                         Modifier
-                            .padding(10.dp)
+//                            .padding(start = 15.dp, end = 15.dp, top = 15.dp)
                             .background(
-                                color = MaterialTheme.colorScheme.outline,
+                                color = MaterialTheme.colorScheme.primaryContainer,
                                 shape = RoundedCornerShape(2.dp)
                             )
                     ){
-                        Text(text = "$usuario participa en:",
+                        Text(text = "@$usuario participa en:",
                             style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(5.dp))
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.padding(8.dp))
                     }
                 }else{
                     Box(
                         Modifier
-                            .padding(10.dp)
+//                            .padding(start = 15.dp, end = 15.dp, top = 15.dp)
                             .background(
-                                color = MaterialTheme.colorScheme.outline,
-                                shape = RoundedCornerShape(2.dp)
+                                color = MaterialTheme.colorScheme.primaryContainer,
+                                shape = RoundedCornerShape(8.dp)
                             )
                     ){
-                        Text(text = "La cuadrilla $cuadrilla de $usuario participa en:",
+                        Text(text = "La cuadrilla $cuadrilla de @$usuario participa en:",
                             style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(5.dp))
                     }
                 }

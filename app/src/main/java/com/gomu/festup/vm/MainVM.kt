@@ -342,7 +342,9 @@ class MainVM @Inject constructor(
     }
 
     fun eventosSeguidos(usuario: Usuario): Flow<List<UserCuadrillaAndEvent>> = runBlocking {
-        eventoRepository.eventosSeguidos(usuario.username)
+        var eventos = eventoRepository.eventosSeguidos(usuario.username)
+        Log.d("Devuelve", eventos.first().toString())
+        eventos
     }
 
     fun eventosCuadrilla(cuadrilla: Cuadrilla): Flow<List<Evento>> {
