@@ -11,4 +11,7 @@ interface IGeneralPreferences {
 
     fun getReceiveNotifications(username: String): Flow<Boolean>
     suspend fun changeReceiveNotifications(username: String)
+
+    fun getVisualizarEdad(username: String): Flow<Boolean>
+    suspend fun changeVisualizarEdad(username: String)
 }

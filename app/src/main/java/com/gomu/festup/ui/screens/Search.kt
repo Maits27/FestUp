@@ -1,6 +1,7 @@
 package com.gomu.festup.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -32,8 +37,12 @@ import com.gomu.festup.ui.components.cards.CuadrillaCard
 import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.ui.components.cards.UsuarioCard
 import com.gomu.festup.vm.MainVM
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Search(
     navController: NavController,
@@ -68,6 +77,19 @@ fun Search(
             ignoreCase = true
         )
     }
+
+    var refresh by remember{ mutableStateOf(false) }
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = refresh,
+        onRefresh = {
+            CoroutineScope(Dispatchers.IO).launch{
+                refresh = true
+                mainVM.actualizarDatos()
+                refresh = false
+            }
+        }
+    )
 
 
     Column (
@@ -111,11 +133,12 @@ fun Search(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = stringResource(id = R.string.eventos),
+                    text = stringResource(id = R.string.eventos_sin_dospuntos),
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
         }
+
         // Barra de búsqueda
         TextField(
             value = searchText,
@@ -127,16 +150,32 @@ fun Search(
             placeholder = { Text(text = stringResource(id = R.string.buscar)) }
         )
 
-        when (mainVM.selectedTabSearch.value) {
-            0 -> {
-                ElementoList(filteredPersonas, navController, mainVM)
+        Box(
+            modifier = Modifier
+                .pullRefresh(refreshState),
+            contentAlignment = Alignment.Center
+        ) {
+
+            when (mainVM.selectedTabSearch.value) {
+                0 -> {
+                    ElementoList(filteredPersonas, navController, mainVM)
+                }
+
+                1 -> {
+                    ElementoList(filteredCuadrillas, navController, mainVM)
+                }
+
+                2 -> {
+                    ElementoList(filteredEventos, navController, mainVM)
+                }
             }
-            1 -> {
-                ElementoList(filteredCuadrillas, navController, mainVM)
-            }
-            2 -> {
-                ElementoList(filteredEventos, navController, mainVM)
-            }
+            PullRefreshIndicator(
+                refreshing = refresh,
+                state = refreshState,
+                modifier = Modifier.align(
+                    Alignment.TopCenter,
+                ),
+            )
         }
     }
 }

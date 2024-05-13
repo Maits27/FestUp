@@ -80,4 +80,8 @@
     <string name="seguro">¿Estas seguro?</string>
     <string name="eliminar_cuadrilla_conf">Si eliminas esta cuadrilla tendrás que volver a solicitar entrar.</string>
     <string name="cuadrilla_imagen">Imagen de cuadrilla</string>
+    <string name="eventos_sin_dospuntos">Eventos</string>
+    <string name="edad">Edad</string>
+    <string name="mostrar">Mostrar</string>
+    <string name="no_mostrar">No mostrar</string>
 </resources>

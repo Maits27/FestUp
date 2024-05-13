@@ -80,4 +80,8 @@
     <string name="seguro">Ziur zaude?</string>
     <string name="eliminar_cuadrilla_conf">Kuadrilla ezabatzen baduzu berriz parte hartzeko baimena eskatu beharko duzu.</string>
     <string name="cuadrilla_imagen">Kuadrilla argazkia</string>
+    <string name="eventos_sin_dospuntos">Ekitaldiak</string>
+    <string name="edad">Adina</string>
+    <string name="mostrar">Erakutsi</string>
+    <string name="no_mostrar">Ez erakutsi</string>
 </resources>

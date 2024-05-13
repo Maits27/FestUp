@@ -49,9 +49,11 @@ fun Ajustes(
     mainVM: MainVM,
     idioma: AppLanguage,
     dark: Boolean,
-    receiveNotifications: Boolean
+    receiveNotifications: Boolean,
+    mostrarEdad: Boolean
 ) {
     var showIdiomas by remember { mutableStateOf(false) }
+    var seguidos = mainVM.listaSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
 
     Column (
         modifier = Modifier
@@ -116,6 +118,29 @@ fun Ajustes(
             }
             SwitchDarkMode(preferencesVM, dark, Modifier.weight(2f))
         }
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ){
+            Icon(
+                painter = painterResource(id = R.drawable.visible),
+                contentDescription = null,
+                modifier = Modifier.weight(1f))
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.weight(3f)
+            ) {
+                Text(stringResource(id = R.string.edad))
+                Text(
+                    text = if (mostrarEdad)  stringResource(id = R.string.mostrar) else stringResource(id = R.string.no_mostrar),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+            SwitchTik(mostrarEdad, Modifier.weight(2f)){ preferencesVM.changeVisualizarEdad() }
+        }
         Divider(Modifier.padding(vertical = 10.dp))
         Text(
             stringResource(id = R.string.sistema),
@@ -144,7 +169,16 @@ fun Ajustes(
                     style = MaterialTheme.typography.bodySmall
                 )
             }
-            SwitchTik(preferencesVM, mainVM, receiveNotifications, Modifier.weight(2f))
+            SwitchTik(receiveNotifications, Modifier.weight(2f)){
+                preferencesVM.changeReceiveNotifications()
+                if (it){
+                    mainVM.subscribeUser()
+                    mainVM.suscribirASeguidos(seguidos.value)
+                }else{
+                    mainVM.unSubscribeUser()
+                    mainVM.unSuscribeASeguidos(seguidos.value)
+                }
+            }
         }
     }
 }

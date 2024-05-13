@@ -43,11 +43,13 @@ class PreferencesViewModel @Inject constructor(
 
     val receiveNotifications: (String)-> Flow<Boolean> = { preferencesRepository.getReceiveNotifications(it)}
 
+    val mostrarEdad: (String) -> Flow<Boolean> = { preferencesRepository.getVisualizarEdad(it)}
     /*************************************************
      **                    Eventos                  **
      *************************************************/
 
     fun changeUser(username: String){
+        Log.d("CAMBIO DE USUARIO", username)
         _currentUser.value = username
         viewModelScope.launch(Dispatchers.IO) {
             loginRepository.setLastLoggedUser(username)
@@ -89,5 +91,10 @@ class PreferencesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.changeReceiveNotifications(currentUser.first()) }
     }
 
+    ////////////////////// Edad //////////////////////
+
+    fun changeVisualizarEdad() {
+        viewModelScope.launch(Dispatchers.IO) { preferencesRepository.changeVisualizarEdad(currentUser.first()) }
+    }
 
 }

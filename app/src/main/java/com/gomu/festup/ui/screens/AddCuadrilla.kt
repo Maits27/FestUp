@@ -152,7 +152,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         // Form
         OutlinedTextField(
             value = nombre,
-            onValueChange = { nombre = it },
+            onValueChange = { nombre = it.replace(" ", "").replace("\n", "")  },
             label = { Text(stringResource(id = R.string.nombre_cuadrilla))},
             modifier = Modifier
                 .fillMaxWidth()

@@ -21,12 +21,10 @@ import com.gomu.festup.vm.PreferencesViewModel
 
 @Composable
 fun SwitchTik(
-    preferencesVM: PreferencesViewModel,
-    mainVM: MainVM,
     checked: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onCheck:(Boolean)-> Unit
 ){
-    var seguidos = mainVM.listaSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
     var checkedSwitch by remember { mutableStateOf(checked) }
 
     Switch(
@@ -34,14 +32,7 @@ fun SwitchTik(
         checked = checkedSwitch,
         onCheckedChange = {
             checkedSwitch = !checkedSwitch
-            preferencesVM.changeReceiveNotifications()
-            if (checkedSwitch){
-                mainVM.subscribeUser()
-                mainVM.suscribirASeguidos(seguidos.value)
-            }else{
-                mainVM.unSubscribeUser()
-                mainVM.unSuscribeASeguidos(seguidos.value)
-            }
+            onCheck(checkedSwitch)
         },
         thumbContent = if (checkedSwitch) {
             {

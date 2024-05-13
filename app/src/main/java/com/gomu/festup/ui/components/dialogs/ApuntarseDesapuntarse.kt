@@ -46,18 +46,14 @@ fun Apuntarse(
                             cuadrilla = cuadrilla,
                             false,
                             mainVM,
-                        ){
-                            mainVM.apuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
-                        }
+                        )
                     }
                     items(cuadrillasApuntadas.value){cuadrilla ->
                         CuadrillaCardParaEventosAlert(
                             cuadrilla = cuadrilla,
                             true,
                             mainVM
-                        ){
-                            mainVM.desapuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
-                        }
+                        )
                     }
                 }
             }

@@ -1,6 +1,8 @@
 package com.gomu.festup.ui.screens
 
+import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -44,6 +46,7 @@ fun App(
     preferencesVM.restartLang(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
             initial = preferencesVM.currentSetLang).value)
+    Log.d("LAST LOGGED USER DENTRO", preferencesVM.lastLoggedUser)
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {
@@ -71,6 +74,8 @@ fun App(
         val idioma by preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(initial = preferencesVM.currentSetLang)
         val dark by preferencesVM.darkTheme(mainVM.currentUser.value!!.username).collectAsState(initial = true)
         val receiveNotifications by preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = false)
+        val showAge by preferencesVM.mostrarEdad(mainVM.currentUser.value!!.username).collectAsState(initial = false)
+        val showAgeOther by preferencesVM.mostrarEdad(mainVM.usuarioMostrar.value?.username?:"").collectAsState(initial = false)
 
         NavHost(
             modifier = Modifier.padding(innerPadding),
@@ -116,12 +121,12 @@ fun App(
             composable(AppScreens.PerfilYo.route,
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = true, receiveNotifications, mainVM = mainVM) }
+            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = true, receiveNotifications, showAge, mainVM = mainVM) }
 
             composable(AppScreens.PerfilUser.route,
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = false, receiveNotifications, mainVM = mainVM) }
+            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = false, receiveNotifications, showAgeOther, mainVM = mainVM) }
 
             composable(AppScreens.PerfilCuadrilla.route,
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
@@ -143,13 +148,22 @@ fun App(
             composable(AppScreens.Ajustes.route,
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { Ajustes(preferencesVM, mainVM, idioma, dark, receiveNotifications) }
+            ) { Ajustes(preferencesVM, mainVM, idioma, dark, receiveNotifications, showAge) }
 
             composable(AppScreens.EditPerfil.route,
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
             ) { EditPerfil(navController, mainVM) }
-
+            composable(AppScreens.FullImageScreen.route + "/{type}/{filename}",
+                enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                exitTransition = { fadeOut(animationSpec = tween(1000)) }
+            ) { backStackEntry ->
+                val type = backStackEntry.arguments?.getString("type")
+                val filename = backStackEntry.arguments?.getString("filename")
+                if (filename != null && type != null) {
+                    FullImageScreen(type, filename)
+                }
+            }
         }
     }
 }

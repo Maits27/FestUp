@@ -108,6 +108,7 @@ class CuadrillaRepository @Inject constructor(
 
             // Si la cuadrilla se queda vacía, se borra
             if (integrantesCuadrilla.first().isEmpty()){
+                Log.d("INTEGRANTES CUADRILLA", integrantesCuadrilla.first().toString())
                 httpClient.deleteCuadrilla(cuadrilla.nombre)
                 cuadrillaDao.eliminarCuadrilla(cuadrilla)
             }

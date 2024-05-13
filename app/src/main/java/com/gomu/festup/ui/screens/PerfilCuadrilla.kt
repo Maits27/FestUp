@@ -76,6 +76,9 @@ import com.gomu.festup.ui.components.cards.UsuarioMiniCard
 import com.gomu.festup.utils.openTelegram
 import com.gomu.festup.utils.openWhatsApp
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import coil.request.CachePolicy
+import coil.request.ImageRequest
+import com.gomu.festup.ui.AppScreens
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -112,7 +115,7 @@ fun PerfilCuadrilla(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            if (pertenezco){ EliminarCuadrilla(cuadrilla = cuadrilla, mainVM = mainVM) }
+            if (pertenezco){ EliminarCuadrilla(navController, mainVM = mainVM, cuadrilla = cuadrilla) }
         },
         floatingActionButtonPosition = FabPosition.Center
     ) { padding ->
@@ -123,11 +126,28 @@ fun PerfilCuadrilla(
                 .padding(padding)
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
-            TopProfileCuadrilla(
-                mainVM =  mainVM,
-                cuadrilla = cuadrilla,
-                pertenezco = pertenezco
-            )
+            Box(
+                modifier = Modifier
+                    .pullRefresh(refreshState)
+                    .verticalScroll(
+                        scrollState,
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                TopProfileCuadrilla(
+                    mainVM =  mainVM,
+                    cuadrilla = cuadrilla,
+                    pertenezco = pertenezco,
+                    navController = navController
+                )
+                PullRefreshIndicator(
+                    refreshing = refresh,
+                    state = refreshState,
+                    modifier = Modifier.align(
+                        Alignment.TopCenter,
+                    ),
+                )
+            }
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -148,27 +168,10 @@ fun PerfilCuadrilla(
                 )
             }
         }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(refreshState)
-                .verticalScroll(
-                    scrollState,
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            PullRefreshIndicator(
-                refreshing = refresh,
-                state = refreshState,
-                modifier = Modifier.align(
-                    Alignment.TopCenter,
-                ),
-            )
-        }
     }
 }
 @Composable
-fun EliminarCuadrilla(cuadrilla: Cuadrilla, mainVM: MainVM) {
+fun EliminarCuadrilla(navController: NavController, mainVM: MainVM, cuadrilla: Cuadrilla) {
     var verificacion by rememberSaveable{ mutableStateOf(false) }
     ExtendedFloatingActionButton(
         onClick = {verificacion=true},
@@ -188,7 +191,7 @@ fun EliminarCuadrilla(cuadrilla: Cuadrilla, mainVM: MainVM) {
         show = verificacion,
         mensaje = "¿Estás seguro de que deseas abandonar la cuadrilla?",
         onDismiss = { verificacion = false }
-    ) { mainVM.eliminarIntegrante(cuadrilla) ; verificacion = false  }
+    ) { mainVM.eliminarIntegrante(cuadrilla) ; verificacion = false ; navController.popBackStack() }
 }
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -196,7 +199,8 @@ fun EliminarCuadrilla(cuadrilla: Cuadrilla, mainVM: MainVM) {
 fun TopProfileCuadrilla(
     mainVM: MainVM,
     cuadrilla: Cuadrilla,
-    pertenezco: Boolean
+    pertenezco: Boolean,
+    navController: NavController
 ){
     Row (
         modifier = Modifier
@@ -204,7 +208,7 @@ fun TopProfileCuadrilla(
             .fillMaxWidth()
             .padding(bottom = 16.dp)
     ) {
-        CuadrillaProfileImage(cuadrilla, pertenezco, mainVM)
+        CuadrillaProfileImage(cuadrilla, pertenezco, mainVM, navController = navController)
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(15.dp),
@@ -236,7 +240,8 @@ fun TopProfileCuadrilla(
 fun CuadrillaProfileImage(
     cuadrilla: Cuadrilla,
     pertenezco: Boolean,
-    mainVM: MainVM
+    mainVM: MainVM,
+    navController: NavController
 ) {
     val context = LocalContext.current
 
@@ -256,14 +261,26 @@ fun CuadrillaProfileImage(
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(16.dp)) {
             AsyncImage(
-                model = imageUri,
+                model = ImageRequest.Builder(context)
+                    .data(imageUri)
+                    .crossfade(true)
+                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                    .build(),
                 contentDescription = null,
                 placeholder = painterResource(id = R.drawable.no_cuadrilla),
                 error = painterResource(id = R.drawable.no_cuadrilla),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .clickable {
+                        navController.navigate(
+                            AppScreens.FullImageScreen.route + "/" +
+                                    "cuadrilla" + "/" +
+                                    cuadrilla.nombre
+                        )
+                    }
             )
         }
         // Icono para editar imagen

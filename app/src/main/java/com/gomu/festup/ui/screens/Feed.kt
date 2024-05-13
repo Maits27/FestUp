@@ -3,12 +3,19 @@ package com.gomu.festup.ui.screens
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -28,8 +35,12 @@ import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.R
 import com.gomu.festup.ui.components.cards.EventoCard
 import com.gomu.festup.vm.MainVM
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Feed(
     navController: NavController,
@@ -39,6 +50,18 @@ fun Feed(
     val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
     val seguidos = mainVM.eventosSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
 
+    var refresh by remember{ mutableStateOf(false) }
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = refresh,
+        onRefresh = {
+            CoroutineScope(Dispatchers.IO).launch{
+                refresh = true
+                mainVM.actualizarDatos()
+                refresh = false
+            }
+        }
+    )
 
     Column (
         Modifier
@@ -73,17 +96,32 @@ fun Feed(
                 )
             }
         }
+        Box(
+            modifier = Modifier
+                .pullRefresh(refreshState),
+            contentAlignment = Alignment.Center,
+        ) {
 
-        when (mainVM.selectedTabFeed.value) {
-            0 -> {
-                EventosList(eventos.value, mainVM, navController)
+
+            when (mainVM.selectedTabFeed.value) {
+                0 -> {
+                    EventosList(eventos.value, mainVM, navController)
+                }
+
+                1 -> {
+                    EventosList(seguidos.value, mainVM, navController)
+                }
             }
-            1 -> {
-                EventosList(seguidos.value, mainVM, navController)
-            }
+
+            PullRefreshIndicator(
+                refreshing = refresh,
+                state = refreshState,
+                modifier = Modifier.align(
+                    Alignment.TopCenter,
+                ),
+            )
         }
     }
-
 }
 
 @Composable

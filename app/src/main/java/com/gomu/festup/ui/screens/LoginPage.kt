@@ -18,6 +18,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -66,6 +67,8 @@ import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
@@ -92,33 +95,9 @@ fun LoginPage(
     preferencesVM: PreferencesViewModel,
     lastLoggedUser: Usuario?
 ) {
-    val context = LocalContext.current
 
-    if (!mainVM.serverOk.value){
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    mainVM.descargarUsuarios()
-                }
-                if (lastLoggedUser!= null) {
-                    nuestroLocationProvider(context, mainVM)
-                    mainVM.currentUser.value = lastLoggedUser
-                    preferencesVM.changeUser(lastLoggedUser.username)
-                    identVM.recuperarSesion(preferencesVM.lastBearerToken,preferencesVM.lastRefreshToken)
-                    withContext(Dispatchers.IO) {
-                        mainVM.descargarDatos()
-                    }
-                    if (mainVM.serverOk.value){
-                        withContext(Dispatchers.Main) {
-                            mainNavController.navigate(AppScreens.App.route)
-                        }
-                    }
-
-                }
-            } catch (e: Exception) {
-                Log.e("Excepcion al iniciar sesion", e.toString())
-            }
-        }
+    if (mainVM.serverOk.value && lastLoggedUser!=null){
+        mainNavController.navigate(AppScreens.App.route)
     }
 
     var selectedTab by remember {
@@ -139,7 +118,7 @@ fun LoginPage(
                 Text(text = "Iniciar sesión", modifier = Modifier.padding(vertical = 15.dp))
             }
             Tab(
-                selected = selectedTab==1,
+                selected = selectedTab == 1,
                 onClick = { selectedTab = 1 },
             ) {
                 Text(text = "Registrarse", modifier = Modifier.padding(vertical = 15.dp))
@@ -228,7 +207,9 @@ fun LoginForm(
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Image(
             painter = painterResource(id = R.drawable.festup),
@@ -263,19 +244,25 @@ fun LoginForm(
             modifier = modifierForInputs
         )
         if (!showLoading) {
-            Button(
-                onClick = { onLoginButtonClick() },
-                enabled = mainVM.serverOk.value,
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(end = 54.dp)
-            ) {
-                Text(text = "Iniciar sesión")
+            Row (
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.align(Alignment.End)
+            ){
+                if(!mainVM.serverOk.value) Icon(painter = painterResource(id = R.drawable.no_wifi), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+                Button(
+                    onClick = { onLoginButtonClick() },
+                    enabled = mainVM.serverOk.value,
+                    modifier = Modifier
+                        .padding(start = 10.dp, end = 50.dp)
+                ) {
+                    Text(text = "Iniciar sesión")
+                }
             }
         }
         else CircularProgressIndicator(modifier = Modifier
             .align(Alignment.End)
-            .padding(end = 54.dp))
+            .padding(end = 50.dp))
     }
 
 
@@ -291,7 +278,6 @@ fun RegistroForm(
     identVM: IdentVM,
     preferencesVM: PreferencesViewModel
 ) {
-    val coroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
 
@@ -366,7 +352,12 @@ fun RegistroForm(
             Box(contentAlignment = Alignment.BottomEnd) {
                 Box(Modifier.padding(16.dp)) {
                     AsyncImage(
-                        model = imageUri,
+                        model = ImageRequest.Builder(context)
+                            .data(imageUri)
+                            .crossfade(true)
+                            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                            .build(),
                         contentDescription = "User image",
                         placeholder = painterResource(id = R.drawable.no_user),
                         contentScale = ContentScale.Crop,
@@ -406,7 +397,7 @@ fun RegistroForm(
             // Campo para añadir nombre de usuario
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it.lowercase().replace(" ", "") },
+                onValueChange = { username = it.lowercase().replace(" ", "").replace("\n", "") },
                 label = { Text(text = "Nombre de usuario") },
                 modifier = modifierForInputs
             )
@@ -470,12 +461,22 @@ fun RegistroForm(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = modifierForInputs
             )
-            Button(
-                onClick = { onRegisterButtonClick() },
-                enabled = mainVM.serverOk.value
-            ) {
-                Text(text = "Registrarse")
+            Row (
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.align(Alignment.End)
+            ){
+                if(!mainVM.serverOk.value) Icon(painter = painterResource(id = R.drawable.no_wifi), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+                Button(
+                    onClick = { onRegisterButtonClick() },
+                    enabled = mainVM.serverOk.value,
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                ) {
+                    Text(text = "Registrarse")
+                }
             }
+
         }
         if (showLoading) CircularProgressIndicator(modifier = Modifier.size(100.dp))
     }

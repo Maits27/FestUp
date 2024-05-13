@@ -1,6 +1,8 @@
 package com.gomu.festup.ui.screens
 
-import android.content.res.Configuration
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -45,18 +47,15 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,12 +63,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Seguidores
 import com.gomu.festup.LocalDatabase.Entities.Usuario
+import com.gomu.festup.MainActivity
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.EditImageIcon
@@ -81,9 +85,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Instant
+import java.util.Date
 import kotlin.math.sin
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun PerfilYo(
@@ -92,6 +99,7 @@ fun PerfilYo(
     preferencesViewModel: PreferencesViewModel,
     yo: Boolean = false,
     recibirNotificaciones: Boolean,
+    showAge: Boolean,
     mainVM: MainVM
 ) {
     var usuario = mainVM.currentUser.value!!
@@ -105,101 +113,85 @@ fun PerfilYo(
 
     val cuadrillas = mainVM.getCuadrillasUsuario(usuario).collectAsState(initial = emptyList())
 
-    val isVertical= LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    var refresh by remember{ mutableStateOf(false) }
 
-    if (isVertical){
-        Column (
-            verticalArrangement = Arrangement.SpaceBetween,
+    val scrollState = rememberScrollState()
+
+    val refreshState = rememberPullRefreshState(
+        refreshing = refresh,
+        onRefresh = {
+            CoroutineScope(Dispatchers.IO).launch{
+                refresh = true
+                mainVM.actualizarDatos()
+                refresh = false
+            }
+        },
+    )
+
+    Column (
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.primaryContainer)
+    ) {
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .pullRefresh(refreshState)
+                    .verticalScroll(
+                        scrollState,
+                    ),
+                contentAlignment = Alignment.Center
             ) {
+
                 TopProfile(
                     mainVM = mainVM,
-                    edad = mainVM.calcularEdad(usuario),
+                    edad = if(showAge) mainVM.calcularEdad(usuario) else -1,
                     yo = yo,
                     recibirNotificaciones = recibirNotificaciones,
                     alreadySiguiendo = alreadySiguiendo,
                     usuario = usuario,
                     navController = navController
                 )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
-                    .background(MaterialTheme.colorScheme.background)
-            ) {
-                ListadoCuadrillas(
-                    cuadrillas = cuadrillas.value,
-                    yo,
-                    navController = navController,
-                    mainVM = mainVM
-                )
-                EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
-            }
-            if (yo) {
-                BotonesPerfil(
-                    navController= navController,
-                    mainNavController = mainNavController,
-                    preferencesViewModel = preferencesViewModel,
-                    mainVM = mainVM
+                PullRefreshIndicator(
+                    refreshing = refresh,
+                    state = refreshState,
+                    modifier = Modifier.align(
+                        Alignment.TopCenter,
+                    ),
                 )
             }
         }
-    }
-    else{
-        Row(
-            modifier = Modifier.fillMaxSize()
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
-                    .background(MaterialTheme.colorScheme.primaryContainer).fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                TopProfile(
-                    mainVM = mainVM,
-                    edad = mainVM.calcularEdad(usuario),
-                    yo = yo,
-                    recibirNotificaciones = recibirNotificaciones,
-                    alreadySiguiendo = alreadySiguiendo,
-                    usuario = usuario,
-                    navController = navController
-                )
-
-                if (yo) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    BotonesPerfil(
-                        navController= navController,
-                        mainNavController = mainNavController,
-                        preferencesViewModel = preferencesViewModel,
-                        mainVM = mainVM
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                ListadoCuadrillas(
-                    cuadrillas = cuadrillas.value,
-                    yo,
-                    navController = navController,
-                    mainVM = mainVM
-                )
-                EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
-            }
+            ListadoCuadrillas(
+                cuadrillas = cuadrillas.value,
+                yo,
+                navController = navController,
+                mainVM = mainVM
+            )
+            EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
+        }
+        if (yo) {
+            BotonesPerfil(
+                navController= navController,
+                mainNavController = mainNavController,
+                preferencesVM = preferencesViewModel,
+                mainVM = mainVM,
+                actualizarWidget = mainVM::actualizarWidget
+            )
         }
     }
-
-
 }
 
 
@@ -210,11 +202,10 @@ fun ListadoCuadrillas(
     navController: NavController,
     mainVM: MainVM
 ){
-    val isVertical= LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     Row (
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding( horizontal = 16.dp , vertical = if (isVertical) 16.dp else 10.dp)
+        modifier = Modifier.padding(16.dp)
     ){
         Text(
             text = stringResource(id = R.string.cuadrillas),
@@ -394,10 +385,12 @@ fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>, modif
 fun BotonesPerfil(
     mainNavController: NavController,
     navController: NavController,
-    preferencesViewModel: PreferencesViewModel,
-    mainVM: MainVM
+    preferencesVM: PreferencesViewModel,
+    mainVM: MainVM,
+    actualizarWidget: (Context) -> Unit
 ){
     val context = LocalContext.current
+    val currentUser by preferencesVM.currentUser.collectAsState(initial = preferencesVM.lastLoggedUser)
     Row (
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -421,10 +414,13 @@ fun BotonesPerfil(
         }
         IconButton(
             onClick = {
-                preferencesViewModel.changeUser("")
-                navController.popBackStack()
+                preferencesVM.changeUser("")
+                mainVM.serverOk.value = false
                 mainNavController.popBackStack()
-                mainVM.actualizarWidget(context)
+                (context as? Activity)?.finish()
+                val intent = Intent(context, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context.startActivity(intent)
             },
             modifier = Modifier.weight(1f)
         ) {
@@ -432,6 +428,7 @@ fun BotonesPerfil(
                 painter = painterResource(id = R.drawable.logout),
                 contentDescription = "Logout")
         }
+
     }
 }
 
@@ -447,6 +444,7 @@ fun TopProfile(
     yo: Boolean
 ){
     val context = LocalContext.current
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -454,20 +452,24 @@ fun TopProfile(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .padding(bottom = 5.dp)
         ) {
-            ProfileImage(usuario = usuario, yo = yo, mainVM = mainVM)
+            ProfileImage(usuario = usuario, yo = yo, updateUserImage = mainVM::updateUserImage, navController = navController)
             Text(
                 text = usuario.nombre,
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center
             )
-            Text(
-                text = context.getString(R.string.age, edad.toString()),
-                modifier = Modifier.padding(5.dp),
-                fontSize = 15.sp,
-                textAlign = TextAlign.Center
-            )
+            if(edad!=-1){
+                Text(
+                    text = context.getString(R.string.age, edad.toString()),
+                    modifier = Modifier.padding(5.dp),
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
         SeguidoresYSeguidos(
             yo = yo,
@@ -476,7 +478,7 @@ fun TopProfile(
             mainVM = mainVM,
             navController = navController,
             alreadySiguiendo = alreadySiguiendo,
-            modifier = Modifier.weight(1.5f)
+            modifier = Modifier.weight(1.2f)
         )
     }
 }
@@ -485,28 +487,35 @@ fun TopProfile(
 @Composable
 fun ProfileImage(
     usuario: Usuario,
-    mainVM: MainVM,
+    updateUserImage: (Context, String, Uri?) -> Unit,
     yo: Boolean,
+    navController: NavController
 ) {
     val context = LocalContext.current
 
     var imageUri by remember {
         mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
     }
+    Log.d("imageuri", imageUri.toString())
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         if (uri!=null) {
             imageUri = uri
-            mainVM.updateUserImage(context, usuario.username, uri)
+            updateUserImage(context, usuario.username, uri)
         }
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {
-        Box(Modifier.padding(16.dp)) {
-            AsyncImage(
-                model = imageUri,
+        Box(Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
+            AsyncImage(                                                             // TODO: NO FUNCIONA
+                model = ImageRequest.Builder(context)
+                    .data(imageUri)
+                    .crossfade(true)
+                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+                    .build(),
                 contentDescription = context.getString(R.string.user_image),
                 error = painterResource(id = R.drawable.no_user),
                 placeholder = painterResource(id = R.drawable.no_user),
@@ -514,6 +523,13 @@ fun ProfileImage(
                 modifier = Modifier
                     .size(120.dp)
                     .clip(CircleShape)
+                    .clickable {
+                        navController.navigate(
+                            AppScreens.FullImageScreen.route + "/" +
+                                    "user" + "/" +
+                                    usuario.username
+                        )
+                    }
             )
         }
         // Icono para editar imagen
@@ -567,4 +583,3 @@ fun FollowButton(
         )
     }
 }
-

@@ -5,8 +5,11 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,7 +25,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -79,100 +84,99 @@ fun TopBarMainView(
         mutableStateOf(false)
     }
 
-    var showRefreshButton by remember {
-        mutableStateOf(false)
-    }
+    val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
 
-    when (currentDestination?.route) {
+    when (routeWithoutArguments) {
         AppScreens.AddEvento.route -> {
             showTopBar = true
             title = stringResource(id = R.string.add_event)
             showPerfil = false
             showBackArrow = true
-            showRefreshButton = false
         }
         AppScreens.AddCuadrilla.route -> {
             showTopBar = true
             title = stringResource(id = R.string.add_cuadrilla)
             showPerfil = false
             showBackArrow = true
-            showRefreshButton = false
         }
         AppScreens.PerfilYo.route -> {
             showTopBar = true
             showPerfil = false
             title = mainVM.usuarioMostrar.value!!.username
             showBackArrow = true
-            showRefreshButton = true
         }
         AppScreens.PerfilCuadrilla.route -> {
             showTopBar = true
             showPerfil = false
             showBackArrow = true
             title = mainVM.cuadrillaMostrar.value!!.nombre
-            showRefreshButton = true
         }
         AppScreens.PerfilUser.route -> {
             showTopBar = true
             showPerfil = false
             title = mainVM.usuarioMostrar.value!!.username
             showBackArrow = true
-            showRefreshButton = true
         }
         AppScreens.Evento.route -> {
             showTopBar = true
             showPerfil = false
             title = mainVM.eventoMostrar.value!!.nombre
             showBackArrow = true
-            showRefreshButton = true
         }
         AppScreens.EditPerfil.route -> {
             showTopBar = true
             showPerfil = false
             title = stringResource(id = R.string.edit_profile)
             showBackArrow = true
-            showRefreshButton = false
         }
         AppScreens.Ajustes.route -> {
             showTopBar = true
             showPerfil = false
             title = stringResource(id = R.string.preferences, mainVM.usuarioMostrar.value!!.username)
             showBackArrow = true
-            showRefreshButton = false
+        }
+        AppScreens.SeguidoresSeguidosList.route -> {
+            showTopBar = true
+            showPerfil = false
+            title = mainVM.usuarioMostrar.value!!.username
+            showBackArrow = true
+        }
+        AppScreens.FullImageScreen.route -> {
+            showTopBar = true
+            showPerfil = false
+            val type = currentDestination.route?.split("/")?.get(1)
+            when (type) {
+                "user" -> title = mainVM.usuarioMostrar.value!!.username
+                "cuadrilla" -> title = mainVM.cuadrillaMostrar.value!!.nombre
+                "evento" -> title = mainVM.eventoMostrar.value!!.nombre
+            }
+            showBackArrow = true
         }
         else -> {
             title = stringResource(id = R.string.app_name)
             showPerfil = true
             showTopBar = true
             showBackArrow = false
-            showRefreshButton = false
         }
     }
 
     TopAppBar(
         title = {
-            Text(text = title)
+            if (title == stringResource(id = R.string.app_name)){
+                Image(
+                    painter = painterResource(id = R.drawable.festup),
+                    contentDescription = "Logo-FestUp",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
+            } else Text(text = title)
         },
         actions = {
             if (showPerfil) {
                 IconButton(onClick = { mainVM.usuarioMostrar.value=mainVM.currentUser.value;navController.navigate(AppScreens.PerfilYo.route) }) {
                     Icon(
                         painter = painterResource(id = R.drawable.account),
-                        contentDescription = "",
-                        modifier = Modifier.size(35.dp)
-                    )
-                }
-            }
-            if (showRefreshButton) {
-                IconButton(
-                    onClick = {
-                        CoroutineScope(Dispatchers.IO).launch{
-                            mainVM.actualizarDatos()
-                        }
-                    }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.refresh),
                         contentDescription = "",
                         modifier = Modifier.size(35.dp)
                     )

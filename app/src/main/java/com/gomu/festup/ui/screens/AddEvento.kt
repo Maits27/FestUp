@@ -162,25 +162,11 @@ fun AddEvento(
             Toast.LENGTH_SHORT
         ).show()
         else {
-            val fechaEvento = fecha.formatearFecha()
-            /*coroutineScope.launch(Dispatchers.IO) {
-                val insertCorrecto= mainVM.insertarEvento(Evento(
-                    nombre = eventName,
-                    fecha = fechaEvento,
-                    descripcion = description,
-                    localizacion = location,
-                    numeroAsistentes = 1
-                ))
-                if (insertCorrecto){
-
-                }
-            }*/
-
             CoroutineScope(Dispatchers.IO).launch {
                 val newEvento = Evento(
                     id = "",
                     nombre = eventName,
-                    fecha = fechaEvento,
+                    fecha = fecha.formatearFecha(),
                     descripcion = description,
                     localizacion = location,
                 )
@@ -212,6 +198,7 @@ fun AddEvento(
                                 datePickerState.selectedDateMillis!!
                             )
                         }
+                        mainVM.actualizarWidget(context)
                         navController.popBackStack()
                     }
                 } else {

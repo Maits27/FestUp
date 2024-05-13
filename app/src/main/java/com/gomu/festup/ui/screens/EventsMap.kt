@@ -1,12 +1,8 @@
 package com.gomu.festup.ui.screens
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.location.Geocoder
-import android.location.Location
 import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
@@ -16,35 +12,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat.setTint
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.gomu.festup.LocalDatabase.Entities.Evento
-import com.gomu.festup.MainActivity
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.utils.getLatLngFromAddress
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -55,11 +42,9 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import java.util.Date
 
 
 @Composable
@@ -127,10 +112,9 @@ fun EventsMap(
                     title = location.evento.nombre,
                     icon = bitmapDescriptorFromVector(
                         LocalContext.current,
-                        R.drawable.location,
-                        size = 120,
-                        alpha = 255,
-                        color = MaterialTheme.colorScheme.primary.toArgb()
+                        R.drawable.logoloc_min,
+                        size = 200,
+                        alpha = 255
                     ),
                     snippet = location.evento.fecha.toStringNuestro(),
                     onInfoWindowClick = {

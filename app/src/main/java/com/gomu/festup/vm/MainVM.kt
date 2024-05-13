@@ -18,6 +18,7 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Integrante
@@ -76,6 +77,7 @@ class MainVM @Inject constructor(
     /*****************************************************
      ****************** METODOS USUARIO ******************
      *****************************************************/
+
 
     suspend fun descargarUsuarios(){
         try{
