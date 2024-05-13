@@ -330,7 +330,7 @@ fun RegistroForm(
         if (correct) {
             showLoading = true
             registration(imageUri, mainNavController, mainVM, identVM, preferencesVM, context,
-                username, password, email, nombre, birthDate)
+                username, password, email, nombre, birthDate, telefono)
             showLoading = false
         }
     }
@@ -545,7 +545,8 @@ fun registration(
     password: String,
     email: String,
     nombre: String,
-    birthDate: String
+    birthDate: String,
+    telefono: String
 ) {
     CoroutineScope(Dispatchers.IO).launch {
         Log.d("IMAGE", "Image uri: ${imageUri.toString()}")
@@ -558,6 +559,7 @@ fun registration(
                     email,
                     nombre,
                     birthDate,
+                    telefono,
                     imageUri
                 )
             }

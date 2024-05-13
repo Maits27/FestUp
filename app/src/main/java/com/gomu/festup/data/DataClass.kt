@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.gomu.festup.ui.AppScreens
 
 data class Diseño(val pantalla: AppScreens, val icono: Painter, val nombre: String="")
+
 enum class AppLanguage(val language: String, val code: String) {
     EU("Euskera", "eu"),
     ES("Español", "es");
@@ -21,3 +22,8 @@ enum class AppLanguage(val language: String, val code: String) {
         }
     }
 }
+
+data class Contacto(
+    val nombre: String,
+    val telefono: String,
+)

@@ -29,7 +29,7 @@ import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
 import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
 import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
 import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
-import com.gomu.festup.Preferences.PreferencesRepository
+import com.gomu.festup.data.Contacto
 import com.gomu.festup.ui.widget.FestUpWidget
 import com.gomu.festup.utils.getWidgetEventos
 import com.gomu.festup.utils.localUriToBitmap
@@ -56,7 +56,7 @@ class MainVM @Inject constructor(
     private val eventoRepository: IEventoRepository,
     private val preferencesRepository: ILoginSettings
 ): ViewModel() {
-    var serverOk: MutableState<Boolean> = mutableStateOf(false)
+    var serverOk: MutableState<Boolean> = mutableStateOf(true)
 
     var currentUser: MutableState<Usuario?> = mutableStateOf(null)
 
@@ -487,32 +487,26 @@ class MainVM @Inject constructor(
         }
     }
 
-    fun listaAmigos(context: Context) {
-        // Esto se incluiría en el parámetro "projection" de "query"
-        /*val FROM_COLUMNS: Array<String> = arrayOf(
-            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)) {
-                ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
-            } else {
-                ContactsContract.Contacts.DISPLAY_NAME
-            }
-        )*/
+    fun listaContactos(context: Context): MutableList<Contacto> {
+
 
         val contentResolver = context.contentResolver
         val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         val cursor = contentResolver.query(uri, null, null, null, null)
 
-        val contactsUsingApp = mutableListOf<String>() // TODO se debería cerar una data class para guardar el nombre y el teléfono
+        val contactsUsingApp = mutableListOf<Contacto>()
         if (cursor != null) {
             if (cursor.count > 0) {
                 while (cursor.moveToNext()) {
                     val contactName = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
                     val contactNumber = cursor.getString(cursor.getColumnIndexOrThrow(
                         ContactsContract.CommonDataKinds.Phone.NUMBER))
-                    contactsUsingApp.add(contactNumber) // TODO y añadir el teléfono
+                    contactsUsingApp.add(Contacto(contactName, contactNumber))
                     Log.d("Contact", "Name: $contactName, Number: $contactNumber")
                 }
             }
         }
         cursor?.close()
+        return contactsUsingApp
     }
 }

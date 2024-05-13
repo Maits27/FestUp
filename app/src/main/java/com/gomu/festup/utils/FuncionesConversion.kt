@@ -93,7 +93,8 @@ fun remoteUsuarioToUsuario(remoteUsuario: RemoteUsuario): Usuario{
         remoteUsuario.username,
         remoteUsuario.email,
         remoteUsuario.nombre,
-        remoteUsuario.fechaNacimiento.formatearFecha()
+        remoteUsuario.fechaNacimiento.formatearFecha(),
+        remoteUsuario.telefono
     )
 }
 

@@ -39,7 +39,8 @@ data class RemoteUsuario(
     val username: String,
     val email: String,
     val nombre: String,
-    val fechaNacimiento: String
+    val fechaNacimiento: String,
+    val telefono: String
 )
 @Serializable
 data class RemoteAuthUsuario(

@@ -14,10 +14,10 @@ import java.util.UUID
 @Entity
 data class Usuario(
     @PrimaryKey val username: String,
-    //val password: String,
     val email: String,
     val nombre: String,
-    val fechaNacimiento: Date
+    val fechaNacimiento: Date,
+    val telefono: String,
 )
 
 @Entity
