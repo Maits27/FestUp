@@ -56,12 +56,16 @@ fun SplashScreen(
                 if (mainVM.serverOk.value && lastLoggedUser != "") {
                     descargarDatos(mainVM, preferencesVM, identVM, lastLoggedUser, context)
                     withContext(Dispatchers.Main) {
-                        navController.navigate(AppScreens.App.route)
+                        navController.navigate(AppScreens.App.route) {
+                            popUpTo(0)
+                        }
                     }
                 }
                 else {
                     withContext(Dispatchers.Main) {
-                        navController.navigate(AppScreens.LoginPage.route)
+                        navController.navigate(AppScreens.LoginPage.route) {
+                            popUpTo(0)
+                        }
                     }
                 }
             }
