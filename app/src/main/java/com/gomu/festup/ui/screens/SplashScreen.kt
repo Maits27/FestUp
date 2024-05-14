@@ -48,24 +48,22 @@ fun SplashScreen(
     LaunchedEffect(Unit) {
         Log.d("SplashScreen", "server status ${mainVM.serverOk.value}")
         // El siguiente bloque se hace porque en descargarUsuarios es donde se comprueba si el server esta ok
-        if (!mainVM.serverOk.value){
-            CoroutineScope(Dispatchers.IO).launch {
-                withContext(Dispatchers.IO) {
-                    mainVM.descargarUsuarios()
-                }
-                if (mainVM.serverOk.value && lastLoggedUser != "") {
-                    descargarDatos(mainVM, preferencesVM, identVM, lastLoggedUser, context)
-                    withContext(Dispatchers.Main) {
-                        navController.navigate(AppScreens.App.route) {
-                            popUpTo(0)
-                        }
+        CoroutineScope(Dispatchers.IO).launch {
+            withContext(Dispatchers.IO) {
+                mainVM.descargarUsuarios()
+            }
+            if (mainVM.serverOk.value && lastLoggedUser != "") {
+                descargarDatos(mainVM, preferencesVM, identVM, lastLoggedUser, context)
+                withContext(Dispatchers.Main) {
+                    navController.navigate(AppScreens.App.route) {
+                        popUpTo(0)
                     }
                 }
-                else {
-                    withContext(Dispatchers.Main) {
-                        navController.navigate(AppScreens.LoginPage.route) {
-                            popUpTo(0)
-                        }
+            }
+            else {
+                withContext(Dispatchers.Main) {
+                    navController.navigate(AppScreens.LoginPage.route) {
+                        popUpTo(0)
                     }
                 }
             }
@@ -117,10 +115,10 @@ suspend fun descargarDatos(
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun SplashScreenPreview() {
-//    FestUpTheme(darkTheme = true) {
-//        SplashContent()
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun SplashScreenPreview() {
+    FestUpTheme(darkTheme = true) {
+        SplashContent()
+    }
+}
