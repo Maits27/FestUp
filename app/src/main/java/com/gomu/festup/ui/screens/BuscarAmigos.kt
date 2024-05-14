@@ -1,6 +1,7 @@
 package com.gomu.festup.ui.screens
 
 import android.content.ContentResolver
+import android.content.res.Configuration
 import android.os.Build
 import android.provider.ContactsContract
 import android.util.Log
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -61,8 +63,11 @@ fun BuscarAmigos(
         }
     }
     Log.d("AMIGOS", amigos.toString())
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     if (amigos.isNotEmpty()) {
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.padding(horizontal = if (isVertical) 0.dp else 60.dp)
+        ) {
             items(amigos) {amigo ->
                 UsuarioCard(
                     usuario = amigo,

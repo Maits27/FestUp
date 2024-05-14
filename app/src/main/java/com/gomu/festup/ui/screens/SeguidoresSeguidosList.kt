@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -41,6 +43,7 @@ fun SeguidoresSeguidosList(
 
     val seguidores = mainVM.listaSeguidores(usuario).collectAsState(initial = emptyList())
     val seguidos = mainVM.listaSeguidos(usuario).collectAsState(initial = emptyList())
+
 
     Column(
         Modifier
@@ -78,7 +81,8 @@ fun SeguidoresSeguidosList(
 
 @Composable
 fun SeguidoresOrSeguidos(usuarios: State<List<Usuario>>, mainVM: MainVM, navController: NavController) {
-    LazyColumn {
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    LazyColumn(Modifier.padding(horizontal = if (isVertical) 0.dp else 60.dp)) {
         items(usuarios.value) { usuario ->
             UsuarioCard(usuario = usuario, mainVM = mainVM, navController = navController)
         }

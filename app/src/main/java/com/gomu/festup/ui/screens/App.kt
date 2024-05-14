@@ -93,15 +93,19 @@ fun App(
         },
         floatingActionButtonPosition = FabPosition.Center,
         topBar = {
-            if (isVertical || navBackStackEntry?.destination?.route == AppScreens.PerfilYo.route ||
-                navBackStackEntry?.destination?.route == AppScreens.PerfilUser.route ||
-                navBackStackEntry?.destination?.route == AppScreens.PerfilCuadrilla.route ){
+            if (isVertical || (!isVertical && navBackStackEntry?.destination?.route !in listOf(
+                    AppScreens.Feed.route,
+                    AppScreens.Search.route,
+                    AppScreens.EventsList.route,
+                    AppScreens.EventsMap.route))
+                ) {
                 TopBarMainView(
                     navController = navController,
                     mainVM = mainVM,
                     goBack = goBack
                 )
             }
+
 
 
         },
@@ -123,7 +127,7 @@ fun App(
         val showAgeOther by preferencesVM.mostrarEdad(if (mainVM.usuarioMostrar.isEmpty()) "" else mainVM.usuarioMostrar.last()?.username?:"").collectAsState(initial = false)
 
         Row(
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
             modifier = Modifier.fillMaxSize()
         ) {
             if (!isVertical){

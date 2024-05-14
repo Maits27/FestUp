@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -340,61 +341,45 @@ fun RailBarMainView(
         mutableStateOf(false)
     }
 
-    var showAmigos by remember {
-        mutableStateOf(false)
-    }
-
     val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
 
     when (routeWithoutArguments) {
         AppScreens.AddEvento.route -> {
             showPerfil = false
-            showAmigos = false
         }
         AppScreens.AddCuadrilla.route -> {
             showPerfil = false
-            showAmigos = false
         }
         AppScreens.PerfilYo.route -> {
             showPerfil = false
-            showAmigos = true
         }
         AppScreens.PerfilCuadrilla.route -> {
             showPerfil = false
-            showAmigos = false
         }
         AppScreens.PerfilUser.route -> {
             showPerfil = false
-            showAmigos = false
         }
         AppScreens.Evento.route -> {
             showPerfil = false
-            showAmigos = false
         }
         AppScreens.EditPerfil.route -> {
             showPerfil = false
-            showAmigos = false
         }
         AppScreens.Ajustes.route -> {
             showPerfil = false
-            showAmigos = false
         }
         AppScreens.SeguidoresSeguidosList.route -> {
             showPerfil = false
-            showAmigos = false
         }
         AppScreens.FullImageScreen.route -> {
             showPerfil = false
-            showAmigos = false
 
         }
         AppScreens.BuscarAmigos.route -> {
             showPerfil = false
-            showAmigos = false
         }
         else -> {
             showPerfil = true
-            showAmigos = false
         }
     }
 
@@ -428,53 +413,42 @@ fun RailBarMainView(
                             Icon(
                                 painter = painterResource(id = R.drawable.account),
                                 contentDescription = "Perfil",
-                                modifier = Modifier.size(30.dp)
+                                modifier = Modifier.size(28.dp)
                             )
-                        }
-                    )
-                }
-                else if (showAmigos) {
-
-                    NavigationRailItem(
-                        selected = currentDestination?.route == AppScreens.BuscarAmigos.route,
-                        onClick = { navController.navigate(AppScreens.BuscarAmigos.route) },
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.account),
-                                contentDescription = "Perfil",
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
+                        },
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
 
 
                 NavigationRailItem(
+                    modifier = Modifier.padding(vertical = 4.dp),
                     selected = currentDestination?.route == AppScreens.Feed.route,
                     onClick = { navController.navigate(AppScreens.Feed.route) },
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.home),
                             contentDescription = "Home",
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 )
 
                 NavigationRailItem(
+                    modifier = Modifier.padding(vertical = 4.dp),
                     selected = currentDestination?.route == AppScreens.Search.route,
                     onClick = { navController.navigate(AppScreens.Search.route) },
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.lupa),
                             contentDescription = "Search",
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 )
 
                 NavigationRailItem(
+                    modifier = Modifier.padding(vertical = 4.dp),
                     selected = currentDestination?.route == AppScreens.EventsMap.route ||
                             currentDestination?.route == AppScreens.EventsList.route,
                     onClick = { navController.navigate(AppScreens.EventsMap.route) },
@@ -482,7 +456,7 @@ fun RailBarMainView(
                         Icon(
                             painter = painterResource(id = R.drawable.party),
                             contentDescription = "Events",
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 )

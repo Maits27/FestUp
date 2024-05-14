@@ -230,12 +230,6 @@ fun AddEvento(
 
     val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    if (isVertical){
-
-    }
-    else{
-
-    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,6 +59,8 @@ fun EventsList(navController: NavController, mainVM: MainVM) {
         }
     )
 
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
     Column (
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -84,7 +88,7 @@ fun EventsList(navController: NavController, mainVM: MainVM) {
         }
         Box(
             modifier = Modifier
-                .pullRefresh(refreshState),
+                .pullRefresh(refreshState).padding(horizontal = if (isVertical) 0.dp else 60.dp),
             contentAlignment = Alignment.Center,
         ) {
             LazyColumn(
