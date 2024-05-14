@@ -121,7 +121,7 @@ fun PerfilYo(
     var usuario = mainVM.currentUser.value!!
 
     if (!yo) {
-        usuario = mainVM.usuarioMostrar.last()!!
+        usuario = if(mainVM.usuarioMostrar.isNotEmpty()) mainVM.usuarioMostrar.last()!! else Usuario("", "", "", Date(), "")
         mainVM.alreadySiguiendo(usuario.username)
     }
 
