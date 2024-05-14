@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -109,7 +110,7 @@ fun TopBarMainView(
             showTopBar = true
             showPerfil = false
             showAmigos = true
-            title = mainVM.usuarioMostrar.value!!.username
+            title = mainVM.currentUser.value!!.username
             showBackArrow = true
         }
         AppScreens.PerfilCuadrilla.route -> {
@@ -123,7 +124,7 @@ fun TopBarMainView(
             showTopBar = true
             showPerfil = false
             showAmigos = false
-            title = mainVM.usuarioMostrar.value!!.username
+            title = mainVM.usuarioMostrar.last()!!.username
             showBackArrow = true
         }
         AppScreens.Evento.route -> {
@@ -144,14 +145,14 @@ fun TopBarMainView(
             showTopBar = true
             showPerfil = false
             showAmigos = false
-            title = stringResource(id = R.string.preferences, mainVM.usuarioMostrar.value!!.username)
+            title = stringResource(id = R.string.preferences, mainVM.usuarioMostrar.last()!!.username)
             showBackArrow = true
         }
         AppScreens.SeguidoresSeguidosList.route -> {
             showTopBar = true
             showPerfil = false
             showAmigos = false
-            title = mainVM.usuarioMostrar.value!!.username
+            title = mainVM.usuarioMostrar.last()!!.username
             showBackArrow = true
         }
         AppScreens.FullImageScreen.route -> {
@@ -160,7 +161,7 @@ fun TopBarMainView(
             showAmigos = false
             val type = currentDestination.route?.split("/")?.get(1)
             when (type) {
-                "user" -> title = mainVM.usuarioMostrar.value!!.username
+                "user" -> title = mainVM.usuarioMostrar.last()!!.username
                 "cuadrilla" -> title = mainVM.cuadrillaMostrar.value!!.nombre
                 "evento" -> title = mainVM.eventoMostrar.value!!.nombre
             }
@@ -197,7 +198,7 @@ fun TopBarMainView(
         actions = {
             if (showPerfil) {
                 IconButton(onClick = {
-                    mainVM.usuarioMostrar.value=mainVM.currentUser.value;
+                    mainVM.usuarioMostrar.add(mainVM.currentUser.value)
                     navController.navigate(AppScreens.PerfilYo.route)
                 }) {
                     Icon(
@@ -222,6 +223,16 @@ fun TopBarMainView(
         navigationIcon = {
             if (showBackArrow) {
                 IconButton(onClick = {
+                    Log.d("RUTA", routeWithoutArguments.toString())
+                    if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
+                        if(mainVM.usuarioMostrar.isNotEmpty()){
+
+                            Log.d("LISTA USUARIO",  mainVM.usuarioMostrar.toString())
+                            Log.d("QUITO USUARIO",  mainVM.usuarioMostrar.get(mainVM.usuarioMostrar.size - 1)!!.username)
+                            mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+                            Log.d("LISTA USUARIO",  mainVM.usuarioMostrar.toString())
+                        }
+                    }
                     navController.popBackStack()
                 }) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back arrow")

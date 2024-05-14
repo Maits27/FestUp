@@ -33,7 +33,7 @@ fun SeguidoresSeguidosList(
         mutableIntStateOf(startPage!!)
     }
 
-    val usuario = mainVM.usuarioMostrar.value!!
+    val usuario = mainVM.usuarioMostrar.last()!!
 
     val seguidores = mainVM.listaSeguidores(usuario).collectAsState(initial = emptyList())
     val seguidos = mainVM.listaSeguidos(usuario).collectAsState(initial = emptyList())

@@ -25,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.BottomBarMainView
 import com.gomu.festup.ui.components.FloatButton
@@ -75,7 +76,7 @@ fun App(
         val dark by preferencesVM.darkTheme(mainVM.currentUser.value!!.username).collectAsState(initial = true)
         val receiveNotifications by preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = false)
         val showAge by preferencesVM.mostrarEdad(mainVM.currentUser.value!!.username).collectAsState(initial = false)
-        val showAgeOther by preferencesVM.mostrarEdad(mainVM.usuarioMostrar.value?.username?:"").collectAsState(initial = false)
+        val showAgeOther by preferencesVM.mostrarEdad(if (mainVM.usuarioMostrar.isEmpty()) "" else mainVM.usuarioMostrar.last()?.username?:"").collectAsState(initial = false)
 
         NavHost(
             modifier = Modifier.padding(innerPadding),
@@ -121,12 +122,14 @@ fun App(
             composable(AppScreens.PerfilYo.route,
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = true, receiveNotifications, showAge, mainVM = mainVM) }
+            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = true,
+                receiveNotifications, showAge, mainVM = mainVM) }
 
             composable(AppScreens.PerfilUser.route,
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },
                 exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = false, receiveNotifications, showAgeOther, mainVM = mainVM) }
+            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = false,
+                receiveNotifications, showAgeOther, mainVM = mainVM) }
 
             composable(AppScreens.PerfilCuadrilla.route,
                 enterTransition = { fadeIn(animationSpec = tween(1000)) },

@@ -64,7 +64,7 @@ class MainVM @Inject constructor(
 
     var currentUser: MutableState<Usuario?> = mutableStateOf(null)
 
-    var usuarioMostrar: MutableState<Usuario?> = mutableStateOf(null)
+    var usuarioMostrar: MutableList<Usuario?> = mutableListOf()
 
     var cuadrillaMostrar: MutableState<Cuadrilla?> = mutableStateOf(null)
 
@@ -516,7 +516,6 @@ class MainVM @Inject constructor(
                     val contactNumber = cursor.getString(cursor.getColumnIndexOrThrow(
                         ContactsContract.CommonDataKinds.Phone.NUMBER))
                     contactsUsingApp.add(Contacto(contactName, contactNumber))
-                    Log.d("Contact", "Name: $contactName, Number: $contactNumber")
                 }
             }
         }
