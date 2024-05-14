@@ -15,6 +15,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -130,15 +133,24 @@ fun Principal(
         navController = mainNavController,
         startDestination = AppScreens.SplashScreen.route
     ) {
-        composable(AppScreens.SplashScreen.route) {
+        composable(AppScreens.SplashScreen.route,
+            enterTransition = { fadeIn(animationSpec = tween(1000)) },
+            exitTransition = { fadeOut(animationSpec = tween(1000)) }
+        ) {
             FestUpTheme(dark) {
                 SplashScreen(mainNavController, mainVM, preferencesVM, identVM)
             }
         }
-        composable(AppScreens.LoginPage.route) {
+        composable(AppScreens.LoginPage.route,
+            enterTransition = { fadeIn(animationSpec = tween(1000)) },
+            exitTransition = { fadeOut(animationSpec = tween(1000)) }
+        ) {
             LoginPage(mainNavController, mainVM, identVM, preferencesVM)
         }
-        composable(AppScreens.App.route) {
+        composable(AppScreens.App.route,
+            enterTransition = { fadeIn(animationSpec = tween(1000)) },
+            exitTransition = { fadeOut(animationSpec = tween(1000)) }
+        ) {
             FestUpTheme(dark) {
                 App(mainNavController, mainVM, preferencesVM)
             }

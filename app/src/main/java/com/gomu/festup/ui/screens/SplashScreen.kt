@@ -1,29 +1,27 @@
 package com.gomu.festup.ui.screens
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.traceEventEnd
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.compose.FestUpTheme
-import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.utils.nuestroLocationProvider
@@ -69,8 +67,10 @@ fun SplashScreen(
             }
         }
     }
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    SplashContent()
+    if (isVertical) SplashContent()
+    else SplashHoritzontalContent()
 }
 
 @Composable
@@ -80,6 +80,25 @@ fun SplashContent() {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.festup),
+                contentDescription = "Logo",
+                modifier = Modifier.padding(horizontal = 40.dp)
+            )
+            CircularProgressIndicator()
+        }
+    }
+}
+
+@Composable
+fun SplashHoritzontalContent() {
+    // Surface to use the theme
+    Surface {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxSize()
         ) {
             Image(
@@ -120,5 +139,13 @@ suspend fun descargarDatos(
 fun SplashScreenPreview() {
     FestUpTheme(darkTheme = true) {
         SplashContent()
+    }
+}
+
+@Preview(showBackground = true, device = "spec:parent=pixel_5,orientation=landscape")
+@Composable
+fun SplashHoritzontalScreenPreview() {
+    FestUpTheme(darkTheme = true) {
+        SplashHoritzontalContent()
     }
 }
