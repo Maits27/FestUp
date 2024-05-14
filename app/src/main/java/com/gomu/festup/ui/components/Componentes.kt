@@ -223,14 +223,9 @@ fun TopBarMainView(
         navigationIcon = {
             if (showBackArrow) {
                 IconButton(onClick = {
-                    Log.d("RUTA", routeWithoutArguments.toString())
                     if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
                         if(mainVM.usuarioMostrar.isNotEmpty()){
-
-                            Log.d("LISTA USUARIO",  mainVM.usuarioMostrar.toString())
-                            Log.d("QUITO USUARIO",  mainVM.usuarioMostrar.get(mainVM.usuarioMostrar.size - 1)!!.username)
                             mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
-                            Log.d("LISTA USUARIO",  mainVM.usuarioMostrar.toString())
                         }
                     }
                     navController.popBackStack()

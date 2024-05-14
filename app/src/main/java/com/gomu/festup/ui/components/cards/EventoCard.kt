@@ -60,7 +60,7 @@ fun EventoCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp, vertical = 3.dp)
             .clickable { onCardClick(evento) }
     ) {
         Row(
@@ -107,7 +107,7 @@ fun EventoCardConUser(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp, vertical = 3.dp)
             .clickable { onCardClick(evento) }
     ) {
         Column (
