@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -26,6 +27,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.gomu.festup.R
 
+
 @Composable
 fun Imagen(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
     AsyncImage(
@@ -44,6 +46,27 @@ fun Imagen(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, on
             .clip(CircleShape).clickable { onClick() }
     )
 }
+
+@Composable
+fun ImagenMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId: Int) {
+    AsyncImage(
+        model = ImageRequest.Builder(context)
+            .data(imageUri)
+            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+            .build(),
+        contentDescription = null,
+        placeholder = painterResource(id = noImagePainterId),
+        contentScale = ContentScale.Crop,
+        error = painterResource(id = noImagePainterId),
+        modifier = Modifier
+            .border(2.dp, color = MaterialTheme.colorScheme.primary, CircleShape)
+            .size(50.dp)
+            .clip(CircleShape)
+    )
+}
+
 @Composable
 fun ImagenEvento(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
     AsyncImage(
@@ -61,6 +84,26 @@ fun ImagenEvento(imageUri: Uri?, context: Context, noImagePainterId: Int, size: 
             .size(size)
             .clip(RoundedCornerShape(10.dp))
             .clickable { onClick()}
+    )
+}
+
+@Composable
+fun ImagenEventoMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId: Int) {
+    AsyncImage(
+        model = ImageRequest.Builder(context)
+            .data(imageUri)
+            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+            .build(),
+        contentDescription = null,
+        placeholder = painterResource(id = noImagePainterId),
+        contentScale = ContentScale.Crop,
+        error = painterResource(id = noImagePainterId),
+        modifier = Modifier
+            .border(2.dp, color = MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+            .size(50.dp)
+            .clip(RoundedCornerShape(10.dp))
     )
 }
 

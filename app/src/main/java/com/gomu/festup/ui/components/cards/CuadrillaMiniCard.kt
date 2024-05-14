@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.components.cards
 
+import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
 import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.ImagenMiniConBorde
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 
@@ -51,7 +53,7 @@ fun CuadrillaMiniCard(
     }
 
     val imageUri by remember {
-        mutableStateOf("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"))
     }
 
     Column(
@@ -60,21 +62,8 @@ fun CuadrillaMiniCard(
             .padding(horizontal = 10.dp)
             .clickable { onCardClick() }
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(imageUri)
-                .crossfade(true)
-                .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
-                .build(),
-            contentDescription = stringResource(id = R.string.cuadrilla_imagen),
-            error = painterResource(id = R.drawable.no_cuadrilla),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .border(2.dp, color = MaterialTheme.colorScheme.primary, CircleShape)
-                .size(50.dp)
-                .clip(CircleShape)
-        )
+        ImagenMiniConBorde(imageUri, context, R.drawable.no_cuadrilla)
+
         Text(text = cuadrilla.nombre, fontSize = 10.sp)
     }
 }

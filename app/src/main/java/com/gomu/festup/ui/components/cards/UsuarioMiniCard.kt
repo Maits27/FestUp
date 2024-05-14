@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.components.cards
 
+import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,8 @@ import coil.request.ImageRequest
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.ImagenEventoMiniConBorde
+import com.gomu.festup.ui.components.ImagenMiniConBorde
 import com.gomu.festup.vm.MainVM
 import java.time.Instant
 import java.util.Date
@@ -54,7 +57,7 @@ fun UsuarioMiniCard(
     }
 
     val imageUri by remember {
-        mutableStateOf("http://34.16.74.167/userProfileImages/${usuario.username}.png")
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
     }
 
     val context = LocalContext.current
@@ -65,21 +68,7 @@ fun UsuarioMiniCard(
             .padding(horizontal = 10.dp)
             .clickable { onCardClick() }
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(imageUri)
-                .crossfade(true)
-                .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
-                .build(),
-            contentDescription = stringResource(id = R.string.user_image),
-            error = painterResource(id = R.drawable.no_user),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .border(2.dp, color = MaterialTheme.colorScheme.primary, CircleShape)
-                .size(50.dp)
-                .clip(CircleShape)
-        )
+        ImagenMiniConBorde(imageUri, context, R.drawable.no_user)
         Text(text = usuario.username, fontSize = 10.sp)
     }
 }
