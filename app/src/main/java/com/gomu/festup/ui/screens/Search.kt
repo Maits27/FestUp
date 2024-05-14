@@ -137,7 +137,7 @@ fun Search(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = stringResource(id = R.string.eventos_sin_dospuntos),
+                    text = stringResource(id = R.string.eventos),
                     modifier = Modifier.padding(vertical = 12.dp),
                 )
             }
@@ -213,8 +213,7 @@ fun <T> ElementoItem(
     else if (elemento is Cuadrilla) {
         CuadrillaCard(
             cuadrilla = elemento,
-            mainVM = mainVM, navController = navController,
-            isRemoveAvailable = false
+            mainVM = mainVM, navController = navController
         )
     }
     else if (elemento is Evento) {

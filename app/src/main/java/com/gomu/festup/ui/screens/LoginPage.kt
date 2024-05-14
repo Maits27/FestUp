@@ -355,24 +355,8 @@ fun RegistroForm(
             // Profile image
 
             Box(contentAlignment = Alignment.BottomEnd) {
-                Imagen(imageUri, context, R.drawable.no_user) { }
-                EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 Box(Modifier.padding(16.dp)) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(imageUri)
-                            .crossfade(true)
-                            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
-                            .build(),
-                        contentDescription = "User image",
-                        placeholder = painterResource(id = R.drawable.no_user),
-                        contentScale = ContentScale.Crop,
-                        error = painterResource(id = R.drawable.no_user),
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(CircleShape)
-                    )
+                    Imagen(imageUri, context, R.drawable.no_user, 120.dp) {}
                 }
                 // Icono para editar imagen
                 EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)

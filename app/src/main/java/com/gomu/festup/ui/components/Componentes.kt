@@ -390,8 +390,8 @@ fun RailBarMainView(
     ) {
 
         NavigationRail(
-            modifier = Modifier.width(80.dp)
-            // containerColor = MaterialTheme.colorScheme.secondaryContainer
+            modifier = Modifier.width(80.dp),
+            containerColor = Color(0xFF22202B),
         ) {
             Column(
                 modifier = Modifier.fillMaxHeight(),

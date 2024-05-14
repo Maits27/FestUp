@@ -340,12 +340,14 @@ fun CuadrillaProfileImage(
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {
-        Imagen(imageUri, context, R.drawable.no_cuadrilla) {
-            navController.navigate(
-                AppScreens.FullImageScreen.route + "/" +
-                        "cuadrilla" + "/" +
-                        cuadrilla.nombre
-            )
+        Box(Modifier.padding(16.dp)) {
+            Imagen(imageUri, context, R.drawable.no_cuadrilla, 120.dp) {
+                navController.navigate(
+                    AppScreens.FullImageScreen.route + "/" +
+                            "cuadrilla" + "/" +
+                            cuadrilla.nombre
+                )
+            }
         }
         if(pertenezco) EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
     }
@@ -526,7 +528,7 @@ fun EventosCuadrilla(
     val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     Text(
-        text = stringResource(id = R.string.eventos),
+        text = stringResource(id = R.string.eventos)+":",
         style = TextStyle(
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold

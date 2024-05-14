@@ -363,7 +363,7 @@ fun ListadoCuadrillas(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = if (isVertical) 16.dp else 8.dp)
     ){
         Text(
-            text = stringResource(id = R.string.cuadrillas),
+            text = stringResource(id = R.string.cuadrillas)+":",
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -423,7 +423,7 @@ fun EventosUsuario(
     val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     Text(
-        text = stringResource(id = R.string.eventos),
+        text = stringResource(id = R.string.eventos)+":",
         style = TextStyle(
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
@@ -520,7 +520,7 @@ fun Seguidores(navController: NavController, seguidores: State<List<Usuario>>, m
         verticalArrangement = Arrangement.Center,
         modifier = modifier.padding(top = 16.dp, end = 5.dp)
     ) {
-        Text(text = stringResource(id = R.string.seguidores))
+        Text(text = stringResource(id = R.string.seguidores)+":")
         TextButton(
             onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/0") },
             modifier = Modifier
@@ -548,7 +548,7 @@ fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>, modif
         verticalArrangement = Arrangement.Center,
         modifier = modifier.padding(top = 16.dp, start = 5.dp)
     ) {
-        Text(text = stringResource(id = R.string.seguidos))
+        Text(text = stringResource(id = R.string.seguidos)+":")
         TextButton(
             onClick = { navController.navigate(AppScreens.SeguidoresSeguidosList.route + "/1") },
             modifier = Modifier
@@ -710,12 +710,14 @@ fun ProfileImage(
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {
-        Imagen(imageUri, context, R.drawable.no_user) {
-            navController.navigate(
-                AppScreens.FullImageScreen.route + "/" +
-                        "user" + "/" +
-                        usuario.username
-            )
+        Box(Modifier.padding(16.dp)) {
+            Imagen(imageUri, context, R.drawable.no_user, 120.dp) {
+                navController.navigate(
+                    AppScreens.FullImageScreen.route + "/" +
+                            "user" + "/" +
+                            usuario.username
+                )
+            }
         }
         if(yo) EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
     }

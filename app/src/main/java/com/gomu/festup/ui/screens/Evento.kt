@@ -346,7 +346,7 @@ fun ColumnaAsistentes(
                 UsuarioCard(usuario = usuario, mainVM = mainVM, navController = navController)
             }
             items(cuadrillas){cuadrilla ->
-                CuadrillaCard(cuadrilla = cuadrilla, mainVM = mainVM, navController = navController, isRemoveAvailable = false)
+                CuadrillaCard(cuadrilla = cuadrilla, mainVM = mainVM, navController = navController)
             }
         }
     }

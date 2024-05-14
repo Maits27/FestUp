@@ -103,7 +103,9 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         ) {
 
             Box(contentAlignment = Alignment.BottomEnd) {
-                Imagen(imageUri, context, R.drawable.no_cuadrilla) {}
+                Box(Modifier.padding(16.dp)) {
+                    Imagen(imageUri, context, R.drawable.no_cuadrilla, 120.dp) {}
+                }
                 EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
             }
 
@@ -194,7 +196,9 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
             ) {
 
                 Box(contentAlignment = Alignment.BottomEnd) {
-                    Imagen(imageUri, context, R.drawable.no_cuadrilla){}
+                    Box(Modifier.padding(16.dp)) {
+                        Imagen(imageUri, context, R.drawable.no_cuadrilla, 120.dp) {}
+                    }
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }
             }

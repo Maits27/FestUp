@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +68,8 @@ fun Feed(
         }
     )
 
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
     Column (
         Modifier
             .fillMaxWidth()
@@ -101,7 +105,7 @@ fun Feed(
         }
         Box(
             modifier = Modifier
-                .pullRefresh(refreshState),
+                .pullRefresh(refreshState).padding(horizontal = if (isVertical) 0.dp else 60.dp),
             contentAlignment = Alignment.Center,
         ) {
 

@@ -39,6 +39,7 @@ import com.gomu.festup.ui.components.ImagenEvento
 import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.vm.MainVM
 import com.gomu.festup.data.UserCuadrillaAndEvent
+import com.gomu.festup.ui.components.Imagen
 
 @Composable
 fun EventoCard(
@@ -60,12 +61,15 @@ fun EventoCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable { onCardClick(evento) }
     ) {
         Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(13.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(15.dp)
+            horizontalArrangement = Arrangement.Start
         ) {
 
             ImagenEvento(imageUri, context, R.drawable.no_image, 50.dp) {}
@@ -101,13 +105,13 @@ fun EventoCardConUser(
     }
 
     val imageUri by remember {
-        mutableStateOf("http://34.16.74.167/eventoImages/${evento.id}.png")
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png"))
     }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable { onCardClick(evento) }
     ) {
         Column (
@@ -118,7 +122,6 @@ fun EventoCardConUser(
                 if(cuadrilla==""){
                     Box(
                         Modifier
-//                            .padding(start = 15.dp, end = 15.dp, top = 15.dp)
                             .background(
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 shape = RoundedCornerShape(2.dp)
@@ -127,12 +130,11 @@ fun EventoCardConUser(
                         Text(text = "@$usuario participa en:",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier.padding(8.dp))
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 13.dp))
                     }
                 }else{
                     Box(
                         Modifier
-//                            .padding(start = 15.dp, end = 15.dp, top = 15.dp)
                             .background(
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 shape = RoundedCornerShape(8.dp)
@@ -141,30 +143,17 @@ fun EventoCardConUser(
                         Text(text = "La cuadrilla $cuadrilla participa en:",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier.padding(5.dp))
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 13.dp))
                     }
                 }
 
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(15.dp)
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.padding(13.dp)
             ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(context)
-                        .data(imageUri)
-                        .crossfade(true)
-                        .memoryCachePolicy(CachePolicy.ENABLED)  // Para que la guarde en caché-RAM
-                        .diskCachePolicy(CachePolicy.ENABLED)    // Para que la guarde en caché-disco
-                        .build(),
-                    contentDescription = stringResource(id = R.string.cuadrilla_imagen),
-                    placeholder = painterResource(id = R.drawable.no_image),
-                    error = painterResource(id = R.drawable.no_image),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                )
+                ImagenEvento(imageUri, context, R.drawable.no_image, 50.dp) {}
                 Column(
                     modifier = Modifier
                         .weight(1f)

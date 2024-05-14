@@ -27,26 +27,23 @@ import coil.request.ImageRequest
 import com.gomu.festup.R
 
 @Composable
-fun Imagen(imageUri: Uri?, context: Context, noImagePainterId: Int,onClick: () -> Unit) {
-    Box(Modifier.padding(16.dp)) {
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(imageUri)
-                .crossfade(true)
-                .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
-                .build(),
-            contentDescription = null,
-            placeholder = painterResource(id = noImagePainterId),
-            contentScale = ContentScale.Crop,
-            error = painterResource(id = noImagePainterId),
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape).clickable { onClick() }
-        )
-    }
+fun Imagen(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
+    AsyncImage(
+        model = ImageRequest.Builder(context)
+            .data(imageUri)
+            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
+            .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
+            .build(),
+        contentDescription = null,
+        placeholder = painterResource(id = noImagePainterId),
+        contentScale = ContentScale.Crop,
+        error = painterResource(id = noImagePainterId),
+        modifier = Modifier
+            .size(size)
+            .clip(CircleShape).clickable { onClick() }
+    )
 }
-
 @Composable
 fun ImagenEvento(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
     AsyncImage(

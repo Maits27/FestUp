@@ -1,6 +1,7 @@
 package com.gomu.festup.ui.components.cards
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,6 +45,7 @@ import com.gomu.festup.R
 import com.gomu.festup.alarmMng.AlarmItem
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.components.Imagen
 import com.gomu.festup.utils.getScheduleTime
 import com.gomu.festup.vm.MainVM
 import java.time.Instant
@@ -69,45 +71,34 @@ fun UsuarioCard(
     }
 
 
-    val imageUri= "http://34.16.74.167/userProfileImages/${usuario.username}.png"
-
+    val imageUri by remember {
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
+    }
     val context = LocalContext.current
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 3.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable { onCardClick(usuario) }
     ) {
         Row (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
+                .padding(13.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ){
-            AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(imageUri)
-                    .crossfade(true)
-                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
-                    .build(),
-                contentDescription = stringResource(id = R.string.user_image),
-                placeholder = painterResource(id = R.drawable.no_user),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape),
-                error = painterResource(id = R.drawable.no_user)
+            Imagen(imageUri, context, R.drawable.no_user, 50.dp) {}
 
-            )
-            Spacer(modifier = Modifier.size(15.dp))
-            Column {
+            Column(
+                modifier = Modifier
+                .weight(1f)
+                .padding(start = 10.dp)) {
                 Text(
                     text = "@${usuario.username}",
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
+
                 )
                 Text(
                     text = usuario.nombre,

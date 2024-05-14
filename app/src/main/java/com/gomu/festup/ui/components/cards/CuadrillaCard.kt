@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.components.cards
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
@@ -45,7 +46,7 @@ import com.gomu.festup.R
 import com.gomu.festup.alarmMng.AlarmItem
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.ui.AppScreens
-import com.gomu.festup.ui.components.dialogs.EstasSeguroDialog
+import com.gomu.festup.ui.components.Imagen
 import com.gomu.festup.utils.getScheduleTime
 import com.gomu.festup.vm.MainVM
 import java.time.Instant
@@ -57,7 +58,6 @@ fun CuadrillaCard(
     cuadrilla: Cuadrilla,
     mainVM: MainVM,
     navController: NavController,
-    isRemoveAvailable: Boolean,
 ) {
 
     val onCardClick: (Cuadrilla) -> Unit = {
@@ -65,67 +65,40 @@ fun CuadrillaCard(
         navController.navigate(AppScreens.PerfilCuadrilla.route)
     }
 
-    val imageUri ="http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
-
+    val imageUri by remember {
+        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"))
+    }
     val context = LocalContext.current
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 3.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable { onCardClick(cuadrilla) }
     ) {
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(13.dp)
+                .padding(13.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(imageUri)
-                    .crossfade(true)
-                    .memoryCachePolicy(CachePolicy.DISABLED)  // Para que no la guarde en caché-RAM
-                    .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
-                    .build(),
-                contentDescription = stringResource(id = R.string.cuadrilla_imagen),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape),
-                error = painterResource(id = R.drawable.no_cuadrilla)
-            )
+            Imagen(imageUri, context, R.drawable.no_cuadrilla, 50.dp) {}
             Column(
-                Modifier.padding(vertical = 10.dp, horizontal = 10.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 10.dp)
             ) {
                 Text(
                     text = cuadrilla.nombre,
-                    fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleLarge
                 )
                 Text(
                     text = cuadrilla.lugar,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
                 )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            if (isRemoveAvailable) {
-                var verificacion by rememberSaveable { mutableStateOf(false) }
-                Button(
-                    onClick = { verificacion = true }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.delete),
-                        "",
-                    )
-                }
-                EstasSeguroDialog(
-                    show = verificacion,
-                    mensaje = stringResource(id = R.string.eliminar_cuadrilla_conf),
-                    onDismiss = { verificacion = false },
-                    onConfirm = { mainVM.eliminarIntegrante(cuadrilla); verificacion = false }
-                )
+
             }
         }
     }

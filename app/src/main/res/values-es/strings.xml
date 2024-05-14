@@ -63,10 +63,10 @@
     <string name="integrantes">Integrantes: %s</string>
     <string name="no_users">No hay usuarios</string>
     <string name="no_cuadrilla">No hay cuadrillas</string>
-    <string name="eventos">Eventos:</string>
+    <string name="eventos">Eventos</string>
     <string name="cuadrillas">Cuadrillas</string>
-    <string name="seguidores">Seguidores:</string>
-    <string name="seguidos">Seguidos:</string>
+    <string name="seguidores">Seguidores</string>
+    <string name="seguidos">Seguidos</string>
     <string name="age">%s años</string>
     <string name="follow">Seguir</string>
     <string name="unfollow">"Dejar de seguir "</string>
@@ -80,7 +80,6 @@
     <string name="seguro">¿Estas seguro?</string>
     <string name="eliminar_cuadrilla_conf">Si eliminas esta cuadrilla tendrás que volver a solicitar entrar.</string>
     <string name="cuadrilla_imagen">Imagen de cuadrilla</string>
-    <string name="eventos_sin_dospuntos">Eventos</string>
     <string name="edad">Edad</string>
     <string name="mostrar">Mostrar</string>
     <string name="no_mostrar">No mostrar</string>
