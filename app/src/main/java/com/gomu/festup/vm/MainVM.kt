@@ -60,6 +60,8 @@ class MainVM @Inject constructor(
     private val eventoRepository: IEventoRepository,
     private val preferencesRepository: ILoginSettings
 ): ViewModel() {
+    var retrocesoForzado: MutableState<Boolean> = mutableStateOf(false)
+
     var serverOk: MutableState<Boolean> = mutableStateOf(false)
 
     var currentUser: MutableState<Usuario?> = mutableStateOf(null)
@@ -343,7 +345,6 @@ class MainVM @Inject constructor(
 
     fun eventosSeguidos(usuario: Usuario): Flow<List<UserCuadrillaAndEvent>> = runBlocking {
         var eventos = eventoRepository.eventosSeguidos(usuario.username)
-        Log.d("Devuelve", eventos.first().toString())
         eventos
     }
 

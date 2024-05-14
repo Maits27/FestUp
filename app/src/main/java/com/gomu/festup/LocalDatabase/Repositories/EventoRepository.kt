@@ -130,8 +130,6 @@ class EventoRepository @Inject constructor(
                 UserCuadrillaAndEvent(it.username, "", it.evento)
             }
         }
-        Log.d("cuadrillas", cuadrillas.first().toString())
-        Log.d("usuarios", usuarios.first().toString())
         return cuadrillas.zip(usuarios) { c, u -> c + u }.map { it.sortedBy { it.evento.fecha } }
     }
 

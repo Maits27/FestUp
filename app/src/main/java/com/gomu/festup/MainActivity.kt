@@ -9,7 +9,9 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -58,6 +60,14 @@ class MainActivity : AppCompatActivity() {
         const val CHANNEL_ID = "FestUpNotifChannel"
     }
 
+    // Para manejar el botón de atrás de Android
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            mainVM.retrocesoForzado.value = true
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
     @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +76,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            BackHandler(onBack = { Log.d("HE VUELTO ATRAS MAL", "MAL MAL MAL") })
+
             FestUpTheme {
                 AskPermissions()
                 Principal(mainVM, identVM, preferencesVM)

@@ -54,10 +54,19 @@ fun App(
                 mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
             }
         }
-        navController.popBackStack()
     }
-    BackHandler(onBack = goBack)
+    if (mainVM.retrocesoForzado.value){
+        Log.d("RETROCESO FORZADO", "ENTRANDO")
+        if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
+            if(mainVM.usuarioMostrar.isNotEmpty()){
+                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+            }
+        }
+        if(routeWithoutArguments == AppScreens.Feed.route) mainNavController.popBackStack()
+        else navController.popBackStack()
 
+        mainVM.retrocesoForzado.value = false
+    }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     preferencesVM.restartLang(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(

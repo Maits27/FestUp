@@ -238,7 +238,12 @@ fun TopBarMainView(
         navigationIcon = {
             if (showBackArrow) {
                 IconButton(onClick = {
-                    goBack()
+                    if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
+                        if(mainVM.usuarioMostrar.isNotEmpty()){
+                            mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+                        }
+                    }
+                    navController.popBackStack()
                 }) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back arrow")
                 }
