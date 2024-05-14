@@ -1,14 +1,24 @@
 package com.gomu.festup.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -16,8 +26,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -28,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -289,6 +303,172 @@ fun BottomBarMainView(
                     )
                 }
             )
+        }
+    }
+}
+
+
+@Composable
+fun RailBarMainView(
+    navController: NavController,mainVM: MainVM
+){
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    var showPerfil by remember {
+        mutableStateOf(false)
+    }
+
+    var showAmigos by remember {
+        mutableStateOf(false)
+    }
+
+    val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
+
+    when (routeWithoutArguments) {
+        AppScreens.AddEvento.route -> {
+            showPerfil = false
+            showAmigos = false
+        }
+        AppScreens.AddCuadrilla.route -> {
+            showPerfil = false
+            showAmigos = false
+        }
+        AppScreens.PerfilYo.route -> {
+            showPerfil = false
+            showAmigos = true
+        }
+        AppScreens.PerfilCuadrilla.route -> {
+            showPerfil = false
+            showAmigos = false
+        }
+        AppScreens.PerfilUser.route -> {
+            showPerfil = false
+            showAmigos = false
+        }
+        AppScreens.Evento.route -> {
+            showPerfil = false
+            showAmigos = false
+        }
+        AppScreens.EditPerfil.route -> {
+            showPerfil = false
+            showAmigos = false
+        }
+        AppScreens.Ajustes.route -> {
+            showPerfil = false
+            showAmigos = false
+        }
+        AppScreens.SeguidoresSeguidosList.route -> {
+            showPerfil = false
+            showAmigos = false
+        }
+        AppScreens.FullImageScreen.route -> {
+            showPerfil = false
+            showAmigos = false
+
+        }
+        AppScreens.BuscarAmigos.route -> {
+            showPerfil = false
+            showAmigos = false
+        }
+        else -> {
+            showPerfil = true
+            showAmigos = false
+        }
+    }
+
+    AnimatedVisibility(
+        visible = (currentDestination?.route in listOf(
+            AppScreens.Feed.route,
+            AppScreens.Search.route,
+            AppScreens.EventsMap.route,
+            AppScreens.EventsList.route
+        )),
+        enter = slideInHorizontally(initialOffsetX = { -it }) + expandHorizontally(),
+        exit = slideOutHorizontally(targetOffsetX = { -it }) + shrinkHorizontally(),
+        //modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+
+        NavigationRail(
+            modifier = Modifier.width(80.dp)
+            // containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ) {
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.End
+            ) {
+                if (showPerfil) {
+                    NavigationRailItem(
+                        selected = currentDestination?.route == AppScreens.PerfilYo.route,
+                        onClick = { mainVM.usuarioMostrar.value=mainVM.currentUser.value;
+                            navController.navigate(AppScreens.PerfilYo.route) },
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.account),
+                                contentDescription = "Perfil",
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+                    )
+                }
+                else if (showAmigos) {
+
+                    NavigationRailItem(
+                        selected = currentDestination?.route == AppScreens.BuscarAmigos.route,
+                        onClick = { navController.navigate(AppScreens.BuscarAmigos.route) },
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.account),
+                                contentDescription = "Perfil",
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+
+
+                NavigationRailItem(
+                    selected = currentDestination?.route == AppScreens.Feed.route,
+                    onClick = { navController.navigate(AppScreens.Feed.route) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.home),
+                            contentDescription = "Home",
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+                )
+
+                NavigationRailItem(
+                    selected = currentDestination?.route == AppScreens.Search.route,
+                    onClick = { navController.navigate(AppScreens.Search.route) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.lupa),
+                            contentDescription = "Search",
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+                )
+
+                NavigationRailItem(
+                    selected = currentDestination?.route == AppScreens.EventsMap.route ||
+                            currentDestination?.route == AppScreens.EventsList.route,
+                    onClick = { navController.navigate(AppScreens.EventsMap.route) },
+                    icon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.party),
+                            contentDescription = "Events",
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+                )
+            }
+
+
+
         }
     }
 }
