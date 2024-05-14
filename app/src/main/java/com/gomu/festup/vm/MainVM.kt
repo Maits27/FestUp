@@ -128,10 +128,10 @@ class MainVM @Inject constructor(
         }
     }
 
-    fun editUsuario(username: String, email: String, nombre: String, fecha: Date) {
+    fun editUsuario(username: String, email: String, nombre: String, fecha: Date, telefono: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val usuario = withContext(Dispatchers.IO) {
-                userRepository.editUsuario(username, email, nombre, fecha)
+                userRepository.editUsuario(username, email, nombre, fecha, telefono)
             }
             currentUser.value = usuario
         }

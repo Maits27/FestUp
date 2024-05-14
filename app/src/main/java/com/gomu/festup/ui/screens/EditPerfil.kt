@@ -74,10 +74,6 @@ fun EditPerfil(
     val context = LocalContext.current
     val currentUser = mainVM.currentUser.value!!
 
-    var username by remember {
-        mutableStateOf(currentUser.username)
-    }
-
     var email by remember {
         mutableStateOf(currentUser.email)
     }
@@ -90,8 +86,12 @@ fun EditPerfil(
         mutableStateOf(currentUser.fechaNacimiento.toStringNuestro())
     }
 
+    var telefono by remember {
+        mutableStateOf(currentUser.telefono)
+    }
+
     // Birth date DatePikcer
-    var datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState()
     var showDatePicker by remember {
         mutableStateOf(false)
     }
@@ -108,7 +108,7 @@ fun EditPerfil(
     val onEditButtonClick: () -> Unit = {
         val correct = checkEditPerfil(context, email, nombre)
         if (correct) {
-            mainVM.editUsuario(username, email, nombre, birthDate.formatearFecha())
+            mainVM.editUsuario(currentUser.username, email, nombre, birthDate.formatearFecha(), telefono)
             navController.popBackStack()
         }
     }
@@ -134,7 +134,14 @@ fun EditPerfil(
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }
 
-                // Campo para añadir email
+                // Campo para editar nombre
+                OutlinedTextField(
+                    value = nombre,
+                    onValueChange = { nombre = it },
+                    label = { Text(text = context.getString(R.string.nombre)) },
+                    modifier = modifierForInputs
+                )
+                // Campo para editar email
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -142,11 +149,12 @@ fun EditPerfil(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     modifier = modifierForInputs
                 )
-                // Campo para añadir nombre
+                // Campo para editar número de telefono
                 OutlinedTextField(
-                    value = nombre,
-                    onValueChange = { nombre = it },
-                    label = { Text(text = context.getString(R.string.nombre)) },
+                    value = telefono,
+                    onValueChange = { telefono = it },
+                    label = { Text(text = context.getString(R.string.telefono)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     modifier = modifierForInputs
                 )
                 // Añadir fecha de nacimiento

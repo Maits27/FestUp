@@ -46,6 +46,7 @@ fun SplashScreen(
     val lastLoggedUser = preferencesVM.lastLoggedUser
 
     LaunchedEffect(Unit) {
+        Log.d("SplashScreen", "server status ${mainVM.serverOk.value}")
         // El siguiente bloque se hace porque en descargarUsuarios es donde se comprueba si el server esta ok
         if (!mainVM.serverOk.value){
             CoroutineScope(Dispatchers.IO).launch {
@@ -55,12 +56,16 @@ fun SplashScreen(
                 if (mainVM.serverOk.value && lastLoggedUser != "") {
                     descargarDatos(mainVM, preferencesVM, identVM, lastLoggedUser, context)
                     withContext(Dispatchers.Main) {
-                        navController.navigate(AppScreens.App.route)
+                        navController.navigate(AppScreens.App.route) {
+                            popUpTo(0)
+                        }
                     }
                 }
                 else {
                     withContext(Dispatchers.Main) {
-                        navController.navigate(AppScreens.LoginPage.route)
+                        navController.navigate(AppScreens.LoginPage.route) {
+                            popUpTo(0)
+                        }
                     }
                 }
             }
