@@ -189,18 +189,34 @@ fun PerfilCuadrilla(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
-                TopProfileCuadrilla(
-                    mainVM =  mainVM,
-                    cuadrilla = cuadrilla,
-                    pertenezco = pertenezco,
-                    navController = navController
-                )
+                Box(
+                    modifier = Modifier
+                        .pullRefresh(refreshState)
+                        .verticalScroll(scrollState),
+                    contentAlignment = Alignment.Center
+                ) {
 
-                Spacer(modifier = Modifier.height(20.dp))
-                if (pertenezco){
-                    EliminarCuadrilla(navController, mainVM = mainVM, cuadrilla = cuadrilla)
+                    TopProfileCuadrilla(
+                        mainVM = mainVM,
+                        cuadrilla = cuadrilla,
+                        pertenezco = pertenezco,
+                        navController = navController
+                    )
+
+                    PullRefreshIndicator(
+                        refreshing = refresh,
+                        state = refreshState,
+                        modifier = Modifier.align(
+                            Alignment.TopCenter,
+                        ),
+                    )
                 }
 
+                Spacer(modifier = Modifier.height(20.dp))
+
+                if (pertenezco) {
+                    EliminarCuadrilla(navController, mainVM = mainVM, cuadrilla = cuadrilla)
+                }
             }
             Column(
                 modifier = Modifier
@@ -223,7 +239,6 @@ fun PerfilCuadrilla(
             }
         }
     }
-
 }
 
 

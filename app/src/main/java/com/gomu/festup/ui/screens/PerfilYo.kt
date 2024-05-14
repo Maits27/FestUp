@@ -229,63 +229,82 @@ fun PerfilYo(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                TopProfile(
-                    mainVM = mainVM,
-                    edad = mainVM.calcularEdad(usuario),
-                    yo = yo,
-                    recibirNotificaciones = recibirNotificaciones,
-                    alreadySiguiendo = alreadySiguiendo,
-                    usuario = usuario,
-                    navController = navController
-                )
-                if (yo) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        if (showExpandedButtons) {
-                            IconButton(
-                                onClick = { navController.navigate(AppScreens.Ajustes.route) },
-                                modifier = Modifier.padding(5.dp)
 
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.settings),
-                                    contentDescription = "Settings")
-                            }
-                            IconButton(
-                                onClick = { navController.navigate(AppScreens.EditPerfil.route) },
-                                modifier = Modifier.padding(5.dp)
+                Box(
+                    modifier = Modifier
+                        .pullRefresh(refreshState)
+                        .verticalScroll(scrollState),
+                    contentAlignment = Alignment.Center
+                ) {
 
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.edit),
-                                    contentDescription = "Edit")
-                            }
-                            IconButton(
-                                onClick = { verificacion = true },
-                                modifier = Modifier.padding(5.dp)
 
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.logout),
-                                    contentDescription = "Logout")
-                            }
-                        }
-                        IconButton(
-                            onClick = { showExpandedButtons = !showExpandedButtons },
-                            modifier = Modifier.padding(5.dp)
-
+                    TopProfile(
+                        mainVM = mainVM,
+                        edad = mainVM.calcularEdad(usuario),
+                        yo = yo,
+                        recibirNotificaciones = recibirNotificaciones,
+                        alreadySiguiendo = alreadySiguiendo,
+                        usuario = usuario,
+                        navController = navController
+                    )
+                    if (yo) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.Bottom
                         ) {
-                            Icon(Icons.Filled.MoreVert, contentDescription = "Mostrar botones")
+                            if (showExpandedButtons) {
+                                IconButton(
+                                    onClick = { navController.navigate(AppScreens.Ajustes.route) },
+                                    modifier = Modifier.padding(5.dp)
+
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.settings),
+                                        contentDescription = "Settings"
+                                    )
+                                }
+                                IconButton(
+                                    onClick = { navController.navigate(AppScreens.EditPerfil.route) },
+                                    modifier = Modifier.padding(5.dp)
+
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.edit),
+                                        contentDescription = "Edit"
+                                    )
+                                }
+                                IconButton(
+                                    onClick = { verificacion = true },
+                                    modifier = Modifier.padding(5.dp)
+
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.logout),
+                                        contentDescription = "Logout"
+                                    )
+                                }
+                            }
+                            IconButton(
+                                onClick = { showExpandedButtons = !showExpandedButtons },
+                                modifier = Modifier.padding(5.dp)
+
+                            ) {
+                                Icon(Icons.Filled.MoreVert, contentDescription = "Mostrar botones")
+                            }
                         }
+
                     }
-
+                    PullRefreshIndicator(
+                        refreshing = refresh,
+                        state = refreshState,
+                        modifier = Modifier.align(
+                            Alignment.TopCenter,
+                        ),
+                    )
                 }
-
             }
             Column(
                 modifier = Modifier.weight(1f).fillMaxSize(),
