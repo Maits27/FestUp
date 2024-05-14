@@ -86,4 +86,5 @@
     <string name="no_mostrar">Ez erakutsi</string>
     <string name="buscar_amigos">Lagunak bilatu</string>
     <string name="telefono">Telefonoa</string>
+    <string name="no_hay_amigos">Ez dituzu lagunik zure kontaktuetan aplikazioa erabiltzen dutenak</string>
 </resources>

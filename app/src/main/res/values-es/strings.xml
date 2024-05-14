@@ -86,4 +86,5 @@
     <string name="no_mostrar">No mostrar</string>
     <string name="buscar_amigos">Buscar amigos</string>
     <string name="telefono">Teléfono</string>
+    <string name="no_hay_amigos">No hay amigos que usen la aplicación en tus contactos</string>
 </resources>
