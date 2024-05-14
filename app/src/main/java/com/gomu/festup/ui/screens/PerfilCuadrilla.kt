@@ -182,7 +182,7 @@ fun PerfilCuadrilla(
     }
     else{
         Row(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize().weight(1f).background(MaterialTheme.colorScheme.primaryContainer),
@@ -220,9 +220,10 @@ fun PerfilCuadrilla(
             }
             Column(
                 modifier = Modifier
-                    .weight(1f).fillMaxSize()
-                    .clip(RoundedCornerShape(20.dp, 20.dp, 0.dp, 0.dp))
+                    .clip(RoundedCornerShape(20.dp, 0.dp, 0.dp, 20.dp))
                     .background(MaterialTheme.colorScheme.background)
+                    .weight(1f)
+                    .fillMaxSize(),
             ) {
                 ListadoUsuarios(
                     usuarios = usuariosCuadrilla.value,
