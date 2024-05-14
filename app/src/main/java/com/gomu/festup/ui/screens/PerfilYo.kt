@@ -219,7 +219,7 @@ fun PerfilYo(
     }
     else{
         Row(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
         ) {
             Column(
                 modifier = Modifier

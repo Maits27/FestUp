@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -91,6 +93,8 @@ fun Search(
         }
     )
 
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
 
     Column (
         Modifier
@@ -139,20 +143,21 @@ fun Search(
             }
         }
 
+
         // Barra de búsqueda
         TextField(
             value = searchText,
             onValueChange = { searchText = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(vertical = 16. dp, horizontal = if (isVertical)  16.dp else 60.dp)
                 .height(50.dp),
             placeholder = { Text(text = stringResource(id = R.string.buscar)) }
         )
 
         Box(
             modifier = Modifier
-                .pullRefresh(refreshState),
+                .pullRefresh(refreshState).padding(horizontal = if (isVertical) 0.dp else 60.dp),
             contentAlignment = Alignment.Center
         ) {
 
@@ -176,6 +181,7 @@ fun Search(
                     Alignment.TopCenter,
                 ),
             )
+
         }
     }
 }

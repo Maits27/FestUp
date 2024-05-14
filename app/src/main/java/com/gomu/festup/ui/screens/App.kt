@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.screens
 
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -7,6 +8,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -16,8 +19,10 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -28,6 +33,7 @@ import androidx.navigation.navArgument
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.components.BottomBarMainView
 import com.gomu.festup.ui.components.FloatButton
+import com.gomu.festup.ui.components.RailBarMainView
 import com.gomu.festup.ui.components.TopBarMainView
 import com.gomu.festup.vm.MainVM
 import com.gomu.festup.vm.PreferencesViewModel
@@ -47,10 +53,14 @@ fun App(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
             initial = preferencesVM.currentSetLang).value)
     Log.d("LAST LOGGED USER DENTRO", preferencesVM.lastLoggedUser)
+
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
             if (navBackStackEntry?.destination?.route == AppScreens.EventsMap.route ||
                 navBackStackEntry?.destination?.route == AppScreens.EventsList.route) {
                 FloatButton{
@@ -60,16 +70,27 @@ fun App(
         },
         floatingActionButtonPosition = FabPosition.Center,
         topBar = {
-            TopBarMainView(
-                navController = navController,
-                mainVM = mainVM
-            )
+            if (isVertical || navBackStackEntry?.destination?.route == AppScreens.PerfilYo.route ||
+                navBackStackEntry?.destination?.route == AppScreens.PerfilUser.route ||
+                navBackStackEntry?.destination?.route == AppScreens.PerfilCuadrilla.route ){
+                TopBarMainView(
+                    navController = navController,
+                    mainVM = mainVM
+                )
+            }
+
+
         },
         bottomBar = {
-            BottomBarMainView(
-                navController = navController
-            )
-        }
+            if (isVertical){
+                BottomBarMainView(
+                    navController = navController
+                )
+            }
+            
+
+        },
+
     ){ innerPadding ->
         val idioma by preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(initial = preferencesVM.currentSetLang)
         val dark by preferencesVM.darkTheme(mainVM.currentUser.value!!.username).collectAsState(initial = true)
@@ -77,101 +98,114 @@ fun App(
         val showAge by preferencesVM.mostrarEdad(mainVM.currentUser.value!!.username).collectAsState(initial = false)
         val showAgeOther by preferencesVM.mostrarEdad(mainVM.usuarioMostrar.value?.username?:"").collectAsState(initial = false)
 
-        NavHost(
-            modifier = Modifier.padding(innerPadding),
-            navController = navController,
-            startDestination = AppScreens.Feed.route
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxSize()
         ) {
-
-            composable(AppScreens.Feed.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { Feed(navController, mainVM) }
-
-            composable(AppScreens.Search.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { Search(navController, mainVM) }
-
-            composable(AppScreens.EventsMap.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { EventsMap(navController, mainVM) }
-
-            composable(AppScreens.EventsList.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { EventsList(navController, mainVM) }
-
-            composable(AppScreens.Evento.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { Evento(navController, mainVM, receiveNotifications) }
-
-            composable(AppScreens.AddCuadrilla.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { AddCuadrilla(navController, mainVM) }
-
-            composable(AppScreens.AddEvento.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { AddEvento(navController, mainVM) }
-
-            composable(AppScreens.PerfilYo.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = true, receiveNotifications, showAge, mainVM = mainVM) }
-
-            composable(AppScreens.PerfilUser.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { PerfilYo(mainNavController, navController, preferencesVM, yo = false, receiveNotifications, showAgeOther, mainVM = mainVM) }
-
-            composable(AppScreens.PerfilCuadrilla.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { PerfilCuadrilla(navController, mainVM = mainVM) }
-
-            composable(
-                AppScreens.SeguidoresSeguidosList.route + "/{startPage}",
-                arguments = listOf(
-                    navArgument(name = "startPage") { type = NavType.IntType }
-                ),
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-
-            ) {
-                SeguidoresSeguidosList(startPage = it.arguments?.getInt("startPage"), mainVM = mainVM, navController = navController)
+            if (!isVertical){
+                RailBarMainView(navController = navController, mainVM)
             }
 
-            composable(AppScreens.Ajustes.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { Ajustes(preferencesVM, mainVM, idioma, dark, receiveNotifications, showAge) }
+            NavHost(
+                modifier = Modifier.padding(innerPadding),
+                navController = navController,
+                startDestination = AppScreens.Feed.route
+            ) {
 
-            composable(AppScreens.EditPerfil.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { EditPerfil(navController, mainVM) }
+                composable(AppScreens.Feed.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { Feed(navController, mainVM) }
 
-            composable(AppScreens.FullImageScreen.route + "/{type}/{filename}",
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) { backStackEntry ->
-                val type = backStackEntry.arguments?.getString("type")
-                val filename = backStackEntry.arguments?.getString("filename")
-                if (filename != null && type != null) {
-                    FullImageScreen(type, filename)
+                composable(AppScreens.Search.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { Search(navController, mainVM) }
+
+                composable(AppScreens.EventsMap.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { EventsMap(navController, mainVM) }
+
+                composable(AppScreens.EventsList.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { EventsList(navController, mainVM) }
+
+                composable(AppScreens.Evento.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { Evento(navController, mainVM, receiveNotifications) }
+
+                composable(AppScreens.AddCuadrilla.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { AddCuadrilla(navController, mainVM) }
+
+                composable(AppScreens.AddEvento.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { AddEvento(navController, mainVM) }
+
+                composable(AppScreens.PerfilYo.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { PerfilYo(mainNavController, navController, preferencesVM, yo = true, receiveNotifications, showAge, mainVM = mainVM) }
+
+                composable(AppScreens.PerfilUser.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { PerfilYo(mainNavController, navController, preferencesVM, yo = false, receiveNotifications, showAgeOther, mainVM = mainVM) }
+
+                composable(AppScreens.PerfilCuadrilla.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { PerfilCuadrilla(navController, mainVM = mainVM) }
+
+                composable(
+                    AppScreens.SeguidoresSeguidosList.route + "/{startPage}",
+                    arguments = listOf(
+                        navArgument(name = "startPage") { type = NavType.IntType }
+                    ),
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+
+                ) {
+                    SeguidoresSeguidosList(startPage = it.arguments?.getInt("startPage"), mainVM = mainVM, navController = navController)
+                }
+
+                composable(AppScreens.Ajustes.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { Ajustes(preferencesVM, mainVM, idioma, dark, receiveNotifications, showAge) }
+
+                composable(AppScreens.EditPerfil.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { EditPerfil(navController, mainVM) }
+
+                composable(AppScreens.FullImageScreen.route + "/{type}/{filename}",
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) { backStackEntry ->
+                    val type = backStackEntry.arguments?.getString("type")
+                    val filename = backStackEntry.arguments?.getString("filename")
+                    if (filename != null && type != null) {
+                        FullImageScreen(type, filename)
+                    }
+                }
+                composable(AppScreens.BuscarAmigos.route,
+                    enterTransition = { fadeIn(animationSpec = tween(1000)) },
+                    exitTransition = { fadeOut(animationSpec = tween(1000)) }
+                ) {
+                    BuscarAmigos(mainVM, navController)
                 }
             }
-            composable(AppScreens.BuscarAmigos.route,
-                enterTransition = { fadeIn(animationSpec = tween(1000)) },
-                exitTransition = { fadeOut(animationSpec = tween(1000)) }
-            ) {
-                BuscarAmigos(mainVM, navController)
-            }
+
         }
+
+
+
     }
 }
 
