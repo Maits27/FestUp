@@ -28,7 +28,9 @@ import androidx.navigation.NavController
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -74,7 +76,6 @@ import com.gomu.festup.ui.components.Imagen
 fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
 
     var nombre by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
@@ -192,7 +193,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                     .weight(1f)
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.Center
             ) {
 
                 Box(contentAlignment = Alignment.BottomEnd) {
@@ -205,8 +206,10 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 
             Column(
                 modifier = Modifier
-                    .weight(2f).padding(horizontal = 40.dp)
-                    .fillMaxSize(),
+                    .weight(2f)
+                    .padding(horizontal = 40.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {

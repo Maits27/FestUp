@@ -9,7 +9,9 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -26,8 +28,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Usuario
@@ -59,6 +63,14 @@ class MainActivity : AppCompatActivity() {
         const val CHANNEL_ID = "FestUpNotifChannel"
     }
 
+    // Para manejar el botón de atrás de Android
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            mainVM.retrocesoForzado.value = true
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
     @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,12 +79,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            BackHandler(onBack = { Log.d("HE VUELTO ATRAS MAL", "MAL MAL MAL") })
+
             FestUpTheme {
                 AskPermissions()
                 Principal(mainVM, identVM, preferencesVM)
             }
         }
     }
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//            if(mainVM.usuarioMostrar.isNotEmpty()){
+//                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+//            }
+//    }
 
     // Function to create a local notification channel
     private fun createNotificationChannel() {

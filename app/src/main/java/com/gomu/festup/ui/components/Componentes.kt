@@ -1,5 +1,7 @@
 package com.gomu.festup.ui.components
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -77,10 +79,25 @@ fun FloatButton(onClick: () -> Unit){
 @Composable
 fun TopBarMainView(
     navController: NavController,
-    mainVM: MainVM
+    mainVM: MainVM,
+    goBack: () -> Unit
 ){
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
+
+//    val goBack:() -> Unit = {
+//        Log.d("ON BACK", "ME VOY PARA ATRAS")
+//        if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
+//            if(mainVM.usuarioMostrar.isNotEmpty()){
+//                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+//            }
+//        }
+//        navController.popBackStack()
+//    }
+
+    BackHandler(onBack = goBack)
 
     var title by remember {
         mutableStateOf("")
@@ -102,7 +119,6 @@ fun TopBarMainView(
         mutableStateOf(false)
     }
 
-    val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
 
     when (routeWithoutArguments) {
         AppScreens.AddEvento.route -> {
@@ -123,7 +139,7 @@ fun TopBarMainView(
             showTopBar = true
             showPerfil = false
             showAmigos = true
-            title = mainVM.usuarioMostrar.value!!.username
+            title = mainVM.currentUser.value!!.username
             showBackArrow = true
         }
         AppScreens.PerfilCuadrilla.route -> {
@@ -137,7 +153,7 @@ fun TopBarMainView(
             showTopBar = true
             showPerfil = false
             showAmigos = false
-            title = mainVM.usuarioMostrar.value!!.username
+            title = mainVM.usuarioMostrar.last()!!.username
             showBackArrow = true
         }
         AppScreens.Evento.route -> {
@@ -158,14 +174,14 @@ fun TopBarMainView(
             showTopBar = true
             showPerfil = false
             showAmigos = false
-            title = stringResource(id = R.string.preferences, mainVM.usuarioMostrar.value!!.username)
+            title = stringResource(id = R.string.preferences, mainVM.usuarioMostrar.last()!!.username)
             showBackArrow = true
         }
         AppScreens.SeguidoresSeguidosList.route -> {
             showTopBar = true
             showPerfil = false
             showAmigos = false
-            title = mainVM.usuarioMostrar.value!!.username
+            title = mainVM.usuarioMostrar.last()!!.username
             showBackArrow = true
         }
         AppScreens.FullImageScreen.route -> {
@@ -174,7 +190,7 @@ fun TopBarMainView(
             showAmigos = false
             val type = currentDestination.route?.split("/")?.get(1)
             when (type) {
-                "user" -> title = mainVM.usuarioMostrar.value!!.username
+                "user" -> title = mainVM.usuarioMostrar.last()!!.username
                 "cuadrilla" -> title = mainVM.cuadrillaMostrar.value!!.nombre
                 "evento" -> title = mainVM.eventoMostrar.value!!.nombre
             }
@@ -211,7 +227,7 @@ fun TopBarMainView(
         actions = {
             if (showPerfil) {
                 IconButton(onClick = {
-                    mainVM.usuarioMostrar.value=mainVM.currentUser.value;
+                    mainVM.usuarioMostrar.add(mainVM.currentUser.value)
                     navController.navigate(AppScreens.PerfilYo.route)
                 }) {
                     Icon(
@@ -236,6 +252,11 @@ fun TopBarMainView(
         navigationIcon = {
             if (showBackArrow) {
                 IconButton(onClick = {
+                    if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
+                        if(mainVM.usuarioMostrar.isNotEmpty()){
+                            mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+                        }
+                    }
                     navController.popBackStack()
                 }) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back arrow")
@@ -401,7 +422,7 @@ fun RailBarMainView(
                 if (showPerfil) {
                     NavigationRailItem(
                         selected = currentDestination?.route == AppScreens.PerfilYo.route,
-                        onClick = { mainVM.usuarioMostrar.value=mainVM.currentUser.value;
+                        onClick = { mainVM.usuarioMostrar.add(mainVM.currentUser.value)
                             navController.navigate(AppScreens.PerfilYo.route) },
                         icon = {
                             Icon(

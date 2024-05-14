@@ -378,19 +378,32 @@ fun AddEvento(
             minLines = 5,
             modifier = modifierForInputs
         )
-        OutlinedTextField(
-            value = location,
-            onValueChange = {
-                location = it
-                var currentLoc = getLatLngFromAddress(context, it)
-                if(currentLoc != null && currentLoc != mainVM.localizacionAMostrar.value){
-                    mainVM.localizacionAMostrar.value = currentLoc
-                    cameraPositionState.position = CameraPosition.fromLatLngZoom(mainVM.localizacionAMostrar.value!!, 10f)
+
+        Row (
+            modifier = modifierForInputs,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ){
+            OutlinedTextField(
+                value = location,
+                onValueChange = {
+                    location = it
+                },
+                label = { Text(text = context.getString(R.string.loc)) },
+                modifier = Modifier.weight(4f)
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.lupa),
+                contentDescription = null,
+                modifier = Modifier.weight(1f).clickable {
+                    var currentLoc = getLatLngFromAddress(context, location)
+                    if(currentLoc != null && currentLoc != mainVM.localizacionAMostrar.value){
+                        mainVM.localizacionAMostrar.value = currentLoc
+                        cameraPositionState.position = CameraPosition.fromLatLngZoom(mainVM.localizacionAMostrar.value!!, 10f)
+                    }
                 }
-            },
-            label = { Text(text = context.getString(R.string.loc)) },
-            modifier = modifierForInputs
-        )
+            )
+        }
         GoogleMap(
             properties = MapProperties(isMyLocationEnabled = true),
             cameraPositionState = cameraPositionState,

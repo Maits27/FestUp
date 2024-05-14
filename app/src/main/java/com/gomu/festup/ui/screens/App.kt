@@ -48,6 +48,10 @@ fun App(
     preferencesVM: PreferencesViewModel
 ) {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
+
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     preferencesVM.restartLang(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
@@ -56,8 +60,27 @@ fun App(
 
     val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
 
+    val goBack:() -> Unit = {
+        Log.d("ON BACK", "ME VOY PARA ATRAS")
+        if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
+            if(mainVM.usuarioMostrar.isNotEmpty()){
+                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+            }
+        }
+    }
+    if (mainVM.retrocesoForzado.value){
+        Log.d("RETROCESO FORZADO", "ENTRANDO")
+        if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
+            if(mainVM.usuarioMostrar.isNotEmpty()){
+                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+            }
+        }
+        if(routeWithoutArguments == AppScreens.Feed.route) mainNavController.popBackStack()
+        else navController.popBackStack()
+
+        mainVM.retrocesoForzado.value = false
+    }
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {
@@ -75,7 +98,8 @@ fun App(
                 navBackStackEntry?.destination?.route == AppScreens.PerfilCuadrilla.route ){
                 TopBarMainView(
                     navController = navController,
-                    mainVM = mainVM
+                    mainVM = mainVM,
+                    goBack = goBack
                 )
             }
 
@@ -87,16 +111,16 @@ fun App(
                     navController = navController
                 )
             }
-            
+
 
         },
 
-    ){ innerPadding ->
+        ){ innerPadding ->
         val idioma by preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(initial = preferencesVM.currentSetLang)
         val dark by preferencesVM.darkTheme(mainVM.currentUser.value!!.username).collectAsState(initial = true)
         val receiveNotifications by preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = false)
         val showAge by preferencesVM.mostrarEdad(mainVM.currentUser.value!!.username).collectAsState(initial = false)
-        val showAgeOther by preferencesVM.mostrarEdad(mainVM.usuarioMostrar.value?.username?:"").collectAsState(initial = false)
+        val showAgeOther by preferencesVM.mostrarEdad(if (mainVM.usuarioMostrar.isEmpty()) "" else mainVM.usuarioMostrar.last()?.username?:"").collectAsState(initial = false)
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -208,4 +232,3 @@ fun App(
 
     }
 }
-

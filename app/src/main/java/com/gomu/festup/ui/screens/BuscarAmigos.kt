@@ -60,7 +60,7 @@ fun BuscarAmigos(
             amigosList.toList() // Devolver la lista de amigos
         }
     }
-
+    Log.d("AMIGOS", amigos.toString())
     if (amigos.isNotEmpty()) {
         LazyColumn {
             items(amigos) {amigo ->

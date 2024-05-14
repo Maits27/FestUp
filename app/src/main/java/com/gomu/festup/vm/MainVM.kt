@@ -60,11 +60,13 @@ class MainVM @Inject constructor(
     private val eventoRepository: IEventoRepository,
     private val preferencesRepository: ILoginSettings
 ): ViewModel() {
+    var retrocesoForzado: MutableState<Boolean> = mutableStateOf(false)
+
     var serverOk: MutableState<Boolean> = mutableStateOf(false)
 
     var currentUser: MutableState<Usuario?> = mutableStateOf(null)
 
-    var usuarioMostrar: MutableState<Usuario?> = mutableStateOf(null)
+    var usuarioMostrar: MutableList<Usuario?> = mutableListOf()
 
     var cuadrillaMostrar: MutableState<Cuadrilla?> = mutableStateOf(null)
 
@@ -343,7 +345,6 @@ class MainVM @Inject constructor(
 
     fun eventosSeguidos(usuario: Usuario): Flow<List<UserCuadrillaAndEvent>> = runBlocking {
         var eventos = eventoRepository.eventosSeguidos(usuario.username)
-        Log.d("Devuelve", eventos.first().toString())
         eventos
     }
 
@@ -516,7 +517,6 @@ class MainVM @Inject constructor(
                     val contactNumber = cursor.getString(cursor.getColumnIndexOrThrow(
                         ContactsContract.CommonDataKinds.Phone.NUMBER))
                     contactsUsingApp.add(Contacto(contactName, contactNumber))
-                    Log.d("Contact", "Name: $contactName, Number: $contactNumber")
                 }
             }
         }

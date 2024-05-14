@@ -61,8 +61,8 @@ fun UsuarioCard(
 ) {
 
     val onCardClick: (Usuario) -> Unit = {
-        mainVM.usuarioMostrar.value = usuario
-        if (mainVM.currentUser.value== mainVM.usuarioMostrar.value){
+        mainVM.usuarioMostrar.add(usuario)
+        if (mainVM.currentUser.value == mainVM.usuarioMostrar.last()){
             navController.navigate(AppScreens.PerfilYo.route)
         }
         else{

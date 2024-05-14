@@ -121,10 +121,9 @@ fun PerfilYo(
     var usuario = mainVM.currentUser.value!!
 
     if (!yo) {
-        usuario = mainVM.usuarioMostrar.value!!
+        usuario = mainVM.usuarioMostrar.last()!!
         mainVM.alreadySiguiendo(usuario.username)
     }
-    mainVM.usuarioMostrar.value = usuario
 
     val alreadySiguiendo = mainVM.alreadySiguiendo
 
@@ -735,13 +734,13 @@ fun FollowButton(
     val onClickFollow: () -> Unit = {
         mainVM.newSiguiendo(usuario.username)
         if(recibirNotificaciones){
-            mainVM.subscribeToUser(mainVM.usuarioMostrar.value!!.username)
+            mainVM.subscribeToUser(mainVM.usuarioMostrar.last()!!.username)
         }
     }
 
     val onClickUnfollow: () -> Unit = {
         mainVM.unfollow(usuario.username)
-        mainVM.unsubscribeFromUser(mainVM.usuarioMostrar.value!!.username)
+        mainVM.unsubscribeFromUser(mainVM.usuarioMostrar.last()!!.username)
     }
 
     val buttonText = if (alreadySiguiendo.value != null && !alreadySiguiendo.value!!) stringResource(
