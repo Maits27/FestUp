@@ -200,7 +200,7 @@ fun Ajustes(
                         CoroutineScope(Dispatchers.Main).launch {
                             val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                             eventos.map { evento ->
-                                scheduler.schedule(AlarmItem(getScheduleTime(mainVM), evento.nombre, evento.localizacion, evento.id))
+                                scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
                             }
                         }
                     }else{
@@ -209,7 +209,7 @@ fun Ajustes(
                         CoroutineScope(Dispatchers.Main).launch {
                             val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                             eventos.map { evento ->
-                                scheduler.cancel(AlarmItem(getScheduleTime(mainVM), evento.nombre, evento.localizacion, evento.id))
+                                scheduler.cancel(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
                             }
                         }
                     }
@@ -355,7 +355,7 @@ fun Ajustes(
                             CoroutineScope(Dispatchers.Main).launch {
                                 val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                                 eventos.map { evento ->
-                                    scheduler.schedule(AlarmItem(getScheduleTime(mainVM), evento.nombre, evento.localizacion, evento.id))
+                                    scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
                                 }
                             }
                         }else{
@@ -364,7 +364,7 @@ fun Ajustes(
                             CoroutineScope(Dispatchers.Main).launch {
                                 val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                                 eventos.map { evento ->
-                                    scheduler.cancel(AlarmItem(getScheduleTime(mainVM), evento.nombre, evento.localizacion, evento.id))
+                                    scheduler.cancel(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
                                 }
                             }
                         }

@@ -171,7 +171,7 @@ fun CuadrillaCardParaEventosAlert(
                         if (recibirNotificaciones) {
                             scheduler.schedule(
                                 AlarmItem(
-                                    getScheduleTime(mainVM),
+                                    getScheduleTime(mainVM.eventoMostrar.value!!),
                                     mainVM.eventoMostrar.value!!.nombre,
                                     mainVM.eventoMostrar.value!!.localizacion,
                                     mainVM.eventoMostrar.value!!.id
@@ -185,7 +185,7 @@ fun CuadrillaCardParaEventosAlert(
                         if (recibirNotificaciones){
                             scheduler.cancel(
                                 AlarmItem(
-                                getScheduleTime(mainVM),
+                                getScheduleTime(mainVM.eventoMostrar.value!!),
                                 mainVM.eventoMostrar.value!!.nombre,
                                 mainVM.eventoMostrar.value!!.localizacion,
                                 mainVM.eventoMostrar.value!!.id

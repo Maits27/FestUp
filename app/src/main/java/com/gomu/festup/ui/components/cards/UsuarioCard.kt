@@ -172,16 +172,17 @@ fun UsuarioCardParaEventosAlert(
                 checked = checkedSwitch,
                 onCheckedChange = {
                     checkedSwitch = !checkedSwitch
+                    val eventoMostrar = mainVM.eventoMostrar.value!!
 
                     if (checkedSwitch){
                         Log.d("RECNOTIF", recibirNotificaciones.toString())
                         if(recibirNotificaciones) {
                             scheduler.schedule(
                                 AlarmItem(
-                                    getScheduleTime(mainVM),
-                                    mainVM.eventoMostrar.value!!.nombre,
-                                    mainVM.eventoMostrar.value!!.localizacion,
-                                    mainVM.eventoMostrar.value!!.id
+                                    getScheduleTime(eventoMostrar),
+                                    eventoMostrar.nombre,
+                                    eventoMostrar.localizacion,
+                                    eventoMostrar.id
                                 )
                             )
                         }
@@ -192,10 +193,10 @@ fun UsuarioCardParaEventosAlert(
                         if(recibirNotificaciones) {
                             scheduler.cancel(
                                 AlarmItem(
-                                    getScheduleTime(mainVM),
-                                    mainVM.eventoMostrar.value!!.nombre,
-                                    mainVM.eventoMostrar.value!!.localizacion,
-                                    mainVM.eventoMostrar.value!!.id
+                                    getScheduleTime(eventoMostrar),
+                                    eventoMostrar.nombre,
+                                    eventoMostrar.localizacion,
+                                    eventoMostrar.id
                                 )
                             )
                         }

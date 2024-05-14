@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.core.app.ActivityCompat
+import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.MainActivity
 import com.gomu.festup.vm.MainVM
 import com.google.android.gms.location.LocationServices
@@ -58,9 +59,9 @@ fun openTelegram(token: String, nombre: String, context: Context) {
     }
 }
 
-fun getScheduleTime(mainVM: MainVM): LocalDateTime {
+fun getScheduleTime(evento: Evento): LocalDateTime {
     val date = LocalDateTime.ofInstant(
-        Instant.ofEpochMilli(mainVM.eventoMostrar.value!!.fecha.time),
+        Instant.ofEpochMilli(evento.fecha.time),
         ZoneId.systemDefault()
     ).toLocalDate()
 
