@@ -219,7 +219,8 @@ fun PerfilYo(
     }
     else{
         Row(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             Column(
@@ -327,7 +328,7 @@ fun PerfilYo(
 
     EstasSeguroDialog(
         show = verificacion,
-        mensaje = "¿Estás seguro de que deseas cerrar sesión?",
+        mensaje = stringResource(R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n),
         onDismiss = { verificacion = false }
     ) { CoroutineScope(Dispatchers.IO).launch {
         withContext(Dispatchers.IO) {
@@ -401,7 +402,7 @@ fun ListadoCuadrillas(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "No hay cuadrillas",
+                text = stringResource(R.string.no_cuadrilla),
                 modifier = Modifier.padding(top = 10.dp),
                 style = TextStyle(
                     fontSize = 15.sp,
@@ -461,7 +462,7 @@ fun EventosUsuario(
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "No hay eventos",
+                text = stringResource(id = R.string.no_events),
                 modifier = Modifier.padding(top = 10.dp),
                 style = TextStyle(
                     fontSize = 15.sp,
@@ -613,7 +614,7 @@ fun BotonesPerfil(
 
     EstasSeguroDialog(
         show = verificacion,
-        mensaje = "¿Estás seguro de que deseas cerrar sesión?",
+        mensaje = stringResource(id = R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n),
         onDismiss = { verificacion = false }
     ) { CoroutineScope(Dispatchers.IO).launch {
         withContext(Dispatchers.IO) {

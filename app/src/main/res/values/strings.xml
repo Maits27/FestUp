@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FestUp</string>
     <string name="widget_desc">Próximos eventos</string>
@@ -15,16 +16,16 @@
     <string name="nueva_cuadrilla">Nueva cuadrilla</string>
     <string name="nombre_cuadrilla">Nombre de cuadrilla</string>
     <string name="desc">Descripción</string>
-    <string name="loc">Ubicación</string>
+    <string name="loc">Localización</string>
     <string name="insert_nombre">Inserta un nombre</string>
     <string name="insert_desc">Inserta una descripción</string>
     <string name="insert_loc">Inserta una localización</string>
-    <string name="error_intentalo">Ha ocurrido un error, inténtalo de nuevo.</string>
+    <string name="error_intentalo">"Ha ocurrido un error, inténtalo de nuevo. "</string>
     <string name="crear">Crear</string>
     <string name="fecha">Fecha</string>
     <string name="insert_nombre_evento">Introduce un nombre para el evento</string>
     <string name="insert_date_evento">Introduce una fecha para el evento</string>
-    <string name="insert_loc_evento">Introduce una ubicación para el evento</string>
+    <string name="insert_loc_evento">Introduce una localización para el evento</string>
     <string name="insert_desc_event">Introduce una descripción para el evento</string>
     <string name="evento_foto">Foto del evento</string>
     <string name="nombre">Nombre</string>
@@ -38,7 +39,7 @@
     <string name="cerrar">Cerrar</string>
     <string name="info_evento">Información de %s</string>
     <string name="apuntarse">Apuntarse</string>
-    <string name="user_image">Imagen de usuario</string>
+    <string name="user_image">Imagen del usuario</string>
     <string name="email">Correo electrónico</string>
     <string name="fecha_nacimiento">Fecha de nacimiento</string>
     <string name="edit_profile">Editar perfil</string>
@@ -50,25 +51,25 @@
     <string name="no_events">No hay eventos</string>
     <string name="insert_nombre_user">Introduce un nombre de usuario</string>
     <string name="insert_contrasena">Introduce una contraseña</string>
-    <string name="info_incorrecta">La información no es correcta, inténtalo de nuevo.</string>
+    <string name="info_incorrecta">"La información no es correcta, inténtalo de nuevo. "</string>
     <string name="token_conf">¿Estas seguro de que quieres compartir el codigo de la cuadrilla?</string>
     <string name="abandonar">Abandonar %s</string>
     <string name="recordatorio_token">Recuerda que cualquier persona con el codigo podrá unirse.</string>
-    <string name="incorrect_token">Token incorrecto, inténtalo de nuevo</string>
+    <string name="incorrect_token">"Código incorrecto, inténtalo de nuevo "</string>
     <string name="unirse">Unirse</string>
     <string name="pregunta_unirse">¿Quieres unirte a %s?</string>
     <string name="token">Código de cuadrilla</string>
-    <string name="insert_token">Introduce el codigo de la cuadrilla para unirte.</string>
+    <string name="insert_token">Introduce el código de la cuadrilla para unirte</string>
     <string name="integrantes">Integrantes: %s</string>
     <string name="no_users">No hay usuarios</string>
     <string name="no_cuadrilla">No hay cuadrillas</string>
-    <string name="eventos">Eventos</string>
+    <string name="eventos">Eventos:</string>
     <string name="cuadrillas">Cuadrillas</string>
-    <string name="seguidores">Seguidores</string>
-    <string name="seguidos">Seguidos</string>
+    <string name="seguidores">Seguidores:</string>
+    <string name="seguidos">Seguidos:</string>
     <string name="age">%s años</string>
     <string name="follow">Seguir</string>
-    <string name="unfollow">Dejar de seguir</string>
+    <string name="unfollow">"Dejar de seguir "</string>
     <string name="usuarios">Usuarios</string>
     <string name="buscar">Buscar...</string>
     <string name="nuevo_evento">Nuevo evento</string>
@@ -86,4 +87,8 @@
     <string name="buscar_amigos">Buscar amigos</string>
     <string name="telefono">Teléfono</string>
     <string name="no_hay_amigos">No hay amigos que usen la aplicación en tus contactos</string>
+    <string name="fecha_del_evento">Fecha del evento</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="est_s_seguro_de_que_deseas_abandonar_la_cuadrilla">¿Estás seguro de que deseas abandonar la cuadrilla?</string>
+    <string name="est_s_seguro_de_que_deseas_cerrar_sesi_n">¿Estás seguro de que deseas cerrar sesión?</string>
 </resources>

@@ -15,10 +15,10 @@
     <string name="no_recibir">Ez jaso</string>
     <string name="nueva_cuadrilla">Kuadrilla berria</string>
     <string name="nombre_cuadrilla">Kuadrillaren izena</string>
-    <string name="desc">Deskripzioa</string>
+    <string name="desc">Deskribapena</string>
     <string name="loc">Lekua</string>
     <string name="insert_nombre">Sartu izen bat</string>
-    <string name="insert_desc">Sartu deskripzio bat</string>
+    <string name="insert_desc">Sartu deskribapen bat</string>
     <string name="insert_loc">Sartu leku bat</string>
     <string name="error_intentalo">Errore bat suertatu da, saiatu berriro.</string>
     <string name="crear">Sortu</string>
@@ -26,7 +26,7 @@
     <string name="insert_nombre_evento">Sartu izen bat ekitaldirako</string>
     <string name="insert_date_evento">Sartu data bat ekitaldirako</string>
     <string name="insert_loc_evento">Sartu leku bat ekitaldirako</string>
-    <string name="insert_desc_event">Sartu deskripzio bat ekitaldirako</string>
+    <string name="insert_desc_event">Sartu deskribapen bat ekitaldirako</string>
     <string name="evento_foto">Ekitaldiaren argazkia</string>
     <string name="nombre">Izena</string>
     <string name="add">Gehitu</string>
@@ -42,7 +42,7 @@
     <string name="user_image">Erabiltzailearen irudia</string>
     <string name="email">Posta elektronikoa</string>
     <string name="fecha_nacimiento">Jaiotze data</string>
-    <string name="edit_profile">Profila aldatu</string>
+    <string name="edit_profile">Profila editatu</string>
     <string name="insert_email">Sartu posta elektroniko bat</string>
     <string name="email_incorrecto">Posta elektronikoaren formatua ez da zuzena</string>
     <string name="event_list">Ekitaldi zerrenda</string>
@@ -51,22 +51,22 @@
     <string name="no_events">Ez dago ekitaldirik</string>
     <string name="insert_nombre_user">Sartu erabiltzaile izen bat</string>
     <string name="insert_contrasena">Sartu pasahitz bat</string>
-    <string name="info_incorrecta">Informazioa ez da zuzena, saiatu berriz ere.</string>
+    <string name="info_incorrecta">Informazioa ez da zuzena, saiatu berriro.</string>
     <string name="token_conf">Ziur zaude kuadrillaren tokena partekatu nahi duzula?</string>
     <string name="abandonar">%s utzi</string>
-    <string name="recordatorio_token">Gogoratu tokena duen edozein pertsona kuadrillaren parte izan ahalko dela.</string>
-    <string name="incorrect_token">Token okerra, saiatu berriro.</string>
+    <string name="recordatorio_token">Gogoratu kodea duen edozein pertsona elkartu ahal izango dela.</string>
+    <string name="incorrect_token">Kode okerra, saiatu berriro.</string>
     <string name="unirse">Parte hartu</string>
     <string name="pregunta_unirse">%s-ren parte izan nahi zara?</string>
-    <string name="token">Kuadrillaren tokena</string>
-    <string name="insert_token">Sartu kuadrillaren tokena honen parte izateko.</string>
+    <string name="token">Kuadrillaren kodea</string>
+    <string name="insert_token">Sartu kuadrillaren kodea honen parte izateko.</string>
     <string name="integrantes">Parte hartzaileak: %s</string>
     <string name="no_users">Ez dago erabiltzailerik</string>
     <string name="no_cuadrilla">Ez dago kuadrillarik</string>
-    <string name="eventos">Ekitaldiak</string>
+    <string name="eventos">Ekitaldiak:</string>
     <string name="cuadrillas">Kuadrillak</string>
-    <string name="seguidores">Jarraitzaileak</string>
-    <string name="seguidos">Jarraituak</string>
+    <string name="seguidores">Jarraitzaileak:</string>
+    <string name="seguidos">Jarraituak:</string>
     <string name="age">%s urte</string>
     <string name="follow">Jarraitu</string>
     <string name="unfollow">Utzi jarraitzeari</string>
@@ -86,5 +86,10 @@
     <string name="no_mostrar">Ez erakutsi</string>
     <string name="buscar_amigos">Lagunak bilatu</string>
     <string name="telefono">Telefonoa</string>
-    <string name="no_hay_amigos">Ez dituzu lagunik zure kontaktuetan aplikazioa erabiltzen dutenak</string>
+    <string name="no_hay_amigos">Ez dago zure kontaktuetan aplikazioa erabiltzen duen lagunik</string>
+    <string name="fecha_del_evento">Ekitaldiaren data</string>
+    <string name="confirmar">Konfirmatu</string>
+    <string name="est_s_seguro_de_que_deseas_abandonar_la_cuadrilla">Ziur zaude kuadrila utzi nahi duzula?
+</string>
+    <string name="est_s_seguro_de_que_deseas_cerrar_sesi_n">Ziur zaude saioa itxi nahi duzula?</string>
 </resources>

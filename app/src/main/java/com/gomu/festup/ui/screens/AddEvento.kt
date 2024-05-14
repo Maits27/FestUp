@@ -328,7 +328,11 @@ fun AddEvento(
                                 .fillMaxWidth()
                                 .weight(1f)
                                 .padding(top = 8.dp)
-                                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(5.dp))
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.outline,
+                                    RoundedCornerShape(5.dp)
+                                )
                                 .clickable {
                                     showDatePicker = true
                                 }
@@ -421,7 +425,7 @@ fun AddEvento(
                     }
                     showDatePicker = false
                 }) {
-                    Text(text = "Confirmar")
+                    Text(text = stringResource(R.string.confirmar))
                 }
             }
         ) {
@@ -429,7 +433,7 @@ fun AddEvento(
                 state = datePickerState,
                 title = {
                     Text(
-                        text = "Fecha del evento",
+                        text = stringResource(R.string.fecha_del_evento),
                         textAlign = TextAlign.Center,
                         fontSize = 20.sp,
                         modifier = Modifier

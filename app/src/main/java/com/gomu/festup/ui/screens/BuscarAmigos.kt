@@ -74,7 +74,7 @@ fun BuscarAmigos(
     }
     else {
         Text(
-            text = "No hay amigos que usen la aplicación en tus contactos",
+            text = stringResource(R.string.no_hay_amigos),
             style = TextStyle(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,

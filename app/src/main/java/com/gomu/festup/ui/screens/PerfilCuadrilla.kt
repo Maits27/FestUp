@@ -182,10 +182,15 @@ fun PerfilCuadrilla(
     }
     else{
         Row(
-            modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize().weight(1f).background(MaterialTheme.colorScheme.primaryContainer),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
@@ -265,7 +270,7 @@ fun EliminarCuadrilla(navController: NavController, mainVM: MainVM, cuadrilla: C
     )
     EstasSeguroDialog(
         show = verificacion,
-        mensaje = "¿Estás seguro de que deseas abandonar la cuadrilla?",
+        mensaje = stringResource(R.string.est_s_seguro_de_que_deseas_abandonar_la_cuadrilla),
         onDismiss = { verificacion = false }
     ) { mainVM.eliminarIntegrante(cuadrilla) ; verificacion = false ; navController.popBackStack() }
 }
