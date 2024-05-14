@@ -23,8 +23,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.FestUpTheme
 import com.gomu.festup.LocalDatabase.Entities.Usuario
@@ -70,6 +72,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//            if(mainVM.usuarioMostrar.isNotEmpty()){
+//                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+//            }
+//    }
 
     // Function to create a local notification channel
     private fun createNotificationChannel() {

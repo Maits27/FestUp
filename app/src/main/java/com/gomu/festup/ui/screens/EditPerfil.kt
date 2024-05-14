@@ -200,7 +200,8 @@ fun EditPerfil(
                 modifier = Modifier
                     .weight(2f)
                     .padding(horizontal = 40.dp)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -219,12 +220,21 @@ fun EditPerfil(
                     label = { Text(text = context.getString(R.string.nombre)) },
                     modifier = modifierForInputs.fillMaxWidth()
                 )
+                // Campo para el telefono
+                OutlinedTextField(
+                    value = telefono,
+                    onValueChange = { telefono = it },
+                    label = { Text(text = context.getString(R.string.telefono)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    modifier = modifierForInputs.fillMaxWidth()
+                )
                 // Añadir fecha de nacimiento
                 OutlinedTextField(
                     value = birthDate,
                     onValueChange = {  },
                     label = { Text(text = context.getString(R.string.fecha_nacimiento)) },
-                    modifier = modifierForInputs.fillMaxWidth()
+                    modifier = modifierForInputs
+                        .fillMaxWidth()
                         .clickable { showDatePicker = true },
                     colors = OutlinedTextFieldDefaults.colors(
                         disabledTextColor = MaterialTheme.colorScheme.onSurface,

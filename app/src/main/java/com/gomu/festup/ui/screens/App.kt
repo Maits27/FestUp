@@ -3,6 +3,7 @@ package com.gomu.festup.ui.screens
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -40,9 +41,23 @@ import com.gomu.festup.vm.PreferencesViewModel
 fun App(
     mainNavController: NavController,
     mainVM: MainVM,
-    preferencesVM: PreferencesViewModel
+    preferencesVM: PreferencesViewModel,
 ) {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
+    val goBack:() -> Unit = {
+        Log.d("ON BACK", "ME VOY PARA ATRAS")
+        if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
+            if(mainVM.usuarioMostrar.isNotEmpty()){
+                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+            }
+        }
+        navController.popBackStack()
+    }
+    BackHandler(onBack = goBack)
+
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     preferencesVM.restartLang(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
@@ -63,7 +78,8 @@ fun App(
         topBar = {
             TopBarMainView(
                 navController = navController,
-                mainVM = mainVM
+                mainVM = mainVM,
+                goBack = goBack
             )
         },
         bottomBar = {

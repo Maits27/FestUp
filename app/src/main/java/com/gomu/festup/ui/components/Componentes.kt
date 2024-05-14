@@ -1,6 +1,7 @@
 package com.gomu.festup.ui.components
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -64,10 +65,25 @@ fun FloatButton(onClick: () -> Unit){
 @Composable
 fun TopBarMainView(
     navController: NavController,
-    mainVM: MainVM
+    mainVM: MainVM,
+    goBack: () -> Unit
 ){
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
+
+//    val goBack:() -> Unit = {
+//        Log.d("ON BACK", "ME VOY PARA ATRAS")
+//        if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
+//            if(mainVM.usuarioMostrar.isNotEmpty()){
+//                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
+//            }
+//        }
+//        navController.popBackStack()
+//    }
+
+    BackHandler(onBack = goBack)
 
     var title by remember {
         mutableStateOf("")
@@ -89,7 +105,6 @@ fun TopBarMainView(
         mutableStateOf(false)
     }
 
-    val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
 
     when (routeWithoutArguments) {
         AppScreens.AddEvento.route -> {
@@ -223,12 +238,7 @@ fun TopBarMainView(
         navigationIcon = {
             if (showBackArrow) {
                 IconButton(onClick = {
-                    if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
-                        if(mainVM.usuarioMostrar.isNotEmpty()){
-                            mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
-                        }
-                    }
-                    navController.popBackStack()
+                    goBack()
                 }) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back arrow")
                 }
