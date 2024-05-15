@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gomu.festup.R
+import com.gomu.festup.ui.elements.components.FestUpButton
 import com.gomu.festup.ui.elements.components.cards.EventoCard
 import com.gomu.festup.ui.vm.MainVM
 import kotlinx.coroutines.CoroutineScope
@@ -76,10 +75,7 @@ fun EventsList(navController: NavController, mainVM: MainVM) {
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.weight(1f))
-            Button(
-                onClick = { navController.popBackStack() },
-                shape = RoundedCornerShape(90),
-            ) {
+            FestUpButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     painter = painterResource(id = R.drawable.map),
                     contentDescription = null,
@@ -88,7 +84,8 @@ fun EventsList(navController: NavController, mainVM: MainVM) {
         }
         Box(
             modifier = Modifier
-                .pullRefresh(refreshState).padding(horizontal = if (isVertical) 0.dp else 60.dp),
+                .pullRefresh(refreshState)
+                .padding(horizontal = if (isVertical) 0.dp else 60.dp),
             contentAlignment = Alignment.Center,
         ) {
             LazyColumn(

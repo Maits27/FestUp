@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
@@ -61,7 +64,7 @@ fun ImagenMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId: Int) 
         contentScale = ContentScale.Crop,
         error = painterResource(id = noImagePainterId),
         modifier = Modifier
-            .border(2.dp, color = MaterialTheme.colorScheme.primary, CircleShape)
+            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = listOf(Color.Blue, Color.Magenta))), CircleShape)
             .size(50.dp)
             .clip(CircleShape)
     )
@@ -101,7 +104,7 @@ fun ImagenEventoMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId:
         contentScale = ContentScale.Crop,
         error = painterResource(id = noImagePainterId),
         modifier = Modifier
-            .border(2.dp, color = MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = listOf(Color.Blue, Color.Magenta))), RoundedCornerShape(10.dp))
             .size(50.dp)
             .clip(RoundedCornerShape(10.dp))
     )

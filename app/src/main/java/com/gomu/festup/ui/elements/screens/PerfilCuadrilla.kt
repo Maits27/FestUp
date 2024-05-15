@@ -33,7 +33,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
@@ -69,6 +68,7 @@ import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
 import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.elements.components.EditImageIcon
+import com.gomu.festup.ui.elements.components.FestUpButton
 import com.gomu.festup.ui.elements.components.Imagen
 import com.gomu.festup.ui.elements.components.cards.EventoCard
 import com.gomu.festup.ui.elements.components.cards.EventoMiniCard
@@ -463,12 +463,12 @@ fun ListadoUsuarios(
             modifier = Modifier.weight(3f)
         )
         if (pertenezco){
-            Button( modifier = Modifier.weight(1f), onClick = { showShare = true }) {
+            FestUpButton(onClick = { showShare = true }, modifier = Modifier.weight(1f)) {
                 Icon(painter = painterResource(id = R.drawable.send), "")
             }
         }
         else{
-            Button( modifier = Modifier.weight(1f), onClick = { showJoin = true }) {
+            FestUpButton(onClick = { showShare = true }, modifier = Modifier.weight(1f)) {
                 Icon(painter = painterResource(id = R.drawable.join), "")
             }
         }

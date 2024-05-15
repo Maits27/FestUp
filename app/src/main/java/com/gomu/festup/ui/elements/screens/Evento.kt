@@ -28,7 +28,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -57,6 +56,7 @@ import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
 import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.elements.components.FestUpButton
 import com.gomu.festup.ui.elements.components.ImagenEvento
 import com.gomu.festup.ui.elements.components.cards.CuadrillaCard
 import com.gomu.festup.ui.elements.components.cards.UsuarioCard
@@ -298,7 +298,7 @@ fun ColumnaAsistentes(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        Button(
+        FestUpButton(
             onClick = { onApuntarse() },
             modifier = Modifier
                 .fillMaxWidth()

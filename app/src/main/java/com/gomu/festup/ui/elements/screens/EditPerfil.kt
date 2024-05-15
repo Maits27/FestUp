@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.gomu.festup.R
 import com.gomu.festup.ui.elements.components.EditImageIcon
+import com.gomu.festup.ui.elements.components.FestUpButton
 import com.gomu.festup.ui.elements.components.Imagen
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.utils.formatearFecha
@@ -154,8 +155,8 @@ fun EditPerfil(
                     ),
                     enabled = false
                 )
-                Button(
-                    onClick = { onEditButtonClick() }
+                FestUpButton(
+                    onClick = { onEditButtonClick() },
                 ) {
                     Text(text = context.getString(R.string.edit_profile))
                 }
@@ -229,8 +230,8 @@ fun EditPerfil(
                     ),
                     enabled = false
                 )
-                Button(
-                    onClick = { onEditButtonClick() }
+                FestUpButton(
+                    onClick = { onEditButtonClick() },
                 ) {
                     Text(text = context.getString(R.string.edit_profile))
                 }

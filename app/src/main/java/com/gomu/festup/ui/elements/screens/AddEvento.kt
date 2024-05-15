@@ -54,6 +54,7 @@ import com.gomu.festup.alarmMng.AlarmItem
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.elements.components.EditImageIcon
+import com.gomu.festup.ui.elements.components.FestUpButton
 import com.gomu.festup.ui.elements.components.ImagenEvento
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.utils.addEventOnCalendar
@@ -389,7 +390,7 @@ fun AddEvento(
                 )
             }
         }
-        Button(
+        FestUpButton(
             onClick = { onAddButtonClick() },
             modifier = Modifier.padding(vertical = 15.dp)
         ) {
