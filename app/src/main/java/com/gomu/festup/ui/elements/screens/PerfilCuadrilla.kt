@@ -1,6 +1,9 @@
 package com.gomu.festup.ui.elements.screens
 
+import android.app.Activity
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -8,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,6 +57,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -77,9 +82,19 @@ import com.gomu.festup.ui.elements.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.utils.openTelegram
 import com.gomu.festup.utils.openWhatsApp
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.WriterException
+import com.google.zxing.common.BitMatrix
+import com.google.zxing.integration.android.IntentIntegrator
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
+import com.journeyapps.barcodescanner.ScanOptions.QR_CODE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.security.AccessController.getContext
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.P)
@@ -354,6 +369,7 @@ fun Compartir(
     nombreCuadrilla: String,
     onDismiss: () -> Unit
 ){
+    var showQRCode by remember { mutableStateOf(false) }
     if(show){
         val context = LocalContext.current
 
@@ -381,17 +397,102 @@ fun Compartir(
                                 modifier = Modifier.padding(4.dp)
                             )
                         }
+                        IconButton(onClick = { showQRCode = true }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.qr_code),
+                                contentDescription = null,
+                                modifier = Modifier.padding(4.dp)
+                            )
+                        }
+
                     }
                 }
             }
         )
+        if (showQRCode) {
+            val qrBitmap = generateQRCode(accessToken, 400, 400)
+            if (qrBitmap != null) {
+                AlertDialog(
+                    onDismissRequest = { showQRCode = false },
+                    title = { Text("Código QR") },
+                    text = {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.Top,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            //Text("Tus amigos pueden escanearlo para añadirse a $nombreCuadrilla", modifier = Modifier.padding(bottom = 2.dp))
+                            Image(bitmap = qrBitmap.asImageBitmap(),
+                                contentDescription = null,
+                                modifier = Modifier.padding(2.dp)
+                            )
+                        }
+                    },
+                    confirmButton = {
+                        Button(onClick = { showQRCode = false }) {
+                            Text(text = stringResource(id = R.string.cerrar))
+                        }
+                    }
+                )
+            } else {
+                Toast.makeText(context, "Ha ocurrrido un problema, intentalo de nuevo!", Toast.LENGTH_LONG).show()
+            }
+        }
+
+
+
     }
 }
 
-@Composable
-fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String,  onDismiss: () -> Unit, onConfirm: () -> Unit){
-    if(show){
+fun generateQRCode(text: String, width: Int, height: Int): Bitmap? {
+    val bitMatrix: BitMatrix
+    try {
+        bitMatrix = MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, width, height)
+    } catch (e: IllegalArgumentException) {
+        Log.d("QR CODE", "error1")
+        return null
+    } catch (e: WriterException) {
+        Log.d("QR CODE", "error2")
+        return null
+    }
 
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
+    for (x in 0 until width) {
+        for (y in 0 until height) {
+            bitmap.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
+        }
+    }
+    return bitmap
+}
+
+
+@Composable
+fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String, mainVM: MainVM,  onDismiss: () -> Unit, onConfirm: () -> Unit){
+
+    var scanQRcode by remember { mutableStateOf(false) }
+    val context= LocalContext.current
+    val scanResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            val scannedCode = data?.getStringExtra("SCAN_RESULT")
+            Log.d("Codigo escaneado", scannedCode ?: "")
+            if (scannedCode == accessToken){
+                mainVM.agregarIntegrante(mainVM.currentUser.value!!.username, mainVM.cuadrillaMostrar.value!!.nombre)
+                onDismiss() // cerrar alerts
+            }
+            else{
+                Toast.makeText(context, "Código QR incorrecto, intentalo de nuevo!", Toast.LENGTH_LONG).show()
+                onDismiss() // cerrar alerts
+            }
+        }
+        else{
+            Toast.makeText(context, "Ha ocurrrido un problema, intentalo de nuevo!", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    if(show){
         var input by rememberSaveable {mutableStateOf("")}
         val context = LocalContext.current
 
@@ -424,18 +525,60 @@ fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String,  onDismis
             text = {
                 Column {
                     Text(text = context.getString(R.string.insert_token))
-                    OutlinedTextField(
-                        value = input,
-                        onValueChange = { input = it },
-                        label = { Text(context.getString(R.string.token)) },
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 16.dp),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-                    )
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier.padding(5.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = input,
+                            onValueChange = { input = it },
+                            label = { Text(context.getString(R.string.token)) },
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp).weight(1f),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                        )
+                        IconButton(onClick = { scanQRcode = true }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.qr_code),
+                                contentDescription = null,
+                                modifier = Modifier.size(35.dp).padding(vertical = 5.dp)
+                            )
+                        }
+                    }
+
                 }
             }
         )
+
+        if (scanQRcode){
+            /* DEPRECATED
+            val integrator = IntentIntegrator(activity).apply {
+                setOrientationLocked(false)
+                setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
+                setPrompt("Scanning Code")
+            }
+            scanResultLauncher.launch(integrator.createScanIntent())
+             */
+            val scanOptions = ScanOptions().apply {
+                setBeepEnabled(false)
+                setDesiredBarcodeFormats(QR_CODE)
+                setPrompt("Escanea el código QR de la cuadrilla")
+            }
+            val scanIntent = ScanContract().createIntent(
+                context,
+                scanOptions
+            )
+            scanResultLauncher.launch(scanIntent)
+
+        }
+
     }
 }
+
+
+
+
 @Composable
 fun ListadoUsuarios(
     usuarios: List<Usuario>,
@@ -502,7 +645,7 @@ fun ListadoUsuarios(
 
     }
     Compartir(showShare, token, mainVM.cuadrillaMostrar.value!!.nombre) { showShare = false }
-    Unirse( showJoin, token, mainVM.cuadrillaMostrar.value!!.nombre, onDismiss = {showJoin=false}) {
+    Unirse(showJoin, token, mainVM.cuadrillaMostrar.value!!.nombre,mainVM, onDismiss = {showJoin=false}) {
         mainVM.agregarIntegrante(mainVM.currentUser.value!!.username, mainVM.cuadrillaMostrar.value!!.nombre)
         showJoin = false
     }
