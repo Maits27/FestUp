@@ -90,4 +90,11 @@
     <string name="confirmar">Confirmar</string>
     <string name="est_s_seguro_de_que_deseas_abandonar_la_cuadrilla">¿Estás seguro de que deseas abandonar la cuadrilla?</string>
     <string name="est_s_seguro_de_que_deseas_cerrar_sesi_n">¿Estás seguro de que deseas cerrar sesión?</string>
+    <string name="ese_nombre_de_usuario_ya_est_registrado_int_ntalo_de_nuevo">Ese nombre de usuario ya está registrado, inténtalo de nuevo.</string>
+    <string name="ha_ocurrrido_un_problema_intentalo_de_nuevo">Ha ocurrrido un problema, intentalo de nuevo</string>
+    <string name="introduce_un_nombre_de_usuario">Introduce un nombre de usuario</string>
+    <string name="introduce_una_contrase_a">Introduce una contraseña</string>
+    <string name="la_informacion_no_es_correcta_int_ntalo_de_nuevo">La informacion no es correcta, inténtalo de nuevo.</string>
+    <string name="c_digo_qr_incorrecto_intentalo_de_nuevo">Código QR incorrecto, intentalo de nuevo.</string>
+    <string name="intentalo_de_nuevo">Intentalo de nuevo</string>
 </resources>

@@ -435,7 +435,8 @@ fun Compartir(
                     }
                 )
             } else {
-                Toast.makeText(context, "Ha ocurrrido un problema, intentalo de nuevo!", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,
+                    stringResource(R.string.ha_ocurrrido_un_problema_intentalo_de_nuevo), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -483,12 +484,14 @@ fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String, mainVM: M
                 onDismiss() // cerrar alerts
             }
             else{
-                Toast.makeText(context, "Código QR incorrecto, intentalo de nuevo!", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,
+                    context.getString(R.string.c_digo_qr_incorrecto_intentalo_de_nuevo), Toast.LENGTH_LONG).show()
                 onDismiss() // cerrar alerts
             }
         }
         else{
-            Toast.makeText(context, "Ha ocurrrido un problema, intentalo de nuevo!", Toast.LENGTH_LONG).show()
+            Toast.makeText(context,
+                context.getString(R.string.intentalo_de_nuevo), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -535,14 +538,18 @@ fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String, mainVM: M
                             value = input,
                             onValueChange = { input = it },
                             label = { Text(context.getString(R.string.token)) },
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp).weight(1f),
+                            modifier = Modifier
+                                .padding(horizontal = 10.dp, vertical = 5.dp)
+                                .weight(1f),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                         )
                         IconButton(onClick = { scanQRcode = true }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.qr_code),
                                 contentDescription = null,
-                                modifier = Modifier.size(35.dp).padding(vertical = 5.dp)
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .padding(vertical = 5.dp)
                             )
                         }
                     }

@@ -163,8 +163,6 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                                 }
                             }
                         }
-                        // Foto de perfil TODO
-                        //mainVM.setCuadrillaProfile(context, imageUri, nombre)
                     }
                 },
                 modifier = Modifier
@@ -265,8 +263,6 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                                     }
                                 }
                             }
-                            // Foto de perfil TODO
-                            //mainVM.setCuadrillaProfile(context, imageUri, nombre)
                         }
                     },
                     modifier = Modifier

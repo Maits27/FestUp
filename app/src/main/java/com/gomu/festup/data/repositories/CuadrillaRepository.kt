@@ -21,7 +21,6 @@ import javax.inject.Singleton
 
 interface ICuadrillaRepository {
     suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla, image: Bitmap?): Boolean
-    fun cuadrillaUsuario(username: String): List<Cuadrilla>
     fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>>
     suspend fun insertUser(nombreUsuario: String, nombreCuadrilla: String): Boolean
 
@@ -73,12 +72,8 @@ class CuadrillaRepository @Inject constructor(
         }
     }
 
-    override fun cuadrillaUsuario(username: String): List<Cuadrilla> {
-        TODO("Not yet implemented")
-    }
 
     override fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>> {
-        // TODO primero remoto
         return cuadrillaDao.getUsuariosDeCuadrilla(nombre)
     }
 
@@ -113,12 +108,10 @@ class CuadrillaRepository @Inject constructor(
     }
 
     override fun getCuadrillas(): Flow<List<Cuadrilla>> {
-        // TODO primero remoto
         return cuadrillaDao.getCuadrillas()
     }
 
 
-    // NUEVO integranteRepository? TODO
     override fun pertenezcoCuadrilla(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>> {
         return integranteDao.pertenezcoCuadrilla(cuadrilla.nombre,usuario.username)
     }

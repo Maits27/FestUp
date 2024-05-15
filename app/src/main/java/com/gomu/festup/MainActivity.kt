@@ -70,10 +70,8 @@ class MainActivity : AppCompatActivity() {
         }
         else{
             Toast.makeText(this, "Ha ocurrrido un problema al escanear el código QR, intentalo de nuevo!", Toast.LENGTH_SHORT).show()
-
         }
     }
-
      */
 
     private val mainVM by viewModels<MainVM>()

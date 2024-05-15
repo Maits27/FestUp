@@ -144,8 +144,10 @@ fun LoginForm(
     }
 
     val onLoginButtonClick: () -> Unit = {
-        if (username == "") Toast.makeText(context, "Introduce un nombre de usuario", Toast.LENGTH_SHORT).show()
-        else if (password == "") Toast.makeText(context, "Introduce una contraseña", Toast.LENGTH_SHORT).show()
+        if (username == "") Toast.makeText(context,
+            context.getString(R.string.introduce_un_nombre_de_usuario), Toast.LENGTH_SHORT).show()
+        else if (password == "") Toast.makeText(context,
+            context.getString(R.string.introduce_una_contrase_a), Toast.LENGTH_SHORT).show()
         else {
             showLoading = true
             CoroutineScope(Dispatchers.IO).launch {
@@ -176,7 +178,8 @@ fun LoginForm(
                     } else {
                         withContext(Dispatchers.Main) {
                             showLoading = false
-                            Toast.makeText(context, "La informacion no es correcta, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context,
+                                context.getString(R.string.la_informacion_no_es_correcta_int_ntalo_de_nuevo), Toast.LENGTH_LONG).show()
                             showLoading = false
                         }
                     }
@@ -559,8 +562,8 @@ fun registration(
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(
                         context,
-                        "Ha ocurrido un error, inténtalo de nuevo.",
-                        Toast.LENGTH_SHORT
+                        context.getString(R.string.ese_nombre_de_usuario_ya_est_registrado_int_ntalo_de_nuevo),
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }

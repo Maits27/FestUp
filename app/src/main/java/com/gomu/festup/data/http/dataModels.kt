@@ -17,7 +17,8 @@ data class RemoteAuthUsuario(
     val password: String,
     val email: String,
     val nombre: String,
-    val fechaNacimiento: String
+    val fechaNacimiento: String,
+    val telefono: String,
 )
 
 @Serializable
