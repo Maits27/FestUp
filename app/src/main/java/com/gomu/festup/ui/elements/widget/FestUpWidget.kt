@@ -67,7 +67,6 @@ class FestUpWidget : GlanceAppWidget() {
     }
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        // TODO
         // UI
         provideContent {
             GlanceTheme {

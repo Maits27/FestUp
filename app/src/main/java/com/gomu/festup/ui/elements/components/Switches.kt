@@ -48,7 +48,7 @@ fun SwitchDarkMode(
     dark: Boolean,
     modifier: Modifier = Modifier
 ){
-    // TODO: https://www.youtube.com/watch?v=Nvphdmi-6qc
+    // https://www.youtube.com/watch?v=Nvphdmi-6qc
     var checkedDark by rememberSaveable { mutableStateOf(dark) }
 
     Switch(

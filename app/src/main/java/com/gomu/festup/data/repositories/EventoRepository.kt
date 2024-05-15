@@ -21,7 +21,6 @@ import com.gomu.festup.utils.remoteEventoToEvento
 import com.gomu.festup.utils.remoteUAsistenteToUAsistente
 import com.gomu.festup.utils.toStringRemoto
 import io.ktor.client.plugins.ResponseException
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.zip
@@ -44,18 +43,11 @@ interface IEventoRepository {
     suspend fun desapuntarse(cuadrilla: Cuadrilla, id: String)
     fun cuadrillasEvento(id: String): Flow<List<Cuadrilla>>
     fun usuariosEvento(id: String): Flow<List<Usuario>>
-    suspend fun updateEvento(evento: Evento): Boolean
     suspend fun setEventoProfileImage(id: String, image: Bitmap): Boolean
-
     fun eventosCuadrilla(nombreCuadrilla: String) : Flow<List<Evento>>
-
     suspend fun descargarEventos()
-
     suspend fun descargarUsuariosAsistentes()
-
     suspend fun descargarCuadrillasAsistentes()
-
-
 }
 @Singleton
 class EventoRepository @Inject constructor(
@@ -68,11 +60,10 @@ class EventoRepository @Inject constructor(
     override suspend fun insertarEvento(evento: Evento, username: String, image: Bitmap?): Boolean {
         return try {
             // Remote: first in remote to generate the id
-            // TODO ARREGLAR ID
             val fechaString: String = evento.fecha.toStringRemoto()
             val insertedEvento = httpClient.insertEvento(
                 RemoteEvento(
-                id = "", // TODO (evento.id) cambiar esto cuando se genere correctamente el id
+                id = "",
                 nombre = evento.nombre,
                 fecha = fechaString,
                 descripcion = evento.descripcion,
@@ -102,7 +93,6 @@ class EventoRepository @Inject constructor(
 
 
     override fun todosLosEventos(): Flow<List<Evento>> {
-        // TODO("Not yet implemented")
         return eventoDao.todosLosEventos()
     }
 
@@ -115,12 +105,11 @@ class EventoRepository @Inject constructor(
     }
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun eventosSeguidos(username: String): Flow<List<UserCuadrillaAndEvent>> {
-        var cuadrillas = eventoDao.getUserCuadrillaAndEvent(username).map {
+        val cuadrillas = eventoDao.getUserCuadrillaAndEvent(username).map {
             it.map { UserCuadrillaAndEvent("", it.nombreCuadrilla, it.evento) }
         }
-        var usuarios = eventoDao.getUserFollowedFromEvent(username).map {
+        val usuarios = eventoDao.getUserFollowedFromEvent(username).map {
             it.map {
                 UserCuadrillaAndEvent(it.username, "", it.evento)
             }
@@ -128,15 +117,9 @@ class EventoRepository @Inject constructor(
         return cuadrillas.zip(usuarios) { c, u -> c + u }.map { it.sortedBy { it.evento.fecha } }
     }
 
-    fun eventosSeguidosPrevio(username: String): Flow<List<Evento>> {
-        return eventoDao.getEventosSeguidosPrevio(username)
-    }
-
-
     override suspend fun estaApuntado(username: String, id: String): Boolean{
         val usuario = usuariosAsistentesDao.estaApuntado(username, id)
-        if (usuario.isEmpty()) return false
-        return true
+        return usuario.isNotEmpty()
     }
 
     override fun cuadrillasUsuarioApuntadas(username: String, id: String): Flow<List<Cuadrilla>> {
@@ -182,9 +165,6 @@ class EventoRepository @Inject constructor(
         return cuadrillasAsistentesDao.getEventosCuadrilla(nombreCuadrilla)
     }
 
-    override suspend fun updateEvento(evento: Evento): Boolean {
-        TODO("Not yet implemented")
-    }
     override suspend fun setEventoProfileImage(id: String, image: Bitmap): Boolean {
         return try {
             httpClient.setEventoProfileImage(id, image)

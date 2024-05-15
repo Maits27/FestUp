@@ -91,4 +91,13 @@
     <string name="est_s_seguro_de_que_deseas_abandonar_la_cuadrilla">Ziur zaude kuadrila utzi nahi duzula?
 </string>
     <string name="est_s_seguro_de_que_deseas_cerrar_sesi_n">Ziur zaude saioa itxi nahi duzula?</string>
+    <string name="ese_nombre_de_usuario_ya_est_registrado_int_ntalo_de_nuevo">Erabiltzaile izen hori jadanik erregistratuta dago, saiatu berriro.</string>
+    <string name="ha_ocurrrido_un_problema_intentalo_de_nuevo">Arazo bat gertatu da, saiatu berriro.</string>
+    <string name="introduce_un_nombre_de_usuario">Sartu erabiltzaile izen bat.</string>
+    <string name="introduce_una_contrase_a">Sartu pasahitz bat.</string>
+    <string name="la_informacion_no_es_correcta_int_ntalo_de_nuevo">Informazioa ez da zuzena, saiatu berriro.</string>
+    <string name="c_digo_qr_incorrecto_intentalo_de_nuevo">QR kodea ez da zuzena, saiatu berriro.</string>
+    <string name="intentalo_de_nuevo">Saiatu berriro</string>
+    <string name="iniciar_sesi_n">Saioa hasi</string>
+    <string name="registrarse">Erregistratu</string>
 </resources>

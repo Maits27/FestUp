@@ -28,8 +28,8 @@ import javax.inject.Singleton
 
 interface IUserRepository: ILoginSettings {
 
-    suspend fun insertUsuario(user: Usuario, password: String): Boolean
-    suspend fun verifyUser(username: String, passwd:String): Boolean
+    suspend fun insertUsuario(usuario: Usuario, password: String): Boolean
+    suspend fun verifyUser(username: String, password:String): Boolean
     fun recuperarSesion(token: String, refresh: String)
     fun getAQuienSigue(username: String): Flow<List<Usuario>>
     fun getSeguidores(username: String): Flow<List<Usuario>>
@@ -66,9 +66,8 @@ class UserRepository @Inject constructor(
 
     override suspend fun insertUsuario(usuario: Usuario, password: String): Boolean {
         return try {
-            usuarioDao.insertUsuario(usuario) // TODO QUITAR (de momento hace falta pq no hemos descargado todos los datos)
             val fechaNacimientoString = usuario.fechaNacimiento.toStringNuestro()
-            val authUser= RemoteAuthUsuario(usuario.username,password,usuario.email,usuario.nombre,fechaNacimientoString)
+            val authUser= RemoteAuthUsuario(usuario.username,password,usuario.email,usuario.nombre,fechaNacimientoString, usuario.telefono)
             authClient.createUser(authUser)
             // Authenticate to get the bearer token
             authClient.authenticate(usuario.username, password)
@@ -81,7 +80,6 @@ class UserRepository @Inject constructor(
 
     override suspend fun verifyUser(username: String, password: String): Boolean {
         return try {
-            //usuarioDao.verifyUser(username,password)
             authClient.authenticate(username,password)
             true
         } catch (e: UserExistsException) {
@@ -125,7 +123,6 @@ class UserRepository @Inject constructor(
     }
 
     override fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>> {
-        // TODO PRIMERO RECOGER DEL REMOTO Y LUEGO PONERLOS AQUI
         return usuarioDao.getCuadrillasUsuario(username)
     }
 
@@ -177,7 +174,7 @@ class UserRepository @Inject constructor(
 
     override suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date, telefono: String) : Usuario {
         usuarioDao.editarUsuario(username, email, nombre, fecha, telefono)
-        httpClient.editUser(RemoteUsuario(username = username, email = email, nombre = nombre, fechaNacimiento = fecha.toStringRemoto(), telefono = telefono)) //TODO AÑADIR TELEFONO
+        httpClient.editUser(RemoteUsuario(username = username, email = email, nombre = nombre, fechaNacimiento = fecha.toStringRemoto(), telefono = telefono))
         return usuarioDao.getUsuario(username)
     }
     override suspend fun subscribeToUser(token: String, username: String){

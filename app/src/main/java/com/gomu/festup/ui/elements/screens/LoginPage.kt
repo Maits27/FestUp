@@ -2,6 +2,7 @@ package com.gomu.festup.ui.elements.screens
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
@@ -16,14 +17,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -53,11 +57,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -68,7 +74,6 @@ import androidx.navigation.NavController
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.elements.components.EditImageIcon
-import com.gomu.festup.ui.elements.components.FestUpButton
 import com.gomu.festup.ui.elements.components.Imagen
 import com.gomu.festup.ui.vm.IdentVM
 import com.gomu.festup.ui.vm.MainVM
@@ -92,31 +97,29 @@ fun LoginPage(
     preferencesVM: PreferencesViewModel
 ) {
 
-    var selectedTab by remember {
-        mutableIntStateOf(0)
-    }
+
 
     Column(
         // TODO quitar esto para que se vea bien con el theme
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
         TabRow(
-            selectedTabIndex = selectedTab
+            selectedTabIndex = identVM.selectedTabLogin.value
         ) {
             Tab(
-                selected = selectedTab == 0,
-                onClick = { selectedTab = 0 },
+                selected = identVM.selectedTabLogin.value == 0,
+                onClick = { identVM.selectedTabLogin.value = 0 },
             ) {
                 Text(text = "Iniciar sesión", modifier = Modifier.padding(vertical = 15.dp))
             }
             Tab(
-                selected = selectedTab == 1,
-                onClick = { selectedTab = 1 },
+                selected = identVM.selectedTabLogin.value == 1,
+                onClick = { identVM.selectedTabLogin.value = 1 },
             ) {
                 Text(text = "Registrarse", modifier = Modifier.padding(vertical = 15.dp))
             }
         }
-        when (selectedTab) {
+        when (identVM.selectedTabLogin.value) {
             0 -> {
                 LoginForm(mainNavController, mainVM, identVM, preferencesVM)
             }
@@ -136,23 +139,25 @@ fun LoginForm(
     identVM: IdentVM,
     preferencesVM: PreferencesViewModel,
 ) {
-    var username by remember {
+    var username by rememberSaveable {
         mutableStateOf("")
     }
 
-    var password by remember {
+    var password by rememberSaveable {
         mutableStateOf("")
     }
 
     val context = LocalContext.current
 
-    var showLoading by remember {
+    var showLoading by rememberSaveable {
         mutableStateOf(false)
     }
 
     val onLoginButtonClick: () -> Unit = {
-        if (username == "") Toast.makeText(context, "Introduce un nombre de usuario", Toast.LENGTH_SHORT).show()
-        else if (password == "") Toast.makeText(context, "Introduce una contraseña", Toast.LENGTH_SHORT).show()
+        if (username == "") Toast.makeText(context,
+            context.getString(R.string.introduce_un_nombre_de_usuario), Toast.LENGTH_SHORT).show()
+        else if (password == "") Toast.makeText(context,
+            context.getString(R.string.introduce_una_contrase_a), Toast.LENGTH_SHORT).show()
         else {
             showLoading = true
             CoroutineScope(Dispatchers.IO).launch {
@@ -183,7 +188,8 @@ fun LoginForm(
                     } else {
                         withContext(Dispatchers.Main) {
                             showLoading = false
-                            Toast.makeText(context, "La informacion no es correcta, inténtalo de nuevo.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context,
+                                context.getString(R.string.la_informacion_no_es_correcta_int_ntalo_de_nuevo), Toast.LENGTH_LONG).show()
                             showLoading = false
                         }
                     }
@@ -198,24 +204,25 @@ fun LoginForm(
 
     val modifierForInputs = Modifier.padding(vertical = 10.dp)
     var visiblePasswordLogIn by rememberSaveable{mutableStateOf(false)}
-    Column (
+
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         Image(
-            painter = painterResource(id = R.drawable.festup),
+            painter = painterResource(id = R.drawable.festuplogo2),
             alignment = Alignment.Center,
             contentDescription = "Logo-FestUp",
             modifier = Modifier
-                .fillMaxWidth()
-                .size(250.dp)
+                .height(70.dp)
+                .width(250.dp)
                 .clip(RoundedCornerShape(16.dp))
         )
         // TODO quitar esto para que se vea bien con el theme
-        Text(text = "¡Bienvenid@!", fontSize = 25.sp, color = MaterialTheme.colorScheme.onBackground)
+        //Text(text = "¡Bienvenid@!", fontSize = 25.sp, color = MaterialTheme.colorScheme.onBackground)
         OutlinedTextField(
             value = username,
             onValueChange = { username = it.lowercase().replace(" ", "") },
@@ -228,7 +235,10 @@ fun LoginForm(
             label = { Text(text = "Contraseña") },
             trailingIcon = {
                 // Icono para alternar entre contraseña visible y oculta
-                val icon = if (visiblePasswordLogIn) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
+                val icon =
+                    if (visiblePasswordLogIn) painterResource(id = R.drawable.visible) else painterResource(
+                        id = R.drawable.no_visible
+                    )
                 IconButton(onClick = { visiblePasswordLogIn = !visiblePasswordLogIn }) {
                     Icon(icon, contentDescription = "Toggle password visibility")
                 }
@@ -238,25 +248,26 @@ fun LoginForm(
             modifier = modifierForInputs
         )
         if (!showLoading) {
-            Row (
-                horizontalArrangement = Arrangement.End,
+            Row(
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.align(Alignment.End)
-            ){
-                if(!mainVM.serverOk.value) Icon(painter = painterResource(id = R.drawable.no_wifi), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
-                FestUpButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                if (!mainVM.serverOk.value) Icon(
+                    painter = painterResource(id = R.drawable.no_wifi),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+                Button(
                     onClick = { onLoginButtonClick() },
                     enabled = mainVM.serverOk.value,
-                    modifier = Modifier.padding(start = 10.dp, end = 50.dp)
                 ) {
-                    Text(text = "Iniciar sesión")
+                    Text(text = stringResource(R.string.iniciar_sesi_n))
                 }
             }
-        }
-        else CircularProgressIndicator(modifier = Modifier
-            .align(Alignment.End)
-            .padding(end = 50.dp))
+        } else CircularProgressIndicator()
     }
+
 
 
 }
@@ -274,45 +285,45 @@ fun RegistroForm(
 
     val context = LocalContext.current
 
-    var username by remember {
+    var username by rememberSaveable {
         mutableStateOf("")
     }
 
-    var email by remember {
+    var email by rememberSaveable {
         mutableStateOf("")
     }
 
-    var telefono by remember {
+    var telefono by rememberSaveable {
         mutableStateOf("")
     }
 
-    var nombre by remember {
+    var nombre by rememberSaveable {
         mutableStateOf("")
     }
 
-    var birthDate by remember {
+    var birthDate by rememberSaveable {
         mutableStateOf("")
     }
 
-    var password by remember {
+    var password by rememberSaveable {
         mutableStateOf("")
     }
 
-    var confirmPassword by remember {
+    var confirmPassword by rememberSaveable {
         mutableStateOf("")
     }
 
     // Birth date DatePikcer
     val datePickerState = rememberDatePickerState()
-    var showDatePicker by remember {
+    var showDatePicker by rememberSaveable {
         mutableStateOf(false)
     }
 
-    var showLoading by remember {
+    var showLoading by rememberSaveable {
         mutableStateOf(false)
     }
 
-    var imageUri by remember {
+    var imageUri by rememberSaveable {
         mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/no-user.png"))
     }
 
@@ -336,118 +347,250 @@ fun RegistroForm(
     var visiblePasswordSingIn by rememberSaveable{mutableStateOf(false)}
     var visiblePasswordSingInR by rememberSaveable{mutableStateOf(false)}
 
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
+
+    if (isVertical){
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 56.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                // Profile image
+
+                Box(contentAlignment = Alignment.BottomEnd) {
+                    Box(Modifier.padding(16.dp)) {
+                        Imagen(imageUri, context, R.drawable.no_user, 120.dp) {}
+                    }
+                    // Icono para editar imagen
+                    EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+                }
+
+                // Campo para añadir nombre de usuario
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = { username = it.lowercase().replace(" ", "").replace("\n", "") },
+                    label = { Text(text = "Nombre de usuario") },
+                    modifier = modifierForInputs
+                )
+                // Campo para añadir email
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text(text = "Email") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = modifierForInputs
+                )
+                // Campo para añadir el número de teléfono
+                OutlinedTextField(
+                    value = telefono,
+                    onValueChange = { telefono = it },
+                    label = { Text(text = "Teléfono") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    modifier = modifierForInputs
+                )
+                // Campo para añadir nombre
+                OutlinedTextField(
+                    value = nombre,
+                    onValueChange = { nombre = it },
+                    label = { Text(text = "Nombre") },
+                    modifier = modifierForInputs
+                )
+                // Añadir fecha de nacimiento
+                OutlinedTextField(
+                    value = birthDate,
+                    onValueChange = {  },
+                    label = { Text(text = "Fecha de nacimiento") },
+                    modifier = modifierForInputs.clickable { showDatePicker = true },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+                    enabled = false
+                )
+                // Campo para añadir contraseña
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text(text = "Contraseña") },
+                    trailingIcon = {
+                        // Icono para alternar entre contraseña visible y oculta
+                        val icon = if (visiblePasswordSingIn) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
+                        IconButton(onClick = { visiblePasswordSingIn = !visiblePasswordSingIn }) {
+                            Icon(icon, contentDescription = "Toggle password visibility")
+                        }
+                    },
+                    visualTransformation = if (visiblePasswordSingIn) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = modifierForInputs
+                )
+                // Campo para repetir contraseña
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = { confirmPassword = it },
+                    label = { Text(text = "Repite la contraseña") },
+                    trailingIcon = {
+                        // Icono para alternar entre contraseña visible y oculta
+                        val icon = if (visiblePasswordSingInR) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
+                        IconButton(onClick = { visiblePasswordSingInR = !visiblePasswordSingInR }) {
+                            Icon(icon, contentDescription = "Toggle password visibility")
+                        }
+                    },
+                    visualTransformation = if (visiblePasswordSingInR) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = modifierForInputs
+                )
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ){
+                    if(!mainVM.serverOk.value) Icon(painter = painterResource(id = R.drawable.no_wifi), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+                    Button(
+                        onClick = { onRegisterButtonClick() },
+                        enabled = mainVM.serverOk.value,
+                        modifier = Modifier
+                            .padding(10.dp)
+                    ) {
+                        Text(text = stringResource(R.string.registrarse))
+                    }
+                }
+
+            }
+            if (showLoading) CircularProgressIndicator(modifier = Modifier.size(100.dp))
+        }
+    }
+    else{
+        Row(
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 56.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Profile image
-
-            Box(contentAlignment = Alignment.BottomEnd) {
-                Box(Modifier.padding(16.dp)) {
-                    Imagen(imageUri, context, R.drawable.no_user, 120.dp) {}
-                }
-                // Icono para editar imagen
-                EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
-            }
-
-            // Campo para añadir nombre de usuario
-            OutlinedTextField(
-                value = username,
-                onValueChange = { username = it.lowercase().replace(" ", "").replace("\n", "") },
-                label = { Text(text = "Nombre de usuario") },
-                modifier = modifierForInputs
-            )
-            // Campo para añadir email
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text(text = "Email") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = modifierForInputs
-            )
-            // Campo para añadir el número de teléfono
-            OutlinedTextField(
-                value = telefono,
-                onValueChange = { telefono = it },
-                label = { Text(text = "Teléfono") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                modifier = modifierForInputs
-            )
-            // Campo para añadir nombre
-            OutlinedTextField(
-                value = nombre,
-                onValueChange = { nombre = it },
-                label = { Text(text = "Nombre") },
-                modifier = modifierForInputs
-            )
-            // Añadir fecha de nacimiento
-            OutlinedTextField(
-                value = birthDate,
-                onValueChange = {  },
-                label = { Text(text = "Fecha de nacimiento") },
-                modifier = modifierForInputs.clickable { showDatePicker = true },
-                colors = OutlinedTextFieldDefaults.colors(
-                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                    disabledBorderColor = MaterialTheme.colorScheme.outline,
-                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
-                enabled = false
-            )
-            // Campo para añadir contraseña
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text(text = "Contraseña") },
-                trailingIcon = {
-                    // Icono para alternar entre contraseña visible y oculta
-                    val icon = if (visiblePasswordSingIn) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
-                    IconButton(onClick = { visiblePasswordSingIn = !visiblePasswordSingIn }) {
-                        Icon(icon, contentDescription = "Toggle password visibility")
+            Column(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f)
+                    .fillMaxSize()
+            ) {
+                Box(contentAlignment = Alignment.BottomEnd) {
+                    Box(Modifier.padding(16.dp)) {
+                        Imagen(imageUri, context, R.drawable.no_user, 140.dp) {}
                     }
-                },
-                visualTransformation = if (visiblePasswordSingIn) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = modifierForInputs
-            )
-            // Campo para repetir contraseña
-            OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
-                label = { Text(text = "Repite la contraseña") },
-                trailingIcon = {
-                    // Icono para alternar entre contraseña visible y oculta
-                    val icon = if (visiblePasswordSingInR) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
-                    IconButton(onClick = { visiblePasswordSingInR = !visiblePasswordSingInR }) {
-                        Icon(icon, contentDescription = "Toggle password visibility")
+                    // Icono para editar imagen
+                    EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+                }
+
+                // Campo para añadir nombre de usuario
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = { username = it.lowercase().replace(" ", "").replace("\n", "") },
+                    label = { Text(text = "Nombre de usuario") },
+                    modifier = modifierForInputs
+                )
+                // Campo para añadir email
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text(text = "Email") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = modifierForInputs
+                )
+                // Campo para añadir el número de teléfono
+                OutlinedTextField(
+                    value = telefono,
+                    onValueChange = { telefono = it },
+                    label = { Text(text = "Teléfono") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    modifier = modifierForInputs
+                )
+            }
+            Column(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(1f)
+                    .fillMaxSize()
+            ) {
+
+                // Campo para añadir nombre
+                OutlinedTextField(
+                    value = nombre,
+                    onValueChange = { nombre = it },
+                    label = { Text(text = "Nombre") },
+                    modifier = modifierForInputs
+                )
+                // Añadir fecha de nacimiento
+                OutlinedTextField(
+                    value = birthDate,
+                    onValueChange = {  },
+                    label = { Text(text = "Fecha de nacimiento") },
+                    modifier = modifierForInputs.clickable { showDatePicker = true },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                        disabledBorderColor = MaterialTheme.colorScheme.outline,
+                        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
+                    enabled = false
+                )
+                // Campo para añadir contraseña
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text(text = "Contraseña") },
+                    trailingIcon = {
+                        // Icono para alternar entre contraseña visible y oculta
+                        val icon = if (visiblePasswordSingIn) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
+                        IconButton(onClick = { visiblePasswordSingIn = !visiblePasswordSingIn }) {
+                            Icon(icon, contentDescription = "Toggle password visibility")
+                        }
+                    },
+                    visualTransformation = if (visiblePasswordSingIn) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = modifierForInputs
+                )
+                // Campo para repetir contraseña
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = { confirmPassword = it },
+                    label = { Text(text = "Repite la contraseña") },
+                    trailingIcon = {
+                        // Icono para alternar entre contraseña visible y oculta
+                        val icon = if (visiblePasswordSingInR) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
+                        IconButton(onClick = { visiblePasswordSingInR = !visiblePasswordSingInR }) {
+                            Icon(icon, contentDescription = "Toggle password visibility")
+                        }
+                    },
+                    visualTransformation = if (visiblePasswordSingInR) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = modifierForInputs
+                )
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ){
+                    if(!mainVM.serverOk.value) Icon(painter = painterResource(id = R.drawable.no_wifi), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+                    Button(
+                        onClick = { onRegisterButtonClick() },
+                        enabled = mainVM.serverOk.value,
+                        modifier = Modifier
+                            .padding(top = 10.dp)
+                    ) {
+                        Text(text = stringResource(R.string.registrarse))
                     }
-                },
-                visualTransformation = if (visiblePasswordSingInR) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = modifierForInputs
-            )
-            Row (
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.align(Alignment.End)
-            ){
-                if(!mainVM.serverOk.value) Icon(painter = painterResource(id = R.drawable.no_wifi), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
-                FestUpButton(
-                    onClick = { onRegisterButtonClick() },
-                    enabled = mainVM.serverOk.value,
-                    modifier = Modifier.padding(start = 10.dp)
-                ) {
-                    Text(text = "Registrarse")
                 }
             }
-
         }
         if (showLoading) CircularProgressIndicator(modifier = Modifier.size(100.dp))
     }
+
+
 
 
     if (showDatePicker) {
@@ -564,8 +707,8 @@ fun registration(
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(
                         context,
-                        "Ha ocurrido un error, inténtalo de nuevo.",
-                        Toast.LENGTH_SHORT
+                        context.getString(R.string.ese_nombre_de_usuario_ya_est_registrado_int_ntalo_de_nuevo),
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }
