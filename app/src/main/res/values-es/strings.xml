@@ -52,7 +52,7 @@
     <string name="insert_nombre_user">Introduce un nombre de usuario</string>
     <string name="insert_contrasena">Introduce una contraseña</string>
     <string name="info_incorrecta">"La información no es correcta, inténtalo de nuevo. "</string>
-    <string name="token_conf">¿Estas seguro de que quieres compartir el codigo de la cuadrilla?</string>
+    <string name="token_conf">¿Estás seguro de que quieres compartir el codigo de la cuadrilla?</string>
     <string name="abandonar">Abandonar %s</string>
     <string name="recordatorio_token">Recuerda que cualquier persona con el codigo podrá unirse.</string>
     <string name="incorrect_token">"Código incorrecto, inténtalo de nuevo "</string>
@@ -76,8 +76,8 @@
     <string name="preferences">Preferencias @%s</string>
     <string name="insert_idioma">Selecciona un idioma</string>
     <string name="no">No</string>
-    <string name="si">Si</string>
-    <string name="seguro">¿Estas seguro?</string>
+    <string name="si">Sí</string>
+    <string name="seguro">¿Estás seguro?</string>
     <string name="eliminar_cuadrilla_conf">Si eliminas esta cuadrilla tendrás que volver a solicitar entrar.</string>
     <string name="cuadrilla_imagen">Imagen de cuadrilla</string>
     <string name="edad">Edad</string>
