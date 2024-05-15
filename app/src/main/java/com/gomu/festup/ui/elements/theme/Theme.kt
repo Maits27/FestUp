@@ -229,7 +229,7 @@ fun FestUpTheme(
       }
       
       darkTheme -> darkScheme
-      else -> highContrastLightColorScheme
+      else -> lightScheme
   }
   val view = LocalView.current
   if (!view.isInEditMode) {
