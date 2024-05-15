@@ -217,6 +217,9 @@ val surfaceContainerHighDarkHighContrast = Color(0xFF2B292F)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF36343A)
 
 
+val gradientsColors = listOf(Color.Blue, Color.Magenta)
+
+
 
 
 

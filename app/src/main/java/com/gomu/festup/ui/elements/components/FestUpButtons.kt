@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.compose.gradientsColors
 
 @Composable
 fun FestUpButton(
@@ -28,7 +29,7 @@ fun FestUpButton(
         shape = RoundedCornerShape(30.dp),
         border = BorderStroke(
             width = 2.dp,
-            brush = Brush.linearGradient(colors = listOf(Color.Blue, Color.Magenta))
+            brush = Brush.linearGradient(colors = gradientsColors)
         ),
         modifier = modifier,
         content = content

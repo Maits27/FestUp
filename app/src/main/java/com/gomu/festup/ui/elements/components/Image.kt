@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.example.compose.gradientsColors
 import com.gomu.festup.R
 
 
@@ -45,7 +46,7 @@ fun Imagen(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, on
         contentScale = ContentScale.Crop,
         error = painterResource(id = noImagePainterId),
         modifier = Modifier
-            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = listOf(Color.Blue, Color.Magenta))), CircleShape)
+            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = gradientsColors)), CircleShape)
             .size(size)
             .clip(CircleShape)
             .clickable { onClick() }
@@ -66,7 +67,7 @@ fun ImagenMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId: Int) 
         contentScale = ContentScale.Crop,
         error = painterResource(id = noImagePainterId),
         modifier = Modifier
-            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = listOf(Color.Blue, Color.Magenta))), CircleShape)
+            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = gradientsColors)), CircleShape)
             .size(50.dp)
             .clip(CircleShape)
     )
@@ -86,7 +87,7 @@ fun ImagenEvento(imageUri: Uri?, context: Context, noImagePainterId: Int, size: 
         contentScale = ContentScale.Crop,
         error = painterResource(id = noImagePainterId),
         modifier = Modifier
-            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = listOf(Color.Blue, Color.Magenta))), RoundedCornerShape(10.dp))
+            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = gradientsColors)), RoundedCornerShape(10.dp))
             .size(size)
             .clip(RoundedCornerShape(10.dp))
             .clickable { onClick()}
@@ -107,7 +108,7 @@ fun ImagenEventoMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId:
         contentScale = ContentScale.Crop,
         error = painterResource(id = noImagePainterId),
         modifier = Modifier
-            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = listOf(Color.Blue, Color.Magenta))), RoundedCornerShape(10.dp))
+            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = gradientsColors)), RoundedCornerShape(10.dp))
             .size(50.dp)
             .clip(RoundedCornerShape(10.dp))
     )
