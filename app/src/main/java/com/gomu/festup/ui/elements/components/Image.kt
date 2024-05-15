@@ -45,8 +45,10 @@ fun Imagen(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, on
         contentScale = ContentScale.Crop,
         error = painterResource(id = noImagePainterId),
         modifier = Modifier
+            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = listOf(Color.Blue, Color.Magenta))), CircleShape)
             .size(size)
-            .clip(CircleShape).clickable { onClick() }
+            .clip(CircleShape)
+            .clickable { onClick() }
     )
 }
 
@@ -84,6 +86,7 @@ fun ImagenEvento(imageUri: Uri?, context: Context, noImagePainterId: Int, size: 
         contentScale = ContentScale.Crop,
         error = painterResource(id = noImagePainterId),
         modifier = Modifier
+            .border(BorderStroke(2.dp, brush = Brush.linearGradient(colors = listOf(Color.Blue, Color.Magenta))), RoundedCornerShape(10.dp))
             .size(size)
             .clip(RoundedCornerShape(10.dp))
             .clickable { onClick()}
