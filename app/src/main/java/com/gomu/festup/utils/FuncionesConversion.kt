@@ -9,13 +9,13 @@ import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Seguidores
 import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Entities.UsuariosAsistentes
-import com.gomu.festup.RemoteDatabase.RemoteCuadrilla
-import com.gomu.festup.RemoteDatabase.RemoteCuadrillaAsistente
-import com.gomu.festup.RemoteDatabase.RemoteEvento
-import com.gomu.festup.RemoteDatabase.RemoteIntegrante
-import com.gomu.festup.RemoteDatabase.RemoteSeguidor
-import com.gomu.festup.RemoteDatabase.RemoteUsuario
-import com.gomu.festup.RemoteDatabase.RemoteUsuarioAsistente
+import com.gomu.festup.http.RemoteCuadrilla
+import com.gomu.festup.http.RemoteCuadrillaAsistente
+import com.gomu.festup.http.RemoteEvento
+import com.gomu.festup.http.RemoteIntegrante
+import com.gomu.festup.http.RemoteSeguidor
+import com.gomu.festup.http.RemoteUsuario
+import com.gomu.festup.http.RemoteUsuarioAsistente
 import com.gomu.festup.ui.widget.EventoWidget
 import com.google.android.gms.maps.model.LatLng
 import java.math.BigInteger
@@ -23,7 +23,6 @@ import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Random;
-import kotlin.reflect.KFunction1
 
 private val md = MessageDigest.getInstance("SHA-512")
 

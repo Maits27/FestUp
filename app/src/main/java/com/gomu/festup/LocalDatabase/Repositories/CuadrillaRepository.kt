@@ -1,28 +1,20 @@
 package com.gomu.festup.LocalDatabase.Repositories
 
-import android.database.sqlite.SQLiteConstraintException
 import android.graphics.Bitmap
-import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import com.gomu.festup.LocalDatabase.DAO.CuadrillaDao
 import com.gomu.festup.LocalDatabase.DAO.IntegranteDao
-import com.gomu.festup.LocalDatabase.DAO.UsuarioDao
 import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
-import com.gomu.festup.LocalDatabase.Entities.Evento
 import com.gomu.festup.LocalDatabase.Entities.Integrante
 import com.gomu.festup.LocalDatabase.Entities.Usuario
-import com.gomu.festup.RemoteDatabase.HTTPClient
-import com.gomu.festup.RemoteDatabase.RemoteCuadrilla
-import com.gomu.festup.RemoteDatabase.RemoteIntegrante
+import com.gomu.festup.http.HTTPClient
+import com.gomu.festup.http.RemoteCuadrilla
+import com.gomu.festup.http.RemoteIntegrante
 import com.gomu.festup.utils.remoteIntegranteToIntegrante
 import com.gomu.festup.utils.remotecuadrillaToCuadrilla
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 

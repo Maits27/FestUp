@@ -19,8 +19,8 @@ import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
 import com.gomu.festup.LocalDatabase.Repositories.UserRepository
 import com.gomu.festup.Preferences.IGeneralPreferences
 import com.gomu.festup.Preferences.PreferencesRepository
-import com.gomu.festup.RemoteDatabase.AuthClient
-import com.gomu.festup.RemoteDatabase.HTTPClient
+import com.gomu.festup.http.AuthClient
+import com.gomu.festup.http.HTTPClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

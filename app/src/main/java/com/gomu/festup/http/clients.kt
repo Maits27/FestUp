@@ -1,8 +1,7 @@
-package com.gomu.festup.RemoteDatabase
+package com.gomu.festup.http
 
 import android.graphics.Bitmap
 import android.util.Log
-import com.gomu.festup.LocalDatabase.Entities.Usuario
 import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
 import io.ktor.client.*
 import io.ktor.client.call.body
@@ -18,11 +17,7 @@ import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
@@ -34,78 +29,7 @@ class UserExistsException : Exception()
 class AuthenticationException : Exception()
 
 
-@Serializable
-data class RemoteUsuario(
-    val username: String,
-    val email: String,
-    val nombre: String,
-    val fechaNacimiento: String,
-    val telefono: String
-)
-@Serializable
-data class RemoteAuthUsuario(
-    val username: String,
-    val password: String,
-    val email: String,
-    val nombre: String,
-    val fechaNacimiento: String
-)
-
-@Serializable
-data class RemoteCuadrilla(
-    val nombre: String,
-    val accessToken: String,
-    val descripcion: String,
-    val lugar: String
-)
-
-@Serializable
-data class RemoteUsuarioAsistente(
-    val username: String,
-    val idEvento: String
-)
-
-@Serializable
-data class RemoteCuadrillaAsistente(
-    val nombre: String,
-    val id: String
-)
-
-@Serializable
-data class RemoteIntegrante(
-    val username: String,
-    val nombre: String
-)
-
-@Serializable
-data class RemoteSeguidor(
-    val seguidor: String,
-    val seguido: String
-)
-
-
-
-
-@Serializable
-data class RemoteEvento(
-    val id: String,
-    val nombre: String,
-    val fecha: String,
-    val descripcion: String,
-    val localizacion: String
-)
-
-
 private val bearerTokenStorage = mutableListOf<BearerTokens>()
-
-
-@Serializable
-data class TokenInfo(
-    @SerialName("token_type") val tokenType: String,
-    @SerialName("access_token") val accessToken: String,
-    @SerialName("refresh_token") val refreshToken: String,
-    @SerialName("expires_in") val expiresIn: Int,
-)
 
 
 @Singleton
@@ -429,6 +353,4 @@ class HTTPClient @Inject constructor() {
             }
         ) { method = HttpMethod.Put }
     }
-
-
 }
