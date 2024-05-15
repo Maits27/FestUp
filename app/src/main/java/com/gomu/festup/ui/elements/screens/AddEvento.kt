@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.widget.Toast
-import com.gomu.festup.data.localDatabase.Entities.Evento
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -34,9 +33,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,14 +52,15 @@ import androidx.navigation.NavController
 import com.gomu.festup.R
 import com.gomu.festup.alarmMng.AlarmItem
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
+import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.elements.components.EditImageIcon
 import com.gomu.festup.ui.elements.components.ImagenEvento
+import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.utils.addEventOnCalendar
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.getLatLngFromAddress
 import com.gomu.festup.utils.localUriToBitmap
 import com.gomu.festup.utils.toStringNuestro
-import com.gomu.festup.ui.vm.MainVM
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap

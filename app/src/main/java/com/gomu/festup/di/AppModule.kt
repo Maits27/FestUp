@@ -2,6 +2,8 @@ package com.gomu.festup.di
 
 import android.content.Context
 import androidx.room.Room
+import com.gomu.festup.data.http.AuthClient
+import com.gomu.festup.data.http.HTTPClient
 import com.gomu.festup.data.localDatabase.DAO.CuadrillaDao
 import com.gomu.festup.data.localDatabase.DAO.CuadrillasAsistentesDao
 import com.gomu.festup.data.localDatabase.DAO.EventoDao
@@ -14,13 +16,11 @@ import com.gomu.festup.data.repositories.CuadrillaRepository
 import com.gomu.festup.data.repositories.EventoRepository
 import com.gomu.festup.data.repositories.ICuadrillaRepository
 import com.gomu.festup.data.repositories.IEventoRepository
-import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.gomu.festup.data.repositories.IUserRepository
 import com.gomu.festup.data.repositories.UserRepository
 import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
+import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.gomu.festup.data.repositories.preferences.PreferencesRepository
-import com.gomu.festup.data.http.AuthClient
-import com.gomu.festup.data.http.HTTPClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

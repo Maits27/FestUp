@@ -2,13 +2,6 @@ package com.gomu.festup.utils
 
 import android.content.Context
 import android.location.Geocoder
-import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
-import com.gomu.festup.data.localDatabase.Entities.CuadrillasAsistentes
-import com.gomu.festup.data.localDatabase.Entities.Evento
-import com.gomu.festup.data.localDatabase.Entities.Integrante
-import com.gomu.festup.data.localDatabase.Entities.Seguidores
-import com.gomu.festup.data.localDatabase.Entities.Usuario
-import com.gomu.festup.data.localDatabase.Entities.UsuariosAsistentes
 import com.gomu.festup.data.http.RemoteCuadrilla
 import com.gomu.festup.data.http.RemoteCuadrillaAsistente
 import com.gomu.festup.data.http.RemoteEvento
@@ -16,13 +9,20 @@ import com.gomu.festup.data.http.RemoteIntegrante
 import com.gomu.festup.data.http.RemoteSeguidor
 import com.gomu.festup.data.http.RemoteUsuario
 import com.gomu.festup.data.http.RemoteUsuarioAsistente
+import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
+import com.gomu.festup.data.localDatabase.Entities.CuadrillasAsistentes
+import com.gomu.festup.data.localDatabase.Entities.Evento
+import com.gomu.festup.data.localDatabase.Entities.Integrante
+import com.gomu.festup.data.localDatabase.Entities.Seguidores
+import com.gomu.festup.data.localDatabase.Entities.Usuario
+import com.gomu.festup.data.localDatabase.Entities.UsuariosAsistentes
 import com.gomu.festup.ui.elements.widget.EventoWidget
 import com.google.android.gms.maps.model.LatLng
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Random;
+import java.util.Random
 
 private val md = MessageDigest.getInstance("SHA-512")
 

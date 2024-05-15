@@ -24,10 +24,10 @@ import androidx.navigation.NavController
 import com.example.compose.FestUpTheme
 import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
-import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.ui.vm.IdentVM
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.ui.vm.PreferencesViewModel
+import com.gomu.festup.utils.nuestroLocationProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

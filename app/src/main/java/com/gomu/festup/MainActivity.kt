@@ -32,9 +32,9 @@ import com.gomu.festup.ui.elements.screens.SplashScreen
 import com.gomu.festup.ui.vm.IdentVM
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.ui.vm.PreferencesViewModel
-import dagger.hilt.android.AndroidEntryPoint
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

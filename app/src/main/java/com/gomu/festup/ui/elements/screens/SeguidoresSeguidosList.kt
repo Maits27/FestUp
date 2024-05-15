@@ -24,8 +24,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.R
+import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.ui.elements.components.cards.UsuarioCard
 import com.gomu.festup.ui.vm.MainVM
 

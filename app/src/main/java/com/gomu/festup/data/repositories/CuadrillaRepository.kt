@@ -2,14 +2,14 @@ package com.gomu.festup.data.repositories
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.gomu.festup.data.http.HTTPClient
+import com.gomu.festup.data.http.RemoteCuadrilla
+import com.gomu.festup.data.http.RemoteIntegrante
 import com.gomu.festup.data.localDatabase.DAO.CuadrillaDao
 import com.gomu.festup.data.localDatabase.DAO.IntegranteDao
 import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
 import com.gomu.festup.data.localDatabase.Entities.Integrante
 import com.gomu.festup.data.localDatabase.Entities.Usuario
-import com.gomu.festup.data.http.HTTPClient
-import com.gomu.festup.data.http.RemoteCuadrilla
-import com.gomu.festup.data.http.RemoteIntegrante
 import com.gomu.festup.utils.remoteIntegranteToIntegrante
 import com.gomu.festup.utils.remotecuadrillaToCuadrilla
 import io.ktor.client.plugins.ResponseException

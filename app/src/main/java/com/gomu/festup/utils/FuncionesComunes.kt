@@ -6,8 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.core.app.ActivityCompat
-import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.MainActivity
+import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.vm.MainVM
 import com.google.android.gms.location.LocationServices
 import java.time.Instant

@@ -3,9 +3,9 @@ package com.gomu.festup.ui.vm
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gomu.festup.data.repositories.preferences.ILoginSettings
-import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
 import com.gomu.festup.data.AppLanguage
+import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
+import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.gomu.festup.utils.LanguageManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

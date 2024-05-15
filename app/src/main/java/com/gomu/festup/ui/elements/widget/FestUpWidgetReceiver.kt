@@ -11,8 +11,8 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.data.repositories.CuadrillaRepository
 import com.gomu.festup.data.repositories.EventoRepository
-import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
+import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.gomu.festup.utils.getWidgetEventos
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -23,6 +23,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
+
 /**
  * This is the BroadCast Receiver for the FestUpWidget widget.
  *

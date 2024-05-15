@@ -26,12 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat.setTint
 import androidx.navigation.NavController
-import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.R
+import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.AppScreens
+import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.utils.getLatLngFromAddress
 import com.gomu.festup.utils.toStringNuestro
-import com.gomu.festup.ui.vm.MainVM
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition

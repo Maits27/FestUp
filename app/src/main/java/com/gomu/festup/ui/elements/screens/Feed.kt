@@ -1,8 +1,6 @@
 package com.gomu.festup.ui.elements.screens
 
 import android.content.res.Configuration
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +16,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.gomu.festup.R
 import com.gomu.festup.data.UserCuadrillaAndEvent
 import com.gomu.festup.ui.elements.components.cards.EventoCardConUser

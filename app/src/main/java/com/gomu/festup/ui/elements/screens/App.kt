@@ -1,7 +1,6 @@
 package com.gomu.festup.ui.elements.screens
 
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi

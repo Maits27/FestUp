@@ -2,17 +2,17 @@ package com.gomu.festup.data.repositories
 
 import android.graphics.Bitmap
 import android.util.Log
-import com.gomu.festup.data.localDatabase.DAO.SeguidoresDao
-import com.gomu.festup.data.localDatabase.DAO.UsuarioDao
-import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
-import com.gomu.festup.data.localDatabase.Entities.Seguidores
-import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.data.http.AuthClient
 import com.gomu.festup.data.http.HTTPClient
 import com.gomu.festup.data.http.RemoteAuthUsuario
 import com.gomu.festup.data.http.RemoteSeguidor
 import com.gomu.festup.data.http.RemoteUsuario
 import com.gomu.festup.data.http.UserExistsException
+import com.gomu.festup.data.localDatabase.DAO.SeguidoresDao
+import com.gomu.festup.data.localDatabase.DAO.UsuarioDao
+import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
+import com.gomu.festup.data.localDatabase.Entities.Seguidores
+import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.gomu.festup.utils.remoteSeguidorToSeguidor
 import com.gomu.festup.utils.remoteUsuarioToUsuario

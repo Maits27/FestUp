@@ -22,8 +22,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.R
+import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.ui.elements.components.cards.UsuarioCard
 import com.gomu.festup.ui.vm.MainVM
 

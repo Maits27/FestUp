@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
-import android.os.Build
 import android.provider.CalendarContract
-import android.util.Log
-import androidx.annotation.RequiresApi
-import java.util.TimeZone
 import android.provider.CalendarContract.Events
+import android.util.Log
+import java.util.TimeZone
 
 // Function to get all calendar's IDs (including google calendars)
 @SuppressLint("Range")

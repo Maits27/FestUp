@@ -36,8 +36,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -63,12 +63,11 @@ import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.elements.components.EditImageIcon
 import com.gomu.festup.ui.elements.components.Imagen
-import com.gomu.festup.ui.elements.components.EditImageIcon
-import com.gomu.festup.utils.nuestroLocationProvider
-import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.ui.vm.IdentVM
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.ui.vm.PreferencesViewModel
+import com.gomu.festup.utils.nuestroLocationProvider
+import com.gomu.festup.utils.toStringNuestro
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

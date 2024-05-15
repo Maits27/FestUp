@@ -15,12 +15,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.R
+import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.elements.components.ImagenEventoMiniConBorde
-import com.gomu.festup.utils.toStringNuestro
 import com.gomu.festup.ui.vm.MainVM
+import com.gomu.festup.utils.toStringNuestro
 
 
 @Composable
