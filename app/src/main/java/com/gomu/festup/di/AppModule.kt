@@ -2,25 +2,25 @@ package com.gomu.festup.di
 
 import android.content.Context
 import androidx.room.Room
-import com.gomu.festup.LocalDatabase.DAO.CuadrillaDao
-import com.gomu.festup.LocalDatabase.DAO.CuadrillasAsistentesDao
-import com.gomu.festup.LocalDatabase.DAO.EventoDao
-import com.gomu.festup.LocalDatabase.DAO.IntegranteDao
-import com.gomu.festup.LocalDatabase.DAO.SeguidoresDao
-import com.gomu.festup.LocalDatabase.DAO.UsuarioDao
-import com.gomu.festup.LocalDatabase.DAO.UsuariosAsistentesDao
-import com.gomu.festup.LocalDatabase.Database
-import com.gomu.festup.LocalDatabase.Repositories.CuadrillaRepository
-import com.gomu.festup.LocalDatabase.Repositories.EventoRepository
-import com.gomu.festup.LocalDatabase.Repositories.ICuadrillaRepository
-import com.gomu.festup.LocalDatabase.Repositories.IEventoRepository
-import com.gomu.festup.LocalDatabase.Repositories.ILoginSettings
-import com.gomu.festup.LocalDatabase.Repositories.IUserRepository
-import com.gomu.festup.LocalDatabase.Repositories.UserRepository
-import com.gomu.festup.Preferences.IGeneralPreferences
-import com.gomu.festup.Preferences.PreferencesRepository
-import com.gomu.festup.http.AuthClient
-import com.gomu.festup.http.HTTPClient
+import com.gomu.festup.data.localDatabase.DAO.CuadrillaDao
+import com.gomu.festup.data.localDatabase.DAO.CuadrillasAsistentesDao
+import com.gomu.festup.data.localDatabase.DAO.EventoDao
+import com.gomu.festup.data.localDatabase.DAO.IntegranteDao
+import com.gomu.festup.data.localDatabase.DAO.SeguidoresDao
+import com.gomu.festup.data.localDatabase.DAO.UsuarioDao
+import com.gomu.festup.data.localDatabase.DAO.UsuariosAsistentesDao
+import com.gomu.festup.data.localDatabase.Database
+import com.gomu.festup.data.repositories.CuadrillaRepository
+import com.gomu.festup.data.repositories.EventoRepository
+import com.gomu.festup.data.repositories.ICuadrillaRepository
+import com.gomu.festup.data.repositories.IEventoRepository
+import com.gomu.festup.data.repositories.preferences.ILoginSettings
+import com.gomu.festup.data.repositories.IUserRepository
+import com.gomu.festup.data.repositories.UserRepository
+import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
+import com.gomu.festup.data.repositories.preferences.PreferencesRepository
+import com.gomu.festup.data.http.AuthClient
+import com.gomu.festup.data.http.HTTPClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -76,16 +76,16 @@ object AppModule {
         loginSettings: ILoginSettings,
         authClient: AuthClient,
         httpClient: HTTPClient
-    ): IUserRepository = 
+    ): IUserRepository =
         UserRepository(usuarioDao, seguidoresDao, loginSettings, authClient, httpClient)
 
     @Singleton
     @Provides
     fun provideCuadrillaRepository(
-        cuadrillaDao: CuadrillaDao, 
-        integranteDao: IntegranteDao, 
+        cuadrillaDao: CuadrillaDao,
+        integranteDao: IntegranteDao,
         httpClient: HTTPClient
-    ): ICuadrillaRepository = 
+    ): ICuadrillaRepository =
         CuadrillaRepository(cuadrillaDao, integranteDao, httpClient)
 
     @Singleton

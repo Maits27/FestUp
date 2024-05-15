@@ -2,21 +2,21 @@ package com.gomu.festup.utils
 
 import android.content.Context
 import android.location.Geocoder
-import com.gomu.festup.LocalDatabase.Entities.Cuadrilla
-import com.gomu.festup.LocalDatabase.Entities.CuadrillasAsistentes
-import com.gomu.festup.LocalDatabase.Entities.Evento
-import com.gomu.festup.LocalDatabase.Entities.Integrante
-import com.gomu.festup.LocalDatabase.Entities.Seguidores
-import com.gomu.festup.LocalDatabase.Entities.Usuario
-import com.gomu.festup.LocalDatabase.Entities.UsuariosAsistentes
-import com.gomu.festup.http.RemoteCuadrilla
-import com.gomu.festup.http.RemoteCuadrillaAsistente
-import com.gomu.festup.http.RemoteEvento
-import com.gomu.festup.http.RemoteIntegrante
-import com.gomu.festup.http.RemoteSeguidor
-import com.gomu.festup.http.RemoteUsuario
-import com.gomu.festup.http.RemoteUsuarioAsistente
-import com.gomu.festup.ui.widget.EventoWidget
+import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
+import com.gomu.festup.data.localDatabase.Entities.CuadrillasAsistentes
+import com.gomu.festup.data.localDatabase.Entities.Evento
+import com.gomu.festup.data.localDatabase.Entities.Integrante
+import com.gomu.festup.data.localDatabase.Entities.Seguidores
+import com.gomu.festup.data.localDatabase.Entities.Usuario
+import com.gomu.festup.data.localDatabase.Entities.UsuariosAsistentes
+import com.gomu.festup.data.http.RemoteCuadrilla
+import com.gomu.festup.data.http.RemoteCuadrillaAsistente
+import com.gomu.festup.data.http.RemoteEvento
+import com.gomu.festup.data.http.RemoteIntegrante
+import com.gomu.festup.data.http.RemoteSeguidor
+import com.gomu.festup.data.http.RemoteUsuario
+import com.gomu.festup.data.http.RemoteUsuarioAsistente
+import com.gomu.festup.ui.elements.widget.EventoWidget
 import com.google.android.gms.maps.model.LatLng
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -87,7 +87,7 @@ fun getLatLngFromAddress(context: Context, mAddress: String): LatLng? {
 }
 
 
-fun remoteUsuarioToUsuario(remoteUsuario: RemoteUsuario): Usuario{
+fun remoteUsuarioToUsuario(remoteUsuario: RemoteUsuario): Usuario {
     return Usuario(
         remoteUsuario.username,
         remoteUsuario.email,
@@ -97,7 +97,7 @@ fun remoteUsuarioToUsuario(remoteUsuario: RemoteUsuario): Usuario{
     )
 }
 
-fun remotecuadrillaToCuadrilla(remoteCuadrilla: RemoteCuadrilla): Cuadrilla{
+fun remotecuadrillaToCuadrilla(remoteCuadrilla: RemoteCuadrilla): Cuadrilla {
     return Cuadrilla(
         remoteCuadrilla.nombre,
         remoteCuadrilla.descripcion,
@@ -106,7 +106,7 @@ fun remotecuadrillaToCuadrilla(remoteCuadrilla: RemoteCuadrilla): Cuadrilla{
 }
 
 
-fun remoteEventoToEvento(remoteEvento: RemoteEvento): Evento{
+fun remoteEventoToEvento(remoteEvento: RemoteEvento): Evento {
     return Evento(
         remoteEvento.id,
         remoteEvento.nombre,
@@ -116,28 +116,28 @@ fun remoteEventoToEvento(remoteEvento: RemoteEvento): Evento{
     )
 }
 
-fun remoteUAsistenteToUAsistente(remoteUAsistente: RemoteUsuarioAsistente): UsuariosAsistentes{
+fun remoteUAsistenteToUAsistente(remoteUAsistente: RemoteUsuarioAsistente): UsuariosAsistentes {
     return UsuariosAsistentes(
         remoteUAsistente.username,
         remoteUAsistente.idEvento
     )
 }
 
-fun remoteCAsistenteToCAsistente(remoteCAsistente: RemoteCuadrillaAsistente): CuadrillasAsistentes{
+fun remoteCAsistenteToCAsistente(remoteCAsistente: RemoteCuadrillaAsistente): CuadrillasAsistentes {
     return CuadrillasAsistentes(
         remoteCAsistente.nombre,
         remoteCAsistente.id
     )
 }
 
-fun remoteIntegranteToIntegrante(remoteIntegrante: RemoteIntegrante): Integrante{
+fun remoteIntegranteToIntegrante(remoteIntegrante: RemoteIntegrante): Integrante {
     return Integrante(
         remoteIntegrante.username,
         remoteIntegrante.nombre
     )
 }
 
-fun remoteSeguidorToSeguidor(remoteSeguidor: RemoteSeguidor): Seguidores{
+fun remoteSeguidorToSeguidor(remoteSeguidor: RemoteSeguidor): Seguidores {
     return Seguidores(
         remoteSeguidor.seguidor,
         remoteSeguidor.seguido

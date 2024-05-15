@@ -1,12 +1,8 @@
 package com.gomu.festup.data
 
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
-import com.gomu.festup.LocalDatabase.Entities.Evento
-import com.gomu.festup.ui.AppScreens
-
-data class Diseño(val pantalla: AppScreens, val icono: Painter, val nombre: String="")
+import com.gomu.festup.data.localDatabase.Entities.Evento
 
 data class UserAndEvent(
     @ColumnInfo(name = "username")

@@ -3,17 +3,10 @@ package com.gomu.festup.alarmMng
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
-import com.gomu.festup.LocalDatabase.Entities.Evento
-import java.util.Date
 import android.app.PendingIntent
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import com.gomu.festup.vm.MainVM
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Calendar
 
 data class AlarmItem(
     val alarmTime : LocalDateTime,
