@@ -98,4 +98,6 @@
     <string name="la_informacion_no_es_correcta_int_ntalo_de_nuevo">Informazioa ez da zuzena, saiatu berriro.</string>
     <string name="c_digo_qr_incorrecto_intentalo_de_nuevo">QR kodea ez da zuzena, saiatu berriro.</string>
     <string name="intentalo_de_nuevo">Saiatu berriro</string>
+    <string name="iniciar_sesi_n">Saioa hasi</string>
+    <string name="registrarse">Erregistratu</string>
 </resources>

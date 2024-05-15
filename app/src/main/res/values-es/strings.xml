@@ -97,4 +97,6 @@
     <string name="la_informacion_no_es_correcta_int_ntalo_de_nuevo">La informacion no es correcta, inténtalo de nuevo.</string>
     <string name="c_digo_qr_incorrecto_intentalo_de_nuevo">Código QR incorrecto, intentalo de nuevo.</string>
     <string name="intentalo_de_nuevo">Intentalo de nuevo</string>
+    <string name="iniciar_sesi_n">Iniciar sesión</string>
+    <string name="registrarse">Registrarse</string>
 </resources>

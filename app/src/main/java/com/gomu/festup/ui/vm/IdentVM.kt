@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.data.repositories.IUserRepository
@@ -18,6 +20,8 @@ class IdentVM @Inject constructor(
     private val userRepository: IUserRepository
 ): ViewModel() {
 
+
+    var selectedTabLogin: MutableState<Int> = mutableIntStateOf(0)
 
     @RequiresApi(Build.VERSION_CODES.P)
     suspend fun registrarUsuario(
