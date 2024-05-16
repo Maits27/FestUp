@@ -64,7 +64,6 @@ fun LanguageSelection(
                             selected = idioma.code == "eu",
                             onClick = {
                                 preferencesVM.changeLang(AppLanguage.getFromCode("eu"))
-                                preferencesVM.restartLang(AppLanguage.getFromCode("eu"))
                             }
                         )
                         Text("Euskera")

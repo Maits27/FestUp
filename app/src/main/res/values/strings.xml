@@ -99,4 +99,5 @@
     <string name="intentalo_de_nuevo">Intentalo de nuevo</string>
     <string name="iniciar_sesi_n">Iniciar sesión</string>
     <string name="registrarse">Registrarse</string>
+    <string name="cerrar_sesion_de">Cerrar sesión de @%s</string>
 </resources>
