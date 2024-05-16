@@ -2,13 +2,17 @@ package com.gomu.festup.utils
 
 
 import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.gomu.festup.MyNotificationChannels
 import com.gomu.festup.NotificationID
 import com.gomu.festup.R
+import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
+import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import javax.inject.Inject
 
 
 /**
@@ -19,12 +23,17 @@ import com.google.firebase.messaging.RemoteMessage
 
 class FCMService : FirebaseMessagingService() {
 
+    @Inject
+    lateinit var preferences: IGeneralPreferences
+    lateinit var loginSettings: ILoginSettings
+
     /**
      * Método para recibir las notificaciones FCM.
      *
      * @param remoteMessage El mensaje de notificación.
      */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+
         remoteMessage.notification?.let { notification ->
 
             Log.d("FCM", "Message Notification Title: ${notification.title}")

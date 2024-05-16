@@ -183,6 +183,7 @@ fun LoginForm(
                                 popUpTo(0)
                             }
                             showLoading = false
+                            mainVM.subscribeUser()
                             mainVM.actualizarWidget(context)
                         }
                     } else {

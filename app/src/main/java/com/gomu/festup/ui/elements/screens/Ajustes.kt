@@ -184,8 +184,8 @@ fun Ajustes(
                 SwitchTik(receiveNotifications, Modifier.weight(2f)){
                     preferencesVM.changeReceiveNotifications()
                     if (it){
-                        mainVM.subscribeUser()
-                        mainVM.suscribirASeguidos(seguidos.value)
+                        //mainVM.subscribeUser()
+                        //mainVM.suscribirASeguidos(seguidos.value)
                         CoroutineScope(Dispatchers.Main).launch {
                             val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                             eventos.map { evento ->
@@ -193,8 +193,8 @@ fun Ajustes(
                             }
                         }
                     }else{
-                        mainVM.unSubscribeUser()
-                        mainVM.unSuscribeASeguidos(seguidos.value)
+                        //mainVM.unSubscribeUser()
+                        //mainVM.unSuscribeASeguidos(seguidos.value)
                         CoroutineScope(Dispatchers.Main).launch {
                             val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                             eventos.map { evento ->
@@ -363,8 +363,8 @@ fun Ajustes(
                     SwitchTik(receiveNotifications, Modifier.weight(2f)){
                         preferencesVM.changeReceiveNotifications()
                         if (it){
-                            mainVM.subscribeUser()
-                            mainVM.suscribirASeguidos(seguidos.value)
+                            //mainVM.subscribeUser()
+                            //mainVM.suscribirASeguidos(seguidos.value)
                             CoroutineScope(Dispatchers.Main).launch {
                                 val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                                 eventos.map { evento ->
@@ -372,8 +372,8 @@ fun Ajustes(
                                 }
                             }
                         }else{
-                            mainVM.unSubscribeUser()
-                            mainVM.unSuscribeASeguidos(seguidos.value)
+                            //mainVM.unSubscribeUser()
+                           // mainVM.unSuscribeASeguidos(seguidos.value)
                             CoroutineScope(Dispatchers.Main).launch {
                                 val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                                 eventos.map { evento ->
@@ -407,29 +407,30 @@ fun Ajustes(
                     }
 
                 }
-                val context = LocalContext.current
-                EstasSeguroDialog(
-                    show = logoutVerification,
-                    mensaje = stringResource(id = R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n),
-                    onDismiss = { logoutVerification = false }
-                ) { CoroutineScope(Dispatchers.IO).launch {
-                    withContext(Dispatchers.IO) {
-                        preferencesVM.changeUser("")
-                    }
-                    //Log.d("FestUpWidget", "DataStore username ${preferencesVM}")
-                    mainVM.serverOk.value = false
-                    mainVM.actualizarWidget(context)
 
-                    withContext(Dispatchers.Main) {
-                        //mainNavController.popBackStack()
-                        (context as? Activity)?.finish()
-                        val intent = Intent(context, MainActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        context.startActivity(intent)
-                    }
-                } }
             }
         }
     }
+    val context = LocalContext.current
+    EstasSeguroDialog(
+        show = logoutVerification,
+        mensaje = stringResource(id = R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n),
+        onDismiss = { logoutVerification = false }
+    ) { CoroutineScope(Dispatchers.IO).launch {
+        withContext(Dispatchers.IO) {
+            preferencesVM.changeUser("")
+        }
+        //Log.d("FestUpWidget", "DataStore username ${preferencesVM}")
+        mainVM.serverOk.value = false
+        mainVM.actualizarWidget(context)
+
+        withContext(Dispatchers.Main) {
+            //mainNavController.popBackStack()
+            (context as? Activity)?.finish()
+            val intent = Intent(context, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            context.startActivity(intent)
+        }
+    } }
 }
 

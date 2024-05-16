@@ -420,6 +420,7 @@ class MainVM @Inject constructor(
                     try{
                         userRepository.subscribeUser(task.result)
                         Log.d("FCM", "Usuario suscrito")
+                        Log.d("FCM", task.result)
                     }
                     catch (e:Exception){
                         Log.d("Exception", e.printStackTrace().toString())
