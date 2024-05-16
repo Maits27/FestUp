@@ -33,7 +33,7 @@
 
     <application
         android:name=".FestUpApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -67,8 +67,8 @@
 
         <!-- Widget receiver -->
         <receiver
-            android:name=".ui.widget.FestUpWidgetReceiver"
-            android:exported="true">
+            android:name=".ui.elements.widget.FestUpWidgetReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
