@@ -3,6 +3,7 @@ package com.gomu.festup.ui.elements.screens
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,8 +57,18 @@ fun Ajustes(
     idioma: AppLanguage,
     dark: Boolean,
     receiveNotifications: Boolean,
-    mostrarEdad: Boolean
+//    mostrarEdad: Boolean
 ) {
+//    val idioma by preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(initial = preferencesVM.currentSetLang)
+//    val dark by preferencesVM.darkTheme(mainVM.currentUser.value!!.username).collectAsState(initial = true)
+//    val receiveNotifications by preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = true)
+//    val showAge by preferencesVM.mostrarEdad(mainVM.currentUser.value!!.username).collectAsState(initial = false)
+//    val showAgeOther by preferencesVM.mostrarEdad(if (mainVM.usuarioMostrar.isEmpty()) "" else mainVM.usuarioMostrar.last()?.username?:"").collectAsState(initial = false)
+
+    Log.d("APP", "Idioma: $idioma")
+    Log.d("APP", "Dark: $dark")
+    Log.d("APP", "receiveNotifications: $receiveNotifications")
+
     var showIdiomas by remember { mutableStateOf(false) }
     var logoutVerification by remember { mutableStateOf(false) }
     var seguidos = mainVM.listaSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
@@ -184,23 +195,11 @@ fun Ajustes(
                 SwitchTik(receiveNotifications, Modifier.weight(2f)){
                     preferencesVM.changeReceiveNotifications()
                     if (it){
-                        mainVM.subscribeUser()
-                        mainVM.suscribirASeguidos(seguidos.value)
-                        CoroutineScope(Dispatchers.Main).launch {
-                            val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
-                            eventos.map { evento ->
-                                scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
-                            }
-                        }
+
+                        MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
                     }else{
-                        mainVM.unSubscribeUser()
-                        mainVM.unSuscribeASeguidos(seguidos.value)
-                        CoroutineScope(Dispatchers.Main).launch {
-                            val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
-                            eventos.map { evento ->
-                                scheduler.cancel(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
-                            }
-                        }
+
+                        MainActivity.CURRENT_CHANNEL = MainActivity.NO_CHANNEL_ID
                     }
                 }
             }
@@ -222,7 +221,7 @@ fun Ajustes(
                 ) {
                     Text("Logout")
                     Text(
-                        text = "Cerrar sesión de ${mainVM.currentUser.value!!.username}",
+                        text = stringResource(id = R.string.cerrar_sesion_de, mainVM.currentUser.value!!.username),
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -300,29 +299,29 @@ fun Ajustes(
                     }
                     SwitchDarkMode(preferencesVM, dark, Modifier.weight(2f))
                 }
-                Row (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.visible),
-                        contentDescription = null,
-                        modifier = Modifier.weight(1f))
-                    Column(
-                        horizontalAlignment = Alignment.Start,
-                        modifier = Modifier.weight(3f)
-                    ) {
-                        Text(stringResource(id = R.string.edad))
-                        Text(
-                            text = if (mostrarEdad)  stringResource(id = R.string.mostrar) else stringResource(id = R.string.no_mostrar),
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                    SwitchTik(mostrarEdad, Modifier.weight(2f)){ preferencesVM.changeVisualizarEdad() }
-                }
+//                Row (
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(16.dp),
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.Start
+//                ){
+//                    Icon(
+//                        painter = painterResource(id = R.drawable.visible),
+//                        contentDescription = null,
+//                        modifier = Modifier.weight(1f))
+//                    Column(
+//                        horizontalAlignment = Alignment.Start,
+//                        modifier = Modifier.weight(3f)
+//                    ) {
+//                        Text(stringResource(id = R.string.edad))
+//                        Text(
+//                            text = if (mostrarEdad)  stringResource(id = R.string.mostrar) else stringResource(id = R.string.no_mostrar),
+//                            style = MaterialTheme.typography.bodySmall
+//                        )
+//                    }
+//                    SwitchTik(mostrarEdad, Modifier.weight(2f)){ preferencesVM.changeVisualizarEdad() }
+//                }
             }
             Divider(
                 modifier = Modifier
@@ -366,23 +365,25 @@ fun Ajustes(
                     SwitchTik(receiveNotifications, Modifier.weight(2f)){
                         preferencesVM.changeReceiveNotifications()
                         if (it){
-                            mainVM.subscribeUser()
-                            mainVM.suscribirASeguidos(seguidos.value)
-                            CoroutineScope(Dispatchers.Main).launch {
-                                val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
-                                eventos.map { evento ->
-                                    scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
-                                }
-                            }
+//                            mainVM.subscribeUser()
+//                            mainVM.suscribirASeguidos(seguidos.value)
+//                            CoroutineScope(Dispatchers.Main).launch {
+//                                val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
+//                                eventos.map { evento ->
+//                                    scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
+//                                }
+//                            }
+                            MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
                         }else{
-                            mainVM.unSubscribeUser()
-                           mainVM.unSuscribeASeguidos(seguidos.value)
-                            CoroutineScope(Dispatchers.Main).launch {
-                                val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
-                                eventos.map { evento ->
-                                    scheduler.cancel(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
-                                }
-                            }
+//                            mainVM.unSubscribeUser()
+//                           mainVM.unSuscribeASeguidos(seguidos.value)
+//                            CoroutineScope(Dispatchers.Main).launch {
+//                                val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
+//                                eventos.map { evento ->
+//                                    scheduler.cancel(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
+//                                }
+//                            }
+                            MainActivity.CURRENT_CHANNEL = MainActivity.NO_CHANNEL_ID
                         }
                     }
                 }

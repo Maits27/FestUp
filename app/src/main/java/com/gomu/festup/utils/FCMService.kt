@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.gomu.festup.MainActivity
 import com.gomu.festup.MyNotificationChannels
 import com.gomu.festup.NotificationID
 import com.gomu.festup.R
@@ -39,7 +40,7 @@ class FCMService : FirebaseMessagingService() {
             Log.d("FCM", "Message Notification Title: ${notification.title}")
             Log.d("FCM", "Message Notification Body: ${notification.body}")
 
-            val builder = NotificationCompat.Builder(this, MyNotificationChannels.NOTIFICATIONS_CHANNEL.name)
+            val builder = NotificationCompat.Builder(this, MainActivity.CURRENT_CHANNEL)
                 .setSmallIcon(R.drawable.festup)
                 .setContentTitle(notification.title)
                 .setContentText(notification.body)

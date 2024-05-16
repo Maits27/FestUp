@@ -56,6 +56,7 @@ fun SplashScreen(
                     navController.navigate(AppScreens.App.route) {
                         popUpTo(0)
                     }
+                    preferencesVM.changeUser(lastLoggedUser)
                 }
             }
             else {

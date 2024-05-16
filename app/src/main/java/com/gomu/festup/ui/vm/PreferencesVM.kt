@@ -3,6 +3,8 @@ package com.gomu.festup.ui.vm
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.gomu.festup.MainActivity
 import com.gomu.festup.data.AppLanguage
 import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
 import com.gomu.festup.data.repositories.preferences.ILoginSettings
@@ -49,7 +51,6 @@ class PreferencesViewModel @Inject constructor(
      *************************************************/
 
     suspend fun changeUser(username: String){
-        Log.d("CAMBIO DE USUARIO", username)
         _currentUser.value = username
         loginRepository.setLastLoggedUser(username)
     }
@@ -59,13 +60,9 @@ class PreferencesViewModel @Inject constructor(
 
     // Cambio del idioma de preferencia
     fun changeLang(i: AppLanguage) {
-        Log.d("IDIOMAS", "cambiando a: ${i.code}")
         languageManager.changeLang(i)
         viewModelScope.launch(Dispatchers.IO) {
             preferencesRepository.setLanguage(currentUser.first(), i.code)
-            Log.d("Usuario:", currentUser.first().toString())
-            Log.d("NUEVO IDIOMA", preferencesRepository.language(currentUser.first()).toString())
-
         }
     }
 
@@ -81,6 +78,11 @@ class PreferencesViewModel @Inject constructor(
         viewModelScope.launch {
             languageManager.changeLang(i)
         }
+    }
+    fun restartNotifications(activate: Boolean){
+        if (activate) MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
+        else MainActivity.CURRENT_CHANNEL = MainActivity.NO_CHANNEL_ID
+        Log.d("CANAL", MainActivity.CURRENT_CHANNEL)
     }
 
     ////////////////////// Notificaciones //////////////////////

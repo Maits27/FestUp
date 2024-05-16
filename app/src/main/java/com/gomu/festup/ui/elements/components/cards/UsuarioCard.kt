@@ -110,7 +110,7 @@ fun UsuarioCardParaEventosAlert(
     usuario: Usuario,
     apuntado: Boolean,
     mainVM: MainVM,
-    recibirNotificaciones: Boolean
+//    recibirNotificaciones: Boolean
 ) {
     val context = LocalContext.current
 
@@ -170,8 +170,8 @@ fun UsuarioCardParaEventosAlert(
                     val eventoMostrar = mainVM.eventoMostrar.value!!
 
                     if (checkedSwitch){
-                        Log.d("RECNOTIF", recibirNotificaciones.toString())
-                        if(recibirNotificaciones) {
+//                        Log.d("RECNOTIF", recibirNotificaciones.toString())
+//                        if(recibirNotificaciones) {
                             scheduler.schedule(
                                 AlarmItem(
                                     getScheduleTime(eventoMostrar),
@@ -180,12 +180,12 @@ fun UsuarioCardParaEventosAlert(
                                     eventoMostrar.id
                                 )
                             )
-                        }
+//                        }
                         mainVM.apuntarse(usuario, mainVM.eventoMostrar.value!!)
                     }
                     else{
-                        Log.d("RECNOTIF", recibirNotificaciones.toString())
-                        if(recibirNotificaciones) {
+//                        Log.d("RECNOTIF", recibirNotificaciones.toString())
+//                        if(recibirNotificaciones) {
                             scheduler.cancel(
                                 AlarmItem(
                                     getScheduleTime(eventoMostrar),
@@ -194,7 +194,7 @@ fun UsuarioCardParaEventosAlert(
                                     eventoMostrar.id
                                 )
                             )
-                        }
+//                        }
                         mainVM.desapuntarse(usuario, mainVM.eventoMostrar.value!!)
                     }
                 },

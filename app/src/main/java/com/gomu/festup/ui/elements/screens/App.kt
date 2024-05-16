@@ -53,9 +53,14 @@ fun App(
     val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     preferencesVM.restartLang(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
             initial = preferencesVM.currentSetLang).value)
+    preferencesVM.restartNotifications(
+        preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username)
+            .collectAsState(initial = true).value)
+
     Log.d("LAST LOGGED USER DENTRO", preferencesVM.lastLoggedUser)
 
     val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -120,11 +125,14 @@ fun App(
         },
 
         ){ innerPadding ->
+
         val idioma by preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(initial = preferencesVM.currentSetLang)
         val dark by preferencesVM.darkTheme(mainVM.currentUser.value!!.username).collectAsState(initial = true)
-        val receiveNotifications by preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = false)
-        val showAge by preferencesVM.mostrarEdad(mainVM.currentUser.value!!.username).collectAsState(initial = false)
-        val showAgeOther by preferencesVM.mostrarEdad(if (mainVM.usuarioMostrar.isEmpty()) "" else mainVM.usuarioMostrar.last()?.username?:"").collectAsState(initial = false)
+        val receiveNotifications by preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = true)
+//        val showAge by preferencesVM.mostrarEdad(mainVM.currentUser.value!!.username).collectAsState(initial = false)
+//        val showAgeOther by preferencesVM.mostrarEdad(if (mainVM.usuarioMostrar.isEmpty()) "" else mainVM.usuarioMostrar.last()?.username?:"").collectAsState(initial = false)
+
+
 
         Row(
             verticalAlignment = Alignment.Top,
@@ -163,7 +171,7 @@ fun App(
                 composable(AppScreens.Evento.route,
                     enterTransition = { fadeIn(animationSpec = tween(1000)) },
                     exitTransition = { fadeOut(animationSpec = tween(1000)) }
-                ) { Evento(navController, mainVM, receiveNotifications) }
+                ) { Evento(navController, mainVM) }
 
                 composable(AppScreens.AddCuadrilla.route,
                     enterTransition = { fadeIn(animationSpec = tween(1000)) },
@@ -178,12 +186,12 @@ fun App(
                 composable(AppScreens.PerfilYo.route,
                     enterTransition = { fadeIn(animationSpec = tween(1000)) },
                     exitTransition = { fadeOut(animationSpec = tween(1000)) }
-                ) { PerfilYo(mainNavController, navController, preferencesVM, yo = true, receiveNotifications, showAge, mainVM = mainVM) }
+                ) { PerfilYo(navController, preferencesVM, yo = true, mainVM = mainVM) }
 
                 composable(AppScreens.PerfilUser.route,
                     enterTransition = { fadeIn(animationSpec = tween(1000)) },
                     exitTransition = { fadeOut(animationSpec = tween(1000)) }
-                ) { PerfilYo(mainNavController, navController, preferencesVM, yo = false, receiveNotifications, showAgeOther, mainVM = mainVM) }
+                ) { PerfilYo(navController, preferencesVM, yo = false,  mainVM = mainVM) }
 
                 composable(AppScreens.PerfilCuadrilla.route,
                     enterTransition = { fadeIn(animationSpec = tween(1000)) },
@@ -205,7 +213,7 @@ fun App(
                 composable(AppScreens.Ajustes.route,
                     enterTransition = { fadeIn(animationSpec = tween(1000)) },
                     exitTransition = { fadeOut(animationSpec = tween(1000)) }
-                ) { Ajustes(preferencesVM, mainVM, idioma, dark, receiveNotifications, showAge) }
+                ) { Ajustes(preferencesVM, mainVM, idioma, dark, receiveNotifications) }
 
                 composable(AppScreens.EditPerfil.route,
                     enterTransition = { fadeIn(animationSpec = tween(1000)) },

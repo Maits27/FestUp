@@ -102,7 +102,7 @@ fun CuadrillaCardParaEventosAlert(
     cuadrilla: Cuadrilla,
     apuntado: Boolean,
     mainVM: MainVM,
-    recibirNotificaciones: Boolean
+//    recibirNotificaciones: Boolean
 ) {
     val context = LocalContext.current
 
@@ -160,22 +160,22 @@ fun CuadrillaCardParaEventosAlert(
                     checkedSwitch = !checkedSwitch
 
                     if (checkedSwitch){
-                        Log.d("RECNOTIF", recibirNotificaciones.toString())
-                        if (recibirNotificaciones) {
-                            scheduler.schedule(
-                                AlarmItem(
-                                    getScheduleTime(mainVM.eventoMostrar.value!!),
-                                    mainVM.eventoMostrar.value!!.nombre,
-                                    mainVM.eventoMostrar.value!!.localizacion,
-                                    mainVM.eventoMostrar.value!!.id
-                                )
+//                        Log.d("RECNOTIF", recibirNotificaciones.toString())
+//                        if (recibirNotificaciones) {
+                        scheduler.schedule(
+                            AlarmItem(
+                                getScheduleTime(mainVM.eventoMostrar.value!!),
+                                mainVM.eventoMostrar.value!!.nombre,
+                                mainVM.eventoMostrar.value!!.localizacion,
+                                mainVM.eventoMostrar.value!!.id
                             )
-                        }
+                        )
+//                        }
                         mainVM.apuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
                     }
                     else{
-                        Log.d("RECNOTIF", recibirNotificaciones.toString())
-                        if (recibirNotificaciones){
+//                        Log.d("RECNOTIF", recibirNotificaciones.toString())
+//                        if (recibirNotificaciones){
                             scheduler.cancel(
                                 AlarmItem(
                                 getScheduleTime(mainVM.eventoMostrar.value!!),
@@ -184,9 +184,9 @@ fun CuadrillaCardParaEventosAlert(
                                 mainVM.eventoMostrar.value!!.id
                                 )
                             )
-                        }
                         mainVM.desapuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
                     }
+//                    }
                 },
                 thumbContent = if (checkedSwitch) {
                     {

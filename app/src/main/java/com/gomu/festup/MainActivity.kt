@@ -81,6 +81,8 @@ class MainActivity : AppCompatActivity() {
     // Set a CHANNEL_ID
     companion object{
         const val CHANNEL_ID = "FestUpNotifChannel"
+        const val NO_CHANNEL_ID = "NoNotify"
+        var CURRENT_CHANNEL = CHANNEL_ID
     }
 
     // Para manejar el botón de atrás de Android

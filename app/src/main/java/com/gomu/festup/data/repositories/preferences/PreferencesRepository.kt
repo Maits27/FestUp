@@ -1,6 +1,7 @@
 package com.gomu.festup.data.repositories.preferences
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -24,7 +25,7 @@ class PreferencesRepository @Inject constructor(
     val LAST_REFRESH_TOKEN = stringPreferencesKey("last_refresh_token")
     fun PREFERENCE_LANGUAGE(username: String) = stringPreferencesKey("${username}_preference_lang")
     fun PREFERENCE_THEME_DARK(username: String) = booleanPreferencesKey("${username}_preference_theme")
-    fun PREFERENCE_NOTIFICATIONS(username: String) = booleanPreferencesKey("${username}_preference_save")
+    fun PREFERENCE_NOTIFICATIONS(username: String) = booleanPreferencesKey("${username}_preference_notif")
     fun PREFERENCE_AGE(username: String) = booleanPreferencesKey("${username}_preference_age")
 
 
@@ -100,7 +101,7 @@ class PreferencesRepository @Inject constructor(
      */
     override fun getReceiveNotifications(username: String): Flow<Boolean> =
         context.dataStore.data.map { preferences ->
-            preferences[PREFERENCE_NOTIFICATIONS(username)] ?: false
+            preferences[PREFERENCE_NOTIFICATIONS(username)] ?: true
         }
 
     override suspend fun changeReceiveNotifications(username: String) {

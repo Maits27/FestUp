@@ -90,12 +90,11 @@ import java.util.Date
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun PerfilYo(
-    mainNavController: NavController,
     navController: NavController,
     preferencesViewModel: PreferencesViewModel,
     yo: Boolean = false,
-    recibirNotificaciones: Boolean,
-    showAge: Boolean,
+//    recibirNotificaciones: Boolean,
+//    showAge: Boolean,
     mainVM: MainVM
 ) {
     var usuario = mainVM.currentUser.value!!
@@ -155,9 +154,9 @@ fun PerfilYo(
 
                     TopProfile(
                         mainVM = mainVM,
-                        edad = if(showAge) mainVM.calcularEdad(usuario) else -1,
+                        edad = mainVM.calcularEdad(usuario) ,
                         yo = yo,
-                        recibirNotificaciones = recibirNotificaciones,
+//                        recibirNotificaciones = recibirNotificaciones,
                         alreadySiguiendo = alreadySiguiendo,
                         usuario = usuario,
                         navController = navController
@@ -220,7 +219,7 @@ fun PerfilYo(
                         mainVM = mainVM,
                         edad = mainVM.calcularEdad(usuario),
                         yo = yo,
-                        recibirNotificaciones = recibirNotificaciones,
+//                        recibirNotificaciones = recibirNotificaciones,
                         alreadySiguiendo = alreadySiguiendo,
                         usuario = usuario,
                         navController = navController
@@ -407,7 +406,7 @@ fun EventosUsuario(
 @Composable
 fun SeguidoresYSeguidos(
     yo: Boolean,
-    recibirNotificaciones: Boolean,
+//    recibirNotificaciones: Boolean,
     usuario: Usuario,
     mainVM: MainVM,
     navController: NavController,
@@ -435,7 +434,7 @@ fun SeguidoresYSeguidos(
             FollowButton(
                 alreadySiguiendo = alreadySiguiendo,
                 mainVM = mainVM,
-                recibirNotificaciones = recibirNotificaciones,
+//                recibirNotificaciones = recibirNotificaciones,
                 usuario = usuario
             )
         }
@@ -570,7 +569,7 @@ fun TopProfile(
     usuario: Usuario,
     navController: NavController,
     alreadySiguiendo: MutableState<Boolean?>,
-    recibirNotificaciones: Boolean,
+//    recibirNotificaciones: Boolean,
     edad: Int,
     yo: Boolean
 ){
@@ -605,7 +604,7 @@ fun TopProfile(
 
         SeguidoresYSeguidos(
             yo = yo,
-            recibirNotificaciones = recibirNotificaciones,
+//            recibirNotificaciones = recibirNotificaciones,
             usuario = usuario,
             mainVM = mainVM,
             navController = navController,
@@ -675,15 +674,15 @@ fun ProfileImage(
 fun FollowButton(
     alreadySiguiendo: MutableState<Boolean?>,
     mainVM: MainVM,
-    recibirNotificaciones: Boolean,
+//    recibirNotificaciones: Boolean,
     usuario: Usuario
 ) {
 
     val onClickFollow: () -> Unit = {
         mainVM.newSiguiendo(usuario.username)
-        if(recibirNotificaciones){
+//        if(recibirNotificaciones){
             mainVM.subscribeToUser(mainVM.usuarioMostrar.last()!!.username)
-        }
+//        }
     }
 
     val onClickUnfollow: () -> Unit = {

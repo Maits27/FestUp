@@ -21,8 +21,9 @@ class AlarmReceiver: BroadcastReceiver() {
         val notificationId = System.currentTimeMillis().toInt()
 
         Log.d("AlarmScheduler", "Alarma recibida")
+        Log.d("CANAL", MainActivity.CURRENT_CHANNEL)
 
-        val builder = NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
+        val builder = NotificationCompat.Builder(context, MainActivity.CURRENT_CHANNEL)
             .setSmallIcon(R.drawable.festuplogo)
             .setContentTitle(title)
             .setContentText(body)

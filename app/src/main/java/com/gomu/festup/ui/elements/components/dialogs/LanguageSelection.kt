@@ -1,5 +1,6 @@
 package com.gomu.festup.ui.elements.components.dialogs
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,6 +55,7 @@ fun LanguageSelection(
                         RadioButton(
                             selected = idioma.code == "es",
                             onClick = {
+                                Log.d("CLICK", "es")
                                 preferencesVM.changeLang(AppLanguage.getFromCode("es"))
                             }
                         )
@@ -63,6 +65,7 @@ fun LanguageSelection(
                         RadioButton(
                             selected = idioma.code == "eu",
                             onClick = {
+                                Log.d("CLICK", "eu")
                                 preferencesVM.changeLang(AppLanguage.getFromCode("eu"))
                             }
                         )

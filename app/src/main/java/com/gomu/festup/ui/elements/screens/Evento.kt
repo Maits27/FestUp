@@ -73,7 +73,7 @@ import kotlinx.coroutines.launch
 fun Evento(
     navController: NavController,
     mainVM: MainVM,
-    recibirNotificaciones: Boolean
+//    recibirNotificaciones: Boolean
 ) {
     val context = LocalContext.current
     val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
@@ -98,7 +98,7 @@ fun Evento(
         }
     }
 
-    Apuntarse(show = apuntarse, apuntado = apuntado,  mainVM = mainVM, recibirNotificaciones) {
+    Apuntarse(show = apuntarse, apuntado = apuntado,  mainVM = mainVM) {
         apuntarse = false
         mainVM.actualizarWidget(context)
     }
