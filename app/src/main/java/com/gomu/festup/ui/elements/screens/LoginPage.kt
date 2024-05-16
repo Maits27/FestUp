@@ -357,7 +357,7 @@ fun RegistroForm(
     }
 
     var imageUri by rememberSaveable {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/no-user.png"))
+        mutableStateOf<Uri?>(null)
     }
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
@@ -648,132 +648,6 @@ fun RegistroForm(
                 }
 
             }
-
-//
-//            Row(
-//                verticalAlignment = Alignment.Top,
-//                horizontalArrangement = Arrangement.Center,
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .verticalScroll(rememberScrollState())
-//            ) {
-//                Column(
-//                    verticalArrangement = Arrangement.Top,
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-//                    modifier = Modifier
-//                        .weight(1f)
-//                        .fillMaxSize()
-//                ) {
-//                    Box(contentAlignment = Alignment.BottomEnd) {
-//                        Box(Modifier.padding(16.dp)) {
-//                            Imagen(imageUri, context, R.drawable.no_user, 140.dp) {}
-//                        }
-//                        // Icono para editar imagen
-//                        EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
-//                    }
-//
-//                    // Campo para añadir nombre de usuario
-//                    OutlinedTextField(
-//                        value = username,
-//                        onValueChange = { username = it.lowercase().replace(" ", "").replace("\n", "") },
-//                        label = { Text(text = "Nombre de usuario") },
-//                        modifier = modifierForInputs
-//                    )
-//                    // Campo para añadir email
-//                    OutlinedTextField(
-//                        value = email,
-//                        onValueChange = { email = it },
-//                        label = { Text(text = "Email") },
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-//                        modifier = modifierForInputs
-//                    )
-//                    // Campo para añadir el número de teléfono
-//                    OutlinedTextField(
-//                        value = telefono,
-//                        onValueChange = { telefono = it },
-//                        label = { Text(text = "Teléfono") },
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-//                        modifier = modifierForInputs
-//                    )
-//                }
-//                Column(
-//                    verticalArrangement = Arrangement.Top,
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-//                    modifier = Modifier
-//                        .weight(1f)
-//                        .fillMaxSize()
-//                ) {
-//
-//                    // Campo para añadir nombre
-//                    OutlinedTextField(
-//                        value = nombre,
-//                        onValueChange = { nombre = it },
-//                        label = { Text(text = "Nombre") },
-//                        modifier = modifierForInputs
-//                    )
-//                    // Añadir fecha de nacimiento
-//                    OutlinedTextField(
-//                        value = birthDate,
-//                        onValueChange = {  },
-//                        label = { Text(text = "Fecha de nacimiento") },
-//                        modifier = modifierForInputs.clickable { showDatePicker = true },
-//                        colors = OutlinedTextFieldDefaults.colors(
-//                            disabledTextColor = MaterialTheme.colorScheme.onSurface,
-//                            disabledBorderColor = MaterialTheme.colorScheme.outline,
-//                            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-//                        ),
-//                        enabled = false
-//                    )
-//                    // Campo para añadir contraseña
-//                    OutlinedTextField(
-//                        value = password,
-//                        onValueChange = { password = it },
-//                        label = { Text(text = "Contraseña") },
-//                        trailingIcon = {
-//                            // Icono para alternar entre contraseña visible y oculta
-//                            val icon = if (visiblePasswordSingIn) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
-//                            IconButton(onClick = { visiblePasswordSingIn = !visiblePasswordSingIn }) {
-//                                Icon(icon, contentDescription = "Toggle password visibility")
-//                            }
-//                        },
-//                        visualTransformation = if (visiblePasswordSingIn) VisualTransformation.None else PasswordVisualTransformation(),
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-//                        modifier = modifierForInputs
-//                    )
-//                    // Campo para repetir contraseña
-//                    OutlinedTextField(
-//                        value = confirmPassword,
-//                        onValueChange = { confirmPassword = it },
-//                        label = { Text(text = "Repite la contraseña") },
-//                        trailingIcon = {
-//                            // Icono para alternar entre contraseña visible y oculta
-//                            val icon = if (visiblePasswordSingInR) painterResource(id = R.drawable.visible) else painterResource(id = R.drawable.no_visible)
-//                            IconButton(onClick = { visiblePasswordSingInR = !visiblePasswordSingInR }) {
-//                                Icon(icon, contentDescription = "Toggle password visibility")
-//                            }
-//                        },
-//                        visualTransformation = if (visiblePasswordSingInR) VisualTransformation.None else PasswordVisualTransformation(),
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-//                        modifier = modifierForInputs
-//                    )
-//                    Row (
-//                        horizontalArrangement = Arrangement.Center,
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        modifier = Modifier.align(Alignment.CenterHorizontally)
-//                    ){
-//                        if(!mainVM.serverOk.value) Icon(painter = painterResource(id = R.drawable.no_wifi), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
-//                        Button(
-//                            onClick = { onRegisterButtonClick() },
-//                            enabled = mainVM.serverOk.value,
-//                            modifier = Modifier
-//                                .padding(top = 10.dp)
-//                        ) {
-//                            Text(text = stringResource(R.string.registrarse))
-//                        }
-//                    }
-//                }
-//            }
-
         }
     }
 
@@ -829,12 +703,14 @@ fun checkRegisterForm(
 ) : Boolean {
     var correct = false
     val emailRegex = Regex("""\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Z|a-z]{2,}\b""")
+    val phoneRegex = Regex("^[0-9]{9}$")
 
     if (username == "") formValidatorError(context, "Introduce un nombre de usuario")
     else if (username.length > 30) formValidatorError(context, "El nombre de usuario no puede tener más de 30 caracteres")
     else if (email == "") formValidatorError(context, "Introduce un email")
     else if (!email.matches(emailRegex)) formValidatorError(context,  "El formato del email no es correcto")
     else if (telefono == "") formValidatorError(context, "Introduce un número de teléfono")
+    else if (!telefono.matches(phoneRegex)) formValidatorError(context,  "El formato del número de teléfono no es correcto")
     else if (nombre == "") formValidatorError(context,  "Introduce un nombre")
     else if (password == "") formValidatorError(context,  "Introduce una contraseña")
     else if (password.length < 6) formValidatorError(context,  "La contraseña debe contener al menos 6 caracteres")
