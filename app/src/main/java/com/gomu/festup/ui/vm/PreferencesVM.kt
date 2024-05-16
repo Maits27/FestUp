@@ -79,11 +79,6 @@ class PreferencesViewModel @Inject constructor(
             languageManager.changeLang(i)
         }
     }
-    fun restartNotifications(activate: Boolean){
-        if (activate) MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
-        else MainActivity.CURRENT_CHANNEL = MainActivity.NO_CHANNEL_ID
-        Log.d("CANAL", MainActivity.CURRENT_CHANNEL)
-    }
 
     ////////////////////// Notificaciones //////////////////////
 

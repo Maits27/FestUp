@@ -1,7 +1,6 @@
 package com.gomu.festup.ui.elements.components.cards
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -132,12 +131,12 @@ fun CuadrillaCardParaEventosAlert(
                     .diskCachePolicy(CachePolicy.DISABLED)    // Para que no la guarde en caché-disco
                     .build(),
                 contentDescription = stringResource(id = R.string.cuadrilla_imagen),
-                placeholder = painterResource(id = R.drawable.no_cuadrilla),
+                placeholder = painterResource(id = R.drawable.no_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape),
-                error = painterResource(id = R.drawable.no_cuadrilla)
+                error = painterResource(id = R.drawable.no_image)
             )
             Column(
                 Modifier.padding(vertical = 10.dp, horizontal = 10.dp)

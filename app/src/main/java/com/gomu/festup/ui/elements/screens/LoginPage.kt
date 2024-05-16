@@ -73,17 +73,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.gomu.festup.R
+import com.gomu.festup.alarmMng.AlarmItem
+import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.elements.components.EditImageIcon
 import com.gomu.festup.ui.elements.components.Imagen
 import com.gomu.festup.ui.vm.IdentVM
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.ui.vm.PreferencesViewModel
+import com.gomu.festup.utils.getScheduleTime
 import com.gomu.festup.utils.nuestroLocationProvider
 import com.gomu.festup.utils.toStringNuestro
 import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
@@ -149,6 +153,7 @@ fun LoginForm(
     }
 
     val context = LocalContext.current
+    val scheduler = AndroidAlarmScheduler(LocalContext.current)
 
     var showLoading by rememberSaveable {
         mutableStateOf(false)
@@ -185,6 +190,12 @@ fun LoginForm(
                             }
                             showLoading = false
                             mainVM.actualizarWidget(context)
+                        }
+                        withContext(Dispatchers.Main) {
+                            val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
+                            eventos.map { evento ->
+                                scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
+                            }
                         }
                     } else {
                         withContext(Dispatchers.Main) {

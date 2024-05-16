@@ -49,31 +49,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
-    /* DEPRECATED
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        if (result != null) {
-            if (result.contents != null) {
-                // Aquí obtienes el texto del código QR escaneado
-                val scannedCode = result.contents
-                Log.d("Codigo escaneado", scannedCode)
-                val token = mainVM.getCuadrillaAccessToken(mainVM.cuadrillaMostrar.value!!.nombre)
-                if (scannedCode == token){
-                    mainVM.agregarIntegrante(mainVM.currentUser.value!!.username, mainVM.cuadrillaMostrar.value!!.nombre)
-                }
-                else{
-                    Toast.makeText(this, "QR incorrecto, intentalo de nuevo!", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        else{
-            Toast.makeText(this, "Ha ocurrrido un problema al escanear el código QR, intentalo de nuevo!", Toast.LENGTH_SHORT).show()
-        }
-    }
-     */
-
     private val mainVM by viewModels<MainVM>()
     private val identVM by viewModels<IdentVM>()
     private val preferencesVM by viewModels<PreferencesViewModel>()
@@ -81,8 +56,6 @@ class MainActivity : AppCompatActivity() {
     // Set a CHANNEL_ID
     companion object{
         const val CHANNEL_ID = "FestUpNotifChannel"
-        const val NO_CHANNEL_ID = "NoNotify"
-        var CURRENT_CHANNEL = CHANNEL_ID
     }
 
     // Para manejar el botón de atrás de Android

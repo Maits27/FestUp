@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -131,7 +130,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 
             Box(contentAlignment = Alignment.BottomEnd) {
                 Box(Modifier.padding(16.dp)) {
-                    Imagen(imageUri, context, R.drawable.no_cuadrilla, 120.dp) {}
+                    Imagen(imageUri, context, R.drawable.no_image, 120.dp) {}
                 }
                 EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
             }
@@ -189,7 +188,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Box(Modifier.padding(16.dp)) {
-                        Imagen(imageUri, context, R.drawable.no_cuadrilla, 120.dp) {}
+                        Imagen(imageUri, context, R.drawable.no_image, 120.dp) {}
                     }
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }

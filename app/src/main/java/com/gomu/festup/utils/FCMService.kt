@@ -1,6 +1,7 @@
 package com.gomu.festup.utils
 
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.core.app.NotificationCompat
@@ -13,6 +14,7 @@ import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
 import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -26,7 +28,8 @@ import javax.inject.Inject
  *
  * Referencias: https://medium.com/@dugguRK/fcm-android-integration-3ca32ff425a5
  */
-
+@SuppressLint("MissingFirebaseInstanceTokenRefresh")
+@AndroidEntryPoint
 class FCMService : FirebaseMessagingService() {
 
     @Inject

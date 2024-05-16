@@ -11,35 +11,51 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.gomu.festup.MainActivity
 import com.gomu.festup.R
+import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
+import com.gomu.festup.data.repositories.preferences.ILoginSettings
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AlarmReceiver: BroadcastReceiver() {
+    @Inject
+    lateinit var preferences: IGeneralPreferences
+    @Inject
+    lateinit var loginSettings: ILoginSettings
     override fun onReceive(context: Context, intent: Intent?) {
 
         val title = intent?.getStringExtra("TITLE")?: return
         val body = intent.getStringExtra("BODY") ?: return
-
-        val notificationId = System.currentTimeMillis().toInt()
-
         Log.d("AlarmScheduler", "Alarma recibida")
-        Log.d("CANAL", MainActivity.CURRENT_CHANNEL)
 
-        val builder = NotificationCompat.Builder(context, MainActivity.CURRENT_CHANNEL)
-            .setSmallIcon(R.drawable.festuplogo)
-            .setContentTitle(title)
-            .setContentText(body)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
-        with(NotificationManagerCompat.from(context)) {
-            if (ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                notify(notificationId, builder.build())
+        CoroutineScope(Dispatchers.IO).launch {
+            val currentUser = loginSettings.getLastLoggedUser()
+            if (currentUser != "") {
+                if (preferences.getReceiveNotifications(currentUser).first()) {
+                    val notificationId = System.currentTimeMillis().toInt()
+                    Log.d("AlarmScheduler", "Alarma enviada")
+
+                    val builder = NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
+                        .setSmallIcon(R.drawable.festuplogo)
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setAutoCancel(true)
+                    with(NotificationManagerCompat.from(context)) {
+                        if (ActivityCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                            notify(notificationId, builder.build())
+                        }
+                    }
+                }
             }
         }
-
     }
-
-
 }

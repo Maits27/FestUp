@@ -57,11 +57,6 @@ fun App(
     preferencesVM.restartLang(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
             initial = preferencesVM.currentSetLang).value)
-    preferencesVM.restartNotifications(
-        preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username)
-            .collectAsState(initial = true).value)
-
-    Log.d("LAST LOGGED USER DENTRO", preferencesVM.lastLoggedUser)
 
     val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 

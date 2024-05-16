@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -179,6 +180,7 @@ fun AddEvento(
                             LocalDateTime.now().hour,
                             LocalDateTime.now().minute + 1
                         )
+                        Log.d("AlarmScheduler", "Alarma programada")
                         scheduler.schedule(AlarmItem(scheduleTime, newEvento.nombre, newEvento.localizacion, newEvento.id))
 
                         if( addOnCalendar ) {
