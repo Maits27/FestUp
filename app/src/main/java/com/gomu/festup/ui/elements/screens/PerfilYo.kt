@@ -177,15 +177,15 @@ fun PerfilYo(
                 )
                 EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
             }
-            if (yo) {
-                BotonesPerfil(
-                    navController= navController,
-                    mainNavController = mainNavController,
-                    preferencesVM = preferencesViewModel,
-                    mainVM = mainVM,
-                    actualizarWidget = mainVM::actualizarWidget
-                )
-            }
+//            if (yo) {
+//                BotonesPerfil(
+//                    navController= navController,
+//                    mainNavController = mainNavController,
+//                    preferencesVM = preferencesViewModel,
+//                    mainVM = mainVM,
+//                    actualizarWidget = mainVM::actualizarWidget
+//                )
+//            }
         }
     }
     else{
@@ -583,26 +583,26 @@ fun BotonesPerfil(
 
     }
 
-    EstasSeguroDialog(
-        show = verificacion,
-        mensaje = stringResource(id = R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n),
-        onDismiss = { verificacion = false }
-    ) { CoroutineScope(Dispatchers.IO).launch {
-        withContext(Dispatchers.IO) {
-            preferencesVM.changeUser("")
-        }
-        //Log.d("FestUpWidget", "DataStore username ${preferencesVM}")
-        mainVM.serverOk.value = false
-        mainVM.actualizarWidget(context)
-
-        withContext(Dispatchers.Main) {
-            //mainNavController.popBackStack()
-            (context as? Activity)?.finish()
-            val intent = Intent(context, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            context.startActivity(intent)
-        }
-    } }
+//    EstasSeguroDialog(
+//        show = verificacion,
+//        mensaje = stringResource(id = R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n),
+//        onDismiss = { verificacion = false }
+//    ) { CoroutineScope(Dispatchers.IO).launch {
+//        withContext(Dispatchers.IO) {
+//            preferencesVM.changeUser("")
+//        }
+//        //Log.d("FestUpWidget", "DataStore username ${preferencesVM}")
+//        mainVM.serverOk.value = false
+//        mainVM.actualizarWidget(context)
+//
+//        withContext(Dispatchers.Main) {
+//            //mainNavController.popBackStack()
+//            (context as? Activity)?.finish()
+//            val intent = Intent(context, MainActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            context.startActivity(intent)
+//        }
+//    } }
 }
 
 @RequiresApi(Build.VERSION_CODES.P)

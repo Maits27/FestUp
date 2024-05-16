@@ -80,18 +80,6 @@ fun TopBarMainView(
     val currentDestination = navBackStackEntry?.destination
     val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
 
-//    val goBack:() -> Unit = {
-//        Log.d("ON BACK", "ME VOY PARA ATRAS")
-//        if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
-//            if(mainVM.usuarioMostrar.isNotEmpty()){
-//                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
-//            }
-//        }
-//        navController.popBackStack()
-//    }
-
-    BackHandler(onBack = goBack)
-
     var title by remember {
         mutableStateOf("")
     }
@@ -167,7 +155,7 @@ fun TopBarMainView(
             showTopBar = true
             showPerfil = false
             showAmigos = false
-            title = stringResource(id = R.string.preferences, mainVM.usuarioMostrar.last()!!.username)
+            title = stringResource(id = R.string.preferences, mainVM.currentUser.value!!.username)
             showBackArrow = true
         }
         AppScreens.SeguidoresSeguidosList.route -> {
@@ -236,6 +224,15 @@ fun TopBarMainView(
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.round_people_24),
+                        contentDescription = "",
+                        modifier = Modifier.size(27.dp)
+                    )
+                }
+                IconButton(onClick = {
+                    navController.navigate(AppScreens.Ajustes.route)
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.settings),
                         contentDescription = "",
                         modifier = Modifier.size(27.dp)
                     )

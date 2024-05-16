@@ -1,5 +1,7 @@
 package com.gomu.festup.ui.elements.screens
 
+import android.app.Activity
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,12 +31,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gomu.festup.MainActivity
 import com.gomu.festup.R
 import com.gomu.festup.alarmMng.AlarmItem
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.data.AppLanguage
 import com.gomu.festup.ui.elements.components.SwitchDarkMode
 import com.gomu.festup.ui.elements.components.SwitchTik
+import com.gomu.festup.ui.elements.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.ui.elements.components.dialogs.LanguageSelection
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.ui.vm.PreferencesViewModel
@@ -43,6 +47,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun Ajustes(
@@ -54,6 +59,7 @@ fun Ajustes(
     mostrarEdad: Boolean
 ) {
     var showIdiomas by remember { mutableStateOf(false) }
+    var logoutVerification by remember { mutableStateOf(false) }
     var seguidos = mainVM.listaSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
 
     val scheduler = AndroidAlarmScheduler(LocalContext.current)
@@ -197,6 +203,30 @@ fun Ajustes(
                         }
                     }
                 }
+            }
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clickable { logoutVerification = true },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ){
+                Icon(
+                    painter = painterResource(id = R.drawable.logout),
+                    contentDescription = null,
+                    modifier = Modifier.padding(10.dp))
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.padding(10.dp)
+                ) {
+                    Text("Logout")
+                    Text(
+                        text = "Cerrar sesión de ${mainVM.currentUser.value!!.username}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+
             }
         }
     }else{
@@ -353,6 +383,51 @@ fun Ajustes(
                         }
                     }
                 }
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .clickable { logoutVerification = true },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ){
+                    Icon(
+                        painter = painterResource(id = R.drawable.logout),
+                        contentDescription = null,
+                        modifier = Modifier.padding(10.dp))
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier.padding(10.dp)
+                    ) {
+                        Text("Logout")
+                        Text(
+                            text = "Cerrar sesión de ${mainVM.currentUser.value!!.username}",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+
+                }
+                val context = LocalContext.current
+                EstasSeguroDialog(
+                    show = logoutVerification,
+                    mensaje = stringResource(id = R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n),
+                    onDismiss = { logoutVerification = false }
+                ) { CoroutineScope(Dispatchers.IO).launch {
+                    withContext(Dispatchers.IO) {
+                        preferencesVM.changeUser("")
+                    }
+                    //Log.d("FestUpWidget", "DataStore username ${preferencesVM}")
+                    mainVM.serverOk.value = false
+                    mainVM.actualizarWidget(context)
+
+                    withContext(Dispatchers.Main) {
+                        //mainNavController.popBackStack()
+                        (context as? Activity)?.finish()
+                        val intent = Intent(context, MainActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        context.startActivity(intent)
+                    }
+                } }
             }
         }
     }
