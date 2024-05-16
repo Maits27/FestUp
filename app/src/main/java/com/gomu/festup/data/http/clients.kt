@@ -290,15 +290,17 @@ class HTTPClient @Inject constructor() {
 
 
     // ---------------------------  NOTIFICACIONES ------------------------------
-    suspend fun subscribeUser(FCMClientToken: String) {
+    suspend fun subscribeUser(FCMClientToken: String, username: String) {
         httpClient.post("http://34.16.74.167/notifications/subscribe") {
             contentType(ContentType.Application.Json)
+            parameter("username", username)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
     }
-    suspend fun unSubscribeUser(FCMClientToken: String) {
+    suspend fun unSubscribeUser(FCMClientToken: String, username: String) {
         httpClient.post("http://34.16.74.167/notifications/unsubscribe") {
             contentType(ContentType.Application.Json)
+            parameter("username", username)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
     }

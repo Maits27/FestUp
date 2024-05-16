@@ -418,7 +418,7 @@ class MainVM @Inject constructor(
                 }
                 viewModelScope.launch(Dispatchers.IO) {
                     try{
-                        userRepository.subscribeUser(task.result)
+                        userRepository.subscribeUser(task.result, currentUser.value!!.username)
                         Log.d("FCM", "Usuario suscrito")
                         Log.d("FCM", task.result)
                     }
@@ -441,7 +441,7 @@ class MainVM @Inject constructor(
                 }
                 viewModelScope.launch(Dispatchers.IO) {
                     try{
-                        userRepository.unSubscribeUser(task.result)
+                        userRepository.unSubscribeUser(task.result, currentUser.value!!.username)
                         Log.d("FCM", "Usuario desuscrito")
                     }
                     catch (e:Exception){

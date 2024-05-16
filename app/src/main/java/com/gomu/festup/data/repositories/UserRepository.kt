@@ -42,8 +42,8 @@ interface IUserRepository: ILoginSettings {
     fun getUsuario(username: String): Usuario
     suspend fun descargarUsuarios()
     suspend fun descargarSeguidores()
-    suspend fun subscribeUser(token: String)
-    suspend fun unSubscribeUser(token: String)
+    suspend fun subscribeUser(token: String, username: String)
+    suspend fun unSubscribeUser(token: String, username: String)
     suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date, telefono: String) : Usuario
     suspend fun subscribeToUser(token: String, username: String)
     suspend fun unsubscribeFromUser(token: String, username: String)
@@ -165,11 +165,11 @@ class UserRepository @Inject constructor(
         seguidoresList.map{seguidoresDao.insertSeguidores(remoteSeguidorToSeguidor(it))}
     }
 
-    override suspend fun subscribeUser(token: String){
-        httpClient.subscribeUser(token)
+    override suspend fun subscribeUser(token: String, username: String){
+        httpClient.subscribeUser(token, username)
     }
-    override suspend fun unSubscribeUser(token: String){
-        httpClient.unSubscribeUser(token)
+    override suspend fun unSubscribeUser(token: String, username: String){
+        httpClient.unSubscribeUser(token, username)
     }
 
     override suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date, telefono: String) : Usuario {

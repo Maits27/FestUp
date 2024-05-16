@@ -184,8 +184,8 @@ fun Ajustes(
                 SwitchTik(receiveNotifications, Modifier.weight(2f)){
                     preferencesVM.changeReceiveNotifications()
                     if (it){
-                        //mainVM.subscribeUser()
-                        //mainVM.suscribirASeguidos(seguidos.value)
+                        mainVM.subscribeUser()
+                        mainVM.suscribirASeguidos(seguidos.value)
                         CoroutineScope(Dispatchers.Main).launch {
                             val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                             eventos.map { evento ->
@@ -193,8 +193,8 @@ fun Ajustes(
                             }
                         }
                     }else{
-                        //mainVM.unSubscribeUser()
-                        //mainVM.unSuscribeASeguidos(seguidos.value)
+                        mainVM.unSubscribeUser()
+                        mainVM.unSuscribeASeguidos(seguidos.value)
                         CoroutineScope(Dispatchers.Main).launch {
                             val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                             eventos.map { evento ->
@@ -363,8 +363,8 @@ fun Ajustes(
                     SwitchTik(receiveNotifications, Modifier.weight(2f)){
                         preferencesVM.changeReceiveNotifications()
                         if (it){
-                            //mainVM.subscribeUser()
-                            //mainVM.suscribirASeguidos(seguidos.value)
+                            mainVM.subscribeUser()
+                            mainVM.suscribirASeguidos(seguidos.value)
                             CoroutineScope(Dispatchers.Main).launch {
                                 val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                                 eventos.map { evento ->
@@ -372,8 +372,8 @@ fun Ajustes(
                                 }
                             }
                         }else{
-                            //mainVM.unSubscribeUser()
-                           // mainVM.unSuscribeASeguidos(seguidos.value)
+                            mainVM.unSubscribeUser()
+                           mainVM.unSuscribeASeguidos(seguidos.value)
                             CoroutineScope(Dispatchers.Main).launch {
                                 val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                                 eventos.map { evento ->
@@ -426,7 +426,7 @@ fun Ajustes(
 
         withContext(Dispatchers.Main) {
             //mainNavController.popBackStack()
-            (context as? Activity)?.finish()
+            (context as? Activity)?.finishAffinity()
             val intent = Intent(context, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             context.startActivity(intent)
