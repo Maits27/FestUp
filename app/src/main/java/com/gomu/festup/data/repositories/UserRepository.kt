@@ -39,7 +39,7 @@ interface IUserRepository: ILoginSettings {
     suspend fun deleteSeguidores(currentUsername: String, usernameToUnfollow: String)
     suspend fun setUserProfile(username: String, image: Bitmap):Boolean
     fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>
-    fun getUsuario(username: String): Usuario
+    fun getUsuario(username: String): Usuario?
     suspend fun descargarUsuarios()
     suspend fun descargarSeguidores()
     suspend fun subscribeUser(token: String, username: String)
@@ -147,7 +147,7 @@ class UserRepository @Inject constructor(
         return usuarioDao.getUsuariosMenosCurrent(usuario.username)
     }
 
-    override fun getUsuario(username: String): Usuario {
+    override fun getUsuario(username: String): Usuario? {
         return usuarioDao.getUsuario(username)
     }
 
@@ -175,7 +175,7 @@ class UserRepository @Inject constructor(
     override suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date, telefono: String) : Usuario {
         usuarioDao.editarUsuario(username, email, nombre, fecha, telefono)
         httpClient.editUser(RemoteUsuario(username = username, email = email, nombre = nombre, fechaNacimiento = fecha.toStringRemoto(), telefono = telefono))
-        return usuarioDao.getUsuario(username)
+        return usuarioDao.getUsuario(username)!!
     }
     override suspend fun subscribeToUser(token: String, username: String){
         httpClient.subscribeToUser(token, username)

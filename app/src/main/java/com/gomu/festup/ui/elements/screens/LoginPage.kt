@@ -176,33 +176,56 @@ fun LoginForm(
                         withContext(Dispatchers.IO) {
                             mainVM.descargarDatos()
                         }
-                        val currentUser = withContext(Dispatchers.IO) {
+                        var currentUser = withContext(Dispatchers.IO) {
                             mainVM.actualizarCurrentUser(username)
                         }
-                        nuestroLocationProvider(context, mainVM)
-                        mainVM.currentUser.value = currentUser
-                        withContext(Dispatchers.IO) {
-                            preferencesVM.changeUser(currentUser.username)
+                        if (currentUser==null){
+                            withContext(Dispatchers.IO) {
+                                mainVM.descargarUsuarios()
+                            }
+                            currentUser = withContext(Dispatchers.IO) {
+                                mainVM.actualizarCurrentUser(username)
+                            }
                         }
+                        if(currentUser!=null) {
+                            nuestroLocationProvider(context, mainVM)
+                            mainVM.currentUser.value = currentUser
+                            withContext(Dispatchers.IO) {
+                                preferencesVM.changeUser(currentUser.username)
+                            }
 
-                        withContext(Dispatchers.Main) {
-                            mainNavController.navigate(AppScreens.App.route) {
-                                popUpTo(0)
+                            withContext(Dispatchers.Main) {
+                                mainNavController.navigate(AppScreens.App.route) {
+                                    popUpTo(0)
+                                }
+                                showLoading = false
+                                mainVM.actualizarWidget(context)
                             }
+                            withContext(Dispatchers.Main) {
+                                val eventos =
+                                    mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
+                                eventos.map { evento ->
+                                    scheduler.schedule(
+                                        AlarmItem(
+                                            getScheduleTime(evento),
+                                            evento.nombre,
+                                            evento.localizacion,
+                                            evento.id
+                                        )
+                                    )
+                                }
+                            }
+                        }else{
                             showLoading = false
-                            mainVM.actualizarWidget(context)
-                        }
-                        withContext(Dispatchers.Main) {
-                            val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
-                            eventos.map { evento ->
-                                scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
-                            }
+                            Toast.makeText(context,
+                               "Error al realizar el login, reinicia la aplicación.", Toast.LENGTH_LONG).show()
+                            showLoading = false
                         }
                     } else {
                         withContext(Dispatchers.Main) {
                             showLoading = false
                             Toast.makeText(context,
-                                context.getString(R.string.la_informacion_no_es_correcta_int_ntalo_de_nuevo), Toast.LENGTH_LONG).show()
+                                "La información no es correcta, inténtalo de nuevo.", Toast.LENGTH_LONG).show()
                             showLoading = false
                         }
                     }
@@ -536,7 +559,9 @@ fun RegistroForm(
                         value = birthDate,
                         onValueChange = {  },
                         label = { Text(text = "Fecha de nacimiento") },
-                        modifier = Modifier.padding(horizontal = 8.dp).clickable { showDatePicker = true },
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .clickable { showDatePicker = true },
                         colors = OutlinedTextFieldDefaults.colors(
                             disabledTextColor = MaterialTheme.colorScheme.onSurface,
                             disabledBorderColor = MaterialTheme.colorScheme.outline,

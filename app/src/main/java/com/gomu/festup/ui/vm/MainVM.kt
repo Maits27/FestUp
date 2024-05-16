@@ -219,7 +219,7 @@ class MainVM @Inject constructor(
         }
     }
 
-    fun actualizarCurrentUser(username: String): Usuario = runBlocking(Dispatchers.IO){
+    fun actualizarCurrentUser(username: String): Usuario? = runBlocking(Dispatchers.IO){
         userRepository.getUsuario(username)
     }
 

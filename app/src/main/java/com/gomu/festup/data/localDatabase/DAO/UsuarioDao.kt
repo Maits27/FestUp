@@ -34,7 +34,7 @@ interface UsuarioDao {
 
     @Transaction
     @Query("SELECT * FROM Usuario WHERE username=:username")
-    fun getUsuario(username: String): Usuario
+    fun getUsuario(username: String): Usuario?
 
     @Update
     fun editarUsuario(usuario: Usuario): Int
