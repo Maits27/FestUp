@@ -699,6 +699,7 @@ fun registration(
                 preferencesVM.changeUser(usuario.username)
                 withContext(Dispatchers.Main) {
                     mainVM.actualizarWidget(context) // Necesario repetirlo dos veces
+                    mainVM.subscribeUser()
                     mainNavController.navigate(AppScreens.App.route) {
                         popUpTo(0)
                     }

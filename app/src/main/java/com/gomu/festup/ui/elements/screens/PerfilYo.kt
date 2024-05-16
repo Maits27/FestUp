@@ -226,56 +226,6 @@ fun PerfilYo(
                         ),
                     )
                 }
-                if (yo) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.Bottom
-                    ) {
-                        if (showExpandedButtons) {
-                            IconButton(
-                                onClick = { navController.navigate(AppScreens.Ajustes.route) },
-                                modifier = Modifier.padding(5.dp)
-
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.settings),
-                                    contentDescription = "Settings"
-                                )
-                            }
-                            IconButton(
-                                onClick = { navController.navigate(AppScreens.EditPerfil.route) },
-                                modifier = Modifier.padding(5.dp)
-
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.edit),
-                                    contentDescription = "Edit"
-                                )
-                            }
-                            IconButton(
-                                onClick = { verificacion = true },
-                                modifier = Modifier.padding(5.dp)
-
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.logout),
-                                    contentDescription = "Logout"
-                                )
-                            }
-                        }
-                        IconButton(
-                            onClick = { showExpandedButtons = !showExpandedButtons },
-                            modifier = Modifier.padding(5.dp)
-
-                        ) {
-                            Icon(Icons.Filled.MoreVert, contentDescription = "Mostrar botones")
-                        }
-                    }
-
-                }
 
             }
             Column(
