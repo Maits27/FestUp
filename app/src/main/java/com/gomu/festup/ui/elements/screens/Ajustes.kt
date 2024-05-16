@@ -130,29 +130,29 @@ fun Ajustes(
                 }
                 SwitchDarkMode(preferencesVM, dark, Modifier.weight(2f))
             }
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ){
-                Icon(
-                    painter = painterResource(id = R.drawable.visible),
-                    contentDescription = null,
-                    modifier = Modifier.weight(1f))
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    modifier = Modifier.weight(3f)
-                ) {
-                    Text(stringResource(id = R.string.edad))
-                    Text(
-                        text = if (mostrarEdad)  stringResource(id = R.string.mostrar) else stringResource(id = R.string.no_mostrar),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-                SwitchTik(mostrarEdad, Modifier.weight(2f)){ preferencesVM.changeVisualizarEdad() }
-            }
+//            Row (
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.Start
+//            ){
+//                Icon(
+//                    painter = painterResource(id = R.drawable.visible),
+//                    contentDescription = null,
+//                    modifier = Modifier.weight(1f))
+//                Column(
+//                    horizontalAlignment = Alignment.Start,
+//                    modifier = Modifier.weight(3f)
+//                ) {
+//                    Text(stringResource(id = R.string.edad))
+//                    Text(
+//                        text = if (mostrarEdad)  stringResource(id = R.string.mostrar) else stringResource(id = R.string.no_mostrar),
+//                        style = MaterialTheme.typography.bodySmall
+//                    )
+//                }
+//                SwitchTik(mostrarEdad, Modifier.weight(2f)){ preferencesVM.changeVisualizarEdad() }
+//            }
             Divider(Modifier.padding(vertical = 10.dp))
             Text(
                 stringResource(id = R.string.sistema),
@@ -325,7 +325,10 @@ fun Ajustes(
                 }
             }
             Divider(
-                modifier = Modifier.width(1.dp).height(320.dp).padding(vertical = 10.dp)
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(320.dp)
+                    .padding(vertical = 10.dp)
             )
 
             Column (
@@ -401,7 +404,7 @@ fun Ajustes(
                     ) {
                         Text("Logout")
                         Text(
-                            text = "Cerrar sesión de ${mainVM.currentUser.value!!.username}",
+                            text = stringResource(id = R.string.cerrar_sesion_de, mainVM.currentUser.value!!.username),
                             style = MaterialTheme.typography.bodySmall
                         )
                     }

@@ -100,4 +100,5 @@
     <string name="intentalo_de_nuevo">Saiatu berriro</string>
     <string name="iniciar_sesi_n">Saioa hasi</string>
     <string name="registrarse">Erregistratu</string>
+    <string name="cerrar_sesion_de">\@%s saioa itxi</string>
 </resources>

@@ -263,7 +263,7 @@ fun LoginForm(
                     onClick = { onLoginButtonClick() },
                     enabled = mainVM.serverOk.value,
                 ) {
-                    Text(text = stringResource(R.string.iniciar_sesi_n))
+                    Text(text = "Iniciar sesión")
                 }
             }
         } else CircularProgressIndicator()
