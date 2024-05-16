@@ -24,23 +24,20 @@ import javax.inject.Inject
 
 class FCMService : FirebaseMessagingService() {
 
-    @Inject
-    lateinit var preferences: IGeneralPreferences
-    lateinit var loginSettings: ILoginSettings
-
     /**
      * Método para recibir las notificaciones FCM.
      *
      * @param remoteMessage El mensaje de notificación.
      */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-
         remoteMessage.notification?.let { notification ->
 
             Log.d("FCM", "Message Notification Title: ${notification.title}")
             Log.d("FCM", "Message Notification Body: ${notification.body}")
 
-            val builder = NotificationCompat.Builder(this, MainActivity.CURRENT_CHANNEL)
+            val builder = NotificationCompat.Builder(this,
+                MyNotificationChannels.NOTIFICATIONS_CHANNEL.name
+            )
                 .setSmallIcon(R.drawable.festup)
                 .setContentTitle(notification.title)
                 .setContentText(notification.body)

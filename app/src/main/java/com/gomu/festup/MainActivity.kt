@@ -118,8 +118,7 @@ class MainActivity : AppCompatActivity() {
 
     // Function to create a local notification channel
     private fun createNotificationChannel() {
-        val channel = NotificationChannel(
-            CHANNEL_ID,
+        val channel = NotificationChannel(MyNotificationChannels.NOTIFICATIONS_CHANNEL.name,
             "FestUpNotificationChannel",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {

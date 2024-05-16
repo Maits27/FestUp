@@ -199,7 +199,8 @@ fun Ajustes(
                         mainVM.suscribirASeguidos(seguidos.value)
                         MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
                     }else{
-
+                        mainVM.unSubscribeUser()
+                        mainVM.unSuscribeASeguidos(seguidos.value)
                         MainActivity.CURRENT_CHANNEL = MainActivity.NO_CHANNEL_ID
                     }
                 }
@@ -376,8 +377,8 @@ fun Ajustes(
 //                            }
                             MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
                         }else{
-//                          mainVM.unSubscribeUser()
-//                          mainVM.unSuscribeASeguidos(seguidos.value)
+                            mainVM.unSubscribeUser()
+                            mainVM.unSuscribeASeguidos(seguidos.value)
 //                            CoroutineScope(Dispatchers.Main).launch {
 //                                val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
 //                                eventos.map { evento ->

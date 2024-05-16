@@ -48,6 +48,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -183,6 +184,8 @@ fun LoginForm(
                                 popUpTo(0)
                             }
                             showLoading = false
+                            mainVM.subscribeUser()
+                            //mainVM.suscribirASeguidos(seguidos.value) TODO
                             mainVM.actualizarWidget(context)
                         }
                     } else {
@@ -701,6 +704,7 @@ fun registration(
                     mainNavController.navigate(AppScreens.App.route) {
                         popUpTo(0)
                     }
+                    mainVM.subscribeUser()
                     mainVM.actualizarWidget(context)
                 }
             } else {
