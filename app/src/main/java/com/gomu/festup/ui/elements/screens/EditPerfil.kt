@@ -3,8 +3,11 @@ package com.gomu.festup.ui.elements.screens
 import android.content.Context
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -60,6 +63,7 @@ import java.util.Date
  * (aparece su visualización tanto en horizontal como en vertical).
  */
 
+@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditPerfil(
@@ -98,13 +102,18 @@ fun EditPerfil(
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
-        imageUri = uri
+        if (uri != null){
+            imageUri = uri
+        }
     }
 
     val onEditButtonClick: () -> Unit = {
         val correct = checkEditPerfil(context, email, nombre)
         if (correct) {
             mainVM.editUsuario(currentUser.username, email, nombre, birthDate.formatearFecha(), telefono)
+            if (imageUri != Uri.parse("http://34.71.128.243/userProfileImages/${currentUser.username}.png")){
+                mainVM.updateUserImage(context, currentUser.username, imageUri)
+            }
             navController.popBackStack()
         }
     }
@@ -124,7 +133,11 @@ fun EditPerfil(
                 // Profile image
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Box(Modifier.padding(16.dp)) {
-                        Imagen(imageUri, R.drawable.no_user, 120.dp) {}
+                        Imagen(imageUri, R.drawable.no_user, 120.dp) {
+                            singlePhotoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        }
                     }
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }
@@ -187,7 +200,11 @@ fun EditPerfil(
                 // Profile image
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Box(Modifier.padding(16.dp)) {
-                        Imagen(imageUri, R.drawable.no_user, 120.dp) {}
+                        Imagen(imageUri, R.drawable.no_user, 120.dp) {
+                            singlePhotoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        }
                     }
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }

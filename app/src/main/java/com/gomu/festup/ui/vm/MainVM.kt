@@ -238,7 +238,15 @@ class MainVM @Inject constructor(
     /*****************************************************
      ****************** METODOS USUARIO ******************
      *****************************************************/
-
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun updateUserImage(context: Context, username: String, uri: Uri?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (uri != null) {
+                val imageBitmap = context.localUriToBitmap(uri)
+                userRepository.setUserProfile(username, imageBitmap)
+            }
+        }
+    }
 
     fun editUsuario(username: String, email: String, nombre: String, fecha: Date, telefono: String) {
         viewModelScope.launch(Dispatchers.IO) {
