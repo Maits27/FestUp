@@ -30,9 +30,6 @@ interface CuadrillaDao {
     @Query("SELECT * FROM Cuadrilla")
     fun getCuadrillas(): Flow<List<Cuadrilla>>
 
-    /////////////// Funciones Update ///////////////
-    @Update
-    fun editarCuadrilla(cuadrilla: Cuadrilla): Int
 
     /////////////// Funciones Delete ///////////////
     @Delete(entity = Cuadrilla::class)
