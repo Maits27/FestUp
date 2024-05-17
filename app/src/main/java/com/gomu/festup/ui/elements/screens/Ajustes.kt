@@ -197,11 +197,9 @@ fun Ajustes(
                     if (it){
                         mainVM.subscribeUser()
                         mainVM.suscribirASeguidos(seguidos.value)
-                        MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
                     }else{
                         mainVM.unSubscribeUser()
                         mainVM.unSuscribeASeguidos(seguidos.value)
-                        MainActivity.CURRENT_CHANNEL = MainActivity.NO_CHANNEL_ID
                     }
                 }
             }
@@ -375,7 +373,6 @@ fun Ajustes(
 //                                    scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
 //                                }
 //                            }
-                            MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
                         }else{
                             mainVM.unSubscribeUser()
                             mainVM.unSuscribeASeguidos(seguidos.value)
