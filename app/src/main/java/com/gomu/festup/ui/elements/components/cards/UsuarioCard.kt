@@ -39,8 +39,8 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import com.gomu.festup.R
-import com.gomu.festup.alarmMng.AlarmItem
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
+import com.gomu.festup.data.AlarmItem
 import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.elements.components.Imagen
