@@ -66,30 +66,27 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onKeyDown(keyCode, event)
     }
+
     @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
 
+        // Generar los canales de notificaciones
         createNotificationChannel()
         createNotificationChannel2()
+
         super.onCreate(savedInstanceState)
-
         setContent {
-            BackHandler(onBack = { Log.d("HE VUELTO ATRAS MAL", "MAL MAL MAL") })
-
             FestUpTheme {
                 AskPermissions()
                 Principal(mainVM, identVM, preferencesVM)
             }
         }
     }
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//            if(mainVM.usuarioMostrar.isNotEmpty()){
-//                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
-//            }
-//    }
 
+    /**
+     * Funciones para crear los diferentes canales de notificaciones
+     */
 
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
@@ -103,18 +100,21 @@ class MainActivity : AppCompatActivity() {
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
-    // Function to create a local notification channel
     private fun createNotificationChannel2() {
         val channel = NotificationChannel(MyNotificationChannels.NOTIFICATIONS_CHANNEL.name,
-            "FestUpNotificationChannel FCM",
+            "FestUpNotificationChannelFCM",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = "Canal de notificaciones para FestUp"
+            description = "Canal de notificaciones para FestUp en FCM"
         }
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
+
+    /**
+     * Función para pedir permisos
+     */
 
     @OptIn(ExperimentalPermissionsApi::class)
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -146,6 +146,10 @@ enum class NotificationID(val id: Int) {
     NOTIFICATIONS(0)
 }
 
+/**
+ * Composable principal de la aplicación con el [NavHost]
+ * principal entre el Login y el resto de la aplicación
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable

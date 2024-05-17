@@ -9,7 +9,10 @@ import android.provider.CalendarContract.Events
 import android.util.Log
 import java.util.TimeZone
 
-// Function to get all calendar's IDs (including google calendars)
+
+/**
+ * Función para coger los ID de los calendarios locales (con google calendar)
+ */
 @SuppressLint("Range")
 fun getAllCalendarIds(context: Context): List<Long> {
     val calendarIds = mutableListOf<Long>()
@@ -33,13 +36,15 @@ fun getAllCalendarIds(context: Context): List<Long> {
     return calendarIds
 }
 
-// Function to get the local calendar's IDs (except google calendars)
+/**
+ * Función para coger los ID de los calendarios locales (salvo google calendar)
+ */
 @SuppressLint("Range")
 fun getLocalCalendarIds(context: Context): List<Long> {
     val calendarIds = mutableListOf<Long>()
     val projection = arrayOf(CalendarContract.Calendars._ID)
 
-    // Filter the calendars in order to keep only the local ones
+    // Filtro para coger solo los locales
     val selection = "${CalendarContract.Calendars.ACCOUNT_TYPE} IN (?)"
     val selectionArgs = arrayOf("LOCAL")
 
@@ -58,15 +63,17 @@ fun getLocalCalendarIds(context: Context): List<Long> {
     return calendarIds
 }
 
-// Function to add future activities to calendars
+/**
+ * Función para añadir eventos futuros al calendario
+ */
 fun addEventOnCalendar(context: Context, title: String, dateP: Long){
     val contentResolver: ContentResolver = context.contentResolver
     val timeZone = TimeZone.getDefault().id
 
-    // If is possible add events on local calendar
+    // Si es posible añadir los eventos al calendario
     var calendarIDs = getLocalCalendarIds(context)
 
-    // If not local calendars available try to add events in other calendars
+    // Si no hay locales intentar añadirlo en otro calendario
     if (calendarIDs.isEmpty()){
         Log.d("NO LOCALS", "NO LOCALS")
         calendarIDs = getAllCalendarIds(context)

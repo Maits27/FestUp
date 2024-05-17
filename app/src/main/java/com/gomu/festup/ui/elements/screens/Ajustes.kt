@@ -34,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gomu.festup.MainActivity
 import com.gomu.festup.R
-import com.gomu.festup.alarmMng.AlarmItem
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.data.AppLanguage
 import com.gomu.festup.ui.elements.components.SwitchDarkMode
