@@ -3,6 +3,10 @@ package com.gomu.festup.data.localDatabase
 import androidx.room.TypeConverter
 import java.util.Date
 
+/**
+ * [TypeConverter] para que ROOM haga la conversión del tipo
+ * Date de Java a un tipo String que pueda almacenar y viceversa.
+ */
 class Converter {
 
     @TypeConverter

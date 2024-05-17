@@ -3,6 +3,10 @@ package com.gomu.festup.data.http
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Entidades para relacionar las entidades de local en ROOM con las del remoto.
+ * Son de tipo @Serializable para poder enviarlas y recibirlas por peticiones HTTP.
+ */
 @Serializable
 data class RemoteUsuario(
     val username: String,

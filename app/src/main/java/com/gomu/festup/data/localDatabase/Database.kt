@@ -18,6 +18,9 @@ import com.gomu.festup.data.localDatabase.Entities.Seguidores
 import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.data.localDatabase.Entities.UsuariosAsistentes
 
+/**
+ * Base de datos con las entidades almacenadas en ROOM, el [TypeConverter]
+ */
 @Database(entities = [Usuario::class, Cuadrilla::class, Integrante::class,
     Seguidores::class, Evento::class, UsuariosAsistentes::class,
     CuadrillasAsistentes::class], version=1)

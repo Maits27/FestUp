@@ -6,6 +6,12 @@ import androidx.room.Junction
 import androidx.room.Relation
 
 
+/**
+ * Entidades para la relación entre las entidades de
+ * [Cuadrilla] y [Usuario] entre si y entre pares de [Usuario],
+ * generando la lista de los integrantes de una [Cuadrilla],
+ * y la lista de [Usuario] que tienen alguna relación de seguirse el uno al otro.
+ */
 
 @Entity(primaryKeys = ["username", "nombreCuadrilla"])
 data class Integrante(

@@ -5,8 +5,11 @@ import androidx.room.Entity
 import androidx.room.Junction
 import androidx.room.Relation
 
-
-
+/**
+ * Entidades para la relación entre las entidades de
+ * [Cuadrilla] y [Usuario] con [Evento] generando la
+ * lista de usuarios y/o cuadrillas asistentes a un evento.
+ */
 
 @Entity(primaryKeys = ["username", "idEvento"])
 data class UsuariosAsistentes(
