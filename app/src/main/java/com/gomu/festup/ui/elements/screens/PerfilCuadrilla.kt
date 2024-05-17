@@ -331,7 +331,7 @@ fun CuadrillaProfileImage(
     val context = LocalContext.current
 
     var imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"))
+        mutableStateOf<Uri?>(Uri.parse("http://34.71.128.243/cuadrillaProfileImages/${cuadrilla.nombre}.png"))
     }
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(

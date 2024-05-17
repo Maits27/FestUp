@@ -207,7 +207,7 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 20.dp)
             ) {
                 val imageUri by remember {
-                    mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png"))
+                    mutableStateOf<Uri?>(Uri.parse("http://34.71.128.243/eventoImages/${evento.id}.png"))
                 }
 
                 Column(
@@ -245,7 +245,7 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
 @Composable
 fun CardHorizontal(context: Context, mainVM: MainVM, evento: Evento, numAsistentes: Int, navController: NavController, modifier: Modifier = Modifier){
     val imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png"))
+        mutableStateOf<Uri?>(Uri.parse("http://34.71.128.243/eventoImages/${evento.id}.png"))
     }
     val edadMedia = mainVM.calcularEdadMediaEvento(mainVM.eventoMostrar.value!!)
 

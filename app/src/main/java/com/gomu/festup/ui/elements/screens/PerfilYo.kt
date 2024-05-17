@@ -586,7 +586,7 @@ fun ProfileImage(
     navController: NavController
 ) {
     var imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
+        mutableStateOf<Uri?>(Uri.parse("http://34.71.128.243/userProfileImages/${usuario.username}.png"))
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {

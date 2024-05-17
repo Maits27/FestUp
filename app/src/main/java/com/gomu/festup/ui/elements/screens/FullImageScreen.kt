@@ -27,9 +27,9 @@ fun FullImageScreen(
     lateinit var imageUri: Uri
 
     when (type) {
-        "user" -> imageUri = Uri.parse("http://34.16.74.167/userProfileImages/$filename.png")
-        "cuadrilla" -> imageUri = Uri.parse("http://34.16.74.167/cuadrillaProfileImages/$filename.png")
-        "evento" -> imageUri = Uri.parse("http://34.16.74.167/eventoImages/$filename.png")
+        "user" -> imageUri = Uri.parse("http://34.71.128.243/userProfileImages/$filename.png")
+        "cuadrilla" -> imageUri = Uri.parse("http://34.71.128.243/cuadrillaProfileImages/$filename.png")
+        "evento" -> imageUri = Uri.parse("http://34.71.128.243/eventoImages/$filename.png")
     }
 
     Box(

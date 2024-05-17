@@ -80,7 +80,7 @@ fun EditPerfil(
         mutableStateOf(false)
     }
     var imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${currentUser.username}.png"))
+        mutableStateOf<Uri?>(Uri.parse("http://34.71.128.243/userProfileImages/${currentUser.username}.png"))
     }
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(

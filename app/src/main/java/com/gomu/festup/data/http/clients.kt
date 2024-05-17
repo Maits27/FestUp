@@ -60,7 +60,7 @@ class AuthClient @Inject constructor(private val loginSettings: ILoginSettings) 
     @Throws(AuthenticationException::class, Exception::class)
     suspend fun authenticate(username: String, password: String) {
         val tokenInfo: TokenInfo = httpClient.submitForm(
-            url = "http://34.16.74.167/auth/iniciarSesion",
+            url = "http://34.71.128.243/auth/iniciarSesion",
             formParameters = Parameters.build {
                 append("grant_type", "password")
                 append("username", username)
@@ -76,7 +76,7 @@ class AuthClient @Inject constructor(private val loginSettings: ILoginSettings) 
 
     @Throws(UserExistsException::class)
     suspend fun createUser(user: RemoteAuthUsuario) {
-        httpClient.post("http://34.16.74.167/createUser") {
+        httpClient.post("http://34.71.128.243/createUser") {
             contentType(ContentType.Application.Json)
             setBody(user)
         }
@@ -88,7 +88,7 @@ class AuthClient @Inject constructor(private val loginSettings: ILoginSettings) 
         val byteArray = stream.toByteArray()
         Log.d("Image", "size: " + byteArray.size.toString())
         httpClient.submitFormWithBinaryData(
-            url = "http://34.16.74.167/setUserProfileImage",
+            url = "http://34.71.128.243/setUserProfileImage",
             formData = formData {
                 append("image", byteArray, Headers.build {
                     append(HttpHeaders.ContentType, "image/png")
@@ -99,7 +99,7 @@ class AuthClient @Inject constructor(private val loginSettings: ILoginSettings) 
     }
     @Throws(IOException::class)
     suspend fun getUsuarios(): List<RemoteUsuario> = runBlocking {
-        val response = httpClient.get("http://34.16.74.167/getUsers")
+        val response = httpClient.get("http://34.71.128.243/getUsers")
         response.body()
     }
 }
@@ -125,12 +125,12 @@ class HTTPClient @Inject constructor() {
 
                 loadTokens { bearerTokenStorage.last() }
 
-                sendWithoutRequest { request -> request.url.host == "34.16.74.167" }
+                sendWithoutRequest { request -> request.url.host == "34.71.128.243" }
 
                 refreshTokens {
 
                     val refreshTokenInfo: TokenInfo = client.submitForm(
-                        url = "http://34.16.74.167/auth/refresh",
+                        url = "http://34.71.128.243/auth/refresh",
                         formParameters = Parameters.build {
                             append("grant_type", "refresh_token")
                             append("refresh_token", oldTokens?.refreshToken ?: "")
@@ -147,18 +147,18 @@ class HTTPClient @Inject constructor() {
     // ---------------------------  USER ------------------------------
     @Throws(IOException::class)
     suspend fun getUsuarios(): List<RemoteUsuario> = runBlocking {
-        val response = httpClient.get("http://34.16.74.167/getUsers")
+        val response = httpClient.get("http://34.71.128.243/getUsers")
         response.body()
     }
 
     fun getUsuario(username: String): RemoteUsuario = runBlocking {
         Log.d("USUARIO", "get")
-        val response = httpClient.get("http://34.16.74.167/getUser?username=$username")
+        val response = httpClient.get("http://34.71.128.243/getUser?username=$username")
         response.body()
     }
 
     fun editUser(usuario: RemoteUsuario) = runBlocking {
-        httpClient.post("http://34.16.74.167/editUser") {
+        httpClient.post("http://34.71.128.243/editUser") {
             contentType(ContentType.Application.Json)
             setBody(usuario)
         }
@@ -166,18 +166,18 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  USUARIO ASISTENTE ------------------------------
     suspend fun getUsuariosAsistentes(): List<RemoteUsuarioAsistente> = runBlocking {
-        val response = httpClient.get("http://34.16.74.167/getUsuariosAsistentes")
+        val response = httpClient.get("http://34.71.128.243/getUsuariosAsistentes")
         response.body()
     }
     suspend fun insertUsuarioAsistente(usuarioAsistente: RemoteUsuarioAsistente) = runBlocking {
-        httpClient.post("http://34.16.74.167/insertUsuarioAsistente") {
+        httpClient.post("http://34.71.128.243/insertUsuarioAsistente") {
             contentType(ContentType.Application.Json)
             setBody(usuarioAsistente)
         }
     }
 
     suspend fun deleteUsuarioAsistente(usuarioAsistente: RemoteUsuarioAsistente) = runBlocking {
-        httpClient.post("http://34.16.74.167/deleteUsuarioAsistente") {
+        httpClient.post("http://34.71.128.243/deleteUsuarioAsistente") {
             contentType(ContentType.Application.Json)
             setBody(usuarioAsistente)
         }
@@ -187,26 +187,26 @@ class HTTPClient @Inject constructor() {
     // ---------------------------  CUADRILLA ------------------------------
 
     suspend fun getCuadrillas(): List<RemoteCuadrilla> = runBlocking {
-        val response = httpClient.get("http://34.16.74.167/getCuadrillas")
+        val response = httpClient.get("http://34.71.128.243/getCuadrillas")
         response.body()
     }
 
     suspend fun insertCuadrilla(cuadrilla: RemoteCuadrilla) = runBlocking {
-        httpClient.post("http://34.16.74.167/insertCuadrilla") {
+        httpClient.post("http://34.71.128.243/insertCuadrilla") {
             contentType(ContentType.Application.Json)
             setBody(cuadrilla)
         }
     }
 
     suspend fun deleteCuadrilla(nombre: String) = runBlocking {
-        httpClient.post("http://34.16.74.167/deleteCuadrilla") {
+        httpClient.post("http://34.71.128.243/deleteCuadrilla") {
             contentType(ContentType.Application.Json)
             parameter("nombre", nombre)
         }
     }
 
     fun getCuadrillaAccessToken(nombre: String): String = runBlocking {
-        val response = httpClient.get("http://34.16.74.167/getCuadrillaAccessToken?nombre=$nombre")
+        val response = httpClient.get("http://34.71.128.243/getCuadrillaAccessToken?nombre=$nombre")
         response.body<String>().replace("\"", "")
     }
 
@@ -214,19 +214,19 @@ class HTTPClient @Inject constructor() {
     // ---------------------------  CUADRILLA ASISTENTE ------------------------------
 
     suspend fun getCuadrillasAsistentes(): List<RemoteCuadrillaAsistente> = runBlocking {
-        val response = httpClient.get("http://34.16.74.167/getCuadrillasAsistentes")
+        val response = httpClient.get("http://34.71.128.243/getCuadrillasAsistentes")
         response.body()
 
     }
     suspend fun insertCuadrillaAsistente(cuadrillaAsistente: RemoteCuadrillaAsistente) = runBlocking {
-        httpClient.post("http://34.16.74.167/insertCuadrillaAsistente") {
+        httpClient.post("http://34.71.128.243/insertCuadrillaAsistente") {
             contentType(ContentType.Application.Json)
             setBody(cuadrillaAsistente)
         }
     }
 
     suspend fun deleteCuadrillaAsistente(cuadrillaAsistente: RemoteCuadrillaAsistente) = runBlocking {
-        httpClient.post("http://34.16.74.167/deleteCuadrillaAsistente") {
+        httpClient.post("http://34.71.128.243/deleteCuadrillaAsistente") {
             contentType(ContentType.Application.Json)
             setBody(cuadrillaAsistente)
         }
@@ -235,18 +235,18 @@ class HTTPClient @Inject constructor() {
     // ---------------------------  EVENTO ------------------------------
 
     suspend fun getEventos(): List<RemoteEvento> = runBlocking {
-        val response = httpClient.get("http://34.16.74.167/getEventos")
+        val response = httpClient.get("http://34.71.128.243/getEventos")
         response.body()
     }
     suspend fun insertEvento(evento: RemoteEvento): RemoteEvento = runBlocking {
-        val response = httpClient.post("http://34.16.74.167/insertEvento") {
+        val response = httpClient.post("http://34.71.128.243/insertEvento") {
             contentType(ContentType.Application.Json)
             setBody(evento)
         }
         response.body()
     }
     suspend fun deleteEvento(eventoId: Int) = runBlocking {
-        httpClient.post("http://34.16.74.167/deleteEvento") {
+        httpClient.post("http://34.71.128.243/deleteEvento") {
             contentType(ContentType.Application.Json)
             parameter("eventoId", eventoId)
         }
@@ -255,19 +255,19 @@ class HTTPClient @Inject constructor() {
     // ---------------------------  INTEGRANTE ------------------------------
 
     suspend fun getIntegrantes(): List<RemoteIntegrante> = runBlocking {
-        val response = httpClient.get("http://34.16.74.167/getIntegrantes")
+        val response = httpClient.get("http://34.71.128.243/getIntegrantes")
         response.body()
     }
 
     suspend fun insertIntegrante(integrante: RemoteIntegrante) = runBlocking {
-        httpClient.post("http://34.16.74.167/insertIntegrante") {
+        httpClient.post("http://34.71.128.243/insertIntegrante") {
             contentType(ContentType.Application.Json)
             setBody(integrante)
         }
     }
 
     suspend fun deleteIntegrante(integrante: RemoteIntegrante) = runBlocking {
-        httpClient.post("http://34.16.74.167/deleteIntegrante") {
+        httpClient.post("http://34.71.128.243/deleteIntegrante") {
             contentType(ContentType.Application.Json)
             setBody(integrante)
         }
@@ -276,19 +276,19 @@ class HTTPClient @Inject constructor() {
     // ---------------------------  SEGUIDORES ------------------------------
 
     suspend fun getSeguidores(): List<RemoteSeguidor> = runBlocking {
-        val response = httpClient.get("http://34.16.74.167/getSeguidores")
+        val response = httpClient.get("http://34.71.128.243/getSeguidores")
         response.body()
     }
 
     suspend fun insertSeguidor(seguidor: RemoteSeguidor) = runBlocking {
-        httpClient.post("http://34.16.74.167/insertSeguidores") {
+        httpClient.post("http://34.71.128.243/insertSeguidores") {
             contentType(ContentType.Application.Json)
             setBody(seguidor)
         }
     }
 
     suspend fun deleteSeguidor(seguidor: RemoteSeguidor) = runBlocking {
-        httpClient.post("http://34.16.74.167/deleteSeguidor") {
+        httpClient.post("http://34.71.128.243/deleteSeguidor") {
             contentType(ContentType.Application.Json)
             setBody(seguidor)
         }
@@ -298,21 +298,21 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  NOTIFICACIONES ------------------------------
     suspend fun subscribeUser(FCMClientToken: String, username: String) {
-        httpClient.post("http://34.16.74.167/notifications/subscribe") {
+        httpClient.post("http://34.71.128.243/notifications/subscribe") {
             contentType(ContentType.Application.Json)
             parameter("username", username)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
     }
     suspend fun unSubscribeUser(FCMClientToken: String, username: String) {
-        httpClient.post("http://34.16.74.167/notifications/unsubscribe") {
+        httpClient.post("http://34.71.128.243/notifications/unsubscribe") {
             contentType(ContentType.Application.Json)
             parameter("username", username)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
     }
     suspend fun subscribeToUser(FCMClientToken: String, username: String) {
-        httpClient.post("http://34.16.74.167/notifications/subscribeToUser") {
+        httpClient.post("http://34.71.128.243/notifications/subscribeToUser") {
             contentType(ContentType.Application.Json)
             parameter("username", username)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
@@ -321,7 +321,7 @@ class HTTPClient @Inject constructor() {
 
 
     suspend fun unsubscribeFromUser(FCMClientToken: String, username: String) {
-        httpClient.delete("http://34.16.74.167/notifications/unsubscribeFromUser") {
+        httpClient.delete("http://34.71.128.243/notifications/unsubscribeFromUser") {
             contentType(ContentType.Application.Json)
             parameter("username", username)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
@@ -338,7 +338,7 @@ class HTTPClient @Inject constructor() {
         val byteArray = stream.toByteArray()
         Log.d("Image", byteArray.size.toString())
         httpClient.submitFormWithBinaryData(
-            url = "http://34.16.74.167/insertCuadrillaImage",
+            url = "http://34.71.128.243/insertCuadrillaImage",
             formData = formData {
                 append("image", byteArray, Headers.build {
                     append(HttpHeaders.ContentType, "image/png")
@@ -353,7 +353,7 @@ class HTTPClient @Inject constructor() {
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
         httpClient.submitFormWithBinaryData(
-            url = "http://34.16.74.167/insertEventoImage",
+            url = "http://34.71.128.243/insertEventoImage",
             formData = formData {
                 append("image", byteArray, Headers.build {
                     append(HttpHeaders.ContentType, "image/png")

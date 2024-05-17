@@ -34,7 +34,7 @@ fun EventoMiniCard(
         navController.navigate(AppScreens.Evento.route)
     }
 
-    val imageUri = Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png")
+    val imageUri = Uri.parse("http://34.71.128.243/eventoImages/${evento.id}.png")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
