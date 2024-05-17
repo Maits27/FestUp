@@ -49,6 +49,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -155,10 +156,11 @@ fun LoginForm(
 
     val context = LocalContext.current
     val scheduler = AndroidAlarmScheduler(LocalContext.current)
-
     var showLoading by rememberSaveable {
         mutableStateOf(false)
     }
+
+
 
     val onLoginButtonClick: () -> Unit = {
         if (username == "") Toast.makeText(context,
@@ -215,11 +217,6 @@ fun LoginForm(
                                     )
                                 }
                             }
-                        }else{
-                            showLoading = false
-                            Toast.makeText(context,
-                               "Error al realizar el login, reinicia la aplicación.", Toast.LENGTH_LONG).show()
-                            showLoading = false
                         }
                     } else {
                         withContext(Dispatchers.Main) {
@@ -303,6 +300,9 @@ fun LoginForm(
             }
         } else CircularProgressIndicator()
     }
+
+
+
 }
 
 
@@ -516,6 +516,8 @@ fun RegistroForm(
                     // Icono para editar imagen
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }
+
+                // Campo para añadir nombre de usuario
                 OutlinedTextField(
                     value = username,
                     onValueChange = { username = it.lowercase().replace(" ", "").replace("\n", "") },
@@ -766,6 +768,7 @@ fun registration(
                     mainNavController.navigate(AppScreens.App.route) {
                         popUpTo(0)
                     }
+                    mainVM.subscribeUser()
                     mainVM.actualizarWidget(context)
                 }
             } else {

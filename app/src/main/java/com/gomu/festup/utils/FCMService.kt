@@ -1,7 +1,6 @@
 package com.gomu.festup.utils
 
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.core.app.NotificationCompat
@@ -14,12 +13,6 @@ import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
 import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -28,14 +21,8 @@ import javax.inject.Inject
  *
  * Referencias: https://medium.com/@dugguRK/fcm-android-integration-3ca32ff425a5
  */
-@SuppressLint("MissingFirebaseInstanceTokenRefresh")
-@AndroidEntryPoint
-class FCMService : FirebaseMessagingService() {
 
-    @Inject
-    lateinit var preferences: IGeneralPreferences
-    @Inject
-    lateinit var loginSettings: ILoginSettings
+class FCMService : FirebaseMessagingService() {
 
     /**
      * Método para recibir las notificaciones FCM.
@@ -43,38 +30,26 @@ class FCMService : FirebaseMessagingService() {
      * @param remoteMessage El mensaje de notificación.
      */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        val context = this
-        CoroutineScope(Dispatchers.IO).launch {
-            val currentUser = loginSettings.getLastLoggedUser()
-            if(currentUser!="") {
-                if (preferences.getReceiveNotifications(currentUser).first()) {
-                    withContext(Dispatchers.Default) {
-                        remoteMessage.notification?.let { notification ->
+        remoteMessage.notification?.let { notification ->
 
-                            Log.d("FCM", "Message Notification Title: ${notification.title}")
-                            Log.d("FCM", "Message Notification Body: ${notification.body}")
+            Log.d("FCM", "Message Notification Title: ${notification.title}")
+            Log.d("FCM", "Message Notification Body: ${notification.body}")
 
-                            val builder = NotificationCompat.Builder(
-                                context,
-                                MyNotificationChannels.NOTIFICATIONS_CHANNEL.name
-                            )
-                                .setSmallIcon(R.drawable.festup)
-                                .setContentTitle(notification.title)
-                                .setContentText(notification.body)
-                                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                .setAutoCancel(true)
-                            try {
-                                with(NotificationManagerCompat.from(context)) {
-                                    notify(NotificationID.NOTIFICATIONS.id, builder.build())
-                                }
-                            } catch (e: SecurityException) {
-                                e.printStackTrace()
-                            }
-                        }
-                    }
+            val builder = NotificationCompat.Builder(this,
+                MyNotificationChannels.NOTIFICATIONS_CHANNEL.name
+            )
+                .setSmallIcon(R.drawable.festup)
+                .setContentTitle(notification.title)
+                .setContentText(notification.body)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+            try {
+                with(NotificationManagerCompat.from(this)) {
+                    notify(NotificationID.NOTIFICATIONS.id, builder.build())
                 }
+            } catch (e: SecurityException) {
+                e.printStackTrace()
             }
         }
-
     }
 }

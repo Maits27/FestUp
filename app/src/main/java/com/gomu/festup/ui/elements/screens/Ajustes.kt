@@ -197,21 +197,12 @@ fun Ajustes(
                     if (it){
                         mainVM.subscribeUser()
                         mainVM.suscribirASeguidos(seguidos.value)
-//                        CoroutineScope(Dispatchers.Main).launch {
-//                            val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
-//                            eventos.map { evento ->
-//                                scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
-//                            }
-//                        }
+                        MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
+                    }else{
+                        mainVM.unSubscribeUser()
+                        mainVM.unSuscribeASeguidos(seguidos.value)
+                        MainActivity.CURRENT_CHANNEL = MainActivity.NO_CHANNEL_ID
                     }
-//                    else{
-//                        CoroutineScope(Dispatchers.Main).launch {
-//                            val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
-//                            eventos.map { evento ->
-//                                scheduler.cancel(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
-//                            }
-//                        }
-//                    }
                 }
             }
             Row (
@@ -384,10 +375,10 @@ fun Ajustes(
 //                                    scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
 //                                }
 //                            }
-//                            MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
-//                        }else{
-////                          mainVM.unSubscribeUser()
-////                          mainVM.unSuscribeASeguidos(seguidos.value)
+                            MainActivity.CURRENT_CHANNEL = MainActivity.CHANNEL_ID
+                        }else{
+                            mainVM.unSubscribeUser()
+                            mainVM.unSuscribeASeguidos(seguidos.value)
 //                            CoroutineScope(Dispatchers.Main).launch {
 //                                val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
 //                                eventos.map { evento ->
@@ -440,10 +431,7 @@ fun Ajustes(
         mainVM.actualizarWidget(context)
 
         withContext(Dispatchers.Main) {
-            val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
-            eventos.map { evento ->
-                scheduler.cancel(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
-            }
+            //mainNavController.popBackStack()
             (context as? Activity)?.finishAffinity()
             val intent = Intent(context, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
