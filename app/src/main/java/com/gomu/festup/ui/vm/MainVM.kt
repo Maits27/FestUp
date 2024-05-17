@@ -397,7 +397,7 @@ class MainVM @Inject constructor(
     }
     fun suscribirASeguidos(usuariosLista: List<Usuario>, usuario: Usuario = currentUser.value!!){
         usuariosLista.map { usuarioLista ->
-            Log.d("SUSCRIBE FROM",usuarioLista.username)
+            Log.d("SUSCRIBE TO",usuarioLista.username)
             subscribeToUser(usuarioLista.username)
         }
     }
@@ -419,7 +419,7 @@ class MainVM @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     try{
                         userRepository.subscribeUser(task.result, currentUser.value!!.username)
-                        Log.d("FCM", "Usuario suscrito")
+                        Log.d("FCM", "Usuario suscrito ${currentUser.value!!.username}")
                         Log.d("FCM", task.result)
                     }
                     catch (e:Exception){
@@ -442,7 +442,7 @@ class MainVM @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     try{
                         userRepository.unSubscribeUser(task.result, currentUser.value!!.username)
-                        Log.d("FCM", "Usuario desuscrito")
+                        Log.d("FCM", "Usuario desuscrito ${currentUser.value!!.username}")
                         Log.d("FCM", task.result)
                     }
                     catch (e:Exception){
@@ -489,7 +489,7 @@ class MainVM @Inject constructor(
                 viewModelScope.launch(Dispatchers.IO) {
                     try{
                         userRepository.unsubscribeFromUser(task.result, username)
-                        Log.d("FCM", "Desuscribirse a $username")
+                        Log.d("FCM", "Desuscribirse de $username")
                     }
                     catch (e:Exception){
                         Log.d("Exception", e.printStackTrace().toString())

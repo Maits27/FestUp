@@ -154,6 +154,8 @@ fun LoginForm(
         mutableStateOf(false)
     }
 
+
+
     val onLoginButtonClick: () -> Unit = {
         if (username == "") Toast.makeText(context,
             context.getString(R.string.introduce_un_nombre_de_usuario), Toast.LENGTH_SHORT).show()
@@ -178,6 +180,7 @@ fun LoginForm(
                         withContext(Dispatchers.IO) {
                             preferencesVM.changeUser(currentUser.username)
                         }
+
 
                         withContext(Dispatchers.Main) {
                             mainNavController.navigate(AppScreens.App.route) {
