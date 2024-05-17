@@ -3,7 +3,21 @@ package com.gomu.festup.data
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import com.gomu.festup.data.localDatabase.Entities.Evento
+import java.time.LocalDateTime
 
+/**
+ * DataClass para almacenar los datos a enviar al [AlarmManager]
+ */
+data class AlarmItem(
+    val alarmTime : LocalDateTime,
+    val eventTitle : String,
+    val eventLocation: String,
+    val eventId: String
+)
+
+/**
+ * DataClasses para gestionar las entidades recogidas de la base de datos
+ */
 data class UserAndEvent(
     @ColumnInfo(name = "username")
     val username: String,
@@ -26,12 +40,17 @@ data class UserCuadrillaAndEvent(
     val evento: Evento
 )
 
+data class Contacto(
+    val nombre: String,
+    val telefono: String,
+)
 
-
+/**
+ * DataClass con los idiomas que recoge la aplicación
+ */
 enum class AppLanguage(val language: String, val code: String) {
     EU("Euskera", "eu"),
     ES("Español", "es");
-
 
     companion object {
         /**
@@ -46,7 +65,3 @@ enum class AppLanguage(val language: String, val code: String) {
     }
 }
 
-data class Contacto(
-    val nombre: String,
-    val telefono: String,
-)

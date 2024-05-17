@@ -20,18 +20,23 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class PreferencesRepository @Inject constructor(
     private val context: Context,
 ) : IGeneralPreferences, ILoginSettings {
+    /**
+     * Claves del DataStore
+     */
     val LAST_LOGGED_USER = stringPreferencesKey("last_logged_user")
     val LAST_BEARER_TOKEN = stringPreferencesKey("last_bearer_token")
     val LAST_REFRESH_TOKEN = stringPreferencesKey("last_refresh_token")
     fun PREFERENCE_LANGUAGE(username: String) = stringPreferencesKey("${username}_preference_lang")
     fun PREFERENCE_THEME_DARK(username: String) = booleanPreferencesKey("${username}_preference_theme")
     fun PREFERENCE_NOTIFICATIONS(username: String) = booleanPreferencesKey("${username}_preference_notif")
-    fun PREFERENCE_AGE(username: String) = booleanPreferencesKey("${username}_preference_age")
+//    fun PREFERENCE_AGE(username: String) = booleanPreferencesKey("${username}_preference_age")
 
+    /**
+     * Gestión del último usuario registrado
+     */
 
     override suspend fun getLastLoggedUser(): String = context.dataStore.data.first()[LAST_LOGGED_USER]?:""
 
-    // Set the last logged user on DataStore Preferences
     override suspend fun setLastLoggedUser(user: String) {
         context.dataStore.edit { preferences ->
             preferences[LAST_LOGGED_USER] = user
@@ -58,7 +63,8 @@ class PreferencesRepository @Inject constructor(
 
     /**
      * Recoge el primer valor del Flow del Datastore en los idiomas y lo devuelve.
-     * Por defecto se escoge el idioma local del dispositivo Android.
+     * Por defecto se escoge el idioma local del dispositivo Android, que de no
+     * estar implementado, podrá la aplicación en castellano.
      */
     override fun language(username: String): Flow<String> =
         context.dataStore.data.map { preferences ->
@@ -76,10 +82,9 @@ class PreferencesRepository @Inject constructor(
 
     /**
      * Recoge el primer valor del Flow del Datastore en los temas y lo devuelve
-     * Valor numérico del 0 al 2:
-     *      0 -> Verde (por defecto)
-     *      1 -> Azul
-     *      2 -> Morado
+     * Valor booleano dependiendo de si se elige el tema oscuro o no (por defecto a true):
+     *      true -> Dark
+     *      false -> Light
      */
 
     override fun getThemePreference(username: String): Flow<Boolean> =
@@ -93,11 +98,10 @@ class PreferencesRepository @Inject constructor(
         }
     }
 
-    //////////////// Preferencias de Calendario ////////////////
+    //////////////// Preferencias de Notificaciones ////////////////
 
     /**
-     * En base a si es true o false, se guardarán los eventos del usuario
-     * en el calendario local del dispositivo
+     * En base a si es true o false, se enviarán notificaciones al usuario
      */
     override fun getReceiveNotifications(username: String): Flow<Boolean> =
         context.dataStore.data.map { preferences ->
@@ -110,14 +114,14 @@ class PreferencesRepository @Inject constructor(
         }
     }
 
-    override fun getVisualizarEdad(username: String): Flow<Boolean> =
-        context.dataStore.data.map { preferences ->
-            preferences[PREFERENCE_AGE(username)] ?: true
-        }
-    override suspend fun changeVisualizarEdad(username: String) {
-        context.dataStore.edit { preferences ->
-            preferences[PREFERENCE_AGE(username)] = !getVisualizarEdad(username).first()
-        }
-    }
+//    override fun getVisualizarEdad(username: String): Flow<Boolean> =
+//        context.dataStore.data.map { preferences ->
+//            preferences[PREFERENCE_AGE(username)] ?: true
+//        }
+//    override suspend fun changeVisualizarEdad(username: String) {
+//        context.dataStore.edit { preferences ->
+//            preferences[PREFERENCE_AGE(username)] = !getVisualizarEdad(username).first()
+//        }
+//    }
 
 }

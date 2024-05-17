@@ -27,6 +27,11 @@ import kotlinx.coroutines.flow.zip
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/******************************************************************
+ * Interfaz que define la API del listado de [Evento] - Repositorio
+ * Los métodos definidos son las acciones posibles para interactuar
+ * con la BBDD
+ *******************************************************************/
 interface IEventoRepository {
     suspend fun insertarEvento(evento: Evento, username: String, image: Bitmap?): Boolean
     fun todosLosEventos(): Flow<List<Evento>>
@@ -49,6 +54,12 @@ interface IEventoRepository {
     suspend fun descargarUsuariosAsistentes()
     suspend fun descargarCuadrillasAsistentes()
 }
+
+/**
+ * Implementación de [IEventoRepository] que usa Hilt para inyectar los
+ * parámetros necesarios. Desde aquí se accede a los diferentes DAOs, que
+ * se encargan de la conexión a la BBDD de Room y con la remota.
+ * */
 @Singleton
 class EventoRepository @Inject constructor(
     private val eventoDao: EventoDao,
@@ -57,6 +68,9 @@ class EventoRepository @Inject constructor(
     private val httpClient: HTTPClient
 ) : IEventoRepository {
 
+    /**
+     * Métodos para la información del [Evento].
+     */
     override suspend fun insertarEvento(evento: Evento, username: String, image: Bitmap?): Boolean {
         return try {
             // Remote: first in remote to generate the id
@@ -91,10 +105,14 @@ class EventoRepository @Inject constructor(
         }
     }
 
-
     override fun todosLosEventos(): Flow<List<Evento>> {
         return eventoDao.todosLosEventos()
     }
+
+    /**
+     * Métodos para los eventos relacionados con un
+     * usuario o cuadrilla ([UsuariosAsistentes] y [CuadrillasAsistentes]).
+     */
 
     override fun eventosUsuario(username: String): Flow<List<Evento>> {
         return eventoDao.eventosUsuario(username)
@@ -103,7 +121,6 @@ class EventoRepository @Inject constructor(
     override fun eventosUsuarioList(username: String): List<Evento> {
         return eventoDao.eventosUsuarioList(username)
     }
-
 
     override suspend fun eventosSeguidos(username: String): Flow<List<UserCuadrillaAndEvent>> {
         val cuadrillas = eventoDao.getUserCuadrillaAndEvent(username).map {
@@ -155,8 +172,6 @@ class EventoRepository @Inject constructor(
         return eventoDao.getCuadrillasDeEvento(id)
     }
 
-
-
     override fun usuariosEvento(id: String): Flow<List<Usuario>>{
         return eventoDao.getUsuariosDeEvento(id)
     }
@@ -164,6 +179,10 @@ class EventoRepository @Inject constructor(
     override fun eventosCuadrilla(nombreCuadrilla: String): Flow<List<Evento>> {
         return cuadrillasAsistentesDao.getEventosCuadrilla(nombreCuadrilla)
     }
+
+    /**
+     * Métodos para el perfil del [Evento].
+     */
 
     override suspend fun setEventoProfileImage(id: String, image: Bitmap): Boolean {
         return try {
@@ -175,6 +194,10 @@ class EventoRepository @Inject constructor(
             false
         }
     }
+
+    /**
+     * Métodos exclusivos remoto.
+     */
 
     override suspend fun descargarEventos(){
         eventoDao.eliminarEventos()
@@ -198,6 +221,5 @@ class EventoRepository @Inject constructor(
             remoteCAsistenteToCAsistente(it)
         )}
     }
-
 
 }

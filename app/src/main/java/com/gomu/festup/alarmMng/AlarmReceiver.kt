@@ -20,6 +20,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+/**
+ * [AlarmReceiver] que recoge las alarmas programadas por el [AlarmScheduler]
+ *  * y ejecuta el código necesario en base a lo programado.
+ */
 @AndroidEntryPoint
 class AlarmReceiver: BroadcastReceiver() {
     @Inject

@@ -28,10 +28,12 @@ import javax.inject.Singleton
 class UserExistsException : Exception()
 class AuthenticationException : Exception()
 
-
 private val bearerTokenStorage = mutableListOf<BearerTokens>()
 
-
+/**
+ * Cliente HTTP con las peticiones que no requiren de autentificación
+ * Aquí se crea el [BearerToken] para identificar al usuario que ha hecho el login.
+ */
 @Singleton
 class AuthClient @Inject constructor(private val loginSettings: ILoginSettings) {
     private val httpClient = HttpClient(CIO) {
@@ -102,7 +104,12 @@ class AuthClient @Inject constructor(private val loginSettings: ILoginSettings) 
     }
 }
 
-
+/**
+ * Cliente HTTP con las peticiones que REQUIEREN de autentificación
+ * Sin el [BearerToken] para identificar al usuario que ha hecho el
+ * login, no permitirá ejecutar estas peticiones. Es necesario
+ * autentificarse con un usuario creado ya o registrarse con uno nuevo.
+ */
 
 @Singleton
 class HTTPClient @Inject constructor() {

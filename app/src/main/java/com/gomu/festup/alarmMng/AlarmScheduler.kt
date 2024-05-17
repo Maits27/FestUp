@@ -5,22 +5,24 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.gomu.festup.data.AlarmItem
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-data class AlarmItem(
-    val alarmTime : LocalDateTime,
-    val eventTitle : String,
-    val eventLocation: String,
-    val eventId: String
-)
 
+/**
+ * Interfaz con los métodos para gestionar el [AndroidAlarmScheduler]
+ */
 interface AlarmScheduler {
     fun schedule(alarmItem: AlarmItem)
 
     fun cancel(alarmItem: AlarmItem)
 }
 
+/**
+ * Clase que implementa la interfaz de [AlarmScheduler]
+ * Utiliza los métodos de [schedule] y [cancel] para gestionar las alarmas del servicio.
+ */
 class AndroidAlarmScheduler (
     private val context: Context
 ): AlarmScheduler {

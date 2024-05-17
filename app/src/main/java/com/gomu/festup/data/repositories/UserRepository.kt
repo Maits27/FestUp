@@ -26,6 +26,11 @@ import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/******************************************************************
+ * Interfaz que define la API del listado de [Usuario] - Repositorio
+ * Los métodos definidos son las acciones posibles para interactuar
+ * con la BBDD
+ *******************************************************************/
 interface IUserRepository: ILoginSettings {
 
     suspend fun insertUsuario(usuario: Usuario, password: String): Boolean
@@ -49,6 +54,13 @@ interface IUserRepository: ILoginSettings {
     suspend fun unsubscribeFromUser(token: String, username: String)
 
 }
+
+/**
+ * Implementación de [IUserRepository] e [ILoginSettings] que usan
+ * Hilt para inyectar los parámetros necesarios.
+ * Desde aquí se accede a los diferentes DAOs, que se encargan de
+ * la conexión a la BBDD de Room y con la remota.
+ * */
 @Singleton
 class UserRepository @Inject constructor(
     private val usuarioDao: UsuarioDao,
@@ -57,6 +69,9 @@ class UserRepository @Inject constructor(
     private val authClient: AuthClient,
     private val httpClient: HTTPClient
 ) : IUserRepository {
+    /**
+     * Métodos para gestionar el Registro, Login y Verificación del usuario.
+     */
     override suspend fun getLastLoggedUser(): String = loginSettings.getLastLoggedUser()
     override suspend fun setLastLoggedUser(user: String) = loginSettings.setLastLoggedUser(user)
     override suspend fun getLastBearerToken(): String =loginSettings.getLastBearerToken()
@@ -91,6 +106,15 @@ class UserRepository @Inject constructor(
         authClient.addBearerToken(token, refresh)
     }
 
+    /**
+     * Métodos para los [Seguidores] del usuario.
+     */
+    override suspend fun descargarSeguidores(){
+        seguidoresDao.eliminarSeguidores()
+        val seguidoresList = httpClient.getSeguidores()
+        seguidoresList.map{seguidoresDao.insertSeguidores(remoteSeguidorToSeguidor(it))}
+    }
+
     override fun getAQuienSigue(username: String): Flow<List<Usuario>> {
         return usuarioDao.getAQuienSigue(username)
     }
@@ -122,11 +146,16 @@ class UserRepository @Inject constructor(
         httpClient.deleteSeguidor(RemoteSeguidor(seguidor = currentUsername, seguido = usernameToUnfollow))
     }
 
+    /**
+     * Métodos para las [Cuadrilla] del usuario.
+     */
     override fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>> {
         return usuarioDao.getCuadrillasUsuario(username)
     }
 
-
+    /**
+     * Métodos para el perfil del [Usuario].
+     */
     override suspend fun setUserProfile(username: String, image: Bitmap): Boolean {
         return try {
             withContext(Dispatchers.IO) {
@@ -143,6 +172,9 @@ class UserRepository @Inject constructor(
         }
     }
 
+    /**
+     * Métodos para la información del [Usuario].
+     */
     override fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>> {
         return usuarioDao.getUsuariosMenosCurrent(usuario.username)
     }
@@ -150,6 +182,16 @@ class UserRepository @Inject constructor(
     override fun getUsuario(username: String): Usuario? {
         return usuarioDao.getUsuario(username)
     }
+
+    override suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date, telefono: String) : Usuario {
+        usuarioDao.editarUsuario(username, email, nombre, fecha, telefono)
+        httpClient.editUser(RemoteUsuario(username = username, email = email, nombre = nombre, fechaNacimiento = fecha.toStringRemoto(), telefono = telefono))
+        return usuarioDao.getUsuario(username)!!
+    }
+
+    /**
+     * Métodos exclusivos remoto.
+     */
 
     override suspend fun descargarUsuarios(){
         usuarioDao.eliminarUsuarios()
@@ -159,11 +201,9 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun descargarSeguidores(){
-        seguidoresDao.eliminarSeguidores()
-        val seguidoresList = httpClient.getSeguidores()
-        seguidoresList.map{seguidoresDao.insertSeguidores(remoteSeguidorToSeguidor(it))}
-    }
+    /**
+     * Métodos para la suscribir y desuscribir al [Usuario].
+     */
 
     override suspend fun subscribeUser(token: String, username: String){
         httpClient.subscribeUser(token, username)
@@ -172,11 +212,6 @@ class UserRepository @Inject constructor(
         httpClient.unSubscribeUser(token, username)
     }
 
-    override suspend fun editUsuario(username: String, email: String, nombre: String, fecha: Date, telefono: String) : Usuario {
-        usuarioDao.editarUsuario(username, email, nombre, fecha, telefono)
-        httpClient.editUser(RemoteUsuario(username = username, email = email, nombre = nombre, fechaNacimiento = fecha.toStringRemoto(), telefono = telefono))
-        return usuarioDao.getUsuario(username)!!
-    }
     override suspend fun subscribeToUser(token: String, username: String){
         httpClient.subscribeToUser(token, username)
     }
@@ -184,7 +219,5 @@ class UserRepository @Inject constructor(
     override suspend fun unsubscribeFromUser(token: String, username: String){
         httpClient.unsubscribeFromUser(token, username)
     }
-
-
 
 }

@@ -8,6 +8,7 @@ import com.gomu.festup.data.http.RemoteIntegrante
 import com.gomu.festup.data.localDatabase.DAO.CuadrillaDao
 import com.gomu.festup.data.localDatabase.DAO.IntegranteDao
 import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
+import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.data.localDatabase.Entities.Integrante
 import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.utils.remoteIntegranteToIntegrante
@@ -18,7 +19,11 @@ import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
+/******************************************************************
+ * Interfaz que define la API del listado de [Cuadrilla] - Repositorio
+ * Los métodos definidos son las acciones posibles para interactuar
+ * con la BBDD
+ *******************************************************************/
 interface ICuadrillaRepository {
     suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla, image: Bitmap?): Boolean
     fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>>
@@ -41,12 +46,20 @@ interface ICuadrillaRepository {
 
     fun integrantesCuadrillasEvento(id: String): Flow<List<Integrante>>
 }
+/**
+ * Implementación de [ICuadrillaRepository] que usa Hilt para inyectar los
+ * parámetros necesarios. Desde aquí se accede a los diferentes DAOs, que
+ * se encargan de la conexión a la BBDD de Room y con la remota.
+ * */
 @Singleton
 class CuadrillaRepository @Inject constructor(
     private val cuadrillaDao: CuadrillaDao,
     private val integranteDao: IntegranteDao,
     private val httpClient: HTTPClient
 ) : ICuadrillaRepository {
+    /**
+     * Métodos para la información de la [Cuadrilla].
+     */
     override suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla, image: Bitmap?): Boolean {
         return try {
             // Local
@@ -72,6 +85,17 @@ class CuadrillaRepository @Inject constructor(
         }
     }
 
+    override fun getCuadrillas(): Flow<List<Cuadrilla>> {
+        return cuadrillaDao.getCuadrillas()
+    }
+
+    override fun getCuadrillaAccessToken(nombre: String): String {
+        return httpClient.getCuadrillaAccessToken(nombre)
+    }
+
+    /**
+     * Métodos para los [Usuario] relacionados con la [Cuadrilla].
+     */
 
     override fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>> {
         return cuadrillaDao.getUsuariosDeCuadrilla(nombre)
@@ -107,11 +131,6 @@ class CuadrillaRepository @Inject constructor(
         }
     }
 
-    override fun getCuadrillas(): Flow<List<Cuadrilla>> {
-        return cuadrillaDao.getCuadrillas()
-    }
-
-
     override fun pertenezcoCuadrilla(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>> {
         return integranteDao.pertenezcoCuadrilla(cuadrilla.nombre,usuario.username)
     }
@@ -119,6 +138,14 @@ class CuadrillaRepository @Inject constructor(
     override fun getIntegrantes(): Flow<List<Integrante>>{
         return integranteDao.getIntegrantes()
     }
+
+    override fun integrantesCuadrillasEvento(id: String): Flow<List<Integrante>> {
+        return integranteDao.integrantesCuadrillasEvento(id)
+    }
+
+    /**
+     * Métodos para el perfil de la [Cuadrilla].
+     */
 
     override suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean {
         return try {
@@ -131,9 +158,9 @@ class CuadrillaRepository @Inject constructor(
         }
     }
 
-    override fun getCuadrillaAccessToken(nombre: String): String {
-        return httpClient.getCuadrillaAccessToken(nombre)
-    }
+    /**
+     * Métodos exclusivos remoto.
+     */
 
     override suspend fun descargarCuadrillas(){
         cuadrillaDao.eliminarCuadrillas()
@@ -146,9 +173,4 @@ class CuadrillaRepository @Inject constructor(
         val integrantesList = httpClient.getIntegrantes()
         integrantesList.map { integranteDao.insertIntegrante(remoteIntegranteToIntegrante(it)) }
     }
-
-    override fun integrantesCuadrillasEvento(id: String): Flow<List<Integrante>> {
-        return integranteDao.integrantesCuadrillasEvento(id)
-    }
-
 }
