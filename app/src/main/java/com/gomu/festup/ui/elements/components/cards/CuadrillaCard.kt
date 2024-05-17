@@ -57,7 +57,7 @@ fun CuadrillaCard(
         navController.navigate(AppScreens.PerfilCuadrilla.route)
     }
 
-    val imageUri = Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
+    val imageUri = Uri.parse("http://34.71.128.243/cuadrillaProfileImages/${cuadrilla.nombre}.png")
 
     Card(
         modifier = Modifier
@@ -101,7 +101,7 @@ fun CuadrillaCardParaEventosAlert(
 ) {
     val context = LocalContext.current
 
-    val imageUri = "http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
+    val imageUri = "http://34.71.128.243/cuadrillaProfileImages/${cuadrilla.nombre}.png"
 
     var checkedSwitch by remember { mutableStateOf(apuntado) }
 

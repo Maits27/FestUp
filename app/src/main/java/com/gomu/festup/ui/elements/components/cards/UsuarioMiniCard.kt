@@ -37,7 +37,7 @@ fun UsuarioMiniCard(
         }
     }
 
-    val imageUri = Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png")
+    val imageUri = Uri.parse("http://34.71.128.243/userProfileImages/${usuario.username}.png")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

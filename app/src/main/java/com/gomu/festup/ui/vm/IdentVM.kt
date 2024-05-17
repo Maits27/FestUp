@@ -39,7 +39,7 @@ class IdentVM @Inject constructor(
             val newUser = Usuario(username,email,nombre,fechaNacimientoDate, telefono)
             val signInCorrect = userRepository.insertUsuario(newUser,password)
             if (signInCorrect){
-                if (uri != null && uri != Uri.parse("http://34.16.74.167/userProfileImages/no-user.png")) {
+                if (uri != null && uri != Uri.parse("http://34.71.128.243/userProfileImages/no-user.png")) {
                     val imageBitmap = context.localUriToBitmap(uri)
                     Log.d("Sign up", "Setting user image")
                     userRepository.setUserProfile(username, imageBitmap)

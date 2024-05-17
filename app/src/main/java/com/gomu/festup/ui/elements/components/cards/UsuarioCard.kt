@@ -65,7 +65,7 @@ fun UsuarioCard(
         }
     }
 
-    val imageUri = Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png")
+    val imageUri = Uri.parse("http://34.71.128.243/userProfileImages/${usuario.username}.png")
 
     Card(
         modifier = Modifier
@@ -112,7 +112,7 @@ fun UsuarioCardParaEventosAlert(
 ) {
     val context = LocalContext.current
 
-    val imageUri = "http://34.16.74.167/userProfileImages/${usuario.username}.png"
+    val imageUri = "http://34.71.128.243/userProfileImages/${usuario.username}.png"
 
     var checkedSwitch by remember { mutableStateOf(apuntado) }
 
