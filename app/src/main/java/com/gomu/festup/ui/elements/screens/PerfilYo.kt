@@ -93,23 +93,13 @@ fun PerfilYo(
     navController: NavController,
     preferencesViewModel: PreferencesViewModel,
     yo: Boolean = false,
-//    recibirNotificaciones: Boolean,
-//    showAge: Boolean,
     mainVM: MainVM
 ) {
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    val context = LocalContext.current
     var usuario = mainVM.currentUser.value!!
 
-    if (!yo) {
-        usuario = if(mainVM.usuarioMostrar.isNotEmpty()) mainVM.usuarioMostrar.last()!! else Usuario("", "", "", Date(), "")
-        mainVM.alreadySiguiendo(usuario.username)
-    }
-
-    val alreadySiguiendo = mainVM.alreadySiguiendo
-
-    val cuadrillas = mainVM.getCuadrillasUsuario(usuario).collectAsState(initial = emptyList())
-
     var refresh by remember{ mutableStateOf(false) }
-
     val scrollState = rememberScrollState()
 
     val refreshState = rememberPullRefreshState(
@@ -122,10 +112,15 @@ fun PerfilYo(
             }
         },
     )
-    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
-    var showExpandedButtons by remember { mutableStateOf(false) }
-    val context = LocalContext.current
+    if (!yo) {
+        usuario = if(mainVM.usuarioMostrar.isNotEmpty()) mainVM.usuarioMostrar.last()!! else Usuario("", "", "", Date(), "")
+        mainVM.alreadySiguiendo(usuario.username)
+    }
+
+    val alreadySiguiendo = mainVM.alreadySiguiendo
+
+    val cuadrillas = mainVM.getCuadrillasUsuario(usuario).collectAsState(initial = emptyList())
 
     var verificacion by rememberSaveable{ mutableStateOf(false) }
 
@@ -156,7 +151,6 @@ fun PerfilYo(
                         mainVM = mainVM,
                         edad = mainVM.calcularEdad(usuario) ,
                         yo = yo,
-//                        recibirNotificaciones = recibirNotificaciones,
                         alreadySiguiendo = alreadySiguiendo,
                         usuario = usuario,
                         navController = navController
@@ -184,15 +178,6 @@ fun PerfilYo(
                 )
                 EventosUsuario(usuario = usuario, mainVM = mainVM, navController = navController)
             }
-//            if (yo) {
-//                BotonesPerfil(
-//                    navController= navController,
-//                    mainNavController = mainNavController,
-//                    preferencesVM = preferencesViewModel,
-//                    mainVM = mainVM,
-//                    actualizarWidget = mainVM::actualizarWidget
-//                )
-//            }
         }
     }
     else{
@@ -539,27 +524,6 @@ fun BotonesPerfil(
         }
 
     }
-
-//    EstasSeguroDialog(
-//        show = verificacion,
-//        mensaje = stringResource(id = R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n),
-//        onDismiss = { verificacion = false }
-//    ) { CoroutineScope(Dispatchers.IO).launch {
-//        withContext(Dispatchers.IO) {
-//            preferencesVM.changeUser("")
-//        }
-//        //Log.d("FestUpWidget", "DataStore username ${preferencesVM}")
-//        mainVM.serverOk.value = false
-//        mainVM.actualizarWidget(context)
-//
-//        withContext(Dispatchers.Main) {
-//            //mainNavController.popBackStack()
-//            (context as? Activity)?.finish()
-//            val intent = Intent(context, MainActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//            context.startActivity(intent)
-//        }
-//    } }
 }
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -569,7 +533,6 @@ fun TopProfile(
     usuario: Usuario,
     navController: NavController,
     alreadySiguiendo: MutableState<Boolean?>,
-//    recibirNotificaciones: Boolean,
     edad: Int,
     yo: Boolean
 ){
@@ -604,7 +567,6 @@ fun TopProfile(
 
         SeguidoresYSeguidos(
             yo = yo,
-//            recibirNotificaciones = recibirNotificaciones,
             usuario = usuario,
             mainVM = mainVM,
             navController = navController,
