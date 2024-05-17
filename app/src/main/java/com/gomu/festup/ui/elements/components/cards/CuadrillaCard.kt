@@ -57,6 +57,8 @@ fun CuadrillaCard(
         navController.navigate(AppScreens.PerfilCuadrilla.route)
     }
 
+    val imageUri = Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,10 +72,7 @@ fun CuadrillaCard(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Imagen(
-                Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"),
-                R.drawable.no_cuadrilla, 50.dp
-            ) {}
+            Imagen(imageUri, R.drawable.no_cuadrilla, 50.dp) {  }
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -102,7 +101,7 @@ fun CuadrillaCardParaEventosAlert(
 ) {
     val context = LocalContext.current
 
-    val imageUri="http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
+    val imageUri = "http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"
 
     var checkedSwitch by remember { mutableStateOf(apuntado) }
 

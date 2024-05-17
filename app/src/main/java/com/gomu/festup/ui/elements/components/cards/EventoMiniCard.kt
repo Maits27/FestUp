@@ -29,16 +29,12 @@ fun EventoMiniCard(
     mainVM: MainVM,
     navController: NavController
 ) {
-    val context = LocalContext.current
-
     val onCardClick: () -> Unit = {
         mainVM.eventoMostrar.value = evento
         navController.navigate(AppScreens.Evento.route)
     }
 
-    val imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png"))
-    }
+    val imageUri = Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,7 +42,7 @@ fun EventoMiniCard(
             .padding(horizontal = 10.dp)
             .clickable { onCardClick() }
     ) {
-        ImagenEventoMiniConBorde(imageUri, context, R.drawable.no_image)
+        ImagenEventoMiniConBorde(imageUri, R.drawable.no_image)
         Text(text = evento.nombre, fontSize = 10.sp)
         Text(text = evento.fecha.toStringNuestro(), fontSize = 8.sp)
 

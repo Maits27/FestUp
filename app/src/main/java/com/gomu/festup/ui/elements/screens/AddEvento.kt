@@ -205,11 +205,10 @@ fun AddEvento(
 
     val miLocalizacion = mainVM.localizacion.value
     val cameraPositionState = rememberCameraPositionState {
-        if (miLocalizacion != null) {
-            position =
-                CameraPosition.fromLatLngZoom(LatLng(miLocalizacion.latitude, miLocalizacion.longitude), 10f)
-        }else{
-            position = CameraPosition.fromLatLngZoom(LatLng(1.0, 1.0), 10f)
+        position = if (miLocalizacion != null) {
+            CameraPosition.fromLatLngZoom(LatLng(miLocalizacion.latitude, miLocalizacion.longitude), 10f)
+        } else{
+            CameraPosition.fromLatLngZoom(LatLng(1.0, 1.0), 10f)
         }
     }
 
@@ -224,7 +223,7 @@ fun AddEvento(
     ) {
         if (isVertical){
             Box (contentAlignment = Alignment.BottomEnd,) {
-                ImagenEvento(imageUri, context, R.drawable.round_camera_alt_24, 150.dp ) {}
+                ImagenEvento(imageUri, R.drawable.round_camera_alt_24, 150.dp ) {}
                 EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
             }
             OutlinedTextField(
@@ -282,7 +281,7 @@ fun AddEvento(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Box (contentAlignment = Alignment.BottomEnd) {
-                    ImagenEvento(imageUri, context, R.drawable.round_camera_alt_24, 150.dp ) {}
+                    ImagenEvento(imageUri, R.drawable.round_camera_alt_24, 150.dp ) {}
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }
 

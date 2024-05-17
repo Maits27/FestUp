@@ -218,7 +218,7 @@ fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes
                         .padding(horizontal = 3.dp)
                 ) {
 
-                    ImagenEvento(imageUri, context, R.drawable.no_image, 150.dp ) {
+                    ImagenEvento(imageUri, R.drawable.no_image, 150.dp ) {
                         navController.navigate(
                             AppScreens.FullImageScreen.route + "/" +
                                     "evento" + "/" +
@@ -261,7 +261,7 @@ fun CardHorizontal(context: Context, mainVM: MainVM, evento: Evento, numAsistent
             Row(
                 modifier = Modifier.padding(start = 6.dp, bottom = 6.dp, top = 20.dp)
             ) {
-                ImagenEvento(imageUri, context, R.drawable.no_image, 110.dp ) {
+                ImagenEvento(imageUri, R.drawable.no_image, 110.dp ) {
                     navController.navigate(
                         AppScreens.FullImageScreen.route + "/" +
                                 "evento" + "/" +
@@ -279,7 +279,7 @@ fun CardHorizontal(context: Context, mainVM: MainVM, evento: Evento, numAsistent
                 verticalAlignment = Alignment.CenterVertically,
                 modifier =  Modifier.padding(start = 6.dp, bottom = 16.dp, top = 10.dp, end = 6.dp)
             ) {
-                EdadMediaYAsistentes(context = context, edadMedia = edadMedia, numAsistentes = numAsistentes, Modifier.weight(2f))
+                EdadMediaYAsistentes(edadMedia = edadMedia, numAsistentes = numAsistentes, Modifier.weight(2f))
                 IconosEvento(context = context, mainVM = mainVM, evento = evento, Modifier.weight(1f))
             }
         }
@@ -440,7 +440,7 @@ fun DatosEvento(
         }
 
         if (isVertical){
-            EdadMediaYAsistentes(context = context, edadMedia = edadMedia, numAsistentes = numAsistentes,
+            EdadMediaYAsistentes(edadMedia = edadMedia, numAsistentes = numAsistentes,
                 Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp))
@@ -450,7 +450,8 @@ fun DatosEvento(
 }
 
 @Composable
-fun EdadMediaYAsistentes(context: Context, edadMedia: Int, numAsistentes: Int, modifier: Modifier = Modifier){
+fun EdadMediaYAsistentes(edadMedia: Int, numAsistentes: Int, modifier: Modifier = Modifier){
+    val context = LocalContext.current
     Row (
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.Top,

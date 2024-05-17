@@ -57,7 +57,9 @@ fun Imagen(imageUri: Uri?, noImagePainterId: Int, size: Dp, onClick: () -> Unit)
 }
 
 @Composable
-fun ImagenMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId: Int) {
+fun ImagenMiniConBorde(imageUri: Uri?, noImagePainterId: Int) {
+    val context = LocalContext.current
+
     AsyncImage(
         model = ImageRequest.Builder(context)
             .data(imageUri)
@@ -77,7 +79,9 @@ fun ImagenMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId: Int) 
 }
 
 @Composable
-fun ImagenEvento(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
+fun ImagenEvento(imageUri: Uri?, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
+    val context = LocalContext.current
+
     AsyncImage(
         model = ImageRequest.Builder(context)
             .data(imageUri)
@@ -98,7 +102,8 @@ fun ImagenEvento(imageUri: Uri?, context: Context, noImagePainterId: Int, size: 
 }
 
 @Composable
-fun ImagenEventoMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId: Int) {
+fun ImagenEventoMiniConBorde(imageUri: Uri?, noImagePainterId: Int) {
+    val context = LocalContext.current
     AsyncImage(
         model = ImageRequest.Builder(context)
             .data(imageUri)
