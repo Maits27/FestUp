@@ -8,15 +8,13 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 
+
+/**
+ * Gestión del Bitmap
+ */
 @RequiresApi(Build.VERSION_CODES.P)
 fun Context.localUriToBitmap(uri: Uri): Bitmap {
     val contentResolver: ContentResolver = this.contentResolver
     val source = ImageDecoder.createSource(contentResolver, uri)
     return ImageDecoder.decodeBitmap(source)
-    /*
-    * For older versions:
-    * val bitmap = context.contentResolver.openInputStream(uri)?.use { stream ->
-        Bitmap.createBitmap(BitmapFactory.decodeStream(stream))
-    * }
-    }*/
 }

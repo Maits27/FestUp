@@ -15,11 +15,15 @@ import com.gomu.festup.utils.localUriToBitmap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+/**
+ * View Model de Hilt para la identificación del [Usuario]
+ * Gestiona la verificación del usuario antes de conseguir el token de verificación.
+ * También actualiza la sesión del usuario en caso de no haber cerrado sesión al cerrar la app.
+ */
 @HiltViewModel
 class IdentVM @Inject constructor(
     private val userRepository: IUserRepository
 ): ViewModel() {
-
 
     var selectedTabLogin: MutableState<Int> = mutableIntStateOf(0)
 

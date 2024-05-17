@@ -73,17 +73,24 @@ fun openTelegram(token: String, nombre: String, context: Context) {
     }
 }
 
+// Hora de alarma
 fun getScheduleTime(evento: Evento): LocalDateTime {
     val date = LocalDateTime.ofInstant(
         Instant.ofEpochMilli(evento.fecha.time),
         ZoneId.systemDefault()
     ).toLocalDate()
 
+    var hora = 0
+    var mins = LocalDateTime.now().plusMinutes(1).minute
+    if (mins == 60){
+        hora = 1
+        mins = 0
+    }
     val scheduleTime = LocalDateTime.of(date.year,
         date.month,
         date.minusDays(1).dayOfMonth,
-        LocalDateTime.now().hour,
-        LocalDateTime.now().plusMinutes(1).minute
+        LocalDateTime.now().hour + hora,
+        mins
     )
 
     return scheduleTime

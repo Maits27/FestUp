@@ -8,6 +8,12 @@ import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
+
+/**
+ * Clase de modificación del idioma actual
+ *
+ * Se le ha establecido como @Singleton de Hilt para crear una única instancia en toda la APP
+ */
 @Singleton
 class LanguageManager @Inject constructor() {
 
@@ -17,7 +23,6 @@ class LanguageManager @Inject constructor() {
     // Método que cambia el idioma de la aplicación de forma local e instantánea
     fun changeLang(lang: AppLanguage) {
         currentLang = lang
-        Log.d("CURRENT LANG", currentLang.code)
         val localeList = LocaleListCompat.forLanguageTags(lang.code)
         AppCompatDelegate.setApplicationLocales(localeList)
     }

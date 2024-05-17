@@ -47,6 +47,12 @@ import kotlinx.serialization.json.Json
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * View Model de Hilt para la gestión de todos los métodos relativos a la gestión de la aplicación.
+ * Utiliza los datos en ROOM (previamente descargados de remoto) para la visualización rápida y
+ * fluida de la app (a través de Flows), además de actualizar en tiempo real la base de datos remota.
+ */
+
 @HiltViewModel
 class MainVM @Inject constructor(
     private val userRepository: IUserRepository,
@@ -77,9 +83,8 @@ class MainVM @Inject constructor(
     var selectedTabSearch: MutableState<Int> = mutableIntStateOf(0)
 
     /*****************************************************
-     ****************** METODOS USUARIO ******************
+     ***************** DESCARGA DE DATOS *****************
      *****************************************************/
-
 
     suspend fun descargarUsuarios(){
         try{
@@ -124,277 +129,10 @@ class MainVM @Inject constructor(
         }
     }
 
-    fun editUsuario(username: String, email: String, nombre: String, fecha: Date, telefono: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val usuario = withContext(Dispatchers.IO) {
-                userRepository.editUsuario(username, email, nombre, fecha, telefono)
-            }
-            currentUser.value = usuario
-        }
-    }
-
-    fun calcularEdad(usuario: Usuario): Int{
-        val diff = Date().time - (usuario.fechaNacimiento.time)
-        val edad = diff / (1000L * 60 * 60 * 24 * 365)
-        return edad.toInt()
-    }
-
-    fun calcularEdadMediaEvento(evento: Evento): Int = runBlocking {
-        var edades = mutableListOf<Int>()
-        var usuarios = getUsuariosEvento(evento).first()
-        for (usuario in usuarios){
-            val edad = calcularEdad(usuario)
-            edades.add(edad)
-        }
-
-        var cuadrillas = getCuadrillasEvento(evento).first()
-        for (cuadrilla in cuadrillas){
-            val usuarios2 = usuariosCuadrilla(cuadrilla).first()
-            for (usuario in usuarios2){
-                val edad = calcularEdad(usuario)
-                edades.add(edad)
-            }
-        }
-
-        edades.sum()/if(edades.size>0){edades.size} else {1}
-    }
-    fun numeroDeAsistentes(evento: Evento): Int = runBlocking {
-        val usuarios = getUsuariosEvento(evento).first()
-        val cuadrillas = getIntegrantesCuadrillasEvento(evento).first()
-        usuarios.size + cuadrillas.size
-    }
-
-    fun getIntegrantesCuadrillasEvento(evento: Evento): Flow<List<Integrante>>{
-        return cuadrillaRepository.integrantesCuadrillasEvento(evento.id)
-    }
-
-
-    fun getCuadrillasUsuario(usuario: Usuario): Flow<List<Cuadrilla>> {
-        return userRepository.getCuadrillasUsuario(usuario.username)
-    }
-
-    fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>{
-        return userRepository.getUsuariosMenosCurrent(usuario)
-    }
-    fun estaApuntado(usuario: Usuario, id: String): Boolean = runBlocking {
-        eventoRepository.estaApuntado(usuario.username, id)
-    }
-    fun cuadrillasUsuarioApuntadas(usuario: Usuario, id: String): Flow<List<Cuadrilla>>  {
-        return eventoRepository.cuadrillasUsuarioApuntadas(usuario.username, id)
-    }
-    fun cuadrillasUsuarioNoApuntadas(usuario: Usuario, id: String): Flow<List<Cuadrilla>>  {
-        return eventoRepository.cuadrillasUsuarioNoApuntadas(usuario.username, id)
-    }
-
-    fun listaSeguidores(usuario: Usuario): Flow<List<Usuario>>{
-        return userRepository.getSeguidores(usuario.username)
-    }
-    fun listaSeguidos(usuario: Usuario): Flow<List<Usuario>>{
-        return userRepository.getAQuienSigue(usuario.username)
-    }
-
-    fun actualizarWidget(context: Context) {
-        Log.d("FestUpWidget", "Actualizando widget")
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentUsername = preferencesRepository.getLastLoggedUser()
-            // Get the list of events of the last logged user
-            val eventos = if (currentUsername != "") eventoRepository.eventosUsuarioList(currentUsername)
-            else emptyList()
-            val eventosWidget = getWidgetEventos(eventos, ::numeroDeAsistentes)
-            Log.d("FestUpWidget", "$currentUsername eventos: $eventosWidget")
-            // Get the widget manager
-            val manager = GlanceAppWidgetManager(context)
-            // We get all the glace IDs that are a FestUpWidget (remember than we can have more
-            // than one widget of the same type)
-            val glanceIds = manager.getGlanceIds(FestUpWidget::class.java)
-            // For each glanceId
-            glanceIds.forEach { glanceId ->
-                updateAppWidgetState(context, glanceId) { prefs ->
-                    prefs[FestUpWidget.eventosKey] = Json.encodeToString(eventosWidget)
-                    prefs[FestUpWidget.userIsLoggedIn] = (currentUsername != "")
-                }
-                // We update the widget
-                FestUpWidget().update(context, glanceId)
-            }
-        }
-    }
-
-    fun actualizarCurrentUser(username: String): Usuario? = runBlocking(Dispatchers.IO){
-        userRepository.getUsuario(username)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.P)
-    fun updateUserImage(context: Context, username: String, uri: Uri?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (uri != null) {
-                val imageBitmap = context.localUriToBitmap(uri)
-                userRepository.setUserProfile(username, imageBitmap)
-            }
-        }
-    }
-
-
     /*****************************************************
-     ****************** METODOS CUADRILLA ******************
-     *****************************************************/
-    suspend fun crearCuadrilla(cuadrilla: Cuadrilla, image: Bitmap?): Boolean  {
-        return cuadrillaRepository.insertCuadrilla(currentUser.value!!.username,cuadrilla, image)
-    }
-    @RequiresApi(Build.VERSION_CODES.P)
-    fun updateCuadrillaImage(context: Context, nombre: String, uri: Uri?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (uri != null) {
-                val imageBitmap = context.localUriToBitmap(uri)
-                cuadrillaRepository.setCuadrillaProfile(nombre, imageBitmap)
-            }
-        }
-    }
-    fun usuariosCuadrilla(cuadrilla: Cuadrilla = cuadrillaMostrar.value!!): Flow<List<Usuario>> {
-        return cuadrillaRepository.usuariosCuadrilla(cuadrilla.nombre)
-    }
-
-    fun eliminarIntegrante(cuadrilla: Cuadrilla)  {
-        viewModelScope.launch(Dispatchers.IO) {
-            cuadrillaRepository.eliminarIntegrante(cuadrilla,currentUser.value!!.username)
-        }
-    }
-
-    fun getCuadrillas(): Flow<List<Cuadrilla>> {
-        return cuadrillaRepository.getCuadrillas()
-    }
-
-
-    fun setCuadrillaProfile(context: Context, uri: Uri?, nombre: String): Boolean = runBlocking {
-        var ivImage = ImageView(context)
-        ivImage.setImageURI(uri)
-        val drawable: Drawable = ivImage.drawable
-        if (drawable is BitmapDrawable) {
-            cuadrillaRepository.setCuadrillaProfile(nombre, drawable.bitmap)
-        }else{
-            false
-        }
-    }
-
-    fun getCuadrillaAccessToken(nombre: String): String{
-        return cuadrillaRepository.getCuadrillaAccessToken(nombre)
-    }
-
-    fun agregarIntegrante(nombreUsuario: String, nombreCuadrilla: String){
-        viewModelScope.launch(Dispatchers.IO) {
-            cuadrillaRepository.insertUser(nombreUsuario, nombreCuadrilla)
-        }
-    }
-
-
-    /*****************************************************
-     ****************** METODOS EVENTO ******************
+     ************** METODOS DE SUBSCRIPCIÓN **************
      *****************************************************/
 
-    suspend fun insertarEvento(evento: Evento, image: Bitmap?): Boolean {
-        return eventoRepository.insertarEvento(evento, currentUser.value!!.username, image)
-    }
-
-    fun getEventos(): Flow<List<Evento>> {
-        return eventoRepository.todosLosEventos()
-    }
-    fun apuntarse(usuario: Usuario, evento: Evento){
-        viewModelScope.launch(Dispatchers.IO) {
-            eventoRepository.apuntarse(usuario, evento.id)
-        }
-    }
-    fun desapuntarse(usuario: Usuario, evento: Evento){
-        viewModelScope.launch(Dispatchers.IO) {
-            eventoRepository.desapuntarse(usuario, evento.id)
-        }
-    }
-    fun apuntarse(cuadrilla: Cuadrilla, evento: Evento){
-        viewModelScope.launch(Dispatchers.IO) {
-            eventoRepository.apuntarse(cuadrilla, evento.id)
-        }
-    }
-    fun desapuntarse(cuadrilla: Cuadrilla, evento: Evento){
-        viewModelScope.launch(Dispatchers.IO) {
-            eventoRepository.desapuntarse(cuadrilla, evento.id)
-        }
-    }
-
-    fun getUsuariosEvento(evento: Evento): Flow<List<Usuario>>{
-        return eventoRepository.usuariosEvento(evento.id)
-    }
-    fun getCuadrillasEvento(evento: Evento): Flow<List<Cuadrilla>>{
-        return eventoRepository.cuadrillasEvento(evento.id)
-    }
-
-    fun eventosUsuario(usuario: Usuario): Flow<List<Evento>> {
-        return eventoRepository.eventosUsuario(usuario.username)
-    }
-    fun eventosUsuarioConUser(usuario: Usuario): Flow<List<UserCuadrillaAndEvent>> {
-        val eventosYo = eventoRepository.eventosUsuario(usuario.username).map {
-            it.map {
-                UserCuadrillaAndEvent(usuario.username, "", it)
-            }
-        }
-        return eventosYo
-    }
-
-    fun eventosSeguidos(usuario: Usuario): Flow<List<UserCuadrillaAndEvent>> = runBlocking {
-        var eventos = eventoRepository.eventosSeguidos(usuario.username)
-        eventos
-    }
-
-    fun eventosCuadrilla(cuadrilla: Cuadrilla): Flow<List<Evento>> {
-        return eventoRepository.eventosCuadrilla(cuadrilla.nombre)
-    }
-
-
-    fun setEventoProfile(context: Context, uri: Uri?, id: String): Boolean = runBlocking {
-        var ivImage = ImageView(context)
-        ivImage.setImageURI(uri)
-        val drawable: Drawable = ivImage.drawable
-        if (drawable is BitmapDrawable) {
-            eventoRepository.setEventoProfileImage(id, drawable.bitmap)
-        }else{
-            false
-        }
-    }
-
-
-    /*****************************************************
-     ****************** METODOS INTEGRANTE ******************
-     *****************************************************/
-
-    fun getIntegrante(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>> {
-        val integrante =cuadrillaRepository.pertenezcoCuadrilla(cuadrilla,usuario)
-        return integrante
-    }
-
-    fun getIntegrantes(): Flow<List<Integrante>> {
-        return cuadrillaRepository.getIntegrantes()
-    }
-
-    /*****************************************************
-     ****************** METODOS INTEGRANTE ******************
-     *****************************************************/
-
-    fun newSiguiendo(followedUsername: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.newSeguidor(currentUser.value!!.username, followedUsername)
-            alreadySiguiendo.value = true
-        }
-    }
-
-    fun alreadySiguiendo(username: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            alreadySiguiendo.value = userRepository.alreadySiguiendo(currentUser.value!!.username, username)
-        }
-    }
-
-    fun unfollow(usernameToUnfollow: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.deleteSeguidores(currentUser.value!!.username, usernameToUnfollow)
-            alreadySiguiendo.value = false
-        }
-    }
     fun suscribirASeguidos(usuariosLista: List<Usuario>, usuario: Usuario = currentUser.value!!){
         usuariosLista.map { usuarioLista ->
             Log.d("SUSCRIBE TO",usuarioLista.username)
@@ -500,8 +238,215 @@ class MainVM @Inject constructor(
         }
     }
 
-    fun listaContactos(context: Context): MutableList<Contacto> {
+    /*****************************************************
+     ****************** METODOS USUARIO ******************
+     *****************************************************/
 
+
+    fun editUsuario(username: String, email: String, nombre: String, fecha: Date, telefono: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val usuario = withContext(Dispatchers.IO) {
+                userRepository.editUsuario(username, email, nombre, fecha, telefono)
+            }
+            currentUser.value = usuario
+        }
+    }
+
+    fun calcularEdad(usuario: Usuario): Int{
+        val diff = Date().time - (usuario.fechaNacimiento.time)
+        val edad = diff / (1000L * 60 * 60 * 24 * 365)
+        return edad.toInt()
+    }
+
+    fun newSiguiendo(followedUsername: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.newSeguidor(currentUser.value!!.username, followedUsername)
+            alreadySiguiendo.value = true
+        }
+    }
+
+    fun alreadySiguiendo(username: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            alreadySiguiendo.value = userRepository.alreadySiguiendo(currentUser.value!!.username, username)
+        }
+    }
+
+    fun unfollow(usernameToUnfollow: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.deleteSeguidores(currentUser.value!!.username, usernameToUnfollow)
+            alreadySiguiendo.value = false
+        }
+    }
+
+    fun getCuadrillasUsuario(usuario: Usuario): Flow<List<Cuadrilla>> {
+        return userRepository.getCuadrillasUsuario(usuario.username)
+    }
+
+    fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>{
+        return userRepository.getUsuariosMenosCurrent(usuario)
+    }
+    fun estaApuntado(usuario: Usuario, id: String): Boolean = runBlocking {
+        eventoRepository.estaApuntado(usuario.username, id)
+    }
+    fun cuadrillasUsuarioApuntadas(usuario: Usuario, id: String): Flow<List<Cuadrilla>>  {
+        return eventoRepository.cuadrillasUsuarioApuntadas(usuario.username, id)
+    }
+    fun cuadrillasUsuarioNoApuntadas(usuario: Usuario, id: String): Flow<List<Cuadrilla>>  {
+        return eventoRepository.cuadrillasUsuarioNoApuntadas(usuario.username, id)
+    }
+
+    fun listaSeguidores(usuario: Usuario): Flow<List<Usuario>>{
+        return userRepository.getSeguidores(usuario.username)
+    }
+    fun listaSeguidos(usuario: Usuario): Flow<List<Usuario>>{
+        return userRepository.getAQuienSigue(usuario.username)
+    }
+
+    fun actualizarCurrentUser(username: String): Usuario? = runBlocking(Dispatchers.IO){
+        userRepository.getUsuario(username)
+    }
+
+
+    /*****************************************************
+     ****************** METODOS CUADRILLA ******************
+     *****************************************************/
+    suspend fun crearCuadrilla(cuadrilla: Cuadrilla, image: Bitmap?): Boolean  {
+        return cuadrillaRepository.insertCuadrilla(currentUser.value!!.username,cuadrilla, image)
+    }
+    @RequiresApi(Build.VERSION_CODES.P)
+    fun updateCuadrillaImage(context: Context, nombre: String, uri: Uri?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (uri != null) {
+                val imageBitmap = context.localUriToBitmap(uri)
+                cuadrillaRepository.setCuadrillaProfile(nombre, imageBitmap)
+            }
+        }
+    }
+    fun usuariosCuadrilla(cuadrilla: Cuadrilla = cuadrillaMostrar.value!!): Flow<List<Usuario>> {
+        return cuadrillaRepository.usuariosCuadrilla(cuadrilla.nombre)
+    }
+
+    fun eliminarIntegrante(cuadrilla: Cuadrilla)  {
+        viewModelScope.launch(Dispatchers.IO) {
+            cuadrillaRepository.eliminarIntegrante(cuadrilla,currentUser.value!!.username)
+        }
+    }
+
+    fun getCuadrillas(): Flow<List<Cuadrilla>> {
+        return cuadrillaRepository.getCuadrillas()
+    }
+
+
+    fun getCuadrillaAccessToken(nombre: String): String{
+        return cuadrillaRepository.getCuadrillaAccessToken(nombre)
+    }
+
+    fun agregarIntegrante(nombreUsuario: String, nombreCuadrilla: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            cuadrillaRepository.insertUser(nombreUsuario, nombreCuadrilla)
+        }
+    }
+
+
+    /*****************************************************
+     ****************** METODOS EVENTO ******************
+     *****************************************************/
+
+    suspend fun insertarEvento(evento: Evento, image: Bitmap?): Boolean {
+        return eventoRepository.insertarEvento(evento, currentUser.value!!.username, image)
+    }
+
+    fun getEventos(): Flow<List<Evento>> {
+        return eventoRepository.todosLosEventos()
+    }
+    fun apuntarse(usuario: Usuario, evento: Evento){
+        viewModelScope.launch(Dispatchers.IO) {
+            eventoRepository.apuntarse(usuario, evento.id)
+        }
+    }
+    fun desapuntarse(usuario: Usuario, evento: Evento){
+        viewModelScope.launch(Dispatchers.IO) {
+            eventoRepository.desapuntarse(usuario, evento.id)
+        }
+    }
+    fun apuntarse(cuadrilla: Cuadrilla, evento: Evento){
+        viewModelScope.launch(Dispatchers.IO) {
+            eventoRepository.apuntarse(cuadrilla, evento.id)
+        }
+    }
+    fun desapuntarse(cuadrilla: Cuadrilla, evento: Evento){
+        viewModelScope.launch(Dispatchers.IO) {
+            eventoRepository.desapuntarse(cuadrilla, evento.id)
+        }
+    }
+
+    fun getUsuariosEvento(evento: Evento): Flow<List<Usuario>>{
+        return eventoRepository.usuariosEvento(evento.id)
+    }
+    fun getCuadrillasEvento(evento: Evento): Flow<List<Cuadrilla>>{
+        return eventoRepository.cuadrillasEvento(evento.id)
+    }
+
+    fun eventosUsuario(usuario: Usuario): Flow<List<Evento>> {
+        return eventoRepository.eventosUsuario(usuario.username)
+    }
+    fun eventosUsuarioConUser(usuario: Usuario): Flow<List<UserCuadrillaAndEvent>> {
+        val eventosYo = eventoRepository.eventosUsuario(usuario.username).map {
+            it.map {
+                UserCuadrillaAndEvent(usuario.username, "", it)
+            }
+        }
+        return eventosYo
+    }
+
+    fun eventosSeguidos(usuario: Usuario): Flow<List<UserCuadrillaAndEvent>> = runBlocking {
+        var eventos = eventoRepository.eventosSeguidos(usuario.username)
+        eventos
+    }
+
+    fun eventosCuadrilla(cuadrilla: Cuadrilla): Flow<List<Evento>> {
+        return eventoRepository.eventosCuadrilla(cuadrilla.nombre)
+    }
+
+
+    fun getIntegrante(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>> {
+        return cuadrillaRepository.pertenezcoCuadrilla(cuadrilla,usuario)
+    }
+
+    fun calcularEdadMediaEvento(evento: Evento): Int = runBlocking {
+        var edades = mutableListOf<Int>()
+        var usuarios = getUsuariosEvento(evento).first()
+        for (usuario in usuarios){
+            val edad = calcularEdad(usuario)
+            edades.add(edad)
+        }
+
+        var cuadrillas = getCuadrillasEvento(evento).first()
+        for (cuadrilla in cuadrillas){
+            val usuarios2 = usuariosCuadrilla(cuadrilla).first()
+            for (usuario in usuarios2){
+                val edad = calcularEdad(usuario)
+                edades.add(edad)
+            }
+        }
+
+        edades.sum()/if(edades.size>0){edades.size} else {1}
+    }
+    fun numeroDeAsistentes(evento: Evento): Int = runBlocking {
+        val usuarios = getUsuariosEvento(evento).first()
+        val cuadrillas = getIntegrantesCuadrillasEvento(evento).first()
+        usuarios.size + cuadrillas.size
+    }
+
+    fun getIntegrantesCuadrillasEvento(evento: Evento): Flow<List<Integrante>>{
+        return cuadrillaRepository.integrantesCuadrillasEvento(evento.id)
+    }
+
+
+    /*****************************************************
+     ******************* OTROS METODOS *******************
+     *****************************************************/
+    fun listaContactos(context: Context): MutableList<Contacto> {
 
         val contentResolver = context.contentResolver
         val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
@@ -520,5 +465,31 @@ class MainVM @Inject constructor(
         }
         cursor?.close()
         return contactsUsingApp
+    }
+
+    fun actualizarWidget(context: Context) {
+        Log.d("FestUpWidget", "Actualizando widget")
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentUsername = preferencesRepository.getLastLoggedUser()
+            // Get the list of events of the last logged user
+            val eventos = if (currentUsername != "") eventoRepository.eventosUsuarioList(currentUsername)
+            else emptyList()
+            val eventosWidget = getWidgetEventos(eventos, ::numeroDeAsistentes)
+            Log.d("FestUpWidget", "$currentUsername eventos: $eventosWidget")
+            // Get the widget manager
+            val manager = GlanceAppWidgetManager(context)
+            // We get all the glace IDs that are a FestUpWidget (remember than we can have more
+            // than one widget of the same type)
+            val glanceIds = manager.getGlanceIds(FestUpWidget::class.java)
+            // For each glanceId
+            glanceIds.forEach { glanceId ->
+                updateAppWidgetState(context, glanceId) { prefs ->
+                    prefs[FestUpWidget.eventosKey] = Json.encodeToString(eventosWidget)
+                    prefs[FestUpWidget.userIsLoggedIn] = (currentUsername != "")
+                }
+                // We update the widget
+                FestUpWidget().update(context, glanceId)
+            }
+        }
     }
 }

@@ -49,6 +49,7 @@ fun SplashScreen(
     identVM: IdentVM
 ) {
     val context = LocalContext.current
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val lastLoggedUser = preferencesVM.lastLoggedUser
 
     LaunchedEffect(Unit) {
@@ -76,7 +77,6 @@ fun SplashScreen(
             }
         }
     }
-    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     if (isVertical) SplashContent()
     else SplashHoritzontalContent()
