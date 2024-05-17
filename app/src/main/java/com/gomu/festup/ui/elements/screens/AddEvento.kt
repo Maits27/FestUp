@@ -227,7 +227,7 @@ fun AddEvento(
     ) {
         if (isVertical){
             Box (contentAlignment = Alignment.BottomEnd,) {
-                ImagenEvento(imageUri, R.drawable.round_camera_alt_24, 150.dp ) {}
+                ImagenEvento(imageUri, R.drawable.camara, 150.dp ) {}
                 EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
             }
             OutlinedTextField(
@@ -285,7 +285,7 @@ fun AddEvento(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Box (contentAlignment = Alignment.BottomEnd) {
-                    ImagenEvento(imageUri, R.drawable.round_camera_alt_24, 150.dp ) {}
+                    ImagenEvento(imageUri, R.drawable.camara, 150.dp ) {}
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }
 
