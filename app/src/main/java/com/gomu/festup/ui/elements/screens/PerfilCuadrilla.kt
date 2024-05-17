@@ -345,7 +345,7 @@ fun CuadrillaProfileImage(
 
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(16.dp)) {
-            Imagen(imageUri, context, R.drawable.no_image, 120.dp) {
+            Imagen(imageUri, R.drawable.no_image, 120.dp) {
                 navController.navigate(
                     AppScreens.FullImageScreen.route + "/" +
                             "cuadrilla" + "/" +

@@ -72,8 +72,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun Evento(
     navController: NavController,
-    mainVM: MainVM,
-//    recibirNotificaciones: Boolean
+    mainVM: MainVM
 ) {
     val context = LocalContext.current
     val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT

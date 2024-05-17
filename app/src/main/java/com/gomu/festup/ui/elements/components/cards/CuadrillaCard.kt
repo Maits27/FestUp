@@ -57,11 +57,6 @@ fun CuadrillaCard(
         navController.navigate(AppScreens.PerfilCuadrilla.route)
     }
 
-    val imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"))
-    }
-    val context = LocalContext.current
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -75,7 +70,10 @@ fun CuadrillaCard(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Imagen(imageUri, context, R.drawable.no_cuadrilla, 50.dp) {}
+            Imagen(
+                Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"),
+                R.drawable.no_cuadrilla, 50.dp
+            ) {}
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -100,8 +98,7 @@ fun CuadrillaCard(
 fun CuadrillaCardParaEventosAlert(
     cuadrilla: Cuadrilla,
     apuntado: Boolean,
-    mainVM: MainVM,
-//    recibirNotificaciones: Boolean
+    mainVM: MainVM
 ) {
     val context = LocalContext.current
 
@@ -159,8 +156,6 @@ fun CuadrillaCardParaEventosAlert(
                     checkedSwitch = !checkedSwitch
 
                     if (checkedSwitch){
-//                        Log.d("RECNOTIF", recibirNotificaciones.toString())
-//                        if (recibirNotificaciones) {
                         scheduler.schedule(
                             AlarmItem(
                                 getScheduleTime(mainVM.eventoMostrar.value!!),
@@ -169,23 +164,19 @@ fun CuadrillaCardParaEventosAlert(
                                 mainVM.eventoMostrar.value!!.id
                             )
                         )
-//                        }
                         mainVM.apuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
                     }
                     else{
-//                        Log.d("RECNOTIF", recibirNotificaciones.toString())
-//                        if (recibirNotificaciones){
-                            scheduler.cancel(
-                                AlarmItem(
-                                getScheduleTime(mainVM.eventoMostrar.value!!),
-                                mainVM.eventoMostrar.value!!.nombre,
-                                mainVM.eventoMostrar.value!!.localizacion,
-                                mainVM.eventoMostrar.value!!.id
-                                )
+                        scheduler.cancel(
+                            AlarmItem(
+                            getScheduleTime(mainVM.eventoMostrar.value!!),
+                            mainVM.eventoMostrar.value!!.nombre,
+                            mainVM.eventoMostrar.value!!.localizacion,
+                            mainVM.eventoMostrar.value!!.id
                             )
+                        )
                         mainVM.desapuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
                     }
-//                    }
                 },
                 thumbContent = if (checkedSwitch) {
                     {
@@ -195,9 +186,7 @@ fun CuadrillaCardParaEventosAlert(
                             modifier = Modifier.size(SwitchDefaults.IconSize),
                         )
                     }
-                } else {
-                    null
-                }
+                } else null
             )
         }
     }

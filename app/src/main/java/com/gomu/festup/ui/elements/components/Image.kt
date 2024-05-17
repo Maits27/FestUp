@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,9 @@ import com.gomu.festup.R
 
 
 @Composable
-fun Imagen(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
+fun Imagen(imageUri: Uri?, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
+    val context = LocalContext.current
+
     AsyncImage(
         model = ImageRequest.Builder(context)
             .data(imageUri)

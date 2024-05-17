@@ -130,7 +130,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 
             Box(contentAlignment = Alignment.BottomEnd) {
                 Box(Modifier.padding(16.dp)) {
-                    Imagen(imageUri, context, R.drawable.no_image, 120.dp) {}
+                    Imagen(imageUri, R.drawable.no_image, 120.dp) {}
                 }
                 EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
             }
@@ -188,7 +188,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Box(Modifier.padding(16.dp)) {
-                        Imagen(imageUri, context, R.drawable.no_image, 120.dp) {}
+                        Imagen(imageUri, R.drawable.no_image, 120.dp) {}
                     }
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }
@@ -244,34 +244,6 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
     }
 }
 
-
-
-@Composable
-fun LoadingImagePlaceholder(size: Dp = 100.dp) {
-    val infiniteTransition = rememberInfiniteTransition(label = "")
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = keyframes {
-                durationMillis = 1000
-                0.7f at 500
-            },
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
-    )
-
-    Image(
-        modifier = Modifier
-            .size(size)
-            .clip(CircleShape)
-            .alpha(alpha)
-            .padding(16.dp),
-        painter = painterResource(id = R.drawable.ic_launcher_background),
-        contentDescription = null,
-        contentScale = ContentScale.Crop
-    )
-}
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Preview(showBackground = true)

@@ -65,12 +65,6 @@ fun UsuarioCard(
         }
     }
 
-
-    val imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
-    }
-    val context = LocalContext.current
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -84,7 +78,10 @@ fun UsuarioCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ){
-            Imagen(imageUri, context, R.drawable.no_user, 50.dp) {}
+            Imagen(
+                Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"),
+                R.drawable.no_user, 50.dp
+            ) { onCardClick(usuario) }
 
             Column(
                 modifier = Modifier
@@ -109,8 +106,7 @@ fun UsuarioCard(
 fun UsuarioCardParaEventosAlert(
     usuario: Usuario,
     apuntado: Boolean,
-    mainVM: MainVM,
-//    recibirNotificaciones: Boolean
+    mainVM: MainVM
 ) {
     val context = LocalContext.current
 
