@@ -185,7 +185,6 @@ fun AddEvento(
                             LocalDateTime.now().hour,
                             LocalDateTime.now().minute + 1
                         )
-                        Log.d("AlarmScheduler", "Alarma programada")
                         scheduler.schedule(AlarmItem(scheduleTime, newEvento.nombre, newEvento.localizacion, newEvento.id))
 
                         if( addOnCalendar ) {

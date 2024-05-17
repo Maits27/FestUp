@@ -45,9 +45,7 @@ class IdentVM @Inject constructor(
             if (signInCorrect){
                 if (uri != null && uri != Uri.parse("http://34.71.128.243/userProfileImages/no-user.png")) {
                     val imageBitmap = context.localUriToBitmap(uri)
-                    Log.d("Sign up", "Setting user image")
                     userRepository.setUserProfile(username, imageBitmap)
-                    Log.d("Sign up", "User image sended to server")
                 }
             }
             Log.d("Sign up", "Sign up correct $signInCorrect")

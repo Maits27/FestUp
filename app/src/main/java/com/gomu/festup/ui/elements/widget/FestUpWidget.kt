@@ -86,7 +86,6 @@ class FestUpWidget : GlanceAppWidget() {
             else emptyList()
         val userIsLoggedIn = prefs[userIsLoggedIn] ?: false
         val idiomaUser = prefs[idiomaUser]
-        Log.d("Idioma widget", idiomaUser.toString())
         Column(
             modifier = GlanceModifier.fillMaxSize().background(colorFondo).padding(top = 10.dp)
         ) {

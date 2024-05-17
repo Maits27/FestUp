@@ -251,12 +251,10 @@ fun PerfilYo(
         withContext(Dispatchers.IO) {
             preferencesViewModel.changeUser("")
         }
-        //Log.d("FestUpWidget", "DataStore username ${preferencesVM}")
         mainVM.serverOk.value = false
         mainVM.actualizarWidget(context)
 
         withContext(Dispatchers.Main) {
-            //mainNavController.popBackStack()
             (context as? Activity)?.finish()
             val intent = Intent(context, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

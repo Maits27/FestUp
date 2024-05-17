@@ -745,7 +745,6 @@ fun registration(
     telefono: String
 ) {
     CoroutineScope(Dispatchers.IO).launch {
-        Log.d("IMAGE", "Image uri: ${imageUri.toString()}")
         try {
             val usuario = withContext(Dispatchers.IO) {
                 identVM.registrarUsuario(

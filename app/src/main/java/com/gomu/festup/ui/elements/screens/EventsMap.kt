@@ -80,7 +80,6 @@ fun EventsMap(
             }
         }
         locations = mappedLocations
-        Log.d("locations", locations!!.size.toString())
     }
 
     val mapProperties by remember {

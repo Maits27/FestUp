@@ -42,7 +42,6 @@ class AlarmReceiver: BroadcastReceiver() {
             if (currentUser != "") {
                 if (preferences.getReceiveNotifications(currentUser).first()) {
                     val notificationId = System.currentTimeMillis().toInt()
-                    Log.d("AlarmScheduler", "Alarma enviada")
 
                     val builder = NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
                         .setSmallIcon(R.drawable.festuplogo)

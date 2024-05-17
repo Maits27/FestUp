@@ -66,8 +66,6 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-
-        Log.d("FestUpWidget", "onReceive intent ${intent.action}")
         updateWidgetData(context)
     }
 

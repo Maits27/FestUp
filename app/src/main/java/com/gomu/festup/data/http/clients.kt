@@ -86,7 +86,7 @@ class AuthClient @Inject constructor(private val loginSettings: ILoginSettings) 
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
-        Log.d("Image", "size: " + byteArray.size.toString())
+
         httpClient.submitFormWithBinaryData(
             url = "http://34.71.128.243/setUserProfileImage",
             formData = formData {
@@ -152,7 +152,6 @@ class HTTPClient @Inject constructor() {
     }
 
     fun getUsuario(username: String): RemoteUsuario = runBlocking {
-        Log.d("USUARIO", "get")
         val response = httpClient.get("http://34.71.128.243/getUser?username=$username")
         response.body()
     }
@@ -336,7 +335,6 @@ class HTTPClient @Inject constructor() {
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
-        Log.d("Image", byteArray.size.toString())
         httpClient.submitFormWithBinaryData(
             url = "http://34.71.128.243/insertCuadrillaImage",
             formData = formData {

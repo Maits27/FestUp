@@ -56,7 +56,6 @@ fun LanguageSelection(
                         RadioButton(
                             selected = idioma.code == "es",
                             onClick = {
-                                Log.d("CLICK", "es")
                                 preferencesVM.changeLang(AppLanguage.getFromCode("es"))
                             }
                         )
@@ -66,7 +65,6 @@ fun LanguageSelection(
                         RadioButton(
                             selected = idioma.code == "eu",
                             onClick = {
-                                Log.d("CLICK", "eu")
                                 preferencesVM.changeLang(AppLanguage.getFromCode("eu"))
                             }
                         )

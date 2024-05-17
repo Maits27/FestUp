@@ -75,7 +75,6 @@ fun addEventOnCalendar(context: Context, title: String, dateP: Long){
 
     // Si no hay locales intentar añadirlo en otro calendario
     if (calendarIDs.isEmpty()){
-        Log.d("NO LOCALS", "NO LOCALS")
         calendarIDs = getAllCalendarIds(context)
     }
 
