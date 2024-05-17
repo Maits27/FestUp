@@ -19,6 +19,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+/**
+ * View Model de Hilt para preferencias del usuario local
+ */
 @HiltViewModel
 class PreferencesViewModel @Inject constructor(
     private val preferencesRepository: IGeneralPreferences,
@@ -30,7 +33,6 @@ class PreferencesViewModel @Inject constructor(
      **                    Estados                  **
      *************************************************/
     private val _currentUser = MutableStateFlow("")
-
     val currentUser: Flow<String> = _currentUser
 
     val lastLoggedUser: String = runBlocking { return@runBlocking loginRepository.getLastLoggedUser() }
@@ -38,27 +40,23 @@ class PreferencesViewModel @Inject constructor(
     val lastRefreshToken: String = runBlocking { return@runBlocking loginRepository.getLastRefreshToken() }
 
     val currentSetLang by languageManager::currentLang
-
     val idioma: (String)-> Flow<AppLanguage> = { preferencesRepository.language(it).map { AppLanguage.getFromCode(it) } }
-
     val darkTheme: (String)-> Flow<Boolean> = { preferencesRepository.getThemePreference(it)}
-
     val receiveNotifications: (String)-> Flow<Boolean> = { preferencesRepository.getReceiveNotifications(it)}
 
-    val mostrarEdad: (String) -> Flow<Boolean> = { preferencesRepository.getVisualizarEdad(it)}
+//    val mostrarEdad: (String) -> Flow<Boolean> = { preferencesRepository.getVisualizarEdad(it)}
+
     /*************************************************
      **                    Eventos                  **
      *************************************************/
 
+    /***************************  Usuario  ***************************/
     suspend fun changeUser(username: String){
         _currentUser.value = username
         loginRepository.setLastLoggedUser(username)
     }
 
-
-    ////////////////////// Idioma //////////////////////
-
-    // Cambio del idioma de preferencia
+    /***************************  Idioma  ***************************/
     fun changeLang(i: AppLanguage) {
         languageManager.changeLang(i)
         viewModelScope.launch(Dispatchers.IO) {
@@ -66,10 +64,7 @@ class PreferencesViewModel @Inject constructor(
         }
     }
 
-
-    ////////////////////// Tema //////////////////////
-
-    // Cambio del tema de preferencia
+    /***************************  Tema  ***************************/
     fun changeTheme(dark: Boolean){
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.saveThemePreference(currentUser.first(), dark) }
     }
@@ -80,16 +75,15 @@ class PreferencesViewModel @Inject constructor(
         }
     }
 
-    ////////////////////// Notificaciones //////////////////////
-
+    /***************************  Notificaciones  ***************************/
     fun changeReceiveNotifications(){
         viewModelScope.launch(Dispatchers.IO) { preferencesRepository.changeReceiveNotifications(currentUser.first()) }
     }
 
-    ////////////////////// Edad //////////////////////
-
-    fun changeVisualizarEdad() {
-        viewModelScope.launch(Dispatchers.IO) { preferencesRepository.changeVisualizarEdad(currentUser.first()) }
-    }
+//    ////////////////////// Edad //////////////////////
+//
+//    fun changeVisualizarEdad() {
+//        viewModelScope.launch(Dispatchers.IO) { preferencesRepository.changeVisualizarEdad(currentUser.first()) }
+//    }
 
 }

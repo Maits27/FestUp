@@ -28,15 +28,28 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Este módulo se instala en [SingletonComponent] por lo que todas las instancias
+ * que se definan aquí, estarán definidas a nivel de aplicación. Esto implica que
+ * no se destruirán hasta que lo haga la aplicación y que puedan ser compartidas
+ * entre actividades (de haberlas).
+ *
+ * Hilt se encarga de la inyección de estos elementos donde sea necesario.
+ */
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    /**
+     * Con el @Singleton nos aseguramos de que haya una única instancia
+     * de cada uno de los siguientes elementos en toda la APP
+     */
+
+    /***********************  Instancia de ROOM  **********************/
     @Singleton
     @Provides
     fun provideDatabase(@ApplicationContext app:Context) =
-        Room.databaseBuilder(app, Database::class.java, "festUpDatabase")
-//            .createFromAsset("database/festUp.db")
-            .build()
+        Room.databaseBuilder(app, Database::class.java, "festUpDatabase").build()
 
     /***************************  DAOs  ***************************/
     @Singleton
@@ -98,10 +111,7 @@ object AppModule {
     ): IEventoRepository =
         EventoRepository(eventoDao, usuariosAsistentesDao, cuadrillasAsistentesDao, httpClient)
 
-    /** ////////////////////////////////////////////////////////
-    ////////////   Repositorio de Preferencias   /////////////
-    //////////////////////////////////////////////////////////
-     */
+    /***************************  Preferencias  ***************************/
     @Singleton
     @Provides
     fun provideLoginSettings(@ApplicationContext app: Context): ILoginSettings = PreferencesRepository(app)
