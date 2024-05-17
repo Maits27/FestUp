@@ -40,7 +40,7 @@ fun CuadrillaMiniCard(
             .padding(horizontal = 10.dp)
             .clickable { onCardClick() }
     ) {
-        ImagenMiniConBorde(imageUri, R.drawable.no_image)
+        ImagenMiniConBorde(imageUri, R.drawable.no_cuadrilla)
         Text(text = cuadrilla.nombre, fontSize = 10.sp)
     }
 }

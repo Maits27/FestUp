@@ -55,7 +55,7 @@ import com.gomu.festup.ui.vm.MainVM
 
 
 
-// Boton flotante que sirve para añadir nuevos eventos
+// Botón flotante que sirve para añadir nuevos eventos
 @Composable
 fun FloatButton(onClick: () -> Unit){
     ExtendedFloatingActionButton(
@@ -75,7 +75,7 @@ fun FloatButton(onClick: () -> Unit){
 }
 
 
-// Barra superior de la aplicacion que se muestra en muchas de las pantallas
+// Barra superior de la aplicación que se muestra en muchas de las pantallas
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarMainView(

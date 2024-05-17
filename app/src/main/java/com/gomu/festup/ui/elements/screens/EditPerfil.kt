@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.gomu.festup.R
+import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.elements.components.EditImageIcon
 import com.gomu.festup.ui.elements.components.FestUpButton
 import com.gomu.festup.ui.elements.components.Imagen
@@ -48,6 +49,11 @@ import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.utils.formatearFecha
 import com.gomu.festup.utils.toStringNuestro
 import java.util.Date
+
+/**
+ * Pantalla para editar un [Evento] en la aplicación
+ * (aparece su visualización tanto en horizontal como en vertical).
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,6 +63,7 @@ fun EditPerfil(
 ) {
     val context = LocalContext.current
     val currentUser = mainVM.currentUser.value!!
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     var email by remember {
         mutableStateOf(currentUser.email)
@@ -96,11 +103,8 @@ fun EditPerfil(
             navController.popBackStack()
         }
     }
-    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
-
 
     val modifierForInputs = Modifier.padding(bottom = if (isVertical) 16.dp else 10.dp)
-
 
     if (isVertical){
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
@@ -241,7 +245,7 @@ fun EditPerfil(
     }
 
 
-
+    // DatePicker con diferentes formatos según la orientación
     if (showDatePicker) {
         if (isVertical) datePickerState.displayMode = DisplayMode.Picker
         else datePickerState.displayMode = DisplayMode.Input
@@ -280,7 +284,9 @@ fun EditPerfil(
     }
 }
 
-
+/**
+ * Función para comprobar si los cambios en la edición del perfil son correctos
+ */
 fun checkEditPerfil(
     context: Context,
     email: String,

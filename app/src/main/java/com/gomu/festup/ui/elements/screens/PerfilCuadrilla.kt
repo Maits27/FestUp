@@ -57,6 +57,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -345,7 +346,7 @@ fun CuadrillaProfileImage(
 
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(16.dp)) {
-            Imagen(imageUri, R.drawable.no_image, 120.dp) {
+            Imagen(imageUri, R.drawable.no_cuadrilla, 120.dp) {
                 navController.navigate(
                     AppScreens.FullImageScreen.route + "/" +
                             "cuadrilla" + "/" +
@@ -357,6 +358,11 @@ fun CuadrillaProfileImage(
     }
 }
 
+
+/**
+ * Alerta para compartir el código de cuadrilla por mensaje
+ * de WhatsApp o Telegram o a través de QR
+ */
 @Composable
 fun Compartir(
     show:Boolean,
@@ -396,7 +402,7 @@ fun Compartir(
                             Icon(
                                 painter = painterResource(id = R.drawable.qr_code),
                                 contentDescription = null,
-                                modifier = Modifier.padding(4.dp)
+                                modifier = Modifier.padding(4.dp).scale(1.3f)
                             )
                         }
 

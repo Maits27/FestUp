@@ -44,7 +44,6 @@ import kotlinx.coroutines.launch
 fun EventsList(navController: NavController, mainVM: MainVM) {
 
     val eventos = mainVM.getEventos().collectAsState(initial = emptyList())
-
     var refresh by remember{ mutableStateOf(false) }
 
     val refreshState = rememberPullRefreshState(

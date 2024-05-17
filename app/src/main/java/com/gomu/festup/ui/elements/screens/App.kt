@@ -38,7 +38,10 @@ import com.gomu.festup.ui.elements.components.TopBarMainView
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.ui.vm.PreferencesViewModel
 
-
+/**
+ * Una vez dentro de la aplicación, este sería el Scaffold principal de la app.
+ * Utilizando este como base, se navega entre las pantallas con el [NavHost] del contenido.
+ */
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,13 +50,13 @@ fun App(
     mainVM: MainVM,
     preferencesVM: PreferencesViewModel
 ) {
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
-
-    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     preferencesVM.restartLang(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
@@ -70,6 +73,7 @@ fun App(
 
         mainVM.retrocesoForzado.value = false
     }
+
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         floatingActionButton = {

@@ -61,12 +61,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
+/**
+ * Pantalla para añadir una [Cuadrilla] a la aplicación
+ * (aparece tanto en horizontal como en vertical).
+ */
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
 
     val context = LocalContext.current
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     var nombre by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
@@ -82,8 +86,7 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
         imageUri = uri
     }
 
-    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
-
+    // Comprobación del formulario y de los datos añadidos
     val onCreateClick: () -> Unit = {
         if (nombre.isEmpty()) Toast.makeText(context, context.getString(R.string.insert_nombre), Toast.LENGTH_SHORT).show()
         else if (descripcion.isEmpty()) Toast.makeText(context, context.getString(R.string.insert_desc), Toast.LENGTH_SHORT).show()
@@ -243,15 +246,5 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                 }
             }
         }
-    }
-}
-
-
-@RequiresApi(Build.VERSION_CODES.P)
-@Preview(showBackground = true)
-@Composable
-fun PreviewNewTeamScreen() {
-    FestUpTheme {
-        AddCuadrilla(rememberNavController(), hiltViewModel())
     }
 }

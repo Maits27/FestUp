@@ -14,6 +14,11 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
+/**
+ * Diferentes funciones utilizadas a lo largo de la aplicación
+ */
+
+// Recoge la localización del usuario en el momento de iniciar la app
 fun nuestroLocationProvider(context: Context, mainVM: MainVM){
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as MainActivity)
     if (ActivityCompat.checkSelfPermission(
@@ -37,6 +42,7 @@ fun nuestroLocationProvider(context: Context, mainVM: MainVM){
     }
 }
 
+// Abre WhatsApp para mandar un mensaje a través de un intent implícito (token de cuadrilla)
 fun openWhatsApp(token: String, nombre: String, context: Context) {
     try {
         val intent = Intent(Intent.ACTION_SEND)
@@ -48,6 +54,7 @@ fun openWhatsApp(token: String, nombre: String, context: Context) {
     }
 }
 
+// Abre Telegram para mandar un mensaje a través de un intent implícito (token de cuadrilla)
 fun openTelegram(token: String, nombre: String, context: Context) {
     try {
         val intent = Intent(Intent.ACTION_SEND)
@@ -73,4 +80,13 @@ fun getScheduleTime(evento: Evento): LocalDateTime {
     )
 
     return scheduleTime
+}
+
+fun formatPhone(number: String): String {
+    return if (number.startsWith("+34")) {
+        number.substring(4).replace(" ", "")
+    }
+    else{
+        number.replace(" ", "")
+    }
 }

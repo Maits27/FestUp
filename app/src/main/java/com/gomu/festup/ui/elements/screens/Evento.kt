@@ -69,6 +69,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla con la información de un [Evento],
+ * sus [CuadrillasAsistentes] y [UsuariosAsistentes].
+ * Aparece su visualización en horizontal y vertical.
+ */
 @Composable
 fun Evento(
     navController: NavController,
@@ -517,6 +522,7 @@ fun EdadMediaYAsistentes(edadMedia: Int, numAsistentes: Int, modifier: Modifier 
         }
     }
 }
+
 @Composable
 fun ShowInfo(show: Boolean, evento: Evento, onDismiss: () -> Unit){
     if(show){

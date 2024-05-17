@@ -54,6 +54,7 @@ import androidx.navigation.NavController
 import com.gomu.festup.R
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.data.AlarmItem
+import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
 import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.elements.components.EditImageIcon
 import com.gomu.festup.ui.elements.components.FestUpButton
@@ -81,7 +82,10 @@ import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 
-
+/**
+ * Pantalla para añadir un [Evento] a la aplicación
+ * (aparece su visualización tanto en horizontal como en vertical).
+ */
 @RequiresApi(Build.VERSION_CODES.P)
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -131,6 +135,7 @@ fun AddEvento(
         imageUri = uri
     }
 
+    // Comprobación del formulario y de los datos añadidos
     val onAddButtonClick: () -> Unit = {
         if (eventName == "") Toast.makeText(
             context,

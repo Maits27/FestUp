@@ -26,7 +26,12 @@ import com.gomu.festup.R
 import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.ui.elements.components.cards.UsuarioCard
 import com.gomu.festup.ui.vm.MainVM
+import com.gomu.festup.utils.formatPhone
 
+
+/**
+ * Pantalla con los contactos del teléfono que se pueden encontrar en la aplicación.
+ */
 @Composable
 fun BuscarAmigos(
     mainVM: MainVM,
@@ -36,22 +41,21 @@ fun BuscarAmigos(
 
     val contactos = mainVM.listaContactos(context)
     val usuarios by mainVM.getUsuariosMenosCurrent(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     val amigos by remember {
-         derivedStateOf {
-            val amigosList = mutableListOf<Usuario>()
+        derivedStateOf {
+             val amigosList = mutableListOf<Usuario>()
 
-            usuarios.map { usuario ->
+             usuarios.map { usuario ->
                 val estaEnContactos = contactos.any { formatPhone(it.telefono) == usuario.telefono }
                 if (estaEnContactos) {
                     amigosList.add(usuario)
                 }
             }
-            amigosList.toList() // Devolver la lista de amigos
-        }
+             amigosList.toList() // Devolver la lista de amigos
+         }
     }
-    Log.d("AMIGOS", amigos.toString())
-    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     if (amigos.isNotEmpty()) {
         LazyColumn(
             modifier = Modifier.padding(horizontal = if (isVertical) 0.dp else 60.dp)
@@ -79,14 +83,3 @@ fun BuscarAmigos(
     }
 }
 
-fun formatPhone(number: String): String {
-
-    return if (number.startsWith("+34")) {
-        number.substring(4).replace(" ", "")
-    }
-    else{
-        number.replace(" ", "")
-    }
-
-
-}

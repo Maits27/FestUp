@@ -36,6 +36,7 @@ import com.gomu.festup.MainActivity
 import com.gomu.festup.R
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.data.AppLanguage
+import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.elements.components.SwitchDarkMode
 import com.gomu.festup.ui.elements.components.SwitchTik
 import com.gomu.festup.ui.elements.components.dialogs.EstasSeguroDialog
@@ -49,6 +50,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Pantalla de ajustes del usuario. Desde aquí se pueden cambiar:
+ *      - El idioma
+ *      - El tema: claro u oscuro
+ *      - Si se quiere recibir notificaciones o no
+ *      - Hacer el Logout
+ * Aparece su visualización tanto en horizontal como en vertical.
+ */
 @Composable
 fun Ajustes(
     preferencesVM: PreferencesViewModel,
@@ -240,7 +249,7 @@ fun Ajustes(
 
                 }
                 LanguageSelection(showIdiomas, idioma, preferencesVM) {showIdiomas = false}
-                //Tema de colores
+                // Tema de colores
                 Row (
                     modifier = Modifier
                         .fillMaxWidth()
