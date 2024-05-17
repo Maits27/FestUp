@@ -21,6 +21,7 @@ import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.elements.components.ImagenMiniConBorde
 import com.gomu.festup.ui.vm.MainVM
 
+// Tarjeta de usuario para las LazyRows (filas con iconos pequeños y el nombre debajo)
 @Composable
 fun UsuarioMiniCard(
     mainVM: MainVM,

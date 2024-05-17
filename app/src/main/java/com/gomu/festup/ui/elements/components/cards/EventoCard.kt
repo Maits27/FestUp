@@ -31,19 +31,21 @@ import com.gomu.festup.ui.elements.components.ImagenEvento
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.utils.toStringNuestro
 
+// Tarjeta para mostrar eventos en la LazyColumns
 @Composable
 fun EventoCard(
     evento: Evento,
     mainVM: MainVM,
     navController: NavController
 ) {
-    val context = LocalContext.current
 
+    // Funcion que se ejecuta al hacer click en la tarjeta y abre la pantalla del evento
     val onCardClick: (Evento) -> Unit = { eventoClicked ->
         mainVM.eventoMostrar.value = eventoClicked
         navController.navigate(AppScreens.Evento.route)
     }
 
+    // Uri de la imagen del evento
     val imageUri = Uri.parse("http://34.71.128.243/eventoImages/${evento.id}.png")
 
     Card(
@@ -75,22 +77,25 @@ fun EventoCard(
 }
 
 
-
+// Tarjeta personalizada para mostrar mostrar los eventos a los que esta apuntado un usuario en el feed
 @Composable
 fun EventoCardConUser(
     eventoUser: UserCuadrillaAndEvent,
     mainVM: MainVM,
     navController: NavController
 ) {
+    // Recoger del VM los elementos que hay que mostrar
     val evento = eventoUser.evento
     val cuadrilla = eventoUser.nombreCuadrilla
     val usuario = eventoUser.username
 
+    // Funcion que se ejecuta cuando se hace click en la tarjeta, abre la pantalla del evento
     val onCardClick: (Evento) -> Unit = { eventoClicked ->
         mainVM.eventoMostrar.value = eventoClicked
         navController.navigate(AppScreens.Evento.route)
     }
 
+    // Uri de la imagen del evento
     val imageUri = Uri.parse("http://34.71.128.243/eventoImages/${evento.id}.png")
 
     Card(
@@ -103,7 +108,9 @@ fun EventoCardConUser(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
         ){
+            // Si el usuario actual ya esta apuntado al evento no se debe dar info de ese evento
             if(usuario != mainVM.currentUser.value!!.username){
+                // Si se trata de un usuario que asiste indicarlo asi en el texto auxiliar de la tarjeta
                 if(cuadrilla==""){
                     Box(
                         Modifier
@@ -117,6 +124,7 @@ fun EventoCardConUser(
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(vertical = 8.dp, horizontal = 13.dp))
                     }
+                // Si se trata de una cuadrilla indicarlo en texto auxiliar de la tarjeta
                 }else{
                     Box(
                         Modifier

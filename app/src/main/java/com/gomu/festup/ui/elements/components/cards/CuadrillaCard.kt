@@ -52,11 +52,13 @@ fun CuadrillaCard(
     navController: NavController,
 ) {
 
+    // Acciones a realizar al hacer click en la tarjeta
     val onCardClick: (Cuadrilla) -> Unit = {
         mainVM.cuadrillaMostrar.value = cuadrilla
         navController.navigate(AppScreens.PerfilCuadrilla.route)
     }
 
+    // Uri de la imagen a mostrar en la tarjeta (foto de cuadrilla)
     val imageUri = Uri.parse("http://34.71.128.243/cuadrillaProfileImages/${cuadrilla.nombre}.png")
 
     Card(
@@ -93,6 +95,8 @@ fun CuadrillaCard(
     }
 }
 
+
+// Tarjeta para mostrar en el dialogo de la apuntarse y desapuntarse de las cuadrillas a las que el usuario pertenece
 @Composable
 fun CuadrillaCardParaEventosAlert(
     cuadrilla: Cuadrilla,
@@ -119,6 +123,8 @@ fun CuadrillaCardParaEventosAlert(
                 .fillMaxWidth()
                 .padding(13.dp)
         ) {
+
+            // Imagen de la cuadrilla
             AsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(imageUri)
@@ -148,6 +154,8 @@ fun CuadrillaCardParaEventosAlert(
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
+
+            // Switch para apuntarse o desapuntarse
             Switch(
                 modifier = Modifier.scale(0.7f),
                 checked = checkedSwitch,
@@ -155,6 +163,7 @@ fun CuadrillaCardParaEventosAlert(
                     checkedSwitch = !checkedSwitch
 
                     if (checkedSwitch){
+                        // Si se apunta programar una alarma para el evento y agregar a la cuadrilla a la lista de apuntados
                         scheduler.schedule(
                             AlarmItem(
                                 getScheduleTime(mainVM.eventoMostrar.value!!),
@@ -166,6 +175,7 @@ fun CuadrillaCardParaEventosAlert(
                         mainVM.apuntarse(cuadrilla, mainVM.eventoMostrar.value!!)
                     }
                     else{
+                        // Si se desapunta cancelar la alarma del evento y eliminar a la cuadrilla de la lista de apuntados
                         scheduler.cancel(
                             AlarmItem(
                             getScheduleTime(mainVM.eventoMostrar.value!!),

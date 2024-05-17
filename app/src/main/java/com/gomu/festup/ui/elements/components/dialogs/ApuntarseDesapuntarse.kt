@@ -13,15 +13,16 @@ import com.gomu.festup.ui.elements.components.cards.CuadrillaCardParaEventosAler
 import com.gomu.festup.ui.elements.components.cards.UsuarioCardParaEventosAlert
 import com.gomu.festup.ui.vm.MainVM
 
+// Dialogo para mostrar una lista con el usuario registrado y las cuadrillas a las que pertenece para que puede apuntarse o desapuntarse
 @Composable
 fun Apuntarse(
     show: Boolean,
     apuntado: Boolean,
     mainVM: MainVM,
-//    recibirNotificaciones: Boolean,
     onDismiss:() -> Unit
 ){
     if(show){
+        // Obtener el estado del usuario y sus cuadrillas (apuntado o desapuntado) desde el VM
         var cuadrillasNoApuntadas = mainVM.cuadrillasUsuarioNoApuntadas(mainVM.currentUser.value!!, mainVM.eventoMostrar.value!!.id).collectAsState(initial = emptyList())
         var cuadrillasApuntadas = mainVM.cuadrillasUsuarioApuntadas(mainVM.currentUser.value!!, mainVM.eventoMostrar.value!!.id).collectAsState(initial = emptyList())
         AlertDialog(
@@ -35,24 +36,28 @@ fun Apuntarse(
                 Text(text = mainVM.eventoMostrar.value!!.nombre) },
             text = {
                 LazyColumn {
+
+                    // Mostrar el card del usuario actual activado o desactivado en funcion de si esta apuntado o no
                     item {
                         val usuario = mainVM.currentUser.value!!
                         UsuarioCardParaEventosAlert(usuario = usuario, apuntado, mainVM)
                     }
+
+                    // Mostrar los cards de las cuadrillas del usuario que no estan apuntadas
                     items(cuadrillasNoApuntadas.value){cuadrilla ->
                         CuadrillaCardParaEventosAlert(
                             cuadrilla = cuadrilla,
                             false,
                             mainVM,
-//                            recibirNotificaciones
                         )
                     }
+
+                    // Mostrar los cards de las cuadrillas del usuario que si estan apuntadas
                     items(cuadrillasApuntadas.value){cuadrilla ->
                         CuadrillaCardParaEventosAlert(
                             cuadrilla = cuadrilla,
                             true,
                             mainVM,
-//                            recibirNotificaciones
                         )
                     }
                 }

@@ -22,7 +22,7 @@ import com.gomu.festup.ui.elements.components.ImagenEventoMiniConBorde
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.utils.toStringNuestro
 
-
+// Tarjeta adaptada para mostrar los eventos en los LazyRows con su imagen y el titulo debajo
 @Composable
 fun EventoMiniCard(
     evento: Evento,

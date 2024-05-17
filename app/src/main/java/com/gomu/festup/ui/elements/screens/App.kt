@@ -59,13 +59,6 @@ fun App(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
             initial = preferencesVM.currentSetLang).value)
 
-    val goBack:() -> Unit = {
-        if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
-            if(mainVM.usuarioMostrar.isNotEmpty()){
-                mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
-            }
-        }
-    }
     if (mainVM.retrocesoForzado.value){
         if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
             if(mainVM.usuarioMostrar.isNotEmpty()){
@@ -97,8 +90,7 @@ fun App(
                 ) {
                 TopBarMainView(
                     navController = navController,
-                    mainVM = mainVM,
-                    goBack = goBack
+                    mainVM = mainVM
                 )
             }
 

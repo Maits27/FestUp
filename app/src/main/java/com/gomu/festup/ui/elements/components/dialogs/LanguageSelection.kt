@@ -20,7 +20,8 @@ import com.gomu.festup.R
 import com.gomu.festup.data.AppLanguage
 import com.gomu.festup.ui.vm.PreferencesViewModel
 
-
+// Dialogo para mostrar al usuario los diferentes idiomas que tiene disponibles la aplicacion
+// Se despliega cuando el usuario accede a los ajustes del idioma desde las preferencias de su perfil
 @Composable
 fun LanguageSelection(
     show: Boolean,

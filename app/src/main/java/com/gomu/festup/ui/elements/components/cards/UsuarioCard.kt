@@ -47,6 +47,8 @@ import com.gomu.festup.ui.elements.components.Imagen
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.utils.getScheduleTime
 
+
+// Tarjeta para mostrar usuarios en las LazyColumns
 @SuppressLint("ResourceType")
 @Composable
 fun UsuarioCard(
@@ -55,6 +57,7 @@ fun UsuarioCard(
     navController: NavController
 ) {
 
+    // Definir la funcion para que cuando se haga click sobre la card se muestre el usuario seleccionado
     val onCardClick: (Usuario) -> Unit = {
         mainVM.usuarioMostrar.add(usuario)
         if (mainVM.currentUser.value == mainVM.usuarioMostrar.last()){
@@ -65,6 +68,7 @@ fun UsuarioCard(
         }
     }
 
+    // Uri de la imagen del usuario para mostrar en la card
     val imageUri = Uri.parse("http://34.71.128.243/userProfileImages/${usuario.username}.png")
 
     Card(
@@ -104,6 +108,7 @@ fun UsuarioCard(
     }
 }
 
+// Tarjeta para mostrar en el dialogo de la apuntarse y desapuntarse de los usuarios
 @Composable
 fun UsuarioCardParaEventosAlert(
     usuario: Usuario,
@@ -130,6 +135,7 @@ fun UsuarioCardParaEventosAlert(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ){
+            // Imagen del usuario
             AsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(imageUri)
@@ -159,7 +165,10 @@ fun UsuarioCardParaEventosAlert(
                     color = Color.Gray
                 )
             }
+
             Spacer(modifier = Modifier.weight(1f))
+
+            // Switch para apuntarse o desapuntarse
             Switch(
                 modifier = Modifier.scale(0.7f),
                 checked = checkedSwitch,
@@ -168,6 +177,7 @@ fun UsuarioCardParaEventosAlert(
                     val eventoMostrar = mainVM.eventoMostrar.value!!
 
                     if (checkedSwitch){
+                        // Si se apunta programar una alarma para el evento y agregar al usuario a la lista de apuntados
                         scheduler.schedule(
                             AlarmItem(
                                 getScheduleTime(eventoMostrar),
@@ -179,6 +189,7 @@ fun UsuarioCardParaEventosAlert(
                         mainVM.apuntarse(usuario, mainVM.eventoMostrar.value!!)
                     }
                     else {
+                        // Si se desapunta cancelar la alarma del evento y eliminar al usuario de la lista de apuntados
                         scheduler.cancel(
                             AlarmItem(
                                 getScheduleTime(eventoMostrar),

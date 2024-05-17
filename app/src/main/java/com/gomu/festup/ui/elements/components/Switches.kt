@@ -14,6 +14,10 @@ import androidx.compose.ui.res.painterResource
 import com.gomu.festup.R
 import com.gomu.festup.ui.vm.PreferencesViewModel
 
+
+/**
+ * EN ESTE FICHERO SE DEFINEN LOS SWITCH QUE SE EMPLEAN EN DIFERENTES PANTALLAS
+ */
 @Composable
 fun SwitchTik(
     checked: Boolean,

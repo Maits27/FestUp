@@ -50,7 +50,7 @@ interface ICuadrillaRepository {
  * Implementación de [ICuadrillaRepository] que usa Hilt para inyectar los
  * parámetros necesarios. Desde aquí se accede a los diferentes DAOs, que
  * se encargan de la conexión a la BBDD de Room y con la remota.
- * */
+ **/
 @Singleton
 class CuadrillaRepository @Inject constructor(
     private val cuadrillaDao: CuadrillaDao,

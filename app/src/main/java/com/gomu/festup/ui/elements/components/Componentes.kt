@@ -50,6 +50,12 @@ import com.gomu.festup.R
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.vm.MainVM
 
+
+/* EN ESTE FICHERO SE DEFINEN LOS COMPOSABLES QUE SON UTILIZADO EN MAS DE UNA PANTALLA */
+
+
+
+// Boton flotante que sirve para añadir nuevos eventos
 @Composable
 fun FloatButton(onClick: () -> Unit){
     ExtendedFloatingActionButton(
@@ -68,12 +74,13 @@ fun FloatButton(onClick: () -> Unit){
     )
 }
 
+
+// Barra superior de la aplicacion que se muestra en muchas de las pantallas
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarMainView(
     navController: NavController,
     mainVM: MainVM,
-    goBack: () -> Unit
 ){
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -100,7 +107,8 @@ fun TopBarMainView(
         mutableStateOf(false)
     }
 
-
+    // En funcion de la ruta en la que el usuario este se deben mostrar unos elementos u otros en la barra
+    // Este when gestiona todos los casos posibles y adapta la barra en funcion de la ruta donde se encuentre
     when (routeWithoutArguments) {
         AppScreens.AddEvento.route -> {
             showTopBar = true
@@ -193,6 +201,7 @@ fun TopBarMainView(
         }
     }
 
+    // Se define el elemento TopAppBar siguiendo los atributos que marque en funcion de la direccion actual
     TopAppBar(
         title = {
             if (title == stringResource(id = R.string.app_name)){
@@ -254,8 +263,9 @@ fun TopBarMainView(
             }
         }
     )
-
 }
+
+// Funcion que define la barra de navegacion inferior
 @Composable
 fun BottomBarMainView(
     navController: NavController
@@ -263,7 +273,7 @@ fun BottomBarMainView(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-
+    // Se definen las rutas en las que debe aparecer la barra de navegacion inferior junto con la animacion de entrada y salida
     AnimatedVisibility(
         visible = (currentDestination?.route in listOf(
             AppScreens.Feed.route,
@@ -275,6 +285,7 @@ fun BottomBarMainView(
         exit = slideOutVertically(targetOffsetY = { it }) + shrinkVertically()
     ) {
 
+        // Se define el componente NavigationBar con todos los items que son necesarios para navegar por la aplicacion
         NavigationBar(
             modifier = Modifier.height(70.dp)
         ) {
@@ -319,6 +330,7 @@ fun BottomBarMainView(
 }
 
 
+// Funcion que define la barra de navegacion lateral que se emplea en la orientacion horizontal
 @Composable
 fun RailBarMainView(
     navController: NavController,mainVM: MainVM
@@ -329,9 +341,9 @@ fun RailBarMainView(
     var showPerfil by remember {
         mutableStateOf(false)
     }
-
     val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
 
+    // Se definen cuales son los elementos que debe tener la barra en funcion de la direccion
     when (routeWithoutArguments) {
         AppScreens.AddEvento.route -> {
             showPerfil = false
@@ -384,6 +396,7 @@ fun RailBarMainView(
         //modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
     ) {
 
+        // Se define el elemento NavigationRail con los componentes definidos mediante el when
         NavigationRail(
             modifier = Modifier.width(80.dp),
             containerColor = Color(0xFF22202B),
@@ -450,9 +463,6 @@ fun RailBarMainView(
                     }
                 )
             }
-
-
-
         }
     }
 }

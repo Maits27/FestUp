@@ -16,6 +16,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.gradientsColors
 
+/**
+    EN ESTE FICHERO SE DEFINE UN BOTON PERSONALIZADO CON GRADIENTE QUE SE EMPLEAN EN MULTIPLES PANTALLAS DE LA APLICACION
+ **/
 @Composable
 fun FestUpButton(
     onClick: () -> Unit,
@@ -34,12 +37,4 @@ fun FestUpButton(
         modifier = modifier,
         content = content
     )
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF000000, )
-@Composable
-fun FestUpButtonPreview() {
-    FestUpButton(onClick = { /*TODO*/ }, modifier = Modifier) {
-        Text(text = "Prueba")
-    }
 }

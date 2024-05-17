@@ -33,6 +33,11 @@ import com.example.compose.gradientsColors
 import com.gomu.festup.R
 
 
+/**
+    EN ESTE FICHERO SE DEFINEN LOS DIFERENTE TIPOS DE IMAGENES QUE SE EMPLEAN EN DIFERENTES PANTALLAS
+**/
+
+
 @Composable
 fun Imagen(imageUri: Uri?, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
     val context = LocalContext.current

@@ -7,6 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.gomu.festup.R
 
+
+// Dialogo comun para diferentes situaciones donde se le pregunta al usuario si quiere realizar la accion seleccionada.
+// Las acciones de darle a aceptar vienen definidas en la funcion onConfirm
 @Composable
 fun EstasSeguroDialog(
     show: Boolean,

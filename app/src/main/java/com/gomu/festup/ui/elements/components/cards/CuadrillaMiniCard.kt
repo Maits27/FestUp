@@ -21,7 +21,7 @@ import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.elements.components.ImagenMiniConBorde
 import com.gomu.festup.ui.vm.MainVM
 
-
+// Tarjeta de cuadrilla para las LazyRows (filas con iconos pequeños y el nombre debajo)
 @Composable
 fun CuadrillaMiniCard(
     cuadrilla: Cuadrilla,
