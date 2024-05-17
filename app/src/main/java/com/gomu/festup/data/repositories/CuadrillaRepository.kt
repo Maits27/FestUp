@@ -35,7 +35,6 @@ interface ICuadrillaRepository {
 
     fun pertenezcoCuadrilla(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>>
 
-    fun getIntegrantes(): Flow<List<Integrante>>
     suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean
 
    fun getCuadrillaAccessToken(nombre: String): String
@@ -133,10 +132,6 @@ class CuadrillaRepository @Inject constructor(
 
     override fun pertenezcoCuadrilla(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>> {
         return integranteDao.pertenezcoCuadrilla(cuadrilla.nombre,usuario.username)
-    }
-
-    override fun getIntegrantes(): Flow<List<Integrante>>{
-        return integranteDao.getIntegrantes()
     }
 
     override fun integrantesCuadrillasEvento(id: String): Flow<List<Integrante>> {

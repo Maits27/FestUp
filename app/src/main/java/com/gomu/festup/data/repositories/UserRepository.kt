@@ -134,7 +134,6 @@ class UserRepository @Inject constructor(
     override suspend fun alreadySiguiendo(currentUsername: String, username: String): Boolean {
         // Local
         val seguidores = seguidoresDao.findUserSeguidor(seguidor = currentUsername, seguido = username)
-        Log.d("Seguidores", "$seguidores")
         return seguidores != null
     }
 

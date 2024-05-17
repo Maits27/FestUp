@@ -35,7 +35,6 @@ import javax.inject.Singleton
 interface IEventoRepository {
     suspend fun insertarEvento(evento: Evento, username: String, image: Bitmap?): Boolean
     fun todosLosEventos(): Flow<List<Evento>>
-    fun usuariosEventos(): Flow<List<UsuariosAsistentes>>
     fun eventosUsuario(username: String): Flow<List<Evento>>
     fun eventosUsuarioList(username: String): List<Evento>
     suspend fun eventosSeguidos(username: String): Flow<List<UserCuadrillaAndEvent>>
@@ -48,7 +47,6 @@ interface IEventoRepository {
     suspend fun desapuntarse(cuadrilla: Cuadrilla, id: String)
     fun cuadrillasEvento(id: String): Flow<List<Cuadrilla>>
     fun usuariosEvento(id: String): Flow<List<Usuario>>
-    suspend fun setEventoProfileImage(id: String, image: Bitmap): Boolean
     fun eventosCuadrilla(nombreCuadrilla: String) : Flow<List<Evento>>
     suspend fun descargarEventos()
     suspend fun descargarUsuariosAsistentes()
@@ -164,10 +162,6 @@ class EventoRepository @Inject constructor(
         cuadrillasAsistentesDao.deleteAsistente(CuadrillasAsistentes(cuadrilla.nombre, id))
     }
 
-    override fun usuariosEventos(): Flow<List<UsuariosAsistentes>> {
-        return usuariosAsistentesDao.todosLosUsuariosAsistentes()
-    }
-
     override fun cuadrillasEvento(id: String): Flow<List<Cuadrilla>> {
         return eventoDao.getCuadrillasDeEvento(id)
     }
@@ -180,20 +174,6 @@ class EventoRepository @Inject constructor(
         return cuadrillasAsistentesDao.getEventosCuadrilla(nombreCuadrilla)
     }
 
-    /**
-     * Métodos para el perfil del [Evento].
-     */
-
-    override suspend fun setEventoProfileImage(id: String, image: Bitmap): Boolean {
-        return try {
-            httpClient.setEventoProfileImage(id, image)
-            true
-        } catch (e: ResponseException) {
-            Log.e("HTTP", "Couldn't upload profile image.")
-            e.printStackTrace()
-            false
-        }
-    }
 
     /**
      * Métodos exclusivos remoto.
