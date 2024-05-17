@@ -44,9 +44,7 @@ fun EventoCard(
         navController.navigate(AppScreens.Evento.route)
     }
 
-    val imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png"))
-    }
+    val imageUri = Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png")
 
     Card(
         modifier = Modifier
@@ -62,7 +60,7 @@ fun EventoCard(
             horizontalArrangement = Arrangement.Start
         ) {
 
-            ImagenEvento(imageUri, context, R.drawable.no_image, 50.dp) {}
+            ImagenEvento(imageUri, R.drawable.no_image, 50.dp) {}
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -84,7 +82,6 @@ fun EventoCardConUser(
     mainVM: MainVM,
     navController: NavController
 ) {
-    val context = LocalContext.current
     val evento = eventoUser.evento
     val cuadrilla = eventoUser.nombreCuadrilla
     val usuario = eventoUser.username
@@ -94,9 +91,7 @@ fun EventoCardConUser(
         navController.navigate(AppScreens.Evento.route)
     }
 
-    val imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png"))
-    }
+    val imageUri = Uri.parse("http://34.16.74.167/eventoImages/${evento.id}.png")
 
     Card(
         modifier = Modifier
@@ -143,7 +138,7 @@ fun EventoCardConUser(
                 horizontalArrangement = Arrangement.Start,
                 modifier = Modifier.padding(13.dp)
             ) {
-                ImagenEvento(imageUri, context, R.drawable.no_image, 50.dp) {}
+                ImagenEvento(imageUri, R.drawable.no_image, 50.dp) {}
                 Column(
                     modifier = Modifier
                         .weight(1f)

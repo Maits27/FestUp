@@ -37,11 +37,7 @@ fun UsuarioMiniCard(
         }
     }
 
-    val imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
-    }
-
-    val context = LocalContext.current
+    val imageUri = Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -49,7 +45,7 @@ fun UsuarioMiniCard(
             .padding(horizontal = 10.dp)
             .clickable { onCardClick() }
     ) {
-        ImagenMiniConBorde(imageUri, context, R.drawable.no_user)
+        ImagenMiniConBorde(imageUri, R.drawable.no_user)
         Text(text = usuario.username, fontSize = 10.sp)
     }
 }

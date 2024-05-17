@@ -396,7 +396,7 @@ fun RegistroForm(
 
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Box(Modifier.padding(16.dp)) {
-                        Imagen(imageUri, context, R.drawable.no_user, 120.dp) {}
+                        Imagen(imageUri, R.drawable.no_user, 120.dp) {}
                     }
                     // Icono para editar imagen
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
@@ -511,7 +511,7 @@ fun RegistroForm(
             ){
                 Box(modifier = Modifier.scale(0.7f), contentAlignment = Alignment.BottomEnd) {
                     Box(Modifier.padding(16.dp)) {
-                        Imagen(imageUri, context, R.drawable.no_user, 140.dp) {}
+                        Imagen(imageUri, R.drawable.no_user, 140.dp) {}
                     }
                     // Icono para editar imagen
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)

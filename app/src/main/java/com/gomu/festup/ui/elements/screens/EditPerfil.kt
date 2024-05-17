@@ -115,7 +115,7 @@ fun EditPerfil(
                 // Profile image
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Box(Modifier.padding(16.dp)) {
-                        Imagen(imageUri, context, R.drawable.no_user, 120.dp) {}
+                        Imagen(imageUri, R.drawable.no_user, 120.dp) {}
                     }
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }
@@ -178,7 +178,7 @@ fun EditPerfil(
                 // Profile image
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Box(Modifier.padding(16.dp)) {
-                        Imagen(imageUri, context, R.drawable.no_user, 120.dp) {}
+                        Imagen(imageUri, R.drawable.no_user, 120.dp) {}
                     }
                     EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
                 }

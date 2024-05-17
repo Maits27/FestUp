@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,9 @@ import com.gomu.festup.R
 
 
 @Composable
-fun Imagen(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
+fun Imagen(imageUri: Uri?, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
+    val context = LocalContext.current
+
     AsyncImage(
         model = ImageRequest.Builder(context)
             .data(imageUri)
@@ -54,7 +57,9 @@ fun Imagen(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, on
 }
 
 @Composable
-fun ImagenMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId: Int) {
+fun ImagenMiniConBorde(imageUri: Uri?, noImagePainterId: Int) {
+    val context = LocalContext.current
+
     AsyncImage(
         model = ImageRequest.Builder(context)
             .data(imageUri)
@@ -74,7 +79,9 @@ fun ImagenMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId: Int) 
 }
 
 @Composable
-fun ImagenEvento(imageUri: Uri?, context: Context, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
+fun ImagenEvento(imageUri: Uri?, noImagePainterId: Int, size: Dp, onClick: () -> Unit) {
+    val context = LocalContext.current
+
     AsyncImage(
         model = ImageRequest.Builder(context)
             .data(imageUri)
@@ -95,7 +102,8 @@ fun ImagenEvento(imageUri: Uri?, context: Context, noImagePainterId: Int, size: 
 }
 
 @Composable
-fun ImagenEventoMiniConBorde(imageUri: Uri?, context: Context, noImagePainterId: Int) {
+fun ImagenEventoMiniConBorde(imageUri: Uri?, noImagePainterId: Int) {
+    val context = LocalContext.current
     AsyncImage(
         model = ImageRequest.Builder(context)
             .data(imageUri)

@@ -28,16 +28,12 @@ fun CuadrillaMiniCard(
     mainVM: MainVM,
     navController: NavController
 ) {
-    val context = LocalContext.current
-
     val onCardClick: () -> Unit = {
         mainVM.cuadrillaMostrar.value = cuadrilla
         navController.navigate(AppScreens.PerfilCuadrilla.route)
     }
 
-    val imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png"))
-    }
+    val imageUri = Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -45,8 +41,7 @@ fun CuadrillaMiniCard(
             .padding(horizontal = 10.dp)
             .clickable { onCardClick() }
     ) {
-        ImagenMiniConBorde(imageUri, context, R.drawable.no_image)
-
+        ImagenMiniConBorde(imageUri, R.drawable.no_image)
         Text(text = cuadrilla.nombre, fontSize = 10.sp)
     }
 }

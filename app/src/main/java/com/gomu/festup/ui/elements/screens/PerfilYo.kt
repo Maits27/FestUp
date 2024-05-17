@@ -642,7 +642,7 @@ fun ProfileImage(
 
     Box(contentAlignment = Alignment.BottomEnd) {
         Box(Modifier.padding(16.dp)) {
-            Imagen(imageUri, context, R.drawable.no_user, 120.dp) {
+            Imagen(imageUri, R.drawable.no_user, 120.dp) {
                 navController.navigate(
                     AppScreens.FullImageScreen.route + "/" +
                             "user" + "/" +
@@ -651,38 +651,31 @@ fun ProfileImage(
             }
         }
         if(yo) {
-
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .padding(bottom = 16.dp, end = 8.dp)
-                        .clip(CircleShape)
-                        .clickable(onClick = { navController.navigate(AppScreens.EditPerfil.route) })
-                ) {
-                    //Añadir circle y edit
-                    Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
-                    Icon(painterResource(id = R.drawable.edit), contentDescription = null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.surface)
-                }
-
-//            EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .padding(bottom = 16.dp, end = 8.dp)
+                    .clip(CircleShape)
+                    .clickable(onClick = { navController.navigate(AppScreens.EditPerfil.route) })
+            ) {
+                //Añadir circle y edit
+                Icon(painterResource(id = R.drawable.circle), contentDescription = null, Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
+                Icon(painterResource(id = R.drawable.edit), contentDescription = null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.surface)
+            }
         }
     }
-
 }
 
 @Composable
 fun FollowButton(
     alreadySiguiendo: MutableState<Boolean?>,
     mainVM: MainVM,
-//    recibirNotificaciones: Boolean,
     usuario: Usuario
 ) {
 
     val onClickFollow: () -> Unit = {
         mainVM.newSiguiendo(usuario.username)
-//        if(recibirNotificaciones){
-            mainVM.subscribeToUser(mainVM.usuarioMostrar.last()!!.username)
-//        }
+        mainVM.subscribeToUser(mainVM.usuarioMostrar.last()!!.username)
     }
 
     val onClickUnfollow: () -> Unit = {

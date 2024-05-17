@@ -65,11 +65,7 @@ fun UsuarioCard(
         }
     }
 
-
-    val imageUri by remember {
-        mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
-    }
-    val context = LocalContext.current
+    val imageUri = Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png")
 
     Card(
         modifier = Modifier
@@ -84,7 +80,10 @@ fun UsuarioCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ){
-            Imagen(imageUri, context, R.drawable.no_user, 50.dp) {}
+            Imagen(
+                imageUri,
+                R.drawable.no_user, 50.dp
+            ) { onCardClick(usuario) }
 
             Column(
                 modifier = Modifier
@@ -109,12 +108,11 @@ fun UsuarioCard(
 fun UsuarioCardParaEventosAlert(
     usuario: Usuario,
     apuntado: Boolean,
-    mainVM: MainVM,
-//    recibirNotificaciones: Boolean
+    mainVM: MainVM
 ) {
     val context = LocalContext.current
 
-    val imageUri="http://34.16.74.167/userProfileImages/${usuario.username}.png"
+    val imageUri = "http://34.16.74.167/userProfileImages/${usuario.username}.png"
 
     var checkedSwitch by remember { mutableStateOf(apuntado) }
 
@@ -170,31 +168,25 @@ fun UsuarioCardParaEventosAlert(
                     val eventoMostrar = mainVM.eventoMostrar.value!!
 
                     if (checkedSwitch){
-//                        Log.d("RECNOTIF", recibirNotificaciones.toString())
-//                        if(recibirNotificaciones) {
-                            scheduler.schedule(
-                                AlarmItem(
-                                    getScheduleTime(eventoMostrar),
-                                    eventoMostrar.nombre,
-                                    eventoMostrar.localizacion,
-                                    eventoMostrar.id
-                                )
+                        scheduler.schedule(
+                            AlarmItem(
+                                getScheduleTime(eventoMostrar),
+                                eventoMostrar.nombre,
+                                eventoMostrar.localizacion,
+                                eventoMostrar.id
                             )
-//                        }
+                        )
                         mainVM.apuntarse(usuario, mainVM.eventoMostrar.value!!)
                     }
-                    else{
-//                        Log.d("RECNOTIF", recibirNotificaciones.toString())
-//                        if(recibirNotificaciones) {
-                            scheduler.cancel(
-                                AlarmItem(
-                                    getScheduleTime(eventoMostrar),
-                                    eventoMostrar.nombre,
-                                    eventoMostrar.localizacion,
-                                    eventoMostrar.id
-                                )
+                    else {
+                        scheduler.cancel(
+                            AlarmItem(
+                                getScheduleTime(eventoMostrar),
+                                eventoMostrar.nombre,
+                                eventoMostrar.localizacion,
+                                eventoMostrar.id
                             )
-//                        }
+                        )
                         mainVM.desapuntarse(usuario, mainVM.eventoMostrar.value!!)
                     }
                 },
@@ -206,9 +198,7 @@ fun UsuarioCardParaEventosAlert(
                             modifier = Modifier.size(SwitchDefaults.IconSize),
                         )
                     }
-                } else {
-                    null
-                }
+                } else null
             )
         }
     }
