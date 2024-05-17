@@ -28,12 +28,11 @@ fun CuadrillaMiniCard(
     mainVM: MainVM,
     navController: NavController
 ) {
+    val imageUri = Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
     val onCardClick: () -> Unit = {
         mainVM.cuadrillaMostrar.value = cuadrilla
         navController.navigate(AppScreens.PerfilCuadrilla.route)
     }
-
-    val imageUri = Uri.parse("http://34.16.74.167/cuadrillaProfileImages/${cuadrilla.nombre}.png")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

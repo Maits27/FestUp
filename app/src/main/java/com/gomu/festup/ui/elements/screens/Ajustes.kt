@@ -56,24 +56,13 @@ fun Ajustes(
     idioma: AppLanguage,
     dark: Boolean,
     receiveNotifications: Boolean,
-//    mostrarEdad: Boolean
 ) {
-//    val idioma by preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(initial = preferencesVM.currentSetLang)
-//    val dark by preferencesVM.darkTheme(mainVM.currentUser.value!!.username).collectAsState(initial = true)
-//    val receiveNotifications by preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = true)
-//    val showAge by preferencesVM.mostrarEdad(mainVM.currentUser.value!!.username).collectAsState(initial = false)
-//    val showAgeOther by preferencesVM.mostrarEdad(if (mainVM.usuarioMostrar.isEmpty()) "" else mainVM.usuarioMostrar.last()?.username?:"").collectAsState(initial = false)
-
-    Log.d("APP", "Idioma: $idioma")
-    Log.d("APP", "Dark: $dark")
-    Log.d("APP", "receiveNotifications: $receiveNotifications")
+    val context = LocalContext.current
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     var showIdiomas by remember { mutableStateOf(false) }
     var logoutVerification by remember { mutableStateOf(false) }
     var seguidos = mainVM.listaSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
-
-    val scheduler = AndroidAlarmScheduler(LocalContext.current)
-    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     if (isVertical){
         Column (
@@ -140,29 +129,6 @@ fun Ajustes(
                 }
                 SwitchDarkMode(preferencesVM, dark, Modifier.weight(2f))
             }
-//            Row (
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.Start
-//            ){
-//                Icon(
-//                    painter = painterResource(id = R.drawable.visible),
-//                    contentDescription = null,
-//                    modifier = Modifier.weight(1f))
-//                Column(
-//                    horizontalAlignment = Alignment.Start,
-//                    modifier = Modifier.weight(3f)
-//                ) {
-//                    Text(stringResource(id = R.string.edad))
-//                    Text(
-//                        text = if (mostrarEdad)  stringResource(id = R.string.mostrar) else stringResource(id = R.string.no_mostrar),
-//                        style = MaterialTheme.typography.bodySmall
-//                    )
-//                }
-//                SwitchTik(mostrarEdad, Modifier.weight(2f)){ preferencesVM.changeVisualizarEdad() }
-//            }
             Divider(Modifier.padding(vertical = 10.dp))
             Text(
                 stringResource(id = R.string.sistema),
@@ -298,29 +264,6 @@ fun Ajustes(
                     }
                     SwitchDarkMode(preferencesVM, dark, Modifier.weight(2f))
                 }
-//                Row (
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(16.dp),
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    horizontalArrangement = Arrangement.Start
-//                ){
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.visible),
-//                        contentDescription = null,
-//                        modifier = Modifier.weight(1f))
-//                    Column(
-//                        horizontalAlignment = Alignment.Start,
-//                        modifier = Modifier.weight(3f)
-//                    ) {
-//                        Text(stringResource(id = R.string.edad))
-//                        Text(
-//                            text = if (mostrarEdad)  stringResource(id = R.string.mostrar) else stringResource(id = R.string.no_mostrar),
-//                            style = MaterialTheme.typography.bodySmall
-//                        )
-//                    }
-//                    SwitchTik(mostrarEdad, Modifier.weight(2f)){ preferencesVM.changeVisualizarEdad() }
-//                }
             }
             Divider(
                 modifier = Modifier
@@ -366,22 +309,9 @@ fun Ajustes(
                         if (it){
                             mainVM.subscribeUser()
                             mainVM.suscribirASeguidos(seguidos.value)
-//                            CoroutineScope(Dispatchers.Main).launch {
-//                                val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
-//                                eventos.map { evento ->
-//                                    scheduler.schedule(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
-//                                }
-//                            }
                         }else{
                             mainVM.unSubscribeUser()
                             mainVM.unSuscribeASeguidos(seguidos.value)
-//                            CoroutineScope(Dispatchers.Main).launch {
-//                                val eventos = mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
-//                                eventos.map { evento ->
-//                                    scheduler.cancel(AlarmItem(getScheduleTime(evento), evento.nombre, evento.localizacion, evento.id))
-//                                }
-//                            }
-//                            MainActivity.CURRENT_CHANNEL = MainActivity.NO_CHANNEL_ID
                         }
                     }
                 }
@@ -413,7 +343,8 @@ fun Ajustes(
             }
         }
     }
-    val context = LocalContext.current
+
+    // Diálogo para confirmar el Logout
     EstasSeguroDialog(
         show = logoutVerification,
         mensaje = stringResource(id = R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n),
@@ -422,12 +353,10 @@ fun Ajustes(
         withContext(Dispatchers.IO) {
             preferencesVM.changeUser("")
         }
-        //Log.d("FestUpWidget", "DataStore username ${preferencesVM}")
         mainVM.serverOk.value = false
         mainVM.actualizarWidget(context)
 
         withContext(Dispatchers.Main) {
-            //mainNavController.popBackStack()
             (context as? Activity)?.finishAffinity()
             val intent = Intent(context, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

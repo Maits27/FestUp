@@ -113,15 +113,4 @@ class PreferencesRepository @Inject constructor(
             preferences[PREFERENCE_NOTIFICATIONS(username)] = !getReceiveNotifications(username).first()
         }
     }
-
-//    override fun getVisualizarEdad(username: String): Flow<Boolean> =
-//        context.dataStore.data.map { preferences ->
-//            preferences[PREFERENCE_AGE(username)] ?: true
-//        }
-//    override suspend fun changeVisualizarEdad(username: String) {
-//        context.dataStore.edit { preferences ->
-//            preferences[PREFERENCE_AGE(username)] = !getVisualizarEdad(username).first()
-//        }
-//    }
-
 }

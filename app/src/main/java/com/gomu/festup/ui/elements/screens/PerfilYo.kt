@@ -586,20 +586,20 @@ fun TopProfile(
                 .weight(1f)
                 .padding(bottom = 5.dp)
         ) {
-            ProfileImage(usuario = usuario, yo = yo, updateUserImage = mainVM::updateUserImage, navController = navController)
+            ProfileImage(usuario = usuario, yo = yo, navController = navController)
             Text(
                 text = usuario.nombre,
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center
             )
-            if(edad!=-1){
-                Text(
-                    text = context.getString(R.string.age, edad.toString()),
-                    modifier = Modifier.padding(5.dp),
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
+
+            Text(
+                text = context.getString(R.string.age, edad.toString()),
+                modifier = Modifier.padding(5.dp),
+                fontSize = 15.sp,
+                textAlign = TextAlign.Center
+            )
+
         }
 
         SeguidoresYSeguidos(
@@ -620,24 +620,11 @@ fun TopProfile(
 @Composable
 fun ProfileImage(
     usuario: Usuario,
-    updateUserImage: (Context, String, Uri?) -> Unit,
     yo: Boolean,
     navController: NavController
 ) {
-    val context = LocalContext.current
-
     var imageUri by remember {
         mutableStateOf<Uri?>(Uri.parse("http://34.16.74.167/userProfileImages/${usuario.username}.png"))
-    }
-    Log.d("imageuri", imageUri.toString())
-
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        if (uri!=null) {
-            imageUri = uri
-            updateUserImage(context, usuario.username, uri)
-        }
     }
 
     Box(contentAlignment = Alignment.BottomEnd) {

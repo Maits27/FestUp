@@ -13,8 +13,6 @@ import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
 import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import javax.inject.Inject
-
 
 /**
  * Servicio para manejar las notificaciones recibidas desde FCM.

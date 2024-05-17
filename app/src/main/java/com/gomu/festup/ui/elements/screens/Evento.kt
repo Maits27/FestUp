@@ -382,7 +382,6 @@ fun DatosEvento(
     evento: Evento, edadMedia: Int,
     numAsistentes: Int, modifier: Modifier=Modifier
 ) {
-    val context = LocalContext.current
     val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     Column (

@@ -52,17 +52,14 @@ fun App(
     val currentDestination = navBackStackEntry?.destination
     val routeWithoutArguments = currentDestination?.route?.split("/")?.get(0)
 
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     preferencesVM.restartLang(
         preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(
             initial = preferencesVM.currentSetLang).value)
 
-    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
-
-
     val goBack:() -> Unit = {
-        Log.d("ON BACK", "ME VOY PARA ATRAS")
         if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
             if(mainVM.usuarioMostrar.isNotEmpty()){
                 mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
@@ -70,7 +67,6 @@ fun App(
         }
     }
     if (mainVM.retrocesoForzado.value){
-        Log.d("RETROCESO FORZADO", "ENTRANDO")
         if(routeWithoutArguments == AppScreens.PerfilUser.route || routeWithoutArguments == AppScreens.PerfilYo.route){
             if(mainVM.usuarioMostrar.isNotEmpty()){
                 mainVM.usuarioMostrar.removeAt(mainVM.usuarioMostrar.size-1)
@@ -124,10 +120,6 @@ fun App(
         val idioma by preferencesVM.idioma(mainVM.currentUser.value!!.username).collectAsState(initial = preferencesVM.currentSetLang)
         val dark by preferencesVM.darkTheme(mainVM.currentUser.value!!.username).collectAsState(initial = true)
         val receiveNotifications by preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = true)
-//        val showAge by preferencesVM.mostrarEdad(mainVM.currentUser.value!!.username).collectAsState(initial = false)
-//        val showAgeOther by preferencesVM.mostrarEdad(if (mainVM.usuarioMostrar.isEmpty()) "" else mainVM.usuarioMostrar.last()?.username?:"").collectAsState(initial = false)
-
-
 
         Row(
             verticalAlignment = Alignment.Top,
