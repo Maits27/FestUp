@@ -127,7 +127,13 @@ fun EventoVertical(
             .padding(top = 13.dp)
     ) {
         CardVertical(context, mainVM, evento, numAsistentes, navController = navController)
-        ColumnaAsistentes(context = context, navController = navController, mainVM = mainVM, users = users, cuadrillas = cuadrillas, modifier = Modifier.fillMaxWidth()) {
+        ColumnaAsistentes(
+            context = context,
+            navController = navController,
+            mainVM = mainVM, users = users,
+            cuadrillas = cuadrillas,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             onApuntarse()
         }
     }
@@ -135,7 +141,16 @@ fun EventoVertical(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun EventoHorizontal(context: Context, navController: NavController, mainVM: MainVM, evento: Evento, numAsistentes: Int, users: List<Usuario>, cuadrillas: List<Cuadrilla>, onApuntarse : () -> Unit){
+fun EventoHorizontal(
+    context: Context,
+    navController: NavController,
+    mainVM: MainVM,
+    evento: Evento,
+    numAsistentes: Int,
+    users: List<Usuario>,
+    cuadrillas: List<Cuadrilla>,
+    onApuntarse : () -> Unit
+){
     Row(
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Center,
