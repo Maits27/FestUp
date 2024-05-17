@@ -150,6 +150,8 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                 value = descripcion,
                 onValueChange = { descripcion = it },
                 label = { Text(stringResource(id = R.string.desc))},
+                minLines = 3,
+                maxLines = 5,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 15.dp)
