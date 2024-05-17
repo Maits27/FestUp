@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         createNotificationChannel()
+        createNotificationChannel2()
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -89,9 +90,10 @@ class MainActivity : AppCompatActivity() {
 //            }
 //    }
 
-    // Function to create a local notification channel
+
     private fun createNotificationChannel() {
-        val channel = NotificationChannel(MyNotificationChannels.NOTIFICATIONS_CHANNEL.name,
+        val channel = NotificationChannel(
+            CHANNEL_ID,
             "FestUpNotificationChannel",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
@@ -101,7 +103,18 @@ class MainActivity : AppCompatActivity() {
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
-
+    // Function to create a local notification channel
+    private fun createNotificationChannel2() {
+        val channel = NotificationChannel(MyNotificationChannels.NOTIFICATIONS_CHANNEL.name,
+            "FestUpNotificationChannel FCM",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = "Canal de notificaciones para FestUp"
+        }
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
 
     @OptIn(ExperimentalPermissionsApi::class)
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
