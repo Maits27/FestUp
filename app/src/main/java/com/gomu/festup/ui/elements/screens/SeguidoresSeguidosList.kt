@@ -29,6 +29,11 @@ import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.ui.elements.components.cards.UsuarioCard
 import com.gomu.festup.ui.vm.MainVM
 
+
+/**
+ * Despliegue del listado de seguidores y seguidos para cualquier [Usuario]
+ * ya sea el actual o cualquier otro.
+ */
 @Composable
 fun SeguidoresSeguidosList(
     startPage: Int?,

@@ -51,7 +51,12 @@ import com.gomu.festup.utils.toStringNuestro
 import java.util.Date
 
 /**
- * Pantalla para editar un [Evento] en la aplicación
+ * Pantalla para editar el perfil de un [Usuario] en la aplicación:
+ *      - Nombre
+ *      - Correo electrónico
+ *      - Teléfono
+ *      - Fecha de nacimiento
+ *      - Foto de perfil
  * (aparece su visualización tanto en horizontal como en vertical).
  */
 

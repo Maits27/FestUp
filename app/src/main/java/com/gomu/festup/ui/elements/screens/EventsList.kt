@@ -39,10 +39,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * Listado con los eventos disponibles en la aplicación (versiones diferentes por orientación)
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EventsList(navController: NavController, mainVM: MainVM) {
 
+    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val eventos = mainVM.getEventos().collectAsState(initial = emptyList())
     var refresh by remember{ mutableStateOf(false) }
 
@@ -56,8 +60,6 @@ fun EventsList(navController: NavController, mainVM: MainVM) {
             }
         }
     )
-
-    val isVertical = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
 
     Column (
         verticalArrangement = Arrangement.Top,

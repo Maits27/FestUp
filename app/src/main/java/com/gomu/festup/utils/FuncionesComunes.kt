@@ -4,12 +4,19 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.location.Location
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.gomu.festup.MainActivity
 import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.vm.MainVM
 import com.google.android.gms.location.LocationServices
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.WriterException
+import com.google.zxing.common.BitMatrix
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -82,6 +89,9 @@ fun getScheduleTime(evento: Evento): LocalDateTime {
     return scheduleTime
 }
 
+/**
+ * Formato del teléfono correcto
+ */
 fun formatPhone(number: String): String {
     return if (number.startsWith("+34")) {
         number.substring(4).replace(" ", "")
@@ -90,3 +100,4 @@ fun formatPhone(number: String): String {
         number.replace(" ", "")
     }
 }
+

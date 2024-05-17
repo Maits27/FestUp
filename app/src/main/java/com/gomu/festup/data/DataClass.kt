@@ -3,6 +3,7 @@ package com.gomu.festup.data
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import com.gomu.festup.data.localDatabase.Entities.Evento
+import com.google.android.gms.maps.model.LatLng
 import java.time.LocalDateTime
 
 /**
@@ -46,6 +47,14 @@ data class Contacto(
 )
 
 /**
+ * DataClass para los marcadores del mapa
+ */
+data class EventOnMap(
+    val evento: Evento,
+    val location: LatLng
+)
+
+/**
  * DataClass con los idiomas que recoge la aplicación
  */
 enum class AppLanguage(val language: String, val code: String) {
@@ -64,4 +73,5 @@ enum class AppLanguage(val language: String, val code: String) {
         }
     }
 }
+
 

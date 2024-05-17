@@ -85,7 +85,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
-
+/**
+ * Perfil con información del [Usuario] y sus [Cuadrillas] y [Eventos].
+ * Puede tratarse del usuario registrado en el momento o del perfil de
+ * otro usuario. En cada caso aparecerá información y funciones diferentes.
+ * Formato en horizontal y en vertical.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -204,7 +209,6 @@ fun PerfilYo(
                         mainVM = mainVM,
                         edad = mainVM.calcularEdad(usuario),
                         yo = yo,
-//                        recibirNotificaciones = recibirNotificaciones,
                         alreadySiguiendo = alreadySiguiendo,
                         usuario = usuario,
                         navController = navController
@@ -388,10 +392,12 @@ fun EventosUsuario(
 }
 
 
+/**
+ * Seguidores y seguidos en el perfil del usuario (conteo de estos)
+ */
 @Composable
 fun SeguidoresYSeguidos(
     yo: Boolean,
-//    recibirNotificaciones: Boolean,
     usuario: Usuario,
     mainVM: MainVM,
     navController: NavController,
@@ -419,7 +425,6 @@ fun SeguidoresYSeguidos(
             FollowButton(
                 alreadySiguiendo = alreadySiguiendo,
                 mainVM = mainVM,
-//                recibirNotificaciones = recibirNotificaciones,
                 usuario = usuario
             )
         }

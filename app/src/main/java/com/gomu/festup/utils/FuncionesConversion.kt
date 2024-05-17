@@ -28,7 +28,7 @@ private val md = MessageDigest.getInstance("SHA-512")
 
 
 /**
- * Comparar hash con [String] y conversor de [String] a hash
+ * Diferentes funciones para la conversión entre tipos de datos
  */
 
 fun String.hash(): String{
@@ -39,15 +39,6 @@ fun String.hash(): String{
         hashText = "0$hashText"
     }
     return hashText
-}
-
-fun String.compareHash(hash:String): Boolean{
-    return this.hash() == hash
-}
-
-fun randomNum(): Int{
-    val random = Random()
-    return random.nextInt(9000000) + 1000000
 }
 
 fun String.formatearFecha(): Date {

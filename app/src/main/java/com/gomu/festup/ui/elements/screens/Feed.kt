@@ -39,7 +39,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
+/**
+ * Pantalla con la información relativa al usuario. Cuenta con dos partes:
+ *      - Eventos del usuario
+ *      - Eventos de las personas que sigue el usuario y sus cuadrillas.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Feed(
@@ -126,6 +130,9 @@ fun Feed(
     }
 }
 
+/**
+ * Estructura del listado de los eventos
+ */
 @Composable
 fun EventosList(eventos: List<UserCuadrillaAndEvent>, mainVM: MainVM, navController: NavController) {
     if (eventos.isNotEmpty()) {

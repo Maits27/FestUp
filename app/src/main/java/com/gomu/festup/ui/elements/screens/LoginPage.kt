@@ -94,6 +94,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
+/**
+ * Páginas de inicio de sesión y de registro del usuario
+ */
 @SuppressLint("UnrememberedMutableState", "CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -103,11 +106,7 @@ fun LoginPage(
     identVM: IdentVM,
     preferencesVM: PreferencesViewModel
 ) {
-
-
-
     Column(
-        // TODO quitar esto para que se vea bien con el theme
         modifier = Modifier.background(MaterialTheme.colorScheme.background)
     ) {
         TabRow(
@@ -137,7 +136,9 @@ fun LoginPage(
 
     }
 }
-
+/**
+ * Pantalla de inicio de sesión
+ */
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun LoginForm(
@@ -160,28 +161,28 @@ fun LoginForm(
         mutableStateOf(false)
     }
 
-
-
+    // Método para verificar al usuario y su correcto inicio de sesión
     val onLoginButtonClick: () -> Unit = {
         if (username == "") Toast.makeText(context,
             context.getString(R.string.introduce_un_nombre_de_usuario), Toast.LENGTH_SHORT).show()
         else if (password == "") Toast.makeText(context,
             context.getString(R.string.introduce_una_contrase_a), Toast.LENGTH_SHORT).show()
         else {
+            // Datos con formato correcto
             showLoading = true
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val usuario = withContext(Dispatchers.IO) {
                         identVM.iniciarSesion(username, password)
                     }
-                    if (usuario) {
+                    if (usuario) { // El usuario existe en remoto y es correcto
                         withContext(Dispatchers.IO) {
                             mainVM.descargarDatos()
                         }
                         var currentUser = withContext(Dispatchers.IO) {
                             mainVM.actualizarCurrentUser(username)
                         }
-                        if (currentUser==null){
+                        if (currentUser == null){ // El usuario no estaba localmente añadido
                             withContext(Dispatchers.IO) {
                                 mainVM.descargarUsuarios()
                             }
@@ -189,21 +190,21 @@ fun LoginForm(
                                 mainVM.actualizarCurrentUser(username)
                             }
                         }
-                        if(currentUser!=null) {
+                        if(currentUser != null) { // Usuario localmente añadido
                             nuestroLocationProvider(context, mainVM)
                             mainVM.currentUser.value = currentUser
                             withContext(Dispatchers.IO) {
                                 preferencesVM.changeUser(currentUser.username)
                             }
 
-                            withContext(Dispatchers.Main) {
+                            withContext(Dispatchers.Main) { // Abrir la aplicación con la información del usuario
                                 mainNavController.navigate(AppScreens.App.route) {
                                     popUpTo(0)
                                 }
                                 showLoading = false
                                 mainVM.actualizarWidget(context)
                             }
-                            withContext(Dispatchers.Main) {
+                            withContext(Dispatchers.Main) { // Cargar las notificaciones del usuario
                                 val eventos =
                                     mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                                 eventos.map { evento ->
@@ -254,8 +255,6 @@ fun LoginForm(
                 .width(250.dp)
                 .clip(RoundedCornerShape(16.dp))
         )
-        // TODO quitar esto para que se vea bien con el theme
-        //Text(text = "¡Bienvenid@!", fontSize = 25.sp, color = MaterialTheme.colorScheme.onBackground)
         OutlinedTextField(
             value = username,
             onValueChange = { username = it.lowercase().replace(" ", "") },
@@ -694,6 +693,7 @@ fun RegistroForm(
     }
 }
 
+// Función para verificar el registro correcto
 fun checkRegisterForm(
     context: Context,
     username: String,
@@ -727,6 +727,8 @@ fun formValidatorError(context: Context, textToShow: String) {
     Toast.makeText(context, textToShow, Toast.LENGTH_SHORT).show()
 }
 
+
+// Registro tras información verificada
 @RequiresApi(Build.VERSION_CODES.P)
 fun registration(
     imageUri: Uri?,

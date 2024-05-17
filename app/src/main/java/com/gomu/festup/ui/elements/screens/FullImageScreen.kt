@@ -17,6 +17,10 @@ import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 
+
+/**
+ * Imagen desplegable (al pulsar las diferentes imágenes de la aplicación)
+ */
 @Composable
 fun FullImageScreen(
     type: String,

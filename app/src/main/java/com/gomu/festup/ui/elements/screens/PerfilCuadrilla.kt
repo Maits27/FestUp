@@ -96,6 +96,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
+/**
+ * Perfil con información de la [Cuadrilla] y sus [Integrantes].
+ * Formato en horizontal y en vertical.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -446,6 +450,9 @@ fun Compartir(
     }
 }
 
+/**
+ * Generar código QR
+ */
 fun generateQRCode(text: String, width: Int, height: Int): Bitmap? {
     val bitMatrix: BitMatrix
     try {
@@ -560,14 +567,6 @@ fun Unirse(show:Boolean, accessToken: String, nombreCuadrilla: String, mainVM: M
         )
 
         if (scanQRcode){
-            /* DEPRECATED
-            val integrator = IntentIntegrator(activity).apply {
-                setOrientationLocked(false)
-                setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES)
-                setPrompt("Scanning Code")
-            }
-            scanResultLauncher.launch(integrator.createScanIntent())
-             */
             val scanOptions = ScanOptions().apply {
                 setBeepEnabled(false)
                 setDesiredBarcodeFormats(QR_CODE)

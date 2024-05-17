@@ -42,7 +42,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
+/**
+ * Pantalla para la búsqueda de las tres entidades principales
+ * de la aplicación: [Evento], [Usuario] y [Cuadrilla]
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Search(

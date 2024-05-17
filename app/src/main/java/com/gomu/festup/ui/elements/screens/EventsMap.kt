@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat.setTint
 import androidx.navigation.NavController
 import com.gomu.festup.R
+import com.gomu.festup.data.EventOnMap
 import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.vm.MainVM
@@ -46,7 +47,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
-
+/**
+ * Mapa con los eventos disponibles en la aplicación marcados con iconos.
+ */
 @Composable
 fun EventsMap(
     navController: NavController,
@@ -56,7 +59,6 @@ fun EventsMap(
 
     var miLocalizacion = mainVM.localizacion.value
 
-    // TODO: Si se usa elvis no funciona bien
     val cameraPositionState = rememberCameraPositionState {
         if (miLocalizacion != null) {
             position =
@@ -140,6 +142,8 @@ fun EventsMap(
         }
     }
 }
+
+// Generador de los iconos en los marker
 fun bitmapDescriptorFromVector(
     context: Context,
     @DrawableRes vectorResId: Int,
@@ -148,7 +152,6 @@ fun bitmapDescriptorFromVector(
     color: Int? = null,
 ): BitmapDescriptor {
 
-    // Load drawable and apply options: alpha, color and size
     val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)!!.also {
         if (color != null) setTint(it, color)
         it.alpha = alpha
@@ -156,14 +159,8 @@ fun bitmapDescriptorFromVector(
         it.setBounds(0, 0, size ?: it.intrinsicWidth, size ?: it.intrinsicHeight)
     }
 
-    // Convert to bitmap
     val bitmap = Bitmap.createBitmap(size ?: vectorDrawable.intrinsicWidth, size ?: vectorDrawable.intrinsicHeight, Bitmap.Config.RGBA_F16)
     vectorDrawable.draw(Canvas(bitmap))
 
-    // Convert to BitmapDescriptor and return
     return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
-data class EventOnMap(
-    val evento: Evento,
-    val location: LatLng
-)

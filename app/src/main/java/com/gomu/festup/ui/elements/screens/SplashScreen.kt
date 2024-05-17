@@ -35,6 +35,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Pantalla del login automático. En caso de que el
+ * [lastLoggedUser] no esté vacío (no se haya cerrado
+ * sesión), se pasará directamente por aquí sin
+ * necesidad de hacer login.
+ */
 @Composable
 fun SplashScreen(
     navController: NavController,
@@ -134,21 +140,5 @@ suspend fun descargarDatos(
         mainVM.descargarDatos()
     } catch (e: Exception) {
         Log.e("Excepcion al iniciar sesion", e.toString())
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SplashScreenPreview() {
-    FestUpTheme(darkTheme = true) {
-        SplashContent()
-    }
-}
-
-@Preview(showBackground = true, device = "spec:parent=pixel_5,orientation=landscape")
-@Composable
-fun SplashHoritzontalScreenPreview() {
-    FestUpTheme(darkTheme = true) {
-        SplashHoritzontalContent()
     }
 }

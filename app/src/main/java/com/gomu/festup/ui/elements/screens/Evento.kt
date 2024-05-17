@@ -108,6 +108,10 @@ fun Evento(
     }
 
 }
+
+/**
+ * Estructuras principales de la pantalla (vertical y horizontal)
+ */
 @Composable
 fun EventoVertical(
     context: Context, navController: NavController,
@@ -177,6 +181,9 @@ fun EventoHorizontal(context: Context, navController: NavController, mainVM: Mai
     }
 }
 
+/**
+ * Información general del evento en la card (estructuras en vertical y horizontal)
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CardVertical(context: Context, mainVM: MainVM, evento: Evento, numAsistentes: Int, navController: NavController){
@@ -292,52 +299,6 @@ fun CardHorizontal(context: Context, mainVM: MainVM, evento: Evento, numAsistent
 }
 
 @Composable
-fun ColumnaAsistentes(
-    context: Context, navController: NavController, mainVM: MainVM,
-    users: List<Usuario>, cuadrillas: List<Cuadrilla>,
-    modifier: Modifier=Modifier, onApuntarse: () -> Unit
-){
-    Column (
-        modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ){
-        FestUpButton(
-            onClick = { onApuntarse() },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 14.dp)
-        ) {
-            Text(text = context.getString(R.string.apuntarse))
-        }
-        Text(
-            text = context.getString(R.string.asistentes),
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            ),
-            modifier = Modifier
-                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
-                .align(Alignment.Start)
-        )
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            contentPadding = PaddingValues(bottom = 70.dp)
-        ) {
-            items(users){ usuario ->
-                UsuarioCard(usuario = usuario, mainVM = mainVM, navController = navController)
-            }
-            items(cuadrillas){cuadrilla ->
-                CuadrillaCard(cuadrilla = cuadrilla, mainVM = mainVM, navController = navController)
-            }
-        }
-    }
-}
-
-
-
-@Composable
 fun IconosEvento(context: Context, mainVM: MainVM, evento: Evento, modifier: Modifier = Modifier){
     var showInfo by remember { mutableStateOf(false) }
     var showAddCalendar by remember { mutableStateOf(false) }
@@ -382,6 +343,56 @@ fun IconosEvento(context: Context, mainVM: MainVM, evento: Evento, modifier: Mod
         showAddCalendar = false
     }
 }
+
+/**
+ * Información de asistentes
+ */
+
+@Composable
+fun ColumnaAsistentes(
+    context: Context, navController: NavController, mainVM: MainVM,
+    users: List<Usuario>, cuadrillas: List<Cuadrilla>,
+    modifier: Modifier=Modifier, onApuntarse: () -> Unit
+){
+    Column (
+        modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ){
+        FestUpButton(
+            onClick = { onApuntarse() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, bottom = 14.dp)
+        ) {
+            Text(text = context.getString(R.string.apuntarse))
+        }
+        Text(
+            text = context.getString(R.string.asistentes),
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier
+                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+                .align(Alignment.Start)
+        )
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            contentPadding = PaddingValues(bottom = 70.dp)
+        ) {
+            items(users){ usuario ->
+                UsuarioCard(usuario = usuario, mainVM = mainVM, navController = navController)
+            }
+            items(cuadrillas){cuadrilla ->
+                CuadrillaCard(cuadrilla = cuadrilla, mainVM = mainVM, navController = navController)
+            }
+        }
+    }
+}
+
+
 @Composable
 fun DatosEvento(
     evento: Evento, edadMedia: Int,
