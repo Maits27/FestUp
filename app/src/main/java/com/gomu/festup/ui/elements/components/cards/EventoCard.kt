@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gomu.festup.R
@@ -117,9 +118,10 @@ fun EventoCardConUser(
                             .background(
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 shape = RoundedCornerShape(2.dp)
-                            ).fillMaxWidth()
+                            )
+                            .fillMaxWidth()
                     ){
-                        Text(text = "@$usuario participa en:",
+                        Text(text = stringResource(id = R.string.user_participa, usuario),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(vertical = 8.dp, horizontal = 13.dp))
@@ -131,9 +133,10 @@ fun EventoCardConUser(
                             .background(
                                 color = MaterialTheme.colorScheme.primaryContainer,
                                 shape = RoundedCornerShape(8.dp)
-                            ).fillMaxWidth()
+                            )
+                            .fillMaxWidth()
                     ){
-                        Text(text = "La cuadrilla $cuadrilla participa en:",
+                        Text(text = stringResource(id = R.string.cuadrilla_participa, cuadrilla),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(vertical = 8.dp, horizontal = 13.dp))
