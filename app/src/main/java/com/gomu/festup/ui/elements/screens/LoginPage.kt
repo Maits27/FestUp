@@ -44,6 +44,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -218,6 +219,12 @@ fun LoginForm(
                     }
                 } catch (e: Exception) {
                     Log.e("Excepcion al iniciar sesion", e.toString())
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context,
+                            "Error al conectar al servidor, compruebe su conexión y reinicie la app.", Toast.LENGTH_LONG).show()
+                        mainVM.serverOk.value = false
+                        showLoading = false
+                    }
                 }
             }
         }
@@ -274,11 +281,13 @@ fun LoginForm(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                if (!mainVM.serverOk.value) Icon(
-                    painter = painterResource(id = R.drawable.no_wifi),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
+                if (!mainVM.serverOk.value) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.no_wifi),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.padding(end = 10.dp))
+                }
                 Button(
                     onClick = { onLoginButtonClick() },
                     enabled = mainVM.serverOk.value,
@@ -625,7 +634,13 @@ fun RegistroForm(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ){
-                        if(!mainVM.serverOk.value) Icon(painter = painterResource(id = R.drawable.no_wifi), contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+                        if(!mainVM.serverOk.value) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.no_wifi),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground,
+                                modifier = Modifier.padding(end = 10.dp))
+                        }
                         Button(
                             onClick = { onRegisterButtonClick() },
                             enabled = mainVM.serverOk.value,
@@ -754,11 +769,13 @@ fun registration(
                 mainVM.currentUser.value = usuario
                 preferencesVM.changeUser(usuario.username)
                 withContext(Dispatchers.Main) {
+                    val seguidos = mainVM.listaSeguidos(usuario).first()
                     mainVM.actualizarWidget(context) // Necesario repetirlo dos veces
                     mainNavController.navigate(AppScreens.App.route) {
                         popUpTo(0)
                     }
                     mainVM.subscribeUser()
+                    mainVM.suscribirASeguidos(seguidos)
                     mainVM.actualizarWidget(context)
                 }
             } else {

@@ -25,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
@@ -398,7 +399,6 @@ fun RailBarMainView(
         // Se define el elemento NavigationRail con los componentes definidos mediante el when
         NavigationRail(
             modifier = Modifier.width(80.dp),
-            containerColor = Color(0xFF22202B),
         ) {
             Column(
                 modifier = Modifier.fillMaxHeight(),
