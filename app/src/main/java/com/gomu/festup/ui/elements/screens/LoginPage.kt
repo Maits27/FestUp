@@ -192,6 +192,12 @@ fun LoginForm(
                                     popUpTo(0)
                                 }
                                 showLoading = false
+
+                                val seguidos = mainVM.listaSeguidos(currentUser).first()
+
+                                mainVM.subscribeUser()
+                                mainVM.suscribirASeguidos(seguidos)
+
                                 mainVM.actualizarWidget(context)
                             }
                             withContext(Dispatchers.Main) { // Cargar las notificaciones del usuario
@@ -769,13 +775,11 @@ fun registration(
                 mainVM.currentUser.value = usuario
                 preferencesVM.changeUser(usuario.username)
                 withContext(Dispatchers.Main) {
-                    val seguidos = mainVM.listaSeguidos(usuario).first()
                     mainVM.actualizarWidget(context) // Necesario repetirlo dos veces
                     mainNavController.navigate(AppScreens.App.route) {
                         popUpTo(0)
                     }
                     mainVM.subscribeUser()
-                    mainVM.suscribirASeguidos(seguidos)
                     mainVM.actualizarWidget(context)
                 }
             } else {
