@@ -102,4 +102,5 @@
     <string name="cerrar_sesion_de">Cerrar sesión de @%s</string>
     <string name="user_participa">\@%s participa en:</string>
     <string name="cuadrilla_participa">La cuadrilla %s participa en:</string>
+    <string name="imagen_grande">Imagen demasiado pesada.</string>
 </resources>

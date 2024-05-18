@@ -87,7 +87,8 @@ fun AddCuadrilla(navController: NavController, mainVM: MainVM) {
                             lugar = localizacion,
                             descripcion = descripcion
                         ),
-                        image = imageBitmap)
+                        image = imageBitmap,
+                        context)
                 }
                 if (insertCorrecto) {
                     withContext(Dispatchers.Main) {

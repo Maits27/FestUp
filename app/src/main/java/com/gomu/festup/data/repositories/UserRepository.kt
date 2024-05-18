@@ -1,5 +1,6 @@
 package com.gomu.festup.data.repositories
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import com.gomu.festup.data.http.AuthClient
@@ -42,7 +43,7 @@ interface IUserRepository: ILoginSettings {
     suspend fun newSeguidor(currentUsername: String, username: String): Unit
     suspend fun alreadySiguiendo(currentUsername: String, username: String): Boolean
     suspend fun deleteSeguidores(currentUsername: String, usernameToUnfollow: String)
-    suspend fun setUserProfile(username: String, image: Bitmap):Boolean
+    suspend fun setUserProfile(username: String, image: Bitmap, context: Context):Boolean
     fun getUsuariosMenosCurrent(usuario: Usuario): Flow<List<Usuario>>
     fun getUsuario(username: String): Usuario?
     suspend fun descargarUsuarios()
@@ -155,10 +156,10 @@ class UserRepository @Inject constructor(
     /**
      * Métodos para el perfil del [Usuario].
      */
-    override suspend fun setUserProfile(username: String, image: Bitmap): Boolean {
+    override suspend fun setUserProfile(username: String, image: Bitmap, context: Context): Boolean {
         return try {
             withContext(Dispatchers.IO) {
-                authClient.setUserProfile(username, image)
+                authClient.setUserProfile(username, image, context )
             }
             true
         } catch (e: ResponseException) {

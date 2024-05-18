@@ -1,5 +1,6 @@
 package com.gomu.festup.data.repositories
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import com.gomu.festup.data.http.HTTPClient
@@ -24,7 +25,7 @@ import javax.inject.Singleton
  * con la BBDD
  *******************************************************************/
 interface ICuadrillaRepository {
-    suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla, image: Bitmap?): Boolean
+    suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla, image: Bitmap?, context: Context): Boolean
     fun usuariosCuadrilla(nombre: String): Flow<List<Usuario>>
     suspend fun insertUser(nombreUsuario: String, nombreCuadrilla: String): Boolean
 
@@ -34,7 +35,7 @@ interface ICuadrillaRepository {
 
     fun pertenezcoCuadrilla(cuadrilla: Cuadrilla, usuario: Usuario): Flow<List<Integrante>>
 
-    suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean
+    suspend fun setCuadrillaProfile(nombre: String, image: Bitmap, context: Context): Boolean
 
    fun getCuadrillaAccessToken(nombre: String): String
 
@@ -58,7 +59,7 @@ class CuadrillaRepository @Inject constructor(
     /**
      * Métodos para la información de la [Cuadrilla].
      */
-    override suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla, image: Bitmap?): Boolean {
+    override suspend fun insertCuadrilla(username: String, cuadrilla: Cuadrilla, image: Bitmap?, context: Context): Boolean {
         return try {
             // Local
             cuadrillaDao.insertCuadrilla(cuadrilla)
@@ -74,7 +75,7 @@ class CuadrillaRepository @Inject constructor(
             )
             httpClient.insertIntegrante(RemoteIntegrante(username,cuadrilla.nombre))
 
-            if (image != null) httpClient.setCuadrillaImage(cuadrilla.nombre, image)
+            if (image != null) httpClient.setCuadrillaImage(cuadrilla.nombre, image, context)
             true
         }
         catch (e:Exception){
@@ -140,9 +141,9 @@ class CuadrillaRepository @Inject constructor(
      * Métodos para el perfil de la [Cuadrilla].
      */
 
-    override suspend fun setCuadrillaProfile(nombre: String, image: Bitmap): Boolean {
+    override suspend fun setCuadrillaProfile(nombre: String, image: Bitmap, context: Context): Boolean {
         return try {
-            httpClient.setCuadrillaImage(nombre, image)
+            httpClient.setCuadrillaImage(nombre, image, context)
             true
         } catch (e: ResponseException) {
             Log.e("HTTP", "Couldn't upload profile image.")

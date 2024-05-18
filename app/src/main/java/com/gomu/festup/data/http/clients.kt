@@ -1,7 +1,13 @@
 package com.gomu.festup.data.http
 
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.widget.Toast
+import com.gomu.festup.R
 import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import io.ktor.client.*
 import io.ktor.client.call.body
@@ -80,20 +86,26 @@ class AuthClient @Inject constructor(private val loginSettings: ILoginSettings) 
         }
     }
 
-    suspend fun setUserProfile(username: String, image: Bitmap) {
+    suspend fun setUserProfile(username: String, image: Bitmap, context: Context) {
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
-
-        httpClient.submitFormWithBinaryData(
-            url = "http://34.71.128.243/setUserProfileImage",
-            formData = formData {
-                append("image", byteArray, Headers.build {
-                    append(HttpHeaders.ContentType, "image/png")
-                    append(HttpHeaders.ContentDisposition, "filename=$username.png")
-                })
+        if ((byteArray.size/1024)>8117){
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, context.getString(R.string.imagen_grande), Toast.LENGTH_LONG).show()
             }
-        ) { method = HttpMethod.Put }
+        }else{
+            Log.d("Tamaño", (byteArray.size/1024).toString())
+            httpClient.submitFormWithBinaryData(
+                url = "http://34.71.128.243/setUserProfileImage",
+                formData = formData {
+                    append("image", byteArray, Headers.build {
+                        append(HttpHeaders.ContentType, "image/png")
+                        append(HttpHeaders.ContentDisposition, "filename=$username.png")
+                    })
+                }
+            ) { method = HttpMethod.Put }
+        }
     }
     @Throws(IOException::class)
     suspend fun getUsuarios(): List<RemoteUsuario> = runBlocking {
@@ -329,19 +341,25 @@ class HTTPClient @Inject constructor() {
 
     // ---------------------------  IMAGEN DE PERFIL ------------------------------
 
-    suspend fun setCuadrillaImage(nombre: String, image: Bitmap) {
+    suspend fun setCuadrillaImage(nombre: String, image: Bitmap, context: Context) {
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val byteArray = stream.toByteArray()
-        httpClient.submitFormWithBinaryData(
-            url = "http://34.71.128.243/insertCuadrillaImage",
-            formData = formData {
-                append("image", byteArray, Headers.build {
-                    append(HttpHeaders.ContentType, "image/png")
-                    append(HttpHeaders.ContentDisposition, "filename=$nombre.png")
-                })
+        if ((byteArray.size/1024)>8117){
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, context.getString(R.string.imagen_grande), Toast.LENGTH_LONG).show()
             }
-        ) { method = HttpMethod.Put }
+        }else{
+            httpClient.submitFormWithBinaryData(
+                url = "http://34.71.128.243/insertCuadrillaImage",
+                formData = formData {
+                    append("image", byteArray, Headers.build {
+                        append(HttpHeaders.ContentType, "image/png")
+                        append(HttpHeaders.ContentDisposition, "filename=$nombre.png")
+                    })
+                }
+            ) { method = HttpMethod.Put }
+        }
     }
 
     suspend fun setEventoProfileImage(id: String, image: Bitmap) {

@@ -240,7 +240,7 @@ class MainVM @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (uri != null) {
                 val imageBitmap = context.localUriToBitmap(uri)
-                userRepository.setUserProfile(username, imageBitmap)
+                userRepository.setUserProfile(username, imageBitmap, context)
             }
         }
     }
@@ -312,15 +312,15 @@ class MainVM @Inject constructor(
     /*****************************************************
      ****************** METODOS CUADRILLA ******************
      *****************************************************/
-    suspend fun crearCuadrilla(cuadrilla: Cuadrilla, image: Bitmap?): Boolean  {
-        return cuadrillaRepository.insertCuadrilla(currentUser.value!!.username,cuadrilla, image)
+    suspend fun crearCuadrilla(cuadrilla: Cuadrilla, image: Bitmap?, context: Context): Boolean  {
+        return cuadrillaRepository.insertCuadrilla(currentUser.value!!.username,cuadrilla, image, context)
     }
     @RequiresApi(Build.VERSION_CODES.P)
     fun updateCuadrillaImage(context: Context, nombre: String, uri: Uri?) {
         viewModelScope.launch(Dispatchers.IO) {
             if (uri != null) {
                 val imageBitmap = context.localUriToBitmap(uri)
-                cuadrillaRepository.setCuadrillaProfile(nombre, imageBitmap)
+                cuadrillaRepository.setCuadrillaProfile(nombre, imageBitmap, context)
             }
         }
     }

@@ -103,4 +103,5 @@
     <string name="cerrar_sesion_de">\@%s saioa itxi</string>
     <string name="user_participa">\@%s ekitaldi honetan parte hartzen du:</string>
     <string name="cuadrilla_participa">%s kuadrila honetan parte hartzen du:</string>
+    <string name="imagen_grande">Irudi pisutsuegia.</string>
 </resources>
