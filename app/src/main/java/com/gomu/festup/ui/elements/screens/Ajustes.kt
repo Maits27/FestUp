@@ -360,6 +360,9 @@ fun Ajustes(
         mainVM.serverOk.value = false
         mainVM.actualizarWidget(context)
 
+        mainVM.unSubscribeUser()
+        mainVM.unSuscribeASeguidos(seguidos.value)
+
         withContext(Dispatchers.Main) {
             (context as? Activity)?.finishAffinity()
             val intent = Intent(context, MainActivity::class.java)
