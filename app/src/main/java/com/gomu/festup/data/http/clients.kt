@@ -1,7 +1,7 @@
 package com.gomu.festup.data.http
 
+
 import android.graphics.Bitmap
-import android.util.Log
 import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import io.ktor.client.*
 import io.ktor.client.call.body
@@ -20,8 +20,6 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-
-
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -6,7 +6,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.provider.CalendarContract
 import android.provider.CalendarContract.Events
-import android.util.Log
 import java.util.TimeZone
 
 

@@ -20,7 +20,6 @@ import com.gomu.festup.utils.remoteCAsistenteToCAsistente
 import com.gomu.festup.utils.remoteEventoToEvento
 import com.gomu.festup.utils.remoteUAsistenteToUAsistente
 import com.gomu.festup.utils.toStringRemoto
-import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.zip

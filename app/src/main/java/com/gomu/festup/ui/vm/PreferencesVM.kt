@@ -1,10 +1,7 @@
 package com.gomu.festup.ui.vm
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.gomu.festup.MainActivity
 import com.gomu.festup.data.AppLanguage
 import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
 import com.gomu.festup.data.repositories.preferences.ILoginSettings

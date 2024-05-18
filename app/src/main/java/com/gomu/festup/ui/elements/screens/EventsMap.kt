@@ -3,7 +3,6 @@ package com.gomu.festup.ui.elements.screens
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +27,6 @@ import androidx.core.graphics.drawable.DrawableCompat.setTint
 import androidx.navigation.NavController
 import com.gomu.festup.R
 import com.gomu.festup.data.EventOnMap
-import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.utils.getLatLngFromAddress

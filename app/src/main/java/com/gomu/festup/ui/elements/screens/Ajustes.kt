@@ -3,7 +3,6 @@ package com.gomu.festup.ui.elements.screens
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,19 +33,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gomu.festup.MainActivity
 import com.gomu.festup.R
-import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.data.AppLanguage
-import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.elements.components.SwitchDarkMode
 import com.gomu.festup.ui.elements.components.SwitchTik
 import com.gomu.festup.ui.elements.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.ui.elements.components.dialogs.LanguageSelection
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.ui.vm.PreferencesViewModel
-import com.gomu.festup.utils.getScheduleTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 

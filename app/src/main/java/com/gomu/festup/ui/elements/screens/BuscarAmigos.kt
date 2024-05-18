@@ -1,7 +1,6 @@
 package com.gomu.festup.ui.elements.screens
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items

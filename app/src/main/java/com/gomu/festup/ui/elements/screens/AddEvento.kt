@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -54,7 +53,6 @@ import androidx.navigation.NavController
 import com.gomu.festup.R
 import com.gomu.festup.alarmMng.AndroidAlarmScheduler
 import com.gomu.festup.data.AlarmItem
-import com.gomu.festup.data.localDatabase.Entities.Cuadrilla
 import com.gomu.festup.data.localDatabase.Entities.Evento
 import com.gomu.festup.ui.elements.components.EditImageIcon
 import com.gomu.festup.ui.elements.components.FestUpButton

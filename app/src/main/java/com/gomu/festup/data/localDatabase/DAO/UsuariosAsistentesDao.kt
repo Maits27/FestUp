@@ -6,8 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import androidx.room.Update
-import com.gomu.festup.data.localDatabase.Entities.Usuario
 import com.gomu.festup.data.localDatabase.Entities.UsuariosAsistentes
 import kotlinx.coroutines.flow.Flow
 

@@ -1,7 +1,6 @@
 package com.gomu.festup.ui.elements.widget
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp

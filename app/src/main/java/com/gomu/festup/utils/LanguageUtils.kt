@@ -1,6 +1,5 @@
 package com.gomu.festup.utils
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.gomu.festup.data.AppLanguage

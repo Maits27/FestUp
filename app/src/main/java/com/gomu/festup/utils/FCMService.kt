@@ -2,15 +2,11 @@ package com.gomu.festup.utils
 
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.gomu.festup.MainActivity
 import com.gomu.festup.MyNotificationChannels
 import com.gomu.festup.NotificationID
 import com.gomu.festup.R
-import com.gomu.festup.data.repositories.preferences.IGeneralPreferences
-import com.gomu.festup.data.repositories.preferences.ILoginSettings
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 

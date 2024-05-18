@@ -2,14 +2,11 @@ package com.gomu.festup.ui.vm
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
 import android.util.Log
-import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf

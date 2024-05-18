@@ -1,9 +1,7 @@
 package com.gomu.festup.ui.elements.screens
 
-import android.app.Activity
 import android.content.res.Configuration
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
