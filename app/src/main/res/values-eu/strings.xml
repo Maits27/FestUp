@@ -34,7 +34,7 @@
     <string name="add_cuadrilla">Gehitu kuadrilla</string>
     <string name="estas_seguro_calendar">Ziur zaude %s egutegira gehitu nahi duzula?</string>
     <string name="evento_add_calendar_ok">Ekitaldia egutegian gehitu da</string>
-    <string name="edad_media">Batez besteko adina:</string>
+    <string name="edad_media">Ekitaldi adina:</string>
     <string name="asistentes">Partaideak:</string>
     <string name="cerrar">Itxi</string>
     <string name="info_evento">%s-ren informazioa</string>

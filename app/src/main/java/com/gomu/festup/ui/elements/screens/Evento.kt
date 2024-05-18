@@ -39,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -485,7 +486,7 @@ fun EdadMediaYAsistentes(edadMedia: Int, numAsistentes: Int, modifier: Modifier 
     Row (
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.Top,
-        modifier = modifier
+        modifier = modifier.padding(start = 5.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
