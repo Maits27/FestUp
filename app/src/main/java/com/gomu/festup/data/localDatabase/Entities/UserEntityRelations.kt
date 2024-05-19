@@ -1,9 +1,6 @@
 package com.gomu.festup.data.localDatabase.Entities
 
-import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.Junction
-import androidx.room.Relation
 
 
 /**
@@ -19,42 +16,8 @@ data class Integrante(
     val nombreCuadrilla: String
 )
 
-
-data class CuadrillaWithUsuarios(
-    @Embedded
-    var cuadrilla: Cuadrilla,
-
-    @Relation(
-        parentColumn = "nombre",
-        entity = Usuario::class,
-        entityColumn = "username",
-        associateBy = Junction(
-            value = Integrante::class,
-            parentColumn = "nombreCuadrilla",
-            entityColumn = "username"
-        )
-    )
-    var usuario: List<Usuario>
-)
-
 @Entity(primaryKeys = ["seguidor", "seguido"])
 data class Seguidores(
     val seguidor: String,
     val seguido: String
-)
-
-data class UsuarioWithUsuarios(
-    @Embedded
-    var usuario: Usuario,
-    @Relation(
-        parentColumn = "username",
-        entity = Usuario::class,
-        entityColumn = "username",
-        associateBy = Junction(
-            value = Seguidores::class,
-            parentColumn = "seguidor",
-            entityColumn = "seguido"
-        )
-    )
-    var seguidos: List<Usuario>
 )

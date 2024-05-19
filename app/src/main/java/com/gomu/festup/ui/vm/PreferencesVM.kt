@@ -41,7 +41,7 @@ class PreferencesViewModel @Inject constructor(
     val darkTheme: (String)-> Flow<Boolean> = { preferencesRepository.getThemePreference(it)}
     val receiveNotifications: (String)-> Flow<Boolean> = { preferencesRepository.getReceiveNotifications(it)}
 
-//    val mostrarEdad: (String) -> Flow<Boolean> = { preferencesRepository.getVisualizarEdad(it)}
+
 
     /*************************************************
      **                    Eventos                  **

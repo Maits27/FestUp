@@ -55,7 +55,7 @@ fun EventsMap(
 ) {
     val context = LocalContext.current
 
-    var miLocalizacion = mainVM.localizacion.value
+    val miLocalizacion = mainVM.localizacion.value
 
     val cameraPositionState = rememberCameraPositionState {
         if (miLocalizacion != null) {

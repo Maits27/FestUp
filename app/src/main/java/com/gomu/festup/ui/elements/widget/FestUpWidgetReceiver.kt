@@ -73,24 +73,24 @@ class FestUpWidgetReceiver : GlanceAppWidgetReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             val currentUsername = preferencesRepository.getLastLoggedUser()
             val currentLanguage = preferences.language(currentUsername).first()
-            // Get the list of events of the last logged user
+            // Obtener la lista de eventos del último usuario identificado
             val eventos = if (currentUsername != "") eventoRepository.eventosUsuarioList(currentUsername)
             else emptyList()
             val eventosWidget = getWidgetEventos(eventos, ::numeroAsistentesEvento)
             Log.d("FestUpWidget", "$currentUsername eventos: $eventosWidget")
-            // Get the widget manager
+            // Obtener el gestor de widgets
             val manager = GlanceAppWidgetManager(context)
-            // We get all the glace IDs that are a FestUpWidget (remember than we can have more
-            // than one widget of the same type)
+            // Obtenemos todos los glace IDs que son un FestUpWidget (recuerda que
+            // podemos tener más de un widget del mismo tipo)
             val glanceIds = manager.getGlanceIds(FestUpWidget::class.java)
-            // For each glanceId
+            // Para cada glanceId
             glanceIds.forEach { glanceId ->
                 updateAppWidgetState(context, glanceId) { prefs ->
                     prefs[FestUpWidget.eventosKey] = Json.encodeToString(eventosWidget)
                     prefs[FestUpWidget.userIsLoggedIn] = (currentUsername != "")
                     prefs[FestUpWidget.idiomaUser] = currentLanguage
                 }
-                // We update the widget
+                // Actualizamos el widget
                 FestUpWidget().update(context, glanceId)
             }
         }

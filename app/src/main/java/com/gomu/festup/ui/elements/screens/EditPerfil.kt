@@ -89,7 +89,7 @@ fun EditPerfil(
         mutableStateOf(currentUser.telefono)
     }
 
-    // Birth date DatePikcer
+    // DatePikcer para fecha de nacimiento
     val datePickerState = rememberDatePickerState()
     var showDatePicker by remember {
         mutableStateOf(false)
@@ -129,7 +129,7 @@ fun EditPerfil(
                     .padding(horizontal = 56.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                // Profile image
+                // Imagen de perfil
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Box(Modifier.padding(16.dp)) {
                         Imagen(imageUri, R.drawable.no_user, 120.dp) {

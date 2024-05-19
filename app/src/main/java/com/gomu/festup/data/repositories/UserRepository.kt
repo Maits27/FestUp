@@ -40,7 +40,7 @@ interface IUserRepository: ILoginSettings {
     fun getAQuienSigue(username: String): Flow<List<Usuario>>
     fun getSeguidores(username: String): Flow<List<Usuario>>
     fun getCuadrillasUsuario(username: String): Flow<List<Cuadrilla>>
-    suspend fun newSeguidor(currentUsername: String, username: String): Unit
+    suspend fun newSeguidor(currentUsername: String, username: String)
     suspend fun alreadySiguiendo(currentUsername: String, username: String): Boolean
     suspend fun deleteSeguidores(currentUsername: String, usernameToUnfollow: String)
     suspend fun setUserProfile(username: String, image: Bitmap, context: Context):Boolean

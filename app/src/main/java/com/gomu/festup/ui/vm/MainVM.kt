@@ -127,13 +127,13 @@ class MainVM @Inject constructor(
      ************** METODOS DE SUBSCRIPCIÓN **************
      *****************************************************/
 
-    fun suscribirASeguidos(usuariosLista: List<Usuario>, usuario: Usuario = currentUser.value!!){
+    fun suscribirASeguidos(usuariosLista: List<Usuario>){
         usuariosLista.map { usuarioLista ->
             Log.d("SUSCRIBE TO",usuarioLista.username)
             subscribeToUser(usuarioLista.username)
         }
     }
-    fun unSuscribeASeguidos(usuariosLista: List<Usuario>, usuario: Usuario = currentUser.value!!): Boolean = runBlocking{
+    fun unSuscribeASeguidos(usuariosLista: List<Usuario>): Boolean = runBlocking{
         usuariosLista.map { usuarioLista ->
             Log.d("UNSUSCRIBE FROM",usuarioLista.username)
             unsubscribeFromUser(usuarioLista.username)
@@ -153,7 +153,6 @@ class MainVM @Inject constructor(
                     try{
                         userRepository.subscribeUser(task.result, currentUser.value!!.username)
                         Log.d("FCM", "Usuario suscrito ${currentUser.value!!.username}")
-                        Log.d("FCM", task.result)
                     }
                     catch (e:Exception){
                         Log.d("FCM Exception", e.printStackTrace().toString())
@@ -176,7 +175,6 @@ class MainVM @Inject constructor(
                     try{
                         userRepository.unSubscribeUser(task.result, currentUser.value!!.username)
                         Log.d("FCM", "Usuario desuscrito ${currentUser.value!!.username}")
-                        Log.d("FCM", task.result)
                     }
                     catch (e:Exception){
                         Log.d("FCM Exception", e.printStackTrace().toString())
@@ -404,7 +402,7 @@ class MainVM @Inject constructor(
     }
 
     fun eventosSeguidos(usuario: Usuario): Flow<List<UserCuadrillaAndEvent>> = runBlocking {
-        var eventos = eventoRepository.eventosSeguidos(usuario.username)
+        val eventos = eventoRepository.eventosSeguidos(usuario.username)
         eventos
     }
 
@@ -418,14 +416,14 @@ class MainVM @Inject constructor(
     }
 
     fun calcularEdadMediaEvento(evento: Evento): Int = runBlocking {
-        var edades = mutableListOf<Int>()
-        var usuarios = getUsuariosEvento(evento).first()
+        val edades = mutableListOf<Int>()
+        val usuarios = getUsuariosEvento(evento).first()
         for (usuario in usuarios){
             val edad = calcularEdad(usuario)
             edades.add(edad)
         }
 
-        var cuadrillas = getCuadrillasEvento(evento).first()
+        val cuadrillas = getCuadrillasEvento(evento).first()
         for (cuadrilla in cuadrillas){
             val usuarios2 = usuariosCuadrilla(cuadrilla).first()
             for (usuario in usuarios2){
@@ -442,7 +440,7 @@ class MainVM @Inject constructor(
         usuarios.size + cuadrillas.size
     }
 
-    fun getIntegrantesCuadrillasEvento(evento: Evento): Flow<List<Integrante>>{
+    private fun getIntegrantesCuadrillasEvento(evento: Evento): Flow<List<Integrante>>{
         return cuadrillaRepository.integrantesCuadrillasEvento(evento.id)
     }
 
@@ -475,23 +473,23 @@ class MainVM @Inject constructor(
         Log.d("FestUpWidget", "Actualizando widget")
         viewModelScope.launch(Dispatchers.IO) {
             val currentUsername = preferencesRepository.getLastLoggedUser()
-            // Get the list of events of the last logged user
+            // Obtener la lista de eventos del último usuario identificado
             val eventos = if (currentUsername != "") eventoRepository.eventosUsuarioList(currentUsername)
             else emptyList()
             val eventosWidget = getWidgetEventos(eventos, ::numeroDeAsistentes)
             Log.d("FestUpWidget", "$currentUsername eventos: $eventosWidget")
-            // Get the widget manager
+            // Obtener el gestor de widgets
             val manager = GlanceAppWidgetManager(context)
-            // We get all the glace IDs that are a FestUpWidget (remember than we can have more
-            // than one widget of the same type)
+            // Obtenemos todos los glace IDs que son un FestUpWidget (recuerda que
+            // podemos tener más de un widget del mismo tipo)
             val glanceIds = manager.getGlanceIds(FestUpWidget::class.java)
-            // For each glanceId
+            // Para cada glanceId
             glanceIds.forEach { glanceId ->
                 updateAppWidgetState(context, glanceId) { prefs ->
                     prefs[FestUpWidget.eventosKey] = Json.encodeToString(eventosWidget)
                     prefs[FestUpWidget.userIsLoggedIn] = (currentUsername != "")
                 }
-                // We update the widget
+                // Actualizamos el widget
                 FestUpWidget().update(context, glanceId)
             }
         }

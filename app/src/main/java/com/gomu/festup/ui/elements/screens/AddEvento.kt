@@ -224,7 +224,7 @@ fun AddEvento(
             .verticalScroll(rememberScrollState())
     ) {
         if (isVertical){
-            Box (contentAlignment = Alignment.BottomEnd,) {
+            Box (contentAlignment = Alignment.BottomEnd) {
                 ImagenEvento(imageUri, R.drawable.camara, 150.dp ) {}
                 EditImageIcon(singlePhotoPickerLauncher = singlePhotoPickerLauncher)
             }

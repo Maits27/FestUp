@@ -55,7 +55,7 @@ fun Search(
     var searchText by remember { mutableStateOf("") }
 
 
-    var usuario = mainVM.currentUser.value!!
+    val usuario = mainVM.currentUser.value!!
     val usuarios = mainVM.getUsuariosMenosCurrent(usuario).collectAsState(initial = emptyList())
     val cuadrillas = mainVM.getCuadrillas().collectAsState(initial = emptyList())
     val eventos = mainVM.getEventos().collectAsState(initial = emptyList())
@@ -101,9 +101,7 @@ fun Search(
     Column (
         Modifier
             .fillMaxWidth()
-            .fillMaxHeight()
-        //.verticalScroll(rememberScrollState())
-        ,
+            .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {

@@ -22,7 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.compose.FestUpTheme
+import com.gomu.festup.ui.elements.theme.FestUpTheme
 import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.elements.screens.App
 import com.gomu.festup.ui.elements.screens.LoginPage

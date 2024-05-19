@@ -44,7 +44,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -354,7 +353,7 @@ fun RegistroForm(
         mutableStateOf("")
     }
 
-    // Birth date DatePikcer
+    // DatePikcer para fecha de nacimiento
     val datePickerState = rememberDatePickerState()
     var showDatePicker by rememberSaveable {
         mutableStateOf(false)

@@ -47,19 +47,19 @@ data class EventoWidget(
     val numeroAsistentes: Int
 )
 
-val colorFondo = Color(0xFF141318)      // Using background-dark from theme
-val textColor = Color(0xFFCEBDFE)       // Using primary-dark from theme
-val colorFondoCard = Color(0xFF4C3E76)  // Using primaryContainer-dark from theme
+val colorFondo = Color(0xFF141318)      // Usar el background-dark del tema
+val textColor = Color(0xFFCEBDFE)       // Usar el primary-dark del tema
+val colorFondoCard = Color(0xFF4C3E76)  // Usar el primaryContainer-dark del tema
 
 class FestUpWidget : GlanceAppWidget() {
     override val sizeMode: SizeMode = SizeMode.Single
     override val stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
 
-    // PreferencesGlanceStateDefinition (DataStore) keys. This is only use because we need to update
-    // the DataStore if we want the widget to change.
+    // Claves de PreferencesGlanceStateDefinition (DataStore). Esto sólo se usa porque
+    // necesitamos actualizar el DataStore si queremos que el widget cambie.
     companion object {
-        // As we can only have basic types in DataStore, we need to use a string key for events
-        // it will be encoded as a JSON to decode later on.
+        // Como sólo podemos tener tipos básicos en DataStore, necesitamos usar una clave de
+        // cadena para los eventos que será codificada como JSON para decodificarla más tarde.
         val eventosKey = stringPreferencesKey("eventos")
         val userIsLoggedIn = booleanPreferencesKey("loggedInUser")
         val idiomaUser = stringPreferencesKey("idioma")
@@ -76,7 +76,7 @@ class FestUpWidget : GlanceAppWidget() {
 
     @Composable
     private fun WidgetContent() {
-        // Get the PreferencesGlanceStateDefinition (DataStore) unique for each widget
+        // Obtener el PreferencesGlanceStateDefinition (DataStore) único para cada widget
         val prefs = currentState<Preferences>()
 
         val eventosString: String? = prefs[eventosKey]

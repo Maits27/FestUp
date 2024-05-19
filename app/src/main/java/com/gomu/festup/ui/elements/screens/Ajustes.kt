@@ -70,7 +70,7 @@ fun Ajustes(
 
     var showIdiomas by remember { mutableStateOf(false) }
     var logoutVerification by remember { mutableStateOf(false) }
-    var seguidos = mainVM.listaSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
+    val seguidos = mainVM.listaSeguidos(mainVM.currentUser.value!!).collectAsState(initial = emptyList())
 
     if (isVertical){
         Column (

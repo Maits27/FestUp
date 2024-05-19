@@ -1,7 +1,6 @@
 package com.gomu.festup.ui.elements.screens
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -29,7 +28,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -482,50 +480,6 @@ fun Seguidos(navController: NavController, seguidos: State<List<Usuario>>, modif
     }
 }
 
-@Composable
-fun BotonesPerfil(
-    mainNavController: NavController,
-    navController: NavController,
-    preferencesVM: PreferencesViewModel,
-    mainVM: MainVM,
-    actualizarWidget: (Context) -> Unit
-){
-    var verificacion by rememberSaveable{ mutableStateOf(false) }
-    val context = LocalContext.current
-    val currentUser by preferencesVM.currentUser.collectAsState(initial = preferencesVM.lastLoggedUser)
-    Row (
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.background(MaterialTheme.colorScheme.background)
-    ){
-        IconButton(
-            onClick = { navController.navigate(AppScreens.Ajustes.route) },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.settings),
-                contentDescription = "Settings")
-        }
-        IconButton(
-            onClick = { navController.navigate(AppScreens.EditPerfil.route) },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.edit),
-                contentDescription = "Edit")
-        }
-        IconButton(
-            onClick = { verificacion = true},
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.logout),
-                contentDescription = "Logout")
-        }
-
-    }
-}
-
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun TopProfile(
@@ -587,7 +541,7 @@ fun ProfileImage(
     yo: Boolean,
     navController: NavController
 ) {
-    var imageUri by remember {
+    val imageUri by remember {
         mutableStateOf<Uri?>(Uri.parse("http://34.71.128.243/userProfileImages/${usuario.username}.png"))
     }
 

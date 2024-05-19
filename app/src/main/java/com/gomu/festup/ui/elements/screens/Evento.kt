@@ -39,7 +39,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -333,7 +332,6 @@ fun IconosEvento(context: Context, mainVM: MainVM, evento: Evento, modifier: Mod
                     showAddCalendar = true
                 }
         )
-        //                        Spacer(modifier = Modifier.size(30.dp))
         Icon(
             painter = painterResource(id = R.drawable.info),
             contentDescription = null,

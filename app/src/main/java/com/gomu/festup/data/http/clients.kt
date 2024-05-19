@@ -23,7 +23,6 @@ import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.util.InternalAPI
 import kotlinx.coroutines.runBlocking
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -37,7 +36,7 @@ private val bearerTokenStorage = mutableListOf<BearerTokens>()
 
 /**
  * Cliente HTTP con las peticiones que no requiren de autentificación
- * Aquí se crea el [BearerToken] para identificar al usuario que ha hecho el login.
+ * La petición de "authenticate" devuelve el [BearerToken] para identificar al usuario que ha hecho el login.
  */
 @Singleton
 class AuthClient @Inject constructor(private val loginSettings: ILoginSettings) {
@@ -313,8 +312,6 @@ class HTTPClient @Inject constructor() {
             parameter("username", username)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
-        Log.d("FCM", result.status.value.toString())
-        Log.d("FCM", result.status.description)
     }
     suspend fun unSubscribeUser(FCMClientToken: String, username: String) {
         val result = httpClient.post("http://34.71.128.243/notifications/unsubscribe") {
@@ -322,8 +319,6 @@ class HTTPClient @Inject constructor() {
             parameter("username", username)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
-        Log.d("FCM", result.status.value.toString())
-        Log.d("FCM", result.status.description)
     }
     suspend fun subscribeToUser(FCMClientToken: String, username: String) {
         val result = httpClient.post("http://34.71.128.243/notifications/subscribeToUser") {
@@ -331,20 +326,14 @@ class HTTPClient @Inject constructor() {
             parameter("username", username)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
-        Log.d("FCM", result.status.value.toString())
-        Log.d("FCM", result.status.description)
     }
 
-
-    @OptIn(InternalAPI::class)
     suspend fun unsubscribeFromUser(FCMClientToken: String, username: String) {
         val result = httpClient.delete("http://34.71.128.243/notifications/unsubscribeFromUser") {
             contentType(ContentType.Application.Json)
             parameter("username", username)
             setBody(mapOf("fcm_client_token" to FCMClientToken))
         }
-        Log.d("FCM", result.status.value.toString())
-        Log.d("FCM", result.status.description)
     }
 
 
