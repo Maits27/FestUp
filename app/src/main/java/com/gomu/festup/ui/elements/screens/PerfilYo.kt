@@ -143,6 +143,7 @@ fun PerfilYo(
 
                     TopProfile(
                         mainVM = mainVM,
+                        preferencesVM = preferencesViewModel,
                         edad = mainVM.calcularEdad(usuario) ,
                         yo = yo,
                         alreadySiguiendo = alreadySiguiendo,
@@ -196,6 +197,7 @@ fun PerfilYo(
                 ) {
                     TopProfile(
                         mainVM = mainVM,
+                        preferencesVM = preferencesViewModel,
                         edad = mainVM.calcularEdad(usuario),
                         yo = yo,
                         alreadySiguiendo = alreadySiguiendo,
@@ -387,6 +389,7 @@ fun SeguidoresYSeguidos(
     yo: Boolean,
     usuario: Usuario,
     mainVM: MainVM,
+    preferencesVM: PreferencesViewModel,
     navController: NavController,
     alreadySiguiendo: MutableState<Boolean?>,
     modifier: Modifier = Modifier
@@ -405,13 +408,18 @@ fun SeguidoresYSeguidos(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            Seguidores(navController = navController, seguidores = seguidores, modifier = Modifier.weight(1f).padding( end = 5.dp))
-            Seguidos(navController = navController, seguidos = seguidos, modifier = Modifier.weight(1f).padding(end = 5.dp))
+            Seguidores(navController = navController, seguidores = seguidores, modifier = Modifier
+                .weight(1f)
+                .padding(end = 5.dp))
+            Seguidos(navController = navController, seguidos = seguidos, modifier = Modifier
+                .weight(1f)
+                .padding(end = 5.dp))
         }
         if(!yo){
             FollowButton(
                 alreadySiguiendo = alreadySiguiendo,
                 mainVM = mainVM,
+                preferencesVM = preferencesVM,
                 usuario = usuario
             )
         }
@@ -522,6 +530,7 @@ fun BotonesPerfil(
 @Composable
 fun TopProfile(
     mainVM: MainVM,
+    preferencesVM: PreferencesViewModel,
     usuario: Usuario,
     navController: NavController,
     alreadySiguiendo: MutableState<Boolean?>,
@@ -561,6 +570,7 @@ fun TopProfile(
             yo = yo,
             usuario = usuario,
             mainVM = mainVM,
+            preferencesVM = preferencesVM,
             navController = navController,
             alreadySiguiendo = alreadySiguiendo,
             modifier = Modifier
@@ -611,12 +621,16 @@ fun ProfileImage(
 fun FollowButton(
     alreadySiguiendo: MutableState<Boolean?>,
     mainVM: MainVM,
+    preferencesVM: PreferencesViewModel,
     usuario: Usuario
 ) {
+    val notificaciones = preferencesVM.receiveNotifications(mainVM.currentUser.value!!.username).collectAsState(initial = true).value
 
     val onClickFollow: () -> Unit = {
         mainVM.newSiguiendo(usuario.username)
-        mainVM.subscribeToUser(mainVM.usuarioMostrar.last()!!.username)
+        if (notificaciones){
+            mainVM.subscribeToUser(mainVM.usuarioMostrar.last()!!.username)
+        }
     }
 
     val onClickUnfollow: () -> Unit = {

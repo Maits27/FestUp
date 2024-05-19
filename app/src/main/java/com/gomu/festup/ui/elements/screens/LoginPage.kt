@@ -181,6 +181,9 @@ fun LoginForm(
                             }
                         }
                         if(currentUser != null) { // Usuario localmente añadido
+                            val notificaciones = preferencesVM.receiveNotifications(currentUser.username).first()
+                            val seguidos = mainVM.listaSeguidos(currentUser).first()
+
                             nuestroLocationProvider(context, mainVM)
                             mainVM.currentUser.value = currentUser
                             withContext(Dispatchers.IO) {
@@ -193,14 +196,14 @@ fun LoginForm(
                                 }
                                 showLoading = false
 
-                                val seguidos = mainVM.listaSeguidos(currentUser).first()
-
-                                mainVM.subscribeUser()
-                                mainVM.suscribirASeguidos(seguidos)
 
                                 mainVM.actualizarWidget(context)
                             }
                             withContext(Dispatchers.Main) { // Cargar las notificaciones del usuario
+                                if(notificaciones){
+                                    mainVM.subscribeUser()
+                                    mainVM.suscribirASeguidos(seguidos)
+                                }
                                 val eventos =
                                     mainVM.eventosUsuario(mainVM.currentUser.value!!).first()
                                 eventos.map { evento ->

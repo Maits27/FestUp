@@ -31,9 +31,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.gomu.festup.MainActivity
 import com.gomu.festup.R
 import com.gomu.festup.data.AppLanguage
+import com.gomu.festup.ui.AppScreens
 import com.gomu.festup.ui.elements.components.SwitchDarkMode
 import com.gomu.festup.ui.elements.components.SwitchTik
 import com.gomu.festup.ui.elements.components.dialogs.EstasSeguroDialog
@@ -56,6 +58,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun Ajustes(
     preferencesVM: PreferencesViewModel,
+    mainNavController: NavController,
     mainVM: MainVM,
     idioma: AppLanguage,
     dark: Boolean,
@@ -361,13 +364,15 @@ fun Ajustes(
         mainVM.actualizarWidget(context)
 
         mainVM.unSubscribeUser()
-        mainVM.unSuscribeASeguidos(seguidos.value)
-
-        withContext(Dispatchers.Main) {
-            (context as? Activity)?.finishAffinity()
-            val intent = Intent(context, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            context.startActivity(intent)
+        if(mainVM.unSuscribeASeguidos(seguidos.value)){
+            withContext(Dispatchers.Main) {
+                mainNavController.popBackStack()
+                mainNavController.navigate(AppScreens.LoginPage.route)
+                (context as? Activity)?.finishAffinity()
+                val intent = Intent(context, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                context.startActivity(intent)
+            }
         }
     } }
 }

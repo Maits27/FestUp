@@ -194,7 +194,7 @@ fun App(
                 composable(AppScreens.Ajustes.route,
                     enterTransition = { fadeIn(animationSpec = tween(1000)) },
                     exitTransition = { fadeOut(animationSpec = tween(1000)) }
-                ) { Ajustes(preferencesVM, mainVM, idioma, dark, receiveNotifications) }
+                ) { Ajustes(preferencesVM, mainNavController, mainVM, idioma, dark, receiveNotifications) }
 
                 composable(AppScreens.EditPerfil.route,
                     enterTransition = { fadeIn(animationSpec = tween(1000)) },

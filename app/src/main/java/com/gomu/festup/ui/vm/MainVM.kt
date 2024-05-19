@@ -133,11 +133,12 @@ class MainVM @Inject constructor(
             subscribeToUser(usuarioLista.username)
         }
     }
-    fun unSuscribeASeguidos(usuariosLista: List<Usuario>, usuario: Usuario = currentUser.value!!){
+    fun unSuscribeASeguidos(usuariosLista: List<Usuario>, usuario: Usuario = currentUser.value!!): Boolean = runBlocking{
         usuariosLista.map { usuarioLista ->
             Log.d("UNSUSCRIBE FROM",usuarioLista.username)
             unsubscribeFromUser(usuarioLista.username)
         }
+        true
     }
     fun subscribeUser() {
         val fcm = FirebaseMessaging.getInstance()
@@ -155,7 +156,7 @@ class MainVM @Inject constructor(
                         Log.d("FCM", task.result)
                     }
                     catch (e:Exception){
-                        Log.d("Exception", e.printStackTrace().toString())
+                        Log.d("FCM Exception", e.printStackTrace().toString())
                     }
 
                 }
@@ -178,7 +179,7 @@ class MainVM @Inject constructor(
                         Log.d("FCM", task.result)
                     }
                     catch (e:Exception){
-                        Log.d("Exception", e.printStackTrace().toString())
+                        Log.d("FCM Exception", e.printStackTrace().toString())
                     }
 
                 }
@@ -201,7 +202,7 @@ class MainVM @Inject constructor(
                         Log.d("FCM", "Suscribirse a $username")
                     }
                     catch (e:Exception){
-                        Log.d("Exception", e.printStackTrace().toString())
+                        Log.d("FCM Exception", e.printStackTrace().toString())
                     }
 
                 }
@@ -224,7 +225,7 @@ class MainVM @Inject constructor(
                         Log.d("FCM", "Desuscribirse de $username")
                     }
                     catch (e:Exception){
-                        Log.d("Exception", e.printStackTrace().toString())
+                        Log.d("FCM Exception", e.printStackTrace().toString())
                     }
 
                 }
