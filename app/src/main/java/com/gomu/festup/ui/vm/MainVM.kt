@@ -163,7 +163,7 @@ class MainVM @Inject constructor(
             })
         }
     }
-    fun unSubscribeUser() {
+    fun unSubscribeUser(): Boolean {
         val fcm = FirebaseMessaging.getInstance()
         // Eliminar el token FCM actual
         fcm.deleteToken().addOnSuccessListener {
@@ -185,6 +185,7 @@ class MainVM @Inject constructor(
                 }
             })
         }
+        return true
     }
 
     fun subscribeToUser(username: String) {

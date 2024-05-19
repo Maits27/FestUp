@@ -42,6 +42,7 @@ import com.gomu.festup.ui.elements.components.dialogs.EstasSeguroDialog
 import com.gomu.festup.ui.elements.components.dialogs.LanguageSelection
 import com.gomu.festup.ui.vm.MainVM
 import com.gomu.festup.ui.vm.PreferencesViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -179,7 +180,7 @@ fun Ajustes(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .clickable { logoutVerification = true },
+                    .clickable { logoutVerification = true},
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ){
@@ -326,7 +327,7 @@ fun Ajustes(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .clickable { logoutVerification = true },
+                        .clickable { logoutVerification = true},
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ){
@@ -351,20 +352,24 @@ fun Ajustes(
         }
     }
 
+
     // Diálogo para confirmar el Logout
     EstasSeguroDialog(
         show = logoutVerification,
         mensaje = stringResource(id = R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n),
-        onDismiss = { logoutVerification = false }
-    ) { CoroutineScope(Dispatchers.IO).launch {
-        withContext(Dispatchers.IO) {
-            preferencesVM.changeUser("")
-        }
-        mainVM.serverOk.value = false
-        mainVM.actualizarWidget(context)
+        onDismiss = { logoutVerification = false}
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            if (receiveNotifications){
+                val fcm = FirebaseMessaging.getInstance()
+                fcm.deleteToken()
+            }
+            withContext(Dispatchers.IO) {
+                preferencesVM.changeUser("")
+            }
+            mainVM.serverOk.value = false
+            mainVM.actualizarWidget(context)
 
-        mainVM.unSubscribeUser()
-        if(mainVM.unSuscribeASeguidos(seguidos.value)){
             withContext(Dispatchers.Main) {
                 mainNavController.popBackStack()
                 mainNavController.navigate(AppScreens.LoginPage.route)
@@ -374,6 +379,6 @@ fun Ajustes(
                 context.startActivity(intent)
             }
         }
-    } }
+    }
 }
 

@@ -181,8 +181,10 @@ fun LoginForm(
                             }
                         }
                         if(currentUser != null) { // Usuario localmente añadido
+                            Log.d("USER", currentUser.username)
                             val notificaciones = preferencesVM.receiveNotifications(currentUser.username).first()
                             val seguidos = mainVM.listaSeguidos(currentUser).first()
+                            Log.d("NOTIFICACIONES", notificaciones.toString())
 
                             nuestroLocationProvider(context, mainVM)
                             mainVM.currentUser.value = currentUser

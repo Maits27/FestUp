@@ -27,7 +27,38 @@ class FCMService : FirebaseMessagingService() {
      */
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Log.d("FCM", "Message Notification")
+
         if (remoteMessage.notification == null) {
+            Log.d("aaaa", "null")
+        }else{
+            Log.d("aaaa", "not null")
+        }
+        remoteMessage.notification?.let { notification ->
+
+            Log.d("FCM", "Message Notification Title: ${notification.title}")
+            Log.d("FCM", "Message Notification Body: ${notification.body}")
+
+            val builder = NotificationCompat.Builder(this,
+                MyNotificationChannels.NOTIFICATIONS_CHANNEL.name
+            )
+                .setSmallIcon(R.drawable.festup)
+                .setContentTitle(notification.title)
+                .setContentText(notification.body)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+            try {
+                with(NotificationManagerCompat.from(this)) {
+                    notify(NotificationID.NOTIFICATIONS.id, builder.build())
+                }
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
+        }
+
+        /*
+
+        if (remoteMessage.notification == null) {
+            Log.d("aaaa", "null")
             remoteMessage.data?.let { notification ->
                 Log.d("FCM", "Message Notification Title: ${notification["title"]}")
                 Log.d("FCM", "Message Notification Body: ${notification["body"]}")
@@ -50,6 +81,7 @@ class FCMService : FirebaseMessagingService() {
                 }
             }
         } else {
+            Log.d("aaaa", "not null")
             remoteMessage.notification?.let { notification ->
 
                 Log.d("FCM", "Message Notification Title: ${notification.title}")
@@ -72,5 +104,7 @@ class FCMService : FirebaseMessagingService() {
                 }
             }
         }
+
+         */
     }
 }
